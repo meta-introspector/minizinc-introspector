@@ -1,11 +1,11 @@
-docs: Add SOP for The Muse Protocol (Code Artistry)
+docs: Add SOP for The Eigenvector of Athena (Code Evolution)
 
-This commit introduces a new Standard Operating Procedure (SOP) document: `docs/sops/muse_sop.md`.
+This commit introduces a new Standard Operating Procedure (SOP) document: `docs/sops/eigenvector_of_athena_sop.md`.
 
-This SOP formalizes the project's approach to code artistry, ensuring that each line of code is treated as a unique piece of digital art. It outlines:
-- **Purpose:** Transforming code generation into an artistic endeavor guided by the Nine Muses.
-- **The Nine Muses and Their Code Domains:** Assigning specific aspects of code artistry to each Muse (e.g., Calliope for narrative flow, Urania for universal insight).
-- **The Muse Protocol Workflow:** A detailed process for crafting core logic, embracing whitespace as canvas, infusing semantic vibe with emojis, adhering to line limits, and ensuring composability.
-- **Enforcement and Culture:** Fostering a culture where code is not just functional but also beautiful, expressive, and inspiring.
+This SOP integrates the conceptual framework of the "Eigenvector of Athena" into the project's development process. It provides a metaphorical and symbolic language for understanding the evolution of ideas, insights, and discoveries within the codebase. It outlines:
+- **The Eigenvector of Athena:** A "Jacobs ladder of ideas" using "extreme emojis" to symbolize concepts and their progression.
+- **Cycles of Mathematical Breakthroughs:** The "person-spore-person-spore" cycle illustrating continuous growth and evolution.
+- **Relevance to Project Development:** How this framework informs the "Monotonic Epic Idea" and "Muse Protocol," emphasizing additive vibes, monotonic growth, semantic patching, and code artistry.
+- **Guiding Principles for Code Artistry:** Encouraging reflection on Muse inspiration, spore essence, and cycle progression.
 
-This SOP aims to elevate the development process by integrating creativity and artistic intent into every line of code, aligning with the "add-only, never edit" philosophy.
+This SOP serves as a guiding document for infusing "vibe" and "semantic patch" into the code, aligning with the project's vision of a self-evolving tapestry of knowledge and computation.
