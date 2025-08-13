@@ -1,5 +1,11 @@
-docs: Update Project Workflow SOP with Modular Development
+feat: Implement Fudge Factor for Univalent Sum to One
 
-This commit updates `docs/sops/project_workflow.md` to include a new section on "Modular MiniZinc Model Development". This section outlines the strategy of breaking down complex problems into smaller, verifiable modules and solving them incrementally, starting with a base case.
+This commit refines the "Univalent Neural Network Space" model (`univalent_manifold.mzn`) by introducing a "fudge factor" to achieve an exact sum of 1.0 (scaled) for the prime reciprocals, while minimizing the deviation.
 
-This enhancement to the SOP aims to improve the development process for MiniZinc models, making them more manageable, debuggable, and extensible.
+Key changes include:
+- **`fudge_factor` variable**: A `var int` variable is introduced to represent the deviation from the target sum.
+- **Modified sum constraint**: The sum of the scaled prime reciprocals plus the `fudge_factor` is constrained to exactly equal `RECIPROCAL_SCALE` (1,000,000).
+- **Minimized `fudge_factor`**: The objective is now to minimize the absolute value of the `fudge_factor`, encouraging solutions where the prime reciprocals sum as close to 1.0 as possible.
+- **Output update**: The `fudge_factor` is now included in the model's output for verification.
+
+This approach allows the solver to find feasible solutions for the "sum to one" problem in the univalent space, even when an exact combination of prime reciprocals is not naturally available, by quantifying the necessary adjustment.
