@@ -34,3 +34,4 @@ _build/
 .cache/
 !docs/Makefile
 result/
+/proof_tapes/

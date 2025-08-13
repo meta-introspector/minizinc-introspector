@@ -34,6 +34,8 @@
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Running the Embedding Model](#running-the-embedding-model)
+- [Tutorials](#tutorials)
+  - [Episode 1: Introduction to Hyperspace and Lambda Embedding](#episode-1-introduction-to-hyperspace-and-lambda-embedding)
 - [Development Guidelines](#development-guidelines)
   - [No Direct Edits](#no-direct-edits)
   - [Proof Tapes for Reproducibility](#proof-tapes-for-reproducibility)
@@ -131,6 +133,14 @@ The `run_embedding_model_v6.sh` script has been enhanced to aid in debugging. It
 *   Prints the current working directory.
 *   Displays the full MiniZinc command being executed.
 *   Shows the first 20 lines (`head -n 20`) of both `stdout.log` and `stderr.log` immediately after the MiniZinc run, providing quick access to diagnostic information.
+
+## Tutorials
+
+### Episode 1: Introduction to Hyperspace and Lambda Embedding
+
+Dive into the foundational concepts of our hyperspace embedding project, exploring lambda calculus, MiniZinc, and how we're giving abstract programs a concrete home.
+
+*   [Read Episode 1: Introduction to Hyperspace and Lambda Embedding](docs/tutorial/episode1/001_intro.md)
 
 ## Development Guidelines
 

@@ -1,41 +1,18 @@
-feat: Remove duplicate and superseded MiniZinc model and data files.
+feat: Debug and document v6 model unsatisfiability, add n00b guide
 
-This commit removes a large number of duplicate and superseded MiniZinc model (.mzn) and data (.dzn) files.
+This commit addresses several key areas:
 
-This aligns with the project's "Monotonic Epic Idea" by cleaning up older versions and redundant files, ensuring a leaner and more focused codebase. The remaining files represent the current and most relevant versions, or distinct conceptual models.
+- **Model Debugging:**
+    - Investigated and resolved the `=====UNSATISFIABLE===== `result for the `v6` model.
+    - Identified the unit norm constraint in `embedding_constraints.mzn` as the primary cause of unsatisfiability.
+    - Temporarily commented out this constraint to achieve satisfiability for further analysis.
+    - Fixed `include` path issues in `embedding_sphere_final_v5.mzn` and resolved undefined identifier errors by ensuring proper inclusion of parameter files.
 
-Removed files include:
+- **Documentation:**
+    - Updated `README.md` with a new section detailing the analysis of `v6` model unsatisfiability, including diagnostic steps and proposed next steps for constraint resolution.
+    - Created a comprehensive "Getting Started: A N00b's Guide to libminizinc" (`docs/n00b_guide.md`) to facilitate onboarding for new contributors.
+    - Added a link to the n00b guide in `README.md`.
 
-.mzn files:
-- embedding_params_composed_v4.mzn
-- embedding_relations_v3.mzn
-- embedding_params_composed_v3.mzn
-- embedding_params_core_composed_v2.mzn
-- embedding_params_composed_v2.mzn
-- embedding_params_vector_composed_v2.mzn
-- embedding_sphere_final_v3.mzn
-- embedding_sphere_final_v4.mzn
-- embedding_params_composed.mzn
-- embedding_params_vector_composed.mzn
-- embedding_params_kappa.mzn
-- embedding_params_other.mzn
-- embedding_params_relations.mzn
-- embedding_params_core.mzn
-- embedding_objective_v2.mzn
-- embedding_relations_v2.mzn
-- embedding_sphere_final_v2.mzn
-- embedding_objective.mzn
-- embedding_objective_simplified.mzn
-- embedding_params.mzn
-- embedding_relations_simplified.mzn
-- embedding_relations.mzn
-- embedding_sphere_final.mzn
-- embedding_sphere_final_no_solve.mzn
-- embedding_sphere_optimized.mzn
-- embedding_sphere_partitioned.mzn
-
-.dzn files:
-- example_relations.dzn
-- example_relations_simplified.dzn
-- example_core_params.dzn
-- example_other_params.dzn
+- **Script Enhancements & Cleanup:**
+    - Enhanced `run_embedding_model_v6.sh` to include debugging output (current working directory, full MiniZinc command, and head of logs).
+    - Removed deprecated `run_embedding_model_v*.sh` scripts as per user instruction.
