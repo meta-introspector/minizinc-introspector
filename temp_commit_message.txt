@@ -1,4 +1,41 @@
-chore: Remove duplicate and older documentation files.
+feat: Remove duplicate and superseded MiniZinc model and data files.
 
-- Removed `docs/sops/run_model_sop_v2.md` and `docs/sops/run_model_sop.md` as they are superseded by `docs/sops/run_model_sop_v3.md`.
-- Removed `task.md` as it was a duplicate of `plan.md`.
+This commit removes a large number of duplicate and superseded MiniZinc model (.mzn) and data (.dzn) files.
+
+This aligns with the project's "Monotonic Epic Idea" by cleaning up older versions and redundant files, ensuring a leaner and more focused codebase. The remaining files represent the current and most relevant versions, or distinct conceptual models.
+
+Removed files include:
+
+.mzn files:
+- embedding_params_composed_v4.mzn
+- embedding_relations_v3.mzn
+- embedding_params_composed_v3.mzn
+- embedding_params_core_composed_v2.mzn
+- embedding_params_composed_v2.mzn
+- embedding_params_vector_composed_v2.mzn
+- embedding_sphere_final_v3.mzn
+- embedding_sphere_final_v4.mzn
+- embedding_params_composed.mzn
+- embedding_params_vector_composed.mzn
+- embedding_params_kappa.mzn
+- embedding_params_other.mzn
+- embedding_params_relations.mzn
+- embedding_params_core.mzn
+- embedding_objective_v2.mzn
+- embedding_relations_v2.mzn
+- embedding_sphere_final_v2.mzn
+- embedding_objective.mzn
+- embedding_objective_simplified.mzn
+- embedding_params.mzn
+- embedding_relations_simplified.mzn
+- embedding_relations.mzn
+- embedding_sphere_final.mzn
+- embedding_sphere_final_no_solve.mzn
+- embedding_sphere_optimized.mzn
+- embedding_sphere_partitioned.mzn
+
+.dzn files:
+- example_relations.dzn
+- example_relations_simplified.dzn
+- example_core_params.dzn
+- example_other_params.dzn
