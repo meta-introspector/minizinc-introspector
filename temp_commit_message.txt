@@ -1,11 +1,12 @@
-feat: Implement Fudge Factor for Univalent Sum to One
+feat: Implement Partitioned Manifold Concept
 
-This commit refines the "Univalent Neural Network Space" model (`univalent_manifold.mzn`) by introducing a "fudge factor" to achieve an exact sum of 1.0 (scaled) for the prime reciprocals, while minimizing the deviation.
+This commit introduces the concept of a "Partitioned Manifold" where coordinates are selected from a predefined set of `P` discrete values, allowing for a more granular representation of the manifold space.
 
 Key changes include:
-- **`fudge_factor` variable**: A `var int` variable is introduced to represent the deviation from the target sum.
-- **Modified sum constraint**: The sum of the scaled prime reciprocals plus the `fudge_factor` is constrained to exactly equal `RECIPROCAL_SCALE` (1,000,000).
-- **Minimized `fudge_factor`**: The objective is now to minimize the absolute value of the `fudge_factor`, encouraging solutions where the prime reciprocals sum as close to 1.0 as possible.
-- **Output update**: The `fudge_factor` is now included in the model's output for verification.
+- **`partitioned_manifold_params.mzn`**: Defines the number of partitions `P` (currently 5) and an array `partition_values` that maps integer indices to specific float values (evenly spaced between -1.0 and 1.0).
+- **`partitioned_manifold.mzn`**: 
+    - Models a 2-dimensional space where each coordinate is an index into the `partition_values` array.
+    - Includes a `get_partition_value` function to retrieve the actual float value from the `partition_values` array.
+    - Includes a constraint that two points in this manifold must be different.
 
-This approach allows the solver to find feasible solutions for the "sum to one" problem in the univalent space, even when an exact combination of prime reciprocals is not naturally available, by quantifying the necessary adjustment.
+This demonstrates a modular approach to defining the coordinate space, allowing for easy scaling of the number of partitions and dimensions, and provides a foundation for integrating this concept into the larger embedding problem.
