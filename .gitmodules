@@ -1,3 +1,6 @@
 [submodule "vendor/gecode"]
 	path = vendor/gecode
 	url = https://github.com/Gecode/gecode
+[submodule "vendor/Ipopt"]
+	path = vendor/Ipopt
+	url = https://github.com/coin-or/Ipopt

@@ -1,21 +1,12 @@
-feat: Successfully built and configured libminizinc with Gecode solver
+docs: Add Project Workflow SOP
 
-This commit addresses the build and runtime issues encountered with libminizinc and its Gecode solver dependency. The following steps were taken:
+This commit introduces `docs/sops/project_workflow.md`, a Standard Operating Procedure (SOP) document detailing the workflow for developing on the `libminizinc` project. It covers:
 
-1.  **Gecode Build Fix:**
-    *   Resolved `cmake_minimum_required` compatibility error by adding `-DCMAKE_POLICY_VERSION_MINIMUM=3.5` during Gecode's CMake configuration.
-    *   Fixed C++ compilation errors in `gecode/set/int/weights.hpp` by removing the problematic `init` method (both declaration and definition), as it attempted to assign to `const` members after construction.
+- Handling Gecode build issues (CMake, C++ compilation, submodule management).
+- Configuring `libminizinc` to correctly integrate with Gecode.
+- MiniZinc solver discovery via `.msc` files.
+- Debugging common MiniZinc model type errors.
+- The current approach to integer discretization for floating-point values.
+- General project practices, including Git submodule handling and commit message conventions.
 
-2.  **libminizinc Configuration:**
-    *   Explicitly set `Gecode_ROOT` to the Gecode build directory (`/data/data/com.termux/files/home/storage/github/libminizinc/vendor/gecode/build`) during libminizinc's CMake configuration to ensure it could locate the Gecode libraries.
-    *   Added `include_directories(${PROJECT_SOURCE_DIR}/vendor/gecode/build)` to `libminizinc/CMakeLists.txt` to ensure `libminizinc` could find Gecode's generated headers (specifically `config.hpp`).
-
-3.  **Solver Discovery:**
-    *   Identified that `minizinc` uses `.msc` files for solver discovery and that Gecode was not being found.
-    *   Created `gecode.msc` with the ID `org.gecode.gecode` and pointed its `executable` field to `/data/data/com.termux/files/home/storage/github/libminizinc/vendor/gecode/build/bin/fzn-gecode`.
-    *   Moved `gecode.msc` to the user solver configuration directory (`/data/data/com.termux/files/home/.minizinc/solvers`) as identified by `minizinc --config-dirs`.
-
-**Verification:**
-The `minizinc` executable can now successfully parse and solve MiniZinc models using the Gecode solver, as demonstrated by running `/data/data/com.termux/files/home/storage/github/libminizinc/build/minizinc /data/data/com.termux/files/home/storage/github/libminizinc/test.mzn`, which produced the expected output `x = 1`.
-
-This work establishes a stable foundation for integrating libminizinc with ragit, as outlined in plan.md.
+This SOP aims to streamline future development, ensure adherence to best practices (QA, ISO 9000, ITIL, GMP, Six Sigma), and provide a clear reference for common issues and their resolutions.
