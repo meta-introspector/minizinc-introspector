@@ -1,11 +1,11 @@
-refactor: Parameterize shell scripts with .env file
+docs: Add SOP for No Direct Edits and Composable Development
 
-This commit refactors the build and run shell scripts to use environment variables defined in a new `.env` file, replacing hardcoded paths.
+This commit introduces a new Standard Operating Procedure (SOP) document: `docs/sops/no_direct_edits_sop.md`.
 
-- **`.env`**: A new file introduced in the project root to centralize path configurations.
-- **`scripts/build_gecode.sh`**: Updated to source `.env` and use `GECODE_BUILD_DIR`.
-- **`scripts/build_libminizinc.sh`**: Updated to source `.env` and use `LIBMINIZINC_BUILD_DIR`, `MINIZINC_PROJECT_ROOT`, and `GECODE_BUILD_DIR`.
-- **`scripts/setup_minizinc_solvers.sh`**: Updated to source `.env` and use `MINIZINC_USER_SOLVERS_DIR` and `GECODE_BUILD_DIR`.
-- **`scripts/run_embedding_model.sh`**: Updated to source `.env` and use `LIBMINIZINC_BUILD_DIR`, `MINIZINC_MODELS_DIR`, and `MINIZINC_DATA_DIR`.
+This SOP formalizes the project's development methodology, emphasizing:
+- **No direct editing of existing files:** All changes must be implemented through new, smaller, and functionally composable modules.
+- **Composability and Incrementality:** Promoting small, atomic, and verifiable changes.
+- **Traceability:** Ensuring clear, documented "semantic patches" or "vibes" for every change.
+- **Handling "broken" files:** Outlining a process for rewriting and replacing problematic modules via composition.
 
-This improves the portability, maintainability, and reusability of the project's automation scripts.
+This SOP aims to improve code quality, maintainability, and collaboration by enforcing a disciplined approach to code modification.
