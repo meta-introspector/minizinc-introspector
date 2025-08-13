@@ -1,14 +1,41 @@
 #!/bin/bash
 
-# Script to run a MiniZinc model with full versioned modules and data (Version 6 - with Proof Tape)
+# Minimal script to test environment setup and basic execution time.
 
 # Source the environment variables
-source "$(dirname "$0")/../.env"
+source "$(dirname "$0")"/../.env
+
+# Run MiniZinc and capture output
+echo "Current working directory: $(pwd)"
+MINIZINC_COMMAND="${LIBMINIZINC_BUILD_DIR}/minizinc -v -s --time-limit 1000 --json-stream $MODEL_FILE $CORE_PARAMS_FILE $KAPPA_PARAMS_FILE $OTHER_PARAMS_FILE $RELATIONS_FILE $VECTOR_PARAMS_FILE"
+echo "MiniZinc command: $MINIZINC_COMMAND" >&2
+eval $MINIZINC_COMMAND
+
+MINIZINC_EXIT_CODE=$?
+
+# Display head of full_output.log (will be empty for now as we're not redirecting output)
+echo "--- Head of full_output.log ---"
+head -n 20 "${PROOF_TAPE_DIR}/full_output.log"
+
+if [ $MINIZINC_EXIT_CODE -ne 0 ]; then
+    echo "MiniZinc model run failed! Check ${PROOF_TAPE_DIR}/full_output.log for details." | tee -a "${PROOF_TAPE_DIR}/error.log"
+    exit 1
+fi
+
+echo "MiniZinc model run completed. Output saved to ${PROOF_TAPE_DIR}/stdout.log and ${PROOF_TAPE_DIR}/stderr.log"
+echo "--- Proof Tape Generation Complete ---"
+
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+PROOF_TAPE_DIR="${MINIZINC_PROJECT_ROOT}/proof_tapes/${TIMESTAMP}"
+mkdir -p "$PROOF_TAPE_DIR"
+
+echo "--- Generating Proof Tape for Run: $TIMESTAMP ---"
+echo "Proof Tape Directory: $PROOF_TAPE_DIR"
 
 # Check if all required version parameters are provided
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ] || [ -z "$4" ] || [ -z "$5" ] || [ -z "$6" ]; then
     echo "Usage: $0 <main_model_version> <core_params_version> <kappa_params_version> <other_params_version> <relations_version> <vector_params_version>"
-    echo "Example: $0 v6 v1 v1 v1 v1 v1"
+    echo "Example: $0 dummy_v6 dummy_v1 dummy_v1 dummy_v1 dummy_v1 dummy_v1"
     exit 1
 fi
 
@@ -18,14 +45,6 @@ KAPPA_PARAMS_VERSION="$3"
 OTHER_PARAMS_VERSION="$4"
 RELATIONS_VERSION="$5"
 VECTOR_PARAMS_VERSION="$6"
-
-# Generate a unique timestamp for the proof tape
-TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
-PROOF_TAPE_DIR="${MINIZINC_PROJECT_ROOT}/proof_tapes/${TIMESTAMP}"
-mkdir -p "$PROOF_TAPE_DIR"
-
-echo "--- Generating Proof Tape for Run: $TIMESTAMP ---"
-echo "Proof Tape Directory: $PROOF_TAPE_DIR"
 
 # Record the version vector
 echo "Main Model Version: $MAIN_MODEL_VERSION" > "${PROOF_TAPE_DIR}/version_vector.txt"
@@ -66,22 +85,3 @@ cp "$OTHER_PARAMS_FILE" "$PROOF_TAPE_DIR/"
 cp "$RELATIONS_FILE" "$PROOF_TAPE_DIR/"
 cp "$VECTOR_PARAMS_FILE" "$PROOF_TAPE_DIR/"
 
-# Run MiniZinc and capture output
-echo "Current working directory: $(pwd)"
-MINIZINC_COMMAND="$LIBMINIZINC_BUILD_DIR/minizinc -v -s --time-limit 60000 --json-stream $MODEL_FILE $CORE_PARAMS_FILE $KAPPA_PARAMS_FILE $OTHER_PARAMS_FILE $RELATIONS_FILE $VECTOR_PARAMS_FILE"
-echo "MiniZinc command: $MINIZINC_COMMAND" >&2
-eval $MINIZINC_COMMAND
-
-MINIZINC_EXIT_CODE=$?
-
-# Display head of stdout.log and stderr.log
-echo "--- Head of full_output.log ---"
-head -n 20 "${PROOF_TAPE_DIR}/full_output.log"
-
-if [ $MINIZINC_EXIT_CODE -ne 0 ]; then
-    echo "MiniZinc model run failed! Check ${PROOF_TAPE_DIR}/full_output.log for details." | tee -a "${PROOF_TAPE_DIR}/error.log"
-    exit 1
-fi
-
-echo "MiniZinc model run completed. Output saved to ${PROOF_TAPE_DIR}/stdout.log and ${PROOF_TAPE_DIR}/stderr.log"
-echo "--- Proof Tape Generation Complete ---"
