@@ -1,12 +1,10 @@
-docs: Add Project Workflow SOP
+feat: Add build and run scripts
 
-This commit introduces `docs/sops/project_workflow.md`, a Standard Operating Procedure (SOP) document detailing the workflow for developing on the `libminizinc` project. It covers:
+This commit introduces a `scripts/` directory containing helper scripts to automate the build and execution processes for the `libminizinc` project.
 
-- Handling Gecode build issues (CMake, C++ compilation, submodule management).
-- Configuring `libminizinc` to correctly integrate with Gecode.
-- MiniZinc solver discovery via `.msc` files.
-- Debugging common MiniZinc model type errors.
-- The current approach to integer discretization for floating-point values.
-- General project practices, including Git submodule handling and commit message conventions.
+- `scripts/build_gecode.sh`: Automates the Gecode build process.
+- `scripts/build_libminizinc.sh`: Automates the `libminizinc` build process, including Gecode integration.
+- `scripts/setup_minizinc_solvers.sh`: Automates the creation and placement of `gecode.msc` for solver discovery.
+- `scripts/run_embedding_model.sh`: Runs the `embedding_sphere.mzn` model with `example.dzn`.
 
-This SOP aims to streamline future development, ensure adherence to best practices (QA, ISO 9000, ITIL, GMP, Six Sigma), and provide a clear reference for common issues and their resolutions.
+These scripts improve reproducibility and simplify the workflow for working on the project.
