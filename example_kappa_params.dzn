@@ -1,0 +1,8 @@
+kappa_global = 0.01;
+kappa_bind = 0.2;
+kappa_free = 1.5;
+kappa_app = 0.15;
+kappa_hier = 0.1;
+kappa_alpha = 0.25;
+kappa_beta = 0.1;
+kappa_vec = 0.05;
