@@ -67,14 +67,18 @@ cp "$RELATIONS_FILE" "$PROOF_TAPE_DIR/"
 cp "$VECTOR_PARAMS_FILE" "$PROOF_TAPE_DIR/"
 
 # Run MiniZinc and capture output
-"$LIBMINIZINC_BUILD_DIR/minizinc" "$MODEL_FILE" \
-    "$CORE_PARAMS_FILE" \
-    "$KAPPA_PARAMS_FILE" \
-    "$OTHER_PARAMS_FILE" \
-    "$RELATIONS_FILE" \
-    "$VECTOR_PARAMS_FILE" > "${PROOF_TAPE_DIR}/stdout.log" 2> "${PROOF_TAPE_DIR}/stderr.log"
+echo "Current working directory: $(pwd)"
+MINIZINC_COMMAND="$LIBMINIZINC_BUILD_DIR/minizinc" "$MODEL_FILE" "$CORE_PARAMS_FILE" "$KAPPA_PARAMS_FILE" "$OTHER_PARAMS_FILE" "$RELATIONS_FILE" "$VECTOR_PARAMS_FILE"
+echo "MiniZinc command: $MINIZINC_COMMAND"
+eval $MINIZINC_COMMAND > "${PROOF_TAPE_DIR}/stdout.log" 2> "${PROOF_TAPE_DIR}/stderr.log"
 
 MINIZINC_EXIT_CODE=$?
+
+# Display head of stdout.log and stderr.log
+echo "--- Head of stdout.log ---"
+head -n 20 "${PROOF_TAPE_DIR}/stdout.log"
+echo "--- Head of stderr.log ---"
+head -n 20 "${PROOF_TAPE_DIR}/stderr.log"
 
 if [ $MINIZINC_EXIT_CODE -ne 0 ]; then
     echo "MiniZinc model run failed! Check ${PROOF_TAPE_DIR}/stderr.log for details." | tee -a "${PROOF_TAPE_DIR}/error.log"
