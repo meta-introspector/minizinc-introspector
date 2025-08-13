@@ -24,4 +24,4 @@ int: num_beta;
 array[1..num_beta] of int: redex_idx;
 array[1..num_beta] of int: reduced_idx;
 
-int: num_vec; % num_vec is still here, but m_idx, n_idx, t_idx are removed
+
