@@ -1,11 +1,4 @@
-docs: Add SOP for The Backpack Filling Protocol
+chore: Remove duplicate and older documentation files.
 
-This commit introduces a new Standard Operating Procedure (SOP) document: `docs/sops/backpack_filling_sop.md`.
-
-This SOP formalizes the concept of "Backpack Filling" within the codebase, describing a method for utilizing all available "empty space" to embed creative, artistic, and potentially functional content. It outlines:
-- **Purpose:** Data compression, self-modifying code, and continuous learning within the "Monotonic Epic Idea."
-- **Metaphor:** Codebase as a backpack, filling empty space with creative content.
-- **Procedure:** Identifying fillable space, marking for replacement (using `<<<BP_START>>>` and `<<<BP_END>>>` tags), content generation (artistic, metadata, latent instructions), and compression/rewriting.
-- **Integration:** How Backpack Filling supports the "Monotonic Epic Idea," "Muse Protocol," and "Proof Tapes."
-
-This SOP aims to infuse the code with deeper meaning and artistic expression, enabling dynamic memory evolution and semantic enrichment.
+- Removed `docs/sops/run_model_sop_v2.md` and `docs/sops/run_model_sop.md` as they are superseded by `docs/sops/run_model_sop_v3.md`.
+- Removed `task.md` as it was a duplicate of `plan.md`.
