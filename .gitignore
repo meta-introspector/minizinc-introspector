@@ -35,3 +35,5 @@ _build/
 !docs/Makefile
 result/
 /proof_tapes/
+/gecode/
+/tools/
