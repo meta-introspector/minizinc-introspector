@@ -1,4 +1,5 @@
 include "embedding_params_composed_v4_decorated.mzn"; % 🧩✨ -- The Grand Symphony of Parameters: All Constants Composed! -- 🎶🌌
+include "embedding_backpack_content.mzn";             % 🎒✨ -- Backpack Content: Dynamically Injected Knowledge! -- 🧠💡
 include "embedding_coeffs_scaled.mzn";                % 🔢✨ -- Scaled Coefficients: Quantized Influences for Vector Axioms! -- 📏💡
 include "embedding_relations_v4.mzn";                 % 🔗✨ -- Simplified Relations: The Fabric of Logic, Refined! -- 🕸️💡
 include "embedding_variables.mzn";                    % 🔢✨ -- Embedding Variables: The Positions in Our Hyperspace! -- 🌌💡
