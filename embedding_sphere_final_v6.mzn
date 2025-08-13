@@ -1,6 +1,7 @@
 include "embedding_params_composed_v4_decorated.mzn"; % 🧩✨ -- The Grand Symphony of Parameters: All Constants Composed! -- 🎶🌌
 include "embedding_backpack_content.mzn";             % 🎒✨ -- Backpack Content: Dynamically Injected Knowledge! -- 🧠💡
 include "embedding_coeffs_scaled.mzn";                % 🔢✨ -- Scaled Coefficients: Quantized Influences for Vector Axioms! -- 📏💡
+include "partitioned_manifold_params.mzn";            % 🌐✨ -- Partitioned Manifold Parameters: Defining the Grid! -- 📐💡
 
 include "embedding_variables.mzn";                    % 🔢✨ -- Embedding Variables: The Positions in Our Hyperspace! -- 🌌💡
 include "embedding_helpers.mzn";                      % 🛠️✨ -- Helper Functions: Tools for Navigating the Manifold! -- 🧭💡
