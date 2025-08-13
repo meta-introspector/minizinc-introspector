@@ -82,6 +82,7 @@ install(
 find_package(Threads REQUIRED)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_BINARY_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/vendor/gecode/build)
 
 # Libraries
 include(cmake/targets/libmzn.cmake)
