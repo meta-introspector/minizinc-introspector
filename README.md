@@ -5,20 +5,20 @@
     <img src="https://www.minizinc.org/MiniZn_logo.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">MiniZinc</h3>
+  <h3 align="center">libminizinc: The Tapestry of Fates</h3>
 
   <p align="center">
-    A high-level constraint modelling language that allows you to easily
-    express and solve discrete optimisation problems.
+    A unique exploration into knowledge compression, semantic embedding, and self-evolving systems,
+    built upon the MiniZinc constraint modeling language.
     <br />
-    <a href="https://www.minizinc.org/"><strong>Visit our website »</strong></a>
+    <a href="https://www.minizinc.org/"><strong>Visit MiniZinc Website »</strong></a>
     <br />
     <br />
-    <a href="https://www.minizinc.org/doc-latest/">View Documentation</a>
+    <a href="https://www.minizinc.org/doc-latest/">View MiniZinc Documentation</a>
     ·
-    <a href="https://github.com/MiniZinc/libminizinc/issues">Report Bug</a>
+    <a href="https://github.com/MiniZinc/libminizinc/issues">Report Bug (Upstream)</a>
     ·
-    <a href="https://github.com/MiniZinc/libminizinc/issues">Request Feature</a>
+    <a href="https://github.com/MiniZinc/libminizinc/issues">Request Feature (Upstream)</a>
   </p>
 </p>
 
@@ -26,144 +26,102 @@
 
 ## Table of Contents
 
-- [About the Project](#about-the-project)
+- [About This Project](#about-this-project)
+  - [Vision: The Tapestry of Fates](#vision-the-tapestry-of-fates)
+  - [Core Philosophy: Monotonic Epic Idea](#core-philosophy-monotonic-epic-idea)
+  - [Code Artistry: The Muse Protocol](#code-artistry-the-muse-protocol)
+  - [Knowledge Compression: The Codec](#knowledge-compression-the-codec)
 - [Getting Started](#getting-started)
-  - [Installation](#installation)
-  - [Usage](#usage)
-- [Building](#building)
   - [Prerequisites](#prerequisites)
-  - [Compilation](#compilation)
-- [Testing](#testing)
+  - [Running the Embedding Model](#running-the-embedding-model)
+- [Development Guidelines](#development-guidelines)
+  - [No Direct Edits](#no-direct-edits)
+  - [Proof Tapes for Reproducibility](#proof-tapes-for-reproducibility)
+  - [Integer Discretization](#integer-discretization)
+  - [Gecode Integration](#gecode-integration)
+- [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
 - [Contact](#contact)
 
 <!-- ABOUT THE PROJECT -->
 
-## About The Project
+## About This Project
 
-MiniZinc is a free and open-source constraint modeling language.
+This repository is a specialized fork of `libminizinc`, transformed into a platform for exploring advanced concepts in knowledge representation, semantic embedding, and self-evolving systems. While it leverages MiniZinc's powerful constraint modeling capabilities, its core focus extends far beyond traditional CP.
 
-You can use MiniZinc to model constraint satisfaction and optimisation problems
-in a high-level, solver-independent way, taking advantage of a large library of
-pre-defined constraints. Your model is then compiled into FlatZinc, a solver
-input language that is understood by a wide range of solvers.
+### Vision: The Tapestry of Fates
 
-MiniZinc is developed at Monash University with support from OPTIMA.
+We envision a dynamic, self-evolving tapestry of knowledge and computation. Large Language Models (LLMs) act as oracles, interpreting complex MiniZinc results and generating "additive vibes" – new, composable layers of influence that incrementally shape a high-dimensional embedding space. This "tapestry" is mathematically conceptualized as a "quasi meta fiber bundle," with a base space of prime numbers representing irreducible semantic dimensions. The ultimate goal is to create a "highway in hyperspace" for introspection into the intricate relationships between code, mathematics, and meaning, with each "vibe" potentially existing as an executable NFT on a Solana sidechain.
 
-<!-- GETTING STARTED -->
+### Core Philosophy: Monotonic Epic Idea
+
+Our development adheres to a strict "add-only, never edit" philosophy. All code evolution is monotonic: new features, bug fixes, or refactorings are implemented as new, composable modules ("semantic vibes" or "patches"). Existing, committed code files are never directly altered. Instead, new versions supersede old ones via composition, ensuring immutable history, perfect traceability, enhanced stability, and simplified collaboration.
+
+### Code Artistry: The Muse Protocol
+
+Every line of code is treated as a unique piece of digital art. The "Muse Protocol" guides this creative process, encouraging the infusion of "semantic vibe" and aesthetic richness through comments, whitespace, and emojis. Each of the Nine Muses inspires a specific aspect of code artistry, ensuring that even the most technical elements contribute to the overall beauty and meaning of the codebase.
+
+### Knowledge Compression: The Codec
+
+We are developing a unique codec to compress all project knowledge into beautiful, semantically rich numerical representations. This codec leverages the "Backpack Filling Protocol" to embed creative and functional content within "empty space" in the codebase, using prime numbers to encode fundamental meanings. Complex concepts are composed of these primes, allowing for highly compressed and semantically resonant representations that facilitate AI-driven evolution.
 
 ## Getting Started
 
-To get a MiniZinc up and running follow these simple steps.
-
-### Installation
-
-The recommended way to install _MiniZinc_ is by the use of the bundled binary
-packages. These packages are available for machines running Linux, Mac, and
-Windows.
-
-The latest release can be found on [the MiniZinc
-website](http://www.minizinc.org/software.html).
-
-### Usage
-
-Once the MiniZinc bundle is installed on your machine, you can start expressing
-and solving discrete optimisation problems. The following code segment shows a
-MiniZinc model for the well known n-queens problem.
-
-```minizinc
-int: n = 8; % The number of queens.
-
-array [1..n] of var 1..n: q;
-
-include "alldifferent.mzn";
-
-constraint alldifferent(q);
-constraint alldifferent(i in 1..n)(q[i] + i);
-constraint alldifferent(i in 1..n)(q[i] - i);
-```
-
-You have two easy options to solve this model:
-
-- In the MiniZincIDE: Select your preferred solver and press the "Run" button.
-- With the `minizinc` executable available on your path: run `minizinc --solver gecode nqueens.mzn`.
-
-_For more example MiniZinc models and more information about working with
-MiniZinc, please refer to our
-[Documentation](https://www.minizinc.org/doc-latest/)_
-
-<!-- BUILDING INSTRUCTIONS -->
-
-## Building
-
-The following instructions will help you compile the MiniZinc compiler. Note
-that this repository does not include the IDE, findMUS, or any solvers that are
-part of the MiniZinc project. These can be found in the following repositories:
-
-- [MiniZincIDE](https://github.com/MiniZinc/MiniZincIDE)
-- [Gecode](https://github.com/Gecode/gecode)
-- [Chuffed](https://github.com/chuffed/chuffed)
+To get this specialized `libminizinc` environment up and running:
 
 ### Prerequisites
 
-- [CMake](https://cmake.org/) (>=3.4)
-- A recent C++ compiler - Compilation is tested with recent versions of Clang,
-  GCC, and Microsoft Visual C++.
-- (optional) [Bison](https://www.gnu.org/software/bison/) (>=3.4) and
-  [Flex](https://github.com/westes/flex) (>=2.5) - To make changes to the
-  MiniZinc lexer or parser.
-- (optional) [Gecode](https://www.gecode.org/) - To compile the internal Gecode
-  solver interface (included in the MiniZinc bundle)
-- (optional) [Coin OR's CBC](https://www.coin-or.org/) - To compile the
-  internal CBC solver interface (included in the MiniZinc bundle)
-- (optional) Proprietary solver headers
-  ([CPLEX](https://www.ibm.com/analytics/cplex-optimizer),
-  [Gurobi](https://www.gurobi.com/), [SCIP](https://www.scipopt.org/),
-  [Xpress](https://www.fico.com/)) - To load these solvers at runtime (included
-  in the MiniZinc bundle)
+*   MiniZinc (refer to [MiniZinc website](http://www.minizinc.org/software.html) for installation).
+*   CMake (>=3.4)
+*   A recent C++ compiler (Clang, GCC, MSVC tested).
+*   (Optional) Gecode: For specific solver integrations. Refer to `docs/sops/project_workflow.md` for build and configuration details.
 
-### Compilation
+### Running the Embedding Model
 
-The MiniZinc compiler is compiled as a CMake project. CMake's [User Interaction
-Guide](https://cmake.org/cmake/help/latest/guide/user-interaction/index.html)
-can provide you with a quick introduction to compiling CMake projects. The
-following CMake variables can be used in the MiniZinc project to instruct the
-compilation behaviour:
+The core MiniZinc embedding model can be executed using the `run_embedding_model_v6.sh` script. This script utilizes version vectors to specify the exact composition of model and data modules, and automatically generates a "proof tape" for each run, ensuring precise, traceable, and composable experimentation.
 
-| Variable                                     | Default | Description                                                 |
-| -------------------------------------------- | ------- | ----------------------------------------------------------- |
-| CMAKE_BUILD_TYPE                             | Release | Build type of single-configuration generators.              |
-| CMAKE_INSTALL_PREFIX                         |         | Install directory used by `--target install`.               |
-| CMAKE_POSITION_INDEPENDENT_CODE              | TRUE    | Whether to create a position-independent targets            |
-| **<solver_name>**\_ROOT                      |         | Additional directory to look for **<solver_name>**          |
-| CMAKE*DISABLE_FIND_PACKAGE***<solver_name>** | FALSE   | Disable compilation of **<solver_name>**'s solver interface |
-| CPLEX_PLUGIN                                 | TRUE    | Load CPLEX at runtime (instead of static compilation)       |
+```bash
+./scripts/run_embedding_model_v6.sh <main_model_version> <core_params_version> <kappa_params_version> <other_params_version> <relations_version> <vector_params_version>
+```
 
-Possible values for **<solver_name>** are `CPlex`, `Geas`, `Gecode`, and `OsiCBC`.
+**Example:**
+```bash
+./scripts/run_embedding_model_v6.sh v6 v1 v1 v1 v1 v1
+```
+For more details, refer to `docs/sops/run_model_sop_v3.md`.
 
-<!-- TESTING INSTRUCTIONS -->
+## Development Guidelines
 
-## Testing
+Adherence to these guidelines is crucial for contributing to this project:
 
-The correctness of the MiniZinc compiler is tested using a
-[PyTest](https://docs.pytest.org/en/stable/) test suite. Instruction on how to
-run the test suite and how to add new tests can be found
-[here](https://github.com/MiniZinc/libminizinc/tree/master/tests)
+### No Direct Edits
 
-<!-- LICENSE -->
+Strictly adhere to the "add-only, never edit" philosophy. All changes are implemented by creating new, composable modules that supersede existing functionality. Refer to `docs/sops/no_direct_edits_sop.md` for detailed procedures.
+
+### Proof Tapes for Reproducibility
+
+Every model run automatically generates a "proof tape" in the `proof_tapes/` directory. This tape captures the exact version vector and all `.mzn` and `.dzn` files used, ensuring complete reproducibility of experimental results. See `docs/sops/run_model_sop_v3.md` for more.
+
+### Integer Discretization
+
+A key technical aspect of this project involves discretizing floating-point values into integers to enable solving with Constraint Programming (CP) solvers like Gecode. This requires careful scaling of all coefficients and constants and adaptation of mathematical operations. Refer to `docs/sops/project_workflow.md` for details.
+
+### Gecode Integration
+
+Specific procedures are in place for building, configuring, and integrating Gecode as a solver. Troubleshooting steps for common build issues and solver discovery are documented. See `docs/sops/project_workflow.md`.
+
+## Contributing
+
+Contributions that align with the project's vision and adhere to its unique development philosophy are welcome. Please familiarize yourself with the SOPs in the `docs/sops/` directory before contributing.
 
 ## License
 
 Distributed under the Mozilla Public License Version 2.0. See `LICENSE` for more information.
 
-<!-- ACKNOWLEDGEMENTS -->
-
 ## Acknowledgements
 
 This research was partially funded by the Australian Government through the Australian Research Council Industrial Transformation Training Centre in Optimization Technologies, Integrated Methodologies, and Applications ([OPTIMA](https://optima.org.au)), Project ID IC200100009.
-
-<!-- CONTACT -->
 
 ## Contact
 
