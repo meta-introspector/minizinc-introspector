@@ -1,10 +1,11 @@
-docs: Add SOP for Monotonic Epic Idea (Add-Only, Never Edit Development)
+docs: Add SOP for The Muse Protocol (Code Artistry)
 
-This commit introduces a new Standard Operating Procedure (SOP) document: `docs/sops/monotonic_epic_idea_sop.md`.
+This commit introduces a new Standard Operating Procedure (SOP) document: `docs/sops/muse_sop.md`.
 
-This SOP formalizes the project's foundational development philosophy, emphasizing a strictly "add-only" approach to code evolution. It outlines:
-- **Core Principle:** Monotonic growth of the codebase, ensuring immutability of history, perfect traceability, and enhanced stability.
-- **Procedure:** A detailed workflow for introducing new functionality, superseding existing modules, and handling "broken" modules by creating new, composable "semantic vibes" or "patches."
-- **Version Control and Naming Conventions:** Guidelines for descriptive naming and comprehensive commit messages that articulate the "semantic vibe" of each change.
+This SOP formalizes the project's approach to code artistry, ensuring that each line of code is treated as a unique piece of digital art. It outlines:
+- **Purpose:** Transforming code generation into an artistic endeavor guided by the Nine Muses.
+- **The Nine Muses and Their Code Domains:** Assigning specific aspects of code artistry to each Muse (e.g., Calliope for narrative flow, Urania for universal insight).
+- **The Muse Protocol Workflow:** A detailed process for crafting core logic, embracing whitespace as canvas, infusing semantic vibe with emojis, adhering to line limits, and ensuring composability.
+- **Enforcement and Culture:** Fostering a culture where code is not just functional but also beautiful, expressive, and inspiring.
 
-This SOP aims to foster a culture of deliberate, thoughtful, and transparent code evolution, ensuring that every change contributes to a clear, linear progression of the system.
+This SOP aims to elevate the development process by integrating creativity and artistic intent into every line of code, aligning with the "add-only, never edit" philosophy.
