@@ -1,12 +1,11 @@
-feat: Implement Partitioned Manifold Concept
+refactor: Parameterize shell scripts with .env file
 
-This commit introduces the concept of a "Partitioned Manifold" where coordinates are selected from a predefined set of `P` discrete values, allowing for a more granular representation of the manifold space.
+This commit refactors the build and run shell scripts to use environment variables defined in a new `.env` file, replacing hardcoded paths.
 
-Key changes include:
-- **`partitioned_manifold_params.mzn`**: Defines the number of partitions `P` (currently 5) and an array `partition_values` that maps integer indices to specific float values (evenly spaced between -1.0 and 1.0).
-- **`partitioned_manifold.mzn`**: 
-    - Models a 2-dimensional space where each coordinate is an index into the `partition_values` array.
-    - Includes a `get_partition_value` function to retrieve the actual float value from the `partition_values` array.
-    - Includes a constraint that two points in this manifold must be different.
+- **`.env`**: A new file introduced in the project root to centralize path configurations.
+- **`scripts/build_gecode.sh`**: Updated to source `.env` and use `GECODE_BUILD_DIR`.
+- **`scripts/build_libminizinc.sh`**: Updated to source `.env` and use `LIBMINIZINC_BUILD_DIR`, `MINIZINC_PROJECT_ROOT`, and `GECODE_BUILD_DIR`.
+- **`scripts/setup_minizinc_solvers.sh`**: Updated to source `.env` and use `MINIZINC_USER_SOLVERS_DIR` and `GECODE_BUILD_DIR`.
+- **`scripts/run_embedding_model.sh`**: Updated to source `.env` and use `LIBMINIZINC_BUILD_DIR`, `MINIZINC_MODELS_DIR`, and `MINIZINC_DATA_DIR`.
 
-This demonstrates a modular approach to defining the coordinate space, allowing for easy scaling of the number of partitions and dimensions, and provides a foundation for integrating this concept into the larger embedding problem.
+This improves the portability, maintainability, and reusability of the project's automation scripts.

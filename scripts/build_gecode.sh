@@ -2,7 +2,8 @@
 
 # Script to build Gecode
 
-GECODE_BUILD_DIR="/data/data/com.termux/files/home/storage/github/libminizinc/vendor/gecode/build"
+# Source the environment variables
+source "$(dirname "$0")/../.env"
 
 mkdir -p "$GECODE_BUILD_DIR"
 cd "$GECODE_BUILD_DIR" || exit 1
