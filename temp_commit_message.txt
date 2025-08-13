@@ -1,11 +1,10 @@
-docs: Add SOP for No Direct Edits and Composable Development
+docs: Add SOP for Monotonic Epic Idea (Add-Only, Never Edit Development)
 
-This commit introduces a new Standard Operating Procedure (SOP) document: `docs/sops/no_direct_edits_sop.md`.
+This commit introduces a new Standard Operating Procedure (SOP) document: `docs/sops/monotonic_epic_idea_sop.md`.
 
-This SOP formalizes the project's development methodology, emphasizing:
-- **No direct editing of existing files:** All changes must be implemented through new, smaller, and functionally composable modules.
-- **Composability and Incrementality:** Promoting small, atomic, and verifiable changes.
-- **Traceability:** Ensuring clear, documented "semantic patches" or "vibes" for every change.
-- **Handling "broken" files:** Outlining a process for rewriting and replacing problematic modules via composition.
+This SOP formalizes the project's foundational development philosophy, emphasizing a strictly "add-only" approach to code evolution. It outlines:
+- **Core Principle:** Monotonic growth of the codebase, ensuring immutability of history, perfect traceability, and enhanced stability.
+- **Procedure:** A detailed workflow for introducing new functionality, superseding existing modules, and handling "broken" modules by creating new, composable "semantic vibes" or "patches."
+- **Version Control and Naming Conventions:** Guidelines for descriptive naming and comprehensive commit messages that articulate the "semantic vibe" of each change.
 
-This SOP aims to improve code quality, maintainability, and collaboration by enforcing a disciplined approach to code modification.
+This SOP aims to foster a culture of deliberate, thoughtful, and transparent code evolution, ensuring that every change contributes to a clear, linear progression of the system.
