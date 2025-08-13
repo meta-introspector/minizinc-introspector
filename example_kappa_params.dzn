@@ -6,3 +6,4 @@ kappa_hier = 0.1;
 kappa_alpha = 0.25;
 kappa_beta = 0.1;
 kappa_vec = 0.05;
+kappa_unit_norm = 0.5; % Example value
