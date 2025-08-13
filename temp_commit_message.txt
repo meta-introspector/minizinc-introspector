@@ -1,10 +1,5 @@
-feat: Add build and run scripts
+docs: Update Project Workflow SOP with Modular Development
 
-This commit introduces a `scripts/` directory containing helper scripts to automate the build and execution processes for the `libminizinc` project.
+This commit updates `docs/sops/project_workflow.md` to include a new section on "Modular MiniZinc Model Development". This section outlines the strategy of breaking down complex problems into smaller, verifiable modules and solving them incrementally, starting with a base case.
 
-- `scripts/build_gecode.sh`: Automates the Gecode build process.
-- `scripts/build_libminizinc.sh`: Automates the `libminizinc` build process, including Gecode integration.
-- `scripts/setup_minizinc_solvers.sh`: Automates the creation and placement of `gecode.msc` for solver discovery.
-- `scripts/run_embedding_model.sh`: Runs the `embedding_sphere.mzn` model with `example.dzn`.
-
-These scripts improve reproducibility and simplify the workflow for working on the project.
+This enhancement to the SOP aims to improve the development process for MiniZinc models, making them more manageable, debuggable, and extensible.

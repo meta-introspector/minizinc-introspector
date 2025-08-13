@@ -74,4 +74,12 @@ To enable solving with CP solvers like Gecode, floating-point values are discret
 *   **Commit Messages:** Use `temp_commit_message.txt` for detailed commit messages, summarizing the *why* and *how* of changes, especially for complex fixes.
 *   **Iterative Testing:** After each significant change, re-run `minizinc` to quickly identify and address new errors.
 
+## 7. Modular MiniZinc Model Development
+
+To manage complexity and facilitate debugging, MiniZinc models should be developed modularly and problems solved incrementally.
+
+1.  **Start with a Base Case:** Begin with the simplest possible formulation that captures the core concept (e.g., a single variable, minimal constraints). Verify its correctness.
+2.  **Incremental Complexity:** Gradually add more variables, dimensions, constraints, and objective terms. Test each addition to ensure it behaves as expected.
+3.  **Refactor into Modules:** For larger models, consider breaking them into separate `.mzn` files using `include` directives. This allows for better organization and reusability of components (e.g., common functions, constraint patterns).
+
 This SOP will be continuously updated as new procedures are established or existing ones are refined.
