@@ -30,7 +30,7 @@ MiniZincModel* minizinc_parse_model_from_string(MiniZincEnv* env_ptr, const char
     bool is_flatzinc = false;
     bool ignore_stdlib = false;
     bool parse_doc_comments = false;
-    bool verbose = false;
+    bool verbose = true; // Changed to true
     std::ostream& err = std::cerr; // Use cerr for errors
 
     try {
@@ -64,7 +64,7 @@ int minizinc_parse_data_from_string(MiniZincEnv* env_ptr, MiniZincModel* model_p
     bool is_flatzinc = false;
     bool ignore_stdlib = false;
     bool parse_doc_comments = false;
-    bool verbose = false;
+    bool verbose = true; // Changed to true
     std::ostream& err = std::cerr; // Use cerr for errors
 
     // Workaround: MiniZinc::parse_data expects a vector of filenames, not a string directly.
