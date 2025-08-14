@@ -1,6 +1,0 @@
-num_vec = 0;
-alpha_coeff_scaled = [];
-beta_coeff_scaled = [];
-m_idx = [];
-n_idx = [];
-t_idx = [];

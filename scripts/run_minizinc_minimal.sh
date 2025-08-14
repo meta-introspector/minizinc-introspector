@@ -19,14 +19,14 @@ RELATIONS_VERSION="$5"
 VECTOR_PARAMS_VERSION="$6"
 
 # Dynamically construct the model file path
-MODEL_FILE="${MINIZINC_MODELS_DIR}/embedding_sphere_${MAIN_MODEL_VERSION}.mzn"
+MODEL_FILE="/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_sphere_${MAIN_MODEL_VERSION}.mzn"
 
 # Dynamically construct the data file paths
-CORE_PARAMS_FILE="${MINIZINC_DATA_DIR}/example_core_params_${CORE_PARAMS_VERSION}.dzn"
-KAPPA_PARAMS_FILE="${MINIZINC_DATA_DIR}/example_kappa_params_${KAPPA_PARAMS_VERSION}.dzn"
-OTHER_PARAMS_FILE="${MINIZINC_DATA_DIR}/example_other_params_${OTHER_PARAMS_VERSION}.dzn"
-RELATIONS_FILE="${MINIZINC_DATA_DIR}/example_relations_${RELATIONS_VERSION}.dzn"
-VECTOR_PARAMS_FILE="${MINIZINC_DATA_DIR}/example_vector_params_${VECTOR_PARAMS_VERSION}.dzn"
+CORE_PARAMS_FILE="/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/example_core_params_${CORE_PARAMS_VERSION}.dzn"
+KAPPA_PARAMS_FILE="/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/example_kappa_params_${KAPPA_PARAMS_VERSION}.dzn"
+OTHER_PARAMS_FILE="/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/example_other_params_${OTHER_PARAMS_VERSION}.dzn"
+RELATIONS_FILE="/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/example_relations_${RELATIONS_VERSION}.dzn"
+VECTOR_PARAMS_FILE="/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/example_vector_params_${VECTOR_PARAMS_VERSION}.dzn"
 
 # Run MiniZinc and output directly
 TEMP_STDERR_FILE=$(mktemp)
