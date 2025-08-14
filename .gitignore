@@ -41,3 +41,4 @@ gecode/
 install/
 proof_tapes/
 /tools/minizinc_ffi/target/
+/target/
