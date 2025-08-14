@@ -19,7 +19,7 @@ Flattener* minizinc_env_new() {
     std::string stdlib_path = "/data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc";
     MiniZinc::Flattener* new_flattener = new MiniZinc::Flattener(std::cout, std::cerr, stdlib_path);
 
-    std::cerr << "DEBUG: minizinc_env_new - Created Flattener at: " << new_flattener << std::endl;
+    std::cerr << "DEBUG: minizinc_env_new - Created Flattener at: " << new_flattener << std::endl; std::cerr.flush();
     // Removed: if (new_flattener) { std::cerr << "DEBUG: minizinc_env_new - Flattener->getEnv() returns: " << new_flattener->getEnv() << std::endl; } else { std::cerr << "DEBUG: minizinc_env_new - Flattener creation failed (nullptr)." << std::endl; }
 
     return reinterpret_cast<Flattener*>(new_flattener);
@@ -27,6 +27,7 @@ Flattener* minizinc_env_new() {
 
 // Function to free a MiniZinc environment
 void minizinc_env_free(Flattener* env) {
+    std::cerr << "DEBUG: minizinc_env_free - Freeing Flattener at: " << env << std::endl; std::cerr.flush();
     delete reinterpret_cast<MiniZinc::Flattener*>(env);
 }
 
