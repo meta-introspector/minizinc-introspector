@@ -4,3 +4,12 @@
 [submodule "vendor/Ipopt"]
 	path = vendor/Ipopt
 	url = https://github.com/coin-or/Ipopt
+[submodule "vendor/minizinc-python"]
+	path = vendor/minizinc-python
+	url = https://github.com/MiniZinc/minizinc-python
+[submodule "vendor/minizinc-jll"]
+	path = vendor/minizinc-jll
+	url = https://github.com/JuliaBinaryWrappers/MiniZinc_jll.jl
+[submodule "vendor/minizin-js"]
+	path = vendor/minizin-js
+	url = https://github.com/MiniZinc/minizinc-js

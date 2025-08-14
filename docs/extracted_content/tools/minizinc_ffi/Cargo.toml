@@ -1,0 +1,13 @@
+[package]
+name = "minizinc_ffi"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "minizinc_ffi"
+path = "src/lib.rs"
+
+[dependencies]
+
+[build-dependencies]
+bindgen = "0.69.4"
