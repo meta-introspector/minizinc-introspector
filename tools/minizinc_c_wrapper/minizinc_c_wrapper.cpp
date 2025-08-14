@@ -20,11 +20,7 @@ Flattener* minizinc_env_new() {
     MiniZinc::Flattener* new_flattener = new MiniZinc::Flattener(std::cout, std::cerr, stdlib_path);
 
     std::cerr << "DEBUG: minizinc_env_new - Created Flattener at: " << new_flattener << std::endl;
-    if (new_flattener) {
-        std::cerr << "DEBUG: minizinc_env_new - Flattener->getEnv() returns: " << new_flattener->getEnv() << std::endl;
-    } else {
-        std::cerr << "DEBUG: minizinc_env_new - Flattener creation failed (nullptr)." << std::endl;
-    }
+    // Removed: if (new_flattener) { std::cerr << "DEBUG: minizinc_env_new - Flattener->getEnv() returns: " << new_flattener->getEnv() << std::endl; } else { std::cerr << "DEBUG: minizinc_env_new - Flattener creation failed (nullptr)." << std::endl; }
 
     return reinterpret_cast<Flattener*>(new_flattener);
 }
