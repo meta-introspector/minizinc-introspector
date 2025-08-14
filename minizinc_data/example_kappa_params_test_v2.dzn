@@ -1,0 +1,13 @@
+% File: example_kappa_params_test_v2.dzn
+% Purpose: Defines kappa parameters for testing MiniZinc model runtime.
+% This version introduces non-trivial kappa values.
+
+kappa_global = 0.5;
+kappa_bind = 0.2;
+kappa_free = 0.1;
+kappa_app = 0.3;
+kappa_hier = 0.4;
+kappa_alpha = 0.1;
+kappa_beta = 0.2;
+kappa_vec = 0.1;
+kappa_unit_norm = 0.05;

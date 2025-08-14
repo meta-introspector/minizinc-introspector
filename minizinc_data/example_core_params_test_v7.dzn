@@ -1,5 +1,5 @@
 % File: example_core_params_test_v7.dzn
 % Purpose: Defines core parameters for testing MiniZinc model runtime.
-% This version sets num_vec to 2.
+% This version increases num_vec to 100.
 
-num_vec = 2;
+num_vec = 100;
