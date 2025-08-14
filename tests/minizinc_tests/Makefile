@@ -38,3 +38,4 @@ all: test/time.log \
 
 clean:
 	rm -rf */time.log */stdout.log */stderr.log
+?

@@ -33,7 +33,4 @@ _build/
 *.pyc
 .cache/
 !docs/Makefile
-result/
-/proof_tapes/
-/gecode/
-/tools/
+
