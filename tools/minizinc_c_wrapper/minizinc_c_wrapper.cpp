@@ -6,6 +6,7 @@
 #include <iostream> // For debugging
 #include <fstream>  // For temporary file
 #include <cstdio>   // For remove (C-style file deletion)
+#include <sstream>  // For std::stringstream
 
 // Function to create a new MiniZinc environment
 MiniZincEnv* minizinc_env_new() {
@@ -31,7 +32,9 @@ MiniZincModel* minizinc_parse_model_from_string(MiniZincEnv* env_ptr, const char
     bool ignore_stdlib = false;
     bool parse_doc_comments = false;
     bool verbose = true; // Changed to true
-    std::ostream& err = std::cerr; // Use cerr for errors
+
+    std::stringstream ss_err; // Create a stringstream for error capture
+    std::ostream& err = ss_err; // Redirect error output to stringstream
 
     try {
         MiniZinc::Model* model = MiniZinc::parse_from_string(*env, model_s, filename_s,
@@ -40,13 +43,13 @@ MiniZincModel* minizinc_parse_model_from_string(MiniZincEnv* env_ptr, const char
                                                                verbose, err);
         return reinterpret_cast<MiniZincModel*>(model);
     } catch (const MiniZinc::Exception& e) {
-        std::cerr << "MiniZinc parsing error: " << e.what() << std::endl;
+        std::cerr << "MiniZinc parsing error (captured): " << ss_err.str() << " | Exception: " << e.what() << std::endl;
         return nullptr;
     } catch (const std::exception& e) {
-        std::cerr << "Standard exception: " << e.what() << std::endl;
+        std::cerr << "Standard exception (captured): " << ss_err.str() << " | Exception: " << e.what() << std::endl;
         return nullptr;
     } catch (...) {
-        std::cerr << "Unknown exception during parsing." << std::endl;
+        std::cerr << "Unknown exception during parsing (captured): " << ss_err.str() << std::endl;
         return nullptr;
     }
 }
@@ -65,7 +68,9 @@ int minizinc_parse_data_from_string(MiniZincEnv* env_ptr, MiniZincModel* model_p
     bool ignore_stdlib = false;
     bool parse_doc_comments = false;
     bool verbose = true; // Changed to true
-    std::ostream& err = std::cerr; // Use cerr for errors
+
+    std::stringstream ss_err; // Create a stringstream for error capture
+    std::ostream& err = ss_err; // Redirect error output to stringstream
 
     // Workaround: MiniZinc::parse_data expects a vector of filenames, not a string directly.
     // Write the data string to a temporary file and pass its name.
@@ -91,15 +96,15 @@ int minizinc_parse_data_from_string(MiniZincEnv* env_ptr, MiniZincModel* model_p
 
         return 0; // Success
     } catch (const MiniZinc::Exception& e) {
-        std::cerr << "MiniZinc data parsing error: " << e.what() << std::endl;
+        std::cerr << "MiniZinc data parsing error (captured): " << ss_err.str() << " | Exception: " << e.what() << std::endl;
         std::remove(temp_data_filename.c_str());
         return -1; // Failure
     } catch (const std::exception& e) {
-        std::cerr << "Standard exception: " << e.what() << std::endl;
+        std::cerr << "Standard exception (captured): " << ss_err.str() << " | Exception: " << e.what() << std::endl;
         std::remove(temp_data_filename.c_str());
         return -1; // Failure
     } catch (...) {
-        std::cerr << "Unknown exception during data parsing." << std::endl;
+        std::cerr << "Unknown exception during data parsing (captured): " << ss_err.str() << std::endl;
         std::remove(temp_data_filename.c_str());
         return -1; // Failure
     }
