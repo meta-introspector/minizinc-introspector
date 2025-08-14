@@ -23,3 +23,5 @@ fi
 echo "Stdout logged to: crash_reproduce_stdout.log"
 echo "Stderr logged to: crash_reproduce_stderr.log"
 echo "Please check crash_reproduce_stderr.log for SIGSEGV or other errors."
+
+cat crash_reproduce_stderr.log
