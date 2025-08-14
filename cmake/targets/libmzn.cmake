@@ -6,7 +6,7 @@ include(cmake/targets/libminizinc_fzn.cmake)
 include(cmake/targets/libminizinc_nl.cmake)
 include(cmake/targets/libminizinc_mip.cmake)
 
-add_library(mzn
+add_library(mzn SHARED
   lib/MIPdomains.cpp
   lib/ast.cpp
   lib/astexception.cpp

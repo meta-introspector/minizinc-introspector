@@ -35,3 +35,4 @@ _build/
 !docs/Makefile
 
 /tools/minizinc_test_runner_rs/target/
+/tools/minizinc_report_generator_rs/minizinc_report_generator_rs/target/

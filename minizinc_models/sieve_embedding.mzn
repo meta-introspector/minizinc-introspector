@@ -6,37 +6,48 @@ int: num_vars;       % Number of lambda variables (corresponds to num_vec in dat
 int: num_values;     % Number of values each variable can take
 int: num_partitions; % Number of partitions in the embedding space
 
-% --- Sieve of Eratosthenes (up to limit 3, to find prime 2) ---
-% We'll keep this simple for now, focusing on finding prime 2.
-% A more general sieve would iterate up to a larger limit.
+% --- Sieve of Eratosthenes ---
+% Finds prime numbers up to 'num_values'.
 
-set of int: NUMBERS = 1..3; % Numbers to check for primality
+set of int: NUMBERS = 1..num_values; % Numbers to check for primality
 
 array[NUMBERS] of var bool: is_prime;
 
 constraint is_prime[1] = false; % 1 is not prime
-constraint is_prime[2] = true;  % 2 is prime
-constraint is_prime[3] = true;  % 3 is prime
 
-% --- Embedding Variables (simplified for now) ---
-% These variables will represent the embedding of the found primes.
-% For simplicity, we'll assume a 1D embedding for now, and expand later.
+constraint forall(i in 2..num_values) (
+  is_prime[i] <-> forall(j in 2..i-1) (
+    (i mod j != 0)
+  )
+);
 
-% Assuming we are embedding the primes found by the sieve.
-% For limit 3, primes are {2, 3}.
-% We need to map these to embedding variables.
+% --- Embedding Variables ---
+% We will embed the primes found by the sieve.
+% The embedding space has 'num_partitions' dimensions.
 
-% Let's define embedding variables for each number up to num_vars
-% (which is 1 in our initial test case, so we'll embed just one prime for now)
-array[1..num_vars] of var int: prime_embedding;
+set of int: PRIMES_FOUND = {i | i in NUMBERS where is_prime[i]};
+int: num_primes_found = card(PRIMES_FOUND);
 
-% --- Constraints for Embedding ---
-% For the initial test, we'll just constrain the embedding of prime 2.
-% This is a placeholder constraint.
-constraint if is_prime[2] then prime_embedding[1] >= 0 else true endif;
+% Embedding coordinates for each prime
+array[1..num_primes_found, 1..num_partitions] of var int: prime_embedding_coords;
+
+% Map prime values to their index in the embedding array
+array[PRIMES_FOUND] of int: prime_to_idx;
+constraint forall(i in 1..num_primes_found) (
+  prime_to_idx[sorted(PRIMES_FOUND)[i]] = i
+);
+
+% --- Embedding Constraints ---
+% For now, a simple constraint: all embedding coordinates are non-negative.
+% More complex embedding constraints will be added later.
+constraint forall(i in 1..num_primes_found, j in 1..num_partitions) (
+  prime_embedding_coords[i, j] >= 0
+);
 
 % --- Output ---
 output [
   "is_prime = ", show(is_prime), ";\n",
-  "prime_embedding = ", show(prime_embedding), ";\n"
+  "primes_found = ", show(PRIMES_FOUND), ";\n",
+  "prime_embedding_coords = ", show(prime_embedding_coords), ";\n"
 ];
+

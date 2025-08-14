@@ -105,44 +105,15 @@ If you're new to this project, we highly recommend starting with our "N00b's Gui
 
 ## Recent Model Analysis and Debugging
 
+This section documents recent findings and debugging efforts related to the MiniZinc embedding models.
+
+*   [MiniZinc Model Performance Analysis and Debugging Report](docs/performance_analysis_report.md)
+
 ## Model Documentation
 
 This section provides detailed documentation and analysis of the MiniZinc models within this project.
 
 *   [MiniZinc Models Overview](docs/minizinc_models_overview.md)
-
-This section documents recent findings and debugging efforts related to the MiniZinc embedding models.
-
-### Analysis of v6 Model Unsatisfiability
-
-When running the `v6` main model with `v1` data parameters (`./scripts/run_embedding_model_v6.sh v6 v1 v1 v1 v1 v1`), the model consistently resulted in `=====UNSATISFIABLE=====`. This indicates that, with the given constraints and parameters, no solution could be found.
-
-The diagnostic process involved:
-*   **Initial Debugging of Script Execution:** Enhancing `run_embedding_model_v6.sh` to provide immediate `head`/`tail` log output and display the full MiniZinc command for easier debugging.
-*   **Resolving Include Path Issues:** Identifying and correcting an `include` path error in `embedding_sphere_final_v5.mzn` (which was temporarily modified during debugging) where `embedding_params_composed_v2.mzn` was being sought but the correct file was `embedding_params_core_composed_v3.mzn`. This was resolved by directly updating the `include` statement in `embedding_sphere_final_v5.mzn`.
-*   **Addressing Undefined Identifiers:** A chain of "undefined identifier" errors (`kappa_global`, `epsilon`, `num_bindings`, `alpha_coeff`) were encountered. These were resolved by ensuring that `embedding_sphere_final_v5.mzn` (and by extension, `embedding_sphere_final_v6.mzn` as they share similar structures) explicitly included the necessary parameter composition files (`embedding_params_kappa_composed.mzn`, `embedding_params_other_composed.mzn`, `embedding_params_relations_v3.mzn`, `embedding_params_vector_composed_v3.mzn`) before their corresponding `.dzn` data files were processed.
-*   **Pinpointing the Unsatisfiable Constraint:** The primary cause of the `=====UNSATISFIABLE===== `result for the `v6` model was identified as the unit norm constraint in `embedding_constraints.mzn`:
-    ```minizinc
-    constraint forall(i in 1..n) (
-      sum(k in 1..d) (p_actual_values[i,k] * p_actual_values[i,k]) = PARTITION_SCALE * PARTITION_SCALE
-    );
-    ```
-    This constraint, requiring the sum of squares of `p_actual_values` to exactly equal `PARTITION_SCALE * PARTITION_SCALE` (which is `1,000,000` with `PARTITION_SCALE = 1000`), proved too restrictive for the discrete integer values `p_actual_values` could take.
-*   **Achieving Satisfiability:** By temporarily commenting out this specific constraint in `embedding_constraints.mzn`, the `v6` model became satisfiable, demonstrating that this constraint was indeed the bottleneck.
-
-### Next Steps for Constraint Resolution
-
-To achieve a satisfiable solution while maintaining the intent of the unit norm constraint, several approaches can be explored:
-*   **Constraint Relaxation:** Modify the constraint to allow for a tolerance (e.g., `sum(...) <= PARTITION_SCALE * PARTITION_SCALE + tolerance`) or change the equality to an inequality (`<=` or `>=`).
-*   **Parameter Adjustment:** Re-evaluate the `PARTITION_SCALE` value or the domain of `p_actual_values` to find a combination that makes the constraint achievable with discrete values.
-*   **Alternative Modeling:** Explore alternative ways to model the unit norm concept within the discrete integer domain, potentially using different mathematical formulations or approximations.
-
-### Debugging Script Enhancements
-
-The `run_embedding_model_v6.sh` script has been enhanced to aid in debugging. It now:
-*   Prints the current working directory.
-*   Displays the full MiniZinc command being executed.
-*   Shows the first 20 lines (`head -n 20`) of both `stdout.log` and `stderr.log` immediately after the MiniZinc run, providing quick access to diagnostic information.
 
 ## Tutorials
 
