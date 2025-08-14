@@ -13,4 +13,4 @@ include "embedding_helpers.mzn";
 include "embedding_output.mzn";
 include "embedding_prime_constraints.mzn";
 include "embedding_constraints.mzn";
-include "embedding_objective_v3.mzn";
+include "embedding_objective_v4.mzn";

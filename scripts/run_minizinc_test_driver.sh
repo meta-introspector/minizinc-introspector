@@ -51,7 +51,7 @@ RELATIONS_VERSION="test_v6" # Our latest relations with beta reduction
 
 echo "Running main MiniZinc model with num_vec=${NUM_VEC}, base_size=${BASE_SIZE}..."
 #MINIZINC_COMMAND="${LIBMINIZINC_BUILD_DIR}/minizinc -s --time-limit 60000 -I ${MINIZINC_MODELS_DIR}"
-MINIZINC_COMMAND="${LIBMINIZINC_BUILD_DIR}/minizinc --time-limit 60000 -I ${MINIZINC_MODELS_DIR}"
+MINIZINC_COMMAND="${LIBMINIZINC_BUILD_DIR}/minizinc --time-limit 300000 -I ${MINIZINC_MODELS_DIR}"
 MINIZINC_COMMAND+=" ${MINIZINC_MODELS_DIR}/embedding_sphere_${MAIN_MODEL_VERSION}.mzn"
 MINIZINC_COMMAND+=" ${CORE_PARAMS_DZN_FILE}"
 MINIZINC_COMMAND+=" ${MINIZINC_DATA_DIR}/example_kappa_params_${KAPPA_PARAMS_VERSION}.dzn"

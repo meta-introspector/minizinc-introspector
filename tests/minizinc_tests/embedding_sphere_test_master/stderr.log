@@ -1,0 +1,9 @@
+Multiple type errors:
+Error: type error: multiple assignment to the same variable
+../../minizinc_data/embedding_sphere_test_master_minimal.dzn:6.1-18
+
+Error: type error:   symbol error: variable `d' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_core_v2.mzn:3.1-6
+
+Error: type error:   symbol error: variable `KAPPA_SCALE' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_core_v2.mzn:5.1-16

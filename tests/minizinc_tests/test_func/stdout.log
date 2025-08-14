@@ -1,0 +1,9 @@
+% Generated FlatZinc statistics:
+%%%mzn-stat: paths=0
+%%%mzn-stat: method="satisfy"
+%%%mzn-stat: flatTime=0.0609654
+%%%mzn-stat-end
+6
+----------
+%%%mzn-stat: nSolutions=1
+%%%mzn-stat-end

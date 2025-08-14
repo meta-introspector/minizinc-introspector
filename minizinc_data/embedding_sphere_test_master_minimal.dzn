@@ -1,0 +1,57 @@
+% Minimal data for embedding_sphere_test_master.mzn
+
+% Core Parameters
+n = 2; % Minimal number of subterms
+num_vec = 2; % Minimal number of vector axioms
+MAX_SIEVE_NUM = 10; % Minimal sieve number for church_embeddings
+
+% Kappa Parameters (using example.dzn values)
+kappa_global = 0.01;
+kappa_bind = 0.2;
+kappa_free = 1.5;
+kappa_app = 0.15;
+kappa_hier = 0.1;
+kappa_alpha = 0.25;
+kappa_beta = 0.1;
+kappa_vec = 0.05;
+kappa_unit_norm = 1.0; % Assuming a default for unit norm
+
+% Other Parameters (using example.dzn values)
+epsilon = 1e-6;
+theta_vec = 0.05;
+
+% Relation Parameters (minimal dummy values)
+num_bindings = 0;
+binder_idx = [];
+bound_idx = [];
+
+num_free = 0;
+free_idx = [];
+unrelated_binder_idx = [];
+
+num_apps = 0;
+func_idx = [];
+arg_idx = [];
+
+num_hier = 0;
+parent_idx = [];
+child_idx = [];
+
+num_alpha = 0;
+eq1_idx = [];
+eq2_idx = [];
+
+num_beta = 0;
+redex_idx = [];
+reduced_idx = [];
+
+% Vector Axiom Parameters (minimal dummy values)
+alpha_coeff = [0.0, 0.0];
+beta_coeff = [0.0, 0.0];
+m_idx = [1, 1];
+n_idx = [1, 1];
+t_idx = [1, 1];
+
+% Partitioned Manifold Parameters (from partitioned_manifold_minimal.dzn)
+P = 5;
+PARTITION_SCALE = 1000;

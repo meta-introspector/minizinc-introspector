@@ -1,3 +1,6 @@
+int: P = 5; % Number of partitions
+int: PARTITION_SCALE = 1000; % Scaling factor for partitions
+
 include "partitioned_manifold_params.mzn";
 
 % Parameters

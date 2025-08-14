@@ -1,13 +1,12 @@
-feat: Improve embedding diversity and prime number handling
+feat: Implement comprehensive MiniZinc model testing framework
 
-This commit addresses issues with the MiniZinc embedding model to produce more diverse and meaningful embeddings, particularly for prime numbers.
+This commit introduces a robust testing framework for MiniZinc models, enabling systematic performance analysis and bottleneck identification.
 
 Key changes include:
-- **`minizinc_models/church_embeddings.mzn`**: Increased `MAX_SIEVE_NUM` from 5 to 100 to correctly populate `primes_list_raw` for `num_vec=100`, resolving the `-2147483646` (MININT+1) errors in the first dimension of the embeddings.
-- **`minizinc_models/embedding_constraints.mzn`**: 
-    - Activated and modified the unit norm constraint to encourage a wider range of values for `p_actual_values`.
-    - Added an `alldifferent` constraint on `p_idx` for dimensions 2 to `d` to force distinct values from `scaled_partition_values` for each embedding vector, leading to more diverse embeddings.
-    - Explicitly included `all_different.mzn` to resolve the "no function or predicate with name `alldifferent` found" error.
-- **`minizinc_models/embedding_params_core_v2.mzn`**: Increased `P` from 5 to 10 to provide a larger pool of distinct values for `scaled_partition_values`, making the `alldifferent` constraint satisfiable and enabling more varied embeddings.
+- **`scripts/run_minizinc_test.sh`**: A generic script to run individual MiniZinc models, capture their output, and measure execution time using `date` for precision. It now utilizes MiniZinc's `--time-limit` for controlled execution.
+- **`scripts/run_all_minizinc_tests.sh`**: A driver script that iterates through all `.mzn` files, executes them using `run_minizinc_test.sh`, and reports on their individual runtimes. It includes logic to provide necessary `.dzn` data files for specific models.
+- **`minizinc_data/partitioned_manifold_minimal.dzn`**: A new data file providing minimal parameters for `partitioned_manifold.mzn` and `test_unit_norm.mzn`.
+- **`minizinc_models/partitioned_manifold_params.mzn`**: Modified to explicitly declare `P` and `PARTITION_SCALE` as parameters, resolving previous type errors.
+- **`minizinc_models/partitioned_manifold.mzn`**: Updated to correctly use `scaled_partition_values` and `int2float` for compatibility with `partitioned_manifold_params.mzn`.
 
-These modifications significantly improve the quality of the generated embeddings, allowing for better representation of prime numbers and more diverse 8D locations for other elements.
+These changes lay the groundwork for the `v6` model reconstruction effort, allowing for incremental testing and performance profiling of MiniZinc models.
