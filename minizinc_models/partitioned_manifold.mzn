@@ -8,7 +8,7 @@ int: d = 2; % Two dimensions
 array[1..n, 1..d] of var 1..P: p_idx; % Index into partition_values array
 
 % Get the actual value from the partition_values array
-function var float: get_partition_value(var int: idx) = partition_values[idx];
+function var float: get_partition_value(var int: idx) = int2float(scaled_partition_values[idx]);
 
 % Constraint: points must be different
 constraint p_idx[1,1] != p_idx[2,1];
