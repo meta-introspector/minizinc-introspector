@@ -49,7 +49,12 @@ MiniZincModel* minizinc_parse_model(Flattener* env_ptr, const char* model_str, c
     try {
         // Call flatten to initialize the Env
         flattener->flatten(model_s, filename_s);
-        MiniZinc::Env& env = *(flattener->getEnv()); // Get the Env from Flattener
+        MiniZinc::Env* env_ptr = flattener->getEnv(); // Get the Env pointer from Flattener
+        if (!env_ptr) {
+            std::cerr << "Error: Flattener->getEnv() returned nullptr after flatten in minizinc_parse_model." << std::endl;
+            return nullptr;
+        }
+        MiniZinc::Env& env = *env_ptr; // Dereference the pointer
 
         MiniZinc::Model* model = MiniZinc::parse_from_string(env, model_s, filename_s,
                                                                include_paths, is_flatzinc,
@@ -74,7 +79,12 @@ int minizinc_parse_data_from_string(Flattener* env_ptr, MiniZincModel* model_ptr
     MiniZinc::Flattener* flattener = reinterpret_cast<MiniZinc::Flattener*>(env_ptr);
     // Call flatten to initialize the Env
     flattener->flatten(); // Call flatten without arguments to initialize Env
-    MiniZinc::Env& env = *(flattener->getEnv()); // Dereference the pointer
+    MiniZinc::Env* env_ptr = flattener->getEnv(); // Get the Env pointer from Flattener
+    if (!env_ptr) {
+        std::cerr << "Error: Flattener->getEnv() returned nullptr after flatten in minizinc_parse_data_from_string." << std::endl;
+        return -1;
+    }
+    MiniZinc::Env& env = *env_ptr; // Dereference the pointer
     MiniZinc::Model* model = reinterpret_cast<MiniZinc::Model*>(model_ptr);
     std::string data_s(data_str);
     std::string filename_s = "/tmp/" + std::string(filename); // Prepend dummy absolute path
