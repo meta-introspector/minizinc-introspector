@@ -1,10 +1,3 @@
-feat: Refactor MiniZinc test runner to Rust and fix DZN generation
+fix: Add null checks for Flattener->getEnv() in C wrapper
 
-- Created `minizinc_data_generator_rs` Rust crate for dynamic DZN array generation.
-- Created `minizinc_test_runner_rs` Rust crate to replace shell-based test runner.
-- Updated `run_embedding_model_v7.sh` to use the Rust DZN generator.
-- Updated `run_v7_debug_tests.sh` to call the new Rust test runner.
-- Removed obsolete `generate_vector_params.mzn` and old shell scripts (`run_all_v6_tests.sh`).
-- Ensured correct DZN array formatting from Rust generator.
-- Obtained accurate performance data for `num_vec` variations.
-- Added `.gitignore` files to Rust projects to ignore `target/` directories.
+Added defensive null checks for the return value of `Flattener::getEnv()` in `minizinc_parse_model` and `minizinc_parse_data_from_string` to prevent crashes if the environment is not properly initialized after `flatten()` is called. This provides more robust error handling and debugging information.

@@ -49,26 +49,29 @@ MiniZincModel* minizinc_parse_model(Flattener* env_ptr, const char* model_str, c
     try {
         // Call flatten to initialize the Env
         flattener->flatten(model_s, filename_s);
-        MiniZinc::Env* env_ptr = flattener->getEnv(); // Get the Env pointer from Flattener
-        if (!env_ptr) {
+        MiniZinc::Env* mzn_env_ptr = flattener->getEnv(); // Get the Env pointer from Flattener
+        if (!mzn_env_ptr) {
             std::cerr << "Error: Flattener->getEnv() returned nullptr after flatten in minizinc_parse_model." << std::endl;
             return nullptr;
         }
-        MiniZinc::Env& env = *env_ptr; // Dereference the pointer
+        MiniZinc::Env& env = *mzn_env_ptr; // Dereference the pointer
 
-        MiniZinc::Model* model = MiniZinc::parse_from_string(env, model_s, filename_s,
-                                                               include_paths, is_flatzinc,
-                                                               ignore_stdlib, parse_doc_comments,
-                                                               verbose, err);
+        // After flattening, the Flattener's internal Env should contain the parsed model.
+        // We retrieve the model directly from the Env.
+        MiniZinc::Model* model = env.model();
+        if (!model) {
+            std::cerr << "Error: Env->model() returned nullptr after flatten in minizinc_parse_model." << std::endl;
+            return nullptr;
+        }
         return reinterpret_cast<MiniZincModel*>(model);
     } catch (const MiniZinc::Exception& e) {
-        std::cerr << "MiniZinc parsing error (captured): " << ss_err.str() << " | Exception: " << e.what() << std::endl;
+        std::cerr << "MiniZinc parsing error (captured): " << e.what() << std::endl;
         return nullptr;
     } catch (const std::exception& e) {
-        std::cerr << "Standard exception (captured): " << ss_err.str() << " | Exception: " << e.what() << std::endl;
+        std::cerr << "Standard exception (captured): " << e.what() << std::endl;
         return nullptr;
     } catch (...) {
-        std::cerr << "Unknown exception during parsing (captured): " << ss_err.str() << std::endl;
+        std::cerr << "Unknown exception during parsing (captured)." << std::endl;
         return nullptr;
     }
 }
@@ -79,12 +82,12 @@ int minizinc_parse_data_from_string(Flattener* env_ptr, MiniZincModel* model_ptr
     MiniZinc::Flattener* flattener = reinterpret_cast<MiniZinc::Flattener*>(env_ptr);
     // Call flatten to initialize the Env
     flattener->flatten(); // Call flatten without arguments to initialize Env
-    MiniZinc::Env* env_ptr = flattener->getEnv(); // Get the Env pointer from Flattener
-    if (!env_ptr) {
+    MiniZinc::Env* mzn_env_ptr = flattener->getEnv(); // Get the Env pointer from Flattener
+    if (!mzn_env_ptr) {
         std::cerr << "Error: Flattener->getEnv() returned nullptr after flatten in minizinc_parse_data_from_string." << std::endl;
         return -1;
     }
-    MiniZinc::Env& env = *env_ptr; // Dereference the pointer
+    MiniZinc::Env& env = *mzn_env_ptr; // Dereference the pointer
     MiniZinc::Model* model = reinterpret_cast<MiniZinc::Model*>(model_ptr);
     std::string data_s(data_str);
     std::string filename_s = "/tmp/" + std::string(filename); // Prepend dummy absolute path
@@ -122,15 +125,15 @@ int minizinc_parse_data_from_string(Flattener* env_ptr, MiniZincModel* model_ptr
 
         return 0; // Success
     } catch (const MiniZinc::Exception& e) {
-        std::cerr << "MiniZinc data parsing error (captured): " << ss_err.str() << " | Exception: " << e.what() << std::endl;
+        std::cerr << "MiniZinc data parsing error (captured): " << e.what() << std::endl;
         std::remove(temp_data_filename.c_str());
         return -1; // Failure
     } catch (const std::exception& e) {
-        std::cerr << "Standard exception (captured): " << ss_err.str() << " | Exception: " << e.what() << std::endl;
+        std::cerr << "Standard exception (captured): " << e.what() << std::endl;
         std::remove(temp_data_filename.c_str());
         return -1; // Failure
     } catch (...) {
-        std::cerr << "Unknown exception during data parsing (captured): " << ss_err.str() << std::endl;
+        std::cerr << "Unknown exception during data parsing (captured)." << std::endl;
         std::remove(temp_data_filename.c_str());
         return -1; // Failure
     }

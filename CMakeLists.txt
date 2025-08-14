@@ -86,6 +86,7 @@ include_directories(${PROJECT_SOURCE_DIR}/vendor/gecode/build)
 
 # Libraries
 include(cmake/targets/libmzn.cmake)
+include(cmake/targets/minizinc_c_wrapper.cmake)
 
 # Executables
 include(cmake/targets/minizinc.cmake)
