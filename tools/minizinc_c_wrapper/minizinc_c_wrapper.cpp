@@ -10,37 +10,11 @@
 #include <cstdio>   // For remove (C-style file deletion)
 #include <sstream>  // For std::stringstream
 
-// Function to create a new MiniZinc environment (now returns Flattener*)
-Flattener* minizinc_env_new() {
-    // Create a static SolverInitialiser to ensure global MiniZinc setup
-    static MiniZinc::SolverInitialiser solver_initialiser;
+// Create a static SolverInitialiser to ensure global MiniZinc setup
+static MiniZinc::SolverInitialiser solver_initialiser;
 
-    // MiniZinc::Flattener constructor takes ostream& os, ostream& log, string stdlibDir
-    // For simplicity, we'll use default streams for now.
-    // The stdlibDir is crucial for parsing.
-    std::string stdlib_path = "/data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc";
-    MiniZinc::Flattener* new_flattener = new MiniZinc::Flattener(std::cout, std::cerr, stdlib_path);
-
-    std::cerr << "DEBUG: minizinc_env_new - Created Flattener at: " << new_flattener << std::endl;
-    if (new_flattener) {
-        std::cerr << "DEBUG: minizinc_env_new - Flattener->getEnv() returns: " << new_flattener->getEnv() << std::endl;
-    } else {
-        std::cerr << "DEBUG: minizinc_env_new - Flattener creation failed (nullptr)." << std::endl;
-    }
-
-    return reinterpret_cast<Flattener*>(new_flattener);
-}
-
-// Function to free a MiniZinc environment (now takes Flattener*)
-void minizinc_env_free(Flattener* env) {
-    delete reinterpret_cast<MiniZinc::Flattener*>(env);
-}
-
-// Function to parse a MiniZinc model from a string (now takes Flattener*)
-MiniZincModel* minizinc_parse_model_from_string(Flattener* env_ptr, const char* model_str, const char* filename) {
-    MiniZinc::Flattener* flattener = reinterpret_cast<MiniZinc::Flattener*>(env_ptr);
-    MiniZinc::Env& env = *(flattener->getEnv()); // Dereference the pointer
-    
+// Function to parse a MiniZinc model from a string (new function)
+MiniZincModel* minizinc_parse_model(const char* model_str, const char* filename) {
     std::string model_s(model_str);
     std::string filename_s = "/tmp/" + std::string(filename); // Prepend dummy absolute path
     std::vector<std::string> include_paths;
@@ -52,6 +26,9 @@ MiniZincModel* minizinc_parse_model_from_string(Flattener* env_ptr, const char* 
 
     std::stringstream ss_err; // Create a stringstream for error capture
     std::ostream& err = ss_err; // Redirect error output to stringstream
+
+    MiniZinc::Flattener flattener(std::cout, std::cerr, "/data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc");
+    MiniZinc::Env& env = *(flattener.getEnv()); // Get the Env from Flattener
 
     try {
         MiniZinc::Model* model = MiniZinc::parse_from_string(env, model_s, filename_s,
@@ -71,16 +48,14 @@ MiniZincModel* minizinc_parse_model_from_string(Flattener* env_ptr, const char* 
     }
 }
 
-// Function to parse DZN data into a MiniZinc model (now takes Flattener*)
-int minizinc_parse_data_from_string(Flattener* env_ptr, MiniZincModel* model_ptr, const char* data_str,
-       const char* filename) {
-    MiniZinc::Flattener* flattener = reinterpret_cast<MiniZinc::Flattener*>(env_ptr);
-    MiniZinc::Env& env = *(flattener->getEnv()); // Dereference the pointer
+// Function to parse DZN data into a MiniZinc model (modified signature)
+int minizinc_parse_data_from_string(MiniZincModel* model_ptr, const char* data_str, const char* filename) {
     MiniZinc::Model* model = reinterpret_cast<MiniZinc::Model*>(model_ptr);
+    MiniZinc::Env& env = model->envi(); // Get the Env from the Model
     std::string data_s(data_str);
     std::string filename_s = "/tmp/" + std::string(filename); // Prepend dummy absolute path
     std::vector<std::string> include_paths;
-    // The standard library path is now handled by the Flattener constructor
+    // The standard library path is now handled by the Flattener constructor (implicitly via model's env)
     bool is_flatzinc = false;
     bool ignore_stdlib = false;
     bool parse_doc_comments = false;
