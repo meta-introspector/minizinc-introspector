@@ -42,6 +42,8 @@
   - [Integer Discretization](#integer-discretization)
   - [Gecode Integration](#gecode-integration)
   - [Performance Analysis and Optimization](#performance-analysis-and-optimization)
+- [Recent Model Analysis and Debugging](#recent-model-analysis-and-debugging)
+- [Model Documentation](#model-documentation)
 - [Standard Operating Procedures (SOPs)](#standard-operating-procedures-sops)
 - [Contributing](#contributing)
 - [License](#license)
@@ -102,6 +104,12 @@ If you're new to this project, we highly recommend starting with our "N00b's Gui
 *   [Getting Started: A N00b's Guide to libminizinc](docs/n00b_guide.md)
 
 ## Recent Model Analysis and Debugging
+
+## Model Documentation
+
+This section provides detailed documentation and analysis of the MiniZinc models within this project.
+
+*   [MiniZinc Models Overview](docs/minizinc_models_overview.md)
 
 This section documents recent findings and debugging efforts related to the MiniZinc embedding models.
 
