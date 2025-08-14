@@ -23,7 +23,7 @@ void minizinc_env_free(MiniZincEnv* env) {
 MiniZincModel* minizinc_parse_model_from_string(MiniZincEnv* env_ptr, const char* model_str, const char* filename) {
     MiniZinc::Env* env = reinterpret_cast<MiniZinc::Env*>(env_ptr);
     std::string model_s(model_str);
-    std::string filename_s(filename);
+    std::string filename_s = "/tmp/" + std::string(filename); // Prepend dummy absolute path
     std::vector<std::string> include_paths;
     // Add MiniZinc standard library path
     include_paths.push_back("/data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc");
@@ -57,7 +57,7 @@ int minizinc_parse_data_from_string(MiniZincEnv* env_ptr, MiniZincModel* model_p
     MiniZinc::Env* env = reinterpret_cast<MiniZinc::Env*>(env_ptr);
     MiniZinc::Model* model = reinterpret_cast<MiniZinc::Model*>(model_ptr);
     std::string data_s(data_str);
-    std::string filename_s(filename);
+    std::string filename_s = "/tmp/" + std::string(filename); // Prepend dummy absolute path
     std::vector<std::string> include_paths;
     // Add MiniZinc standard library path
     include_paths.push_back("/data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc");
