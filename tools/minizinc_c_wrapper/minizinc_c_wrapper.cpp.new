@@ -15,7 +15,16 @@ Flattener* minizinc_env_new() {
     // For simplicity, we'll use default streams for now.
     // The stdlibDir is crucial for parsing.
     std::string stdlib_path = "/data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc";
-    return reinterpret_cast<Flattener*>(new MiniZinc::Flattener(std::cout, std::cerr, stdlib_path));
+    MiniZinc::Flattener* new_flattener = new MiniZinc::Flattener(std::cout, std::cerr, stdlib_path);
+
+    std::cerr << "DEBUG: minizinc_env_new - Created Flattener at: " << new_flattener << std::endl;
+    if (new_flattener) {
+        std::cerr << "DEBUG: minizinc_env_new - Flattener->getEnv() returns: " << new_flattener->getEnv() << std::endl;
+    } else {
+        std::cerr << "DEBUG: minizinc_env_new - Flattener creation failed (nullptr)." << std::endl;
+    }
+
+    return reinterpret_cast<Flattener*>(new_flattener);
 }
 
 // Function to free a MiniZinc environment (now takes Flattener*)
