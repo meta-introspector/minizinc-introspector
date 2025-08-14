@@ -34,3 +34,4 @@ _build/
 .cache/
 !docs/Makefile
 
+/tools/minizinc_test_runner_rs/target/

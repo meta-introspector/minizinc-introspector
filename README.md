@@ -85,17 +85,17 @@ To get this specialized `libminizinc` environment up and running:
 
 ### Running the Embedding Model
 
-The core MiniZinc embedding model can be executed using the `run_embedding_model_v6.sh` script. This script utilizes version vectors to specify the exact composition of model and data modules, and automatically generates a "proof tape" for each run, ensuring precise, traceable, and composable experimentation.
+The core MiniZinc embedding model can be executed using the `run_embedding_model_v7.sh` script. This script now leverages a Rust-based data generator for dynamic parameter creation and is part of a more robust Rust-based test runner framework. It utilizes version vectors to specify the exact composition of model and data modules, and automatically generates a "proof tape" for each run, ensuring precise, traceable, and composable experimentation.
 
 ```bash
-./scripts/run_embedding_model_v6.sh <main_model_version> <core_params_version> <kappa_params_version> <other_params_version> <relations_version> <vector_params_version>
+./scripts/run_embedding_model_v7.sh <main_model_version> <core_params_version> <kappa_params_version> <other_params_version> <relations_version> <vector_params_version>
 ```
 
 **Example:**
 ```bash
-./scripts/run_embedding_model_v6.sh v6 v1 v1 v1 v1 v1
+./scripts/run_embedding_model_v7.sh v6 v1 v1 v1 v1 v1
 ```
-For more details, refer to `docs/sops/run_model_sop_v3.md`.
+For more details on running tests and understanding the new framework, refer to [MiniZinc Model Performance Analysis and Debugging Report](docs/performance_analysis_report.md).
 
 ### New to the Project? Start Here!
 
@@ -174,7 +174,7 @@ Specific procedures are in place for building, configuring, and integrating Geco
 
 ### Performance Analysis and Optimization
 
-To systematically identify and address performance bottlenecks in MiniZinc models, particularly the `v6` embedding model, we follow a structured deconstruction and reconstruction process. This involves incremental reintroduction of complexity and rigorous performance measurement at each step. Refer to [`docs/sops/v6_reconstruction_sop.md`](docs/sops/v6_reconstruction_sop.md) for detailed procedures.
+To systematically identify and address performance bottlenecks in MiniZinc models, particularly the `v6` embedding model, we follow a structured deconstruction and reconstruction process. This involves incremental reintroduction of complexity and rigorous performance measurement at each step. For detailed procedures and recent findings, refer to [MiniZinc Model Performance Analysis and Debugging Report](docs/performance_analysis_report.md).
 
 ## Standard Operating Procedures (SOPs)
 
@@ -190,6 +190,7 @@ This project adheres to a strict set of Standard Operating Procedures (SOPs) to 
 *   [Muse SOP](docs/sops/muse_sop.md)
 *   [QA DZN Generation Verification SOP](docs/sops/qa_dzn_generation_verification.md)
 *   [Tutorial Livestream Mode SOP](docs/sops/tutorial_livestream_mode.md)
+*   [MiniZinc Model Performance Analysis and Debugging Report](docs/performance_analysis_report.md)
 
 ## Contributing
 

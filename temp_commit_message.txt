@@ -7,3 +7,4 @@ feat: Refactor MiniZinc test runner to Rust and fix DZN generation
 - Removed obsolete `generate_vector_params.mzn` and old shell scripts (`run_all_v6_tests.sh`).
 - Ensured correct DZN array formatting from Rust generator.
 - Obtained accurate performance data for `num_vec` variations.
+- Added `.gitignore` files to Rust projects to ignore `target/` directories.
