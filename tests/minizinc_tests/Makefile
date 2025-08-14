@@ -13,15 +13,19 @@ TEST_SCRIPT := ../../scripts/run_minizinc_test.sh
 define get_data_files
 $(if $(filter partitioned_manifold.mzn,$(notdir $(1))),$(MINIZINC_DATA_DIR)/partitioned_manifold_minimal.dzn) \
 $(if $(filter test_unit_norm.mzn,$(notdir $(1))),$(MINIZINC_DATA_DIR)/partitioned_manifold_minimal.dzn) \
-$(if $(filter embedding_sphere_test_master.mzn,$(notdir $(1))),$(MINIZINC_DATA_DIR)/embedding_sphere_test_master_minimal.dzn) 
-$(if $(filter embedding_sphere_test_v1.mzn,$(notdir $(1))),$(MINIZINC_DATA_DIR)/embedding_sphere_test_master_minimal.dzn)
+$(if $(filter embedding_sphere_test_master.mzn,$(notdir $(1))),$(MINIZINC_DATA_DIR)/embedding_sphere_test_master_minimal.dzn)
 endef
 
 # Define a pattern rule for .mzn files
 # The target will be the time.log file for each test
 %/time.log: $(MINIZINC_MODELS_DIR)/%.mzn
 	@echo "Running test for $<"
-	@$(TEST_SCRIPT) $< $(call get_data_files,$<)
+	@if [ "$*" = "embedding_sphere_test_v1" ]; then \
+		$(TEST_SCRIPT) $< $(MINIZINC_DATA_DIR)/embedding_sphere_test_master_minimal.dzn; \
+	else \
+		$(TEST_SCRIPT) $< $(call get_data_files,$<); \
+	fi
+
 
 # Main target to run all specified tests
 all: test/time.log \

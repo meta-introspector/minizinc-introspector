@@ -1,0 +1,6 @@
+n = 7; % 🔢✨ -- The Count of Subterms, a Universe of Possibilities! -- 🌌💡🚀
+d = 8;
+P = 5;
+KAPPA_SCALE = 100;
+PARTITION_SCALE = 100;
+num_vec = 1;
