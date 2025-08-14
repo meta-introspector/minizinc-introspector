@@ -105,7 +105,8 @@ mod tests {
     #[test]
     fn test_parse_model_from_string() {
         let env = MiniZincEnvironment::new().unwrap();
-        let model_code = "include \"globals.mzn\"; int: x; solve satisfy;"; // Modified line
+        // Model with x defined
+        let model_code = "include \"globals.mzn\"; int: x = 1; solve satisfy;"; // Modified line
         let filename = "test_model.mzn";
         let model_ptr = env.parse_model(model_code, filename);
         assert!(model_ptr.is_ok());
@@ -117,16 +118,19 @@ mod tests {
     #[test]
     fn test_parse_data_from_string() {
         let env = MiniZincEnvironment::new().unwrap();
-        let model_code = "include \"globals.mzn\"; int: x; solve satisfy;"; // Modified line
+        // Model with x as a parameter (to be defined by data)
+        let model_code = "include \"globals.mzn\"; int: x; solve satisfy;"; // This is correct for data parsing
         let model_filename = "test_model_for_data.mzn";
-        let model_ptr = env.parse_model(model_code, model_filename).unwrap();
-        assert!(!model_ptr.is_null());
+        let model_ptr = env.parse_model(model_code, model_filename);
+        assert!(model_ptr.is_ok()); // Ensure model parsing itself is successful
+        let model = model_ptr.unwrap();
+        assert!(!model.is_null());
 
         let data_code = "x = 10;";
         let data_filename = "test_data.dzn";
-        let result = env.parse_data(model_ptr, data_code, data_filename);
+        let result = env.parse_data(model, data_code, data_filename); // Pass the model pointer
         assert!(result.is_ok());
 
-        unsafe { minizinc_model_free(model_ptr) }; // Manually free the model
+        unsafe { minizinc_model_free(model) }; // Manually free the model
     }
 }
