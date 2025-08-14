@@ -36,3 +36,4 @@ _build/
 
 /tools/minizinc_test_runner_rs/target/
 /tools/minizinc_report_generator_rs/minizinc_report_generator_rs/target/
+/tools/minizinc_c_wrapper/libminizinc_c_wrapper.so

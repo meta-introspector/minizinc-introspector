@@ -1,7 +1,7 @@
 #include "minizinc_c_wrapper.h"
 #include <minizinc/model.hh>
 #include <minizinc/parser.hh>
-#include <minizinc/version.hh> // For version string
+// #include <minizinc/version.hh> // For version string
 
 #include <iostream> // For debugging
 #include <fstream>  // For temporary file
