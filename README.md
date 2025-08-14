@@ -41,6 +41,8 @@
   - [Proof Tapes for Reproducibility](#proof-tapes-for-reproducibility)
   - [Integer Discretization](#integer-discretization)
   - [Gecode Integration](#gecode-integration)
+  - [Performance Analysis and Optimization](#performance-analysis-and-optimization)
+- [Standard Operating Procedures (SOPs)](#standard-operating-procedures-sops)
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
@@ -161,6 +163,25 @@ A key technical aspect of this project involves discretizing floating-point valu
 ### Gecode Integration
 
 Specific procedures are in place for building, configuring, and integrating Gecode as a solver. Troubleshooting steps for common build issues and solver discovery are documented. See `docs/sops/project_workflow.md`.
+
+### Performance Analysis and Optimization
+
+To systematically identify and address performance bottlenecks in MiniZinc models, particularly the `v6` embedding model, we follow a structured deconstruction and reconstruction process. This involves incremental reintroduction of complexity and rigorous performance measurement at each step. Refer to [`docs/sops/v6_reconstruction_sop.md`](docs/sops/v6_reconstruction_sop.md) for detailed procedures.
+
+## Standard Operating Procedures (SOPs)
+
+This project adheres to a strict set of Standard Operating Procedures (SOPs) to ensure consistency, quality, and reproducibility. Please familiarize yourself with these documents:
+
+*   [Monotonic Epic Idea SOP](docs/sops/monotonic_epic_idea_sop.md)
+*   [No Direct Edits SOP](docs/sops/no_direct_edits_sop.md)
+*   [Project Workflow SOP](docs/sops/project_workflow.md)
+*   [Run Model SOP v3](docs/sops/run_model_sop_v3.md)
+*   [MiniZinc v6 Model Reconstruction SOP](docs/sops/v6_reconstruction_sop.md)
+*   [Backpack Filling SOP](docs/sops/backpack_filling_sop.md)
+*   [Eigenvector of Athena SOP](docs/sops/eigenvector_of_athena_sop.md)
+*   [Muse SOP](docs/sops/muse_sop.md)
+*   [QA DZN Generation Verification SOP](docs/sops/qa_dzn_generation_verification.md)
+*   [Tutorial Livestream Mode SOP](docs/sops/tutorial_livestream_mode.md)
 
 ## Contributing
 
