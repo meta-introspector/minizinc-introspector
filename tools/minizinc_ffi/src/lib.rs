@@ -105,7 +105,7 @@ mod tests {
     #[test]
     fn test_parse_model_from_string() {
         let env = MiniZincEnvironment::new().unwrap();
-        let model_code = "int: x; solve satisfy;";
+        let model_code = "include \"globals.mzn\"; int: x; solve satisfy;"; // Modified line
         let filename = "test_model.mzn";
         let model_ptr = env.parse_model(model_code, filename);
         assert!(model_ptr.is_ok());
@@ -117,7 +117,7 @@ mod tests {
     #[test]
     fn test_parse_data_from_string() {
         let env = MiniZincEnvironment::new().unwrap();
-        let model_code = "int: x; solve satisfy;";
+        let model_code = "include \"globals.mzn\"; int: x; solve satisfy;"; // Modified line
         let model_filename = "test_model_for_data.mzn";
         let model_ptr = env.parse_model(model_code, model_filename).unwrap();
         assert!(!model_ptr.is_null());
