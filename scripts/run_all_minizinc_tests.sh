@@ -2,9 +2,11 @@
 
 export MINIZINC_PROJECT_ROOT="/data/data/com.termux/files/home/storage/github/libminizinc"
 
-# Driver script to run all MiniZinc tests and report on time per script.
+# 🧪✨ -- MiniZinc Test Suite Orchestrator -- 🎶📊
+# This script orchestrates the execution of all MiniZinc model tests using a Makefile-driven approach.
+# It cleans previous results, triggers the build system, and summarizes test durations.
 
-# Source the environment variables
+# Source the environment variables to get project paths and build configurations.
 source "${MINIZINC_PROJECT_ROOT}/.env"
 
 # Run make in the tests/minizinc_tests directory

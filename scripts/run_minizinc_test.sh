@@ -1,8 +1,10 @@
 #!/bin/bash
 
-# Generic script to run a MiniZinc model and capture time and output.
+# 🧪🚀 -- Generic MiniZinc Model Test Runner -- ⏱️📊
+# This script executes a MiniZinc model, captures its output, and measures its execution time.
+# It's designed to be a modular component for comprehensive testing workflows.
 
-# Source the environment variables
+# Source the environment variables to get project paths and build configurations.
 source "${MINIZINC_PROJECT_ROOT}/.env"
 
 # Check if model file is provided
@@ -28,7 +30,26 @@ TIME_FILE="${TEST_OUTPUT_DIR}/time.log"
 echo "--- Running MiniZinc Model: $MODEL_PATH ---"
 echo "Output will be saved to: $TEST_OUTPUT_DIR"
 
-MINIZINC_COMMAND="${LIBMINIZINC_BUILD_DIR}/minizinc --time-limit 6000 -s ${MODEL_PATH} ${DATA_PATHS}"
+for DATA_FILE in ${DATA_PATHS}; do
+    if [ -f "$DATA_FILE" ]; then
+        chmod 644 "$DATA_FILE"
+    fi
+done
+
+TEMP_DIR="${TEST_OUTPUT_DIR}/tmp_dzn"
+mkdir -p "$TEMP_DIR"
+
+TEMP_DATA_PATHS=""
+for DATA_FILE in ${DATA_PATHS}; do
+    if [ -f "$DATA_FILE" ]; then
+        TEMP_FILE="${TEMP_DIR}/$(basename $DATA_FILE)"
+        cp "$DATA_FILE" "$TEMP_FILE"
+        chmod 644 "$TEMP_FILE" # Set permissions for the copied file
+        TEMP_DATA_PATHS="${TEMP_DATA_PATHS} ${TEMP_FILE}"
+    fi
+done
+
+MINIZINC_COMMAND="${LIBMINIZINC_BUILD_DIR}/minizinc --time-limit 6000 -s ${MODEL_PATH} ${TEMP_DATA_PATHS}"
 
 echo "MiniZinc command: ${MINIZINC_COMMAND}" >&2
 

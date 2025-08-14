@@ -1,0 +1,120 @@
+Multiple type errors:
+Error: type error:   symbol error: variable `n' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_core_v2.mzn:2.1-6
+
+Error: type error:   symbol error: variable `d' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_core_v2.mzn:3.1-6
+
+Error: type error:   symbol error: variable `P' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_core_v2.mzn:4.1-6
+
+Error: type error:   symbol error: variable `KAPPA_SCALE' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_core_v2.mzn:5.1-16
+
+Error: type error:   symbol error: variable `PARTITION_SCALE' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_core_v2.mzn:6.1-20
+
+Error: type error:   symbol error: variable `num_vec' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_core_v2.mzn:7.1-12
+
+Error: type error:   symbol error: variable `kappa_global' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_kappa_L3_kappa_global.mzn:1.1-19
+
+Error: type error:   symbol error: variable `kappa_bind' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_kappa_L4_kappa_bind.mzn:1.1-17
+
+Error: type error:   symbol error: variable `kappa_free' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_kappa_L5_kappa_free.mzn:1.1-17
+
+Error: type error:   symbol error: variable `kappa_app' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_kappa_L6_kappa_app.mzn:1.1-16
+
+Error: type error:   symbol error: variable `kappa_hier' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_kappa_L7_kappa_hier.mzn:1.1-17
+
+Error: type error:   symbol error: variable `kappa_alpha' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_kappa_L8_kappa_alpha.mzn:1.1-18
+
+Error: type error:   symbol error: variable `kappa_beta' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_kappa_L9_kappa_beta.mzn:1.1-17
+
+Error: type error:   symbol error: variable `kappa_vec' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_kappa_L10_kappa_vec.mzn:1.1-16
+
+Error: type error:   symbol error: variable `kappa_unit_norm' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_kappa_L22_kappa_unit_norm.mzn:1.1-22
+
+Error: type error:   symbol error: variable `epsilon' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_other_L3_epsilon.mzn:1.1-14
+
+Error: type error:   symbol error: variable `theta_vec' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_other_L4_theta_vec.mzn:1.1-16
+
+Error: type error:   symbol error: variable `num_bindings' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:3.1-17
+
+Error: type error:   symbol error: variable `binder_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:4.1-41
+
+Error: type error:   symbol error: variable `bound_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:5.1-40
+
+Error: type error:   symbol error: variable `num_free' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:7.1-13
+
+Error: type error:   symbol error: variable `free_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:8.1-35
+
+Error: type error:   symbol error: variable `unrelated_binder_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:9.1-47
+
+Error: type error:   symbol error: variable `num_apps' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:11.1-13
+
+Error: type error:   symbol error: variable `func_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:12.1-35
+
+Error: type error:   symbol error: variable `arg_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:13.1-34
+
+Error: type error:   symbol error: variable `num_hier' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:15.1-13
+
+Error: type error:   symbol error: variable `parent_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:16.1-37
+
+Error: type error:   symbol error: variable `child_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:17.1-36
+
+Error: type error:   symbol error: variable `num_alpha' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:19.1-14
+
+Error: type error:   symbol error: variable `eq1_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:20.1-35
+
+Error: type error:   symbol error: variable `eq2_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:21.1-35
+
+Error: type error:   symbol error: variable `num_beta' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:23.1-13
+
+Error: type error:   symbol error: variable `redex_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:24.1-36
+
+Error: type error:   symbol error: variable `reduced_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_relations_v3.mzn:25.1-38
+
+Error: type error:   symbol error: variable `alpha_coeff' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_vector_v2.mzn:4.1-39
+
+Error: type error:   symbol error: variable `beta_coeff' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_vector_v2.mzn:5.1-38
+
+Error: type error:   symbol error: variable `m_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_vector_v2.mzn:6.1-31
+
+Error: type error:   symbol error: variable `n_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_vector_v2.mzn:7.1-31
+
+Error: type error:   symbol error: variable `t_idx' must be defined (did you forget to specify a data file?)
+/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/embedding_params_vector_v2.mzn:8.1-31

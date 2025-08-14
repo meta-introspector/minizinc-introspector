@@ -3,7 +3,7 @@
 %%%mzn-stat: flatIntVars=4
 %%%mzn-stat: flatIntConstraints=1
 %%%mzn-stat: method="minimize"
-%%%mzn-stat: flatTime=0.0467305
+%%%mzn-stat: flatTime=0.0527403
 %%%mzn-stat-end
 Position 1 (index): 2
 Position 1 (value): -500.0

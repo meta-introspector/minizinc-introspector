@@ -3,7 +3,7 @@
 %%%mzn-stat: flatIntVars=24
 %%%mzn-stat: flatIntConstraints=17
 %%%mzn-stat: method="satisfy"
-%%%mzn-stat: flatTime=0.0457951
+%%%mzn-stat: flatTime=0.0417713
 %%%mzn-stat-end
 Positions (indices): [3, 3, 3, 3, 3, 3, 3, 1]
 Positions (actual values): [0, 0, 0, 0, 0, 0, 0, -1000]

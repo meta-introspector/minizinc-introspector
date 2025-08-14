@@ -3,7 +3,7 @@
 %%%mzn-stat: flatIntVars=1
 %%%mzn-stat: flatIntConstraints=1
 %%%mzn-stat: method="satisfy"
-%%%mzn-stat: flatTime=0.0572157
+%%%mzn-stat: flatTime=0.0446857
 %%%mzn-stat-end
 x = 1
 ----------
