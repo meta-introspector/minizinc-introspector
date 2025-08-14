@@ -11,10 +11,10 @@
 
 // Forward declarations for functions now in separate files
 extern "C" {
-Flattener* minizinc_env_new();
-void minizinc_env_free(Flattener* env);
-MiniZincModel* minizinc_parse_model(Flattener* env_ptr, const char* model_str, const char* filename);
-int minizinc_parse_data_from_string(Flattener* env_ptr, MiniZincModel* model_ptr, const char* data_str, const char* filename);
+  MiniZinc::Flattener* minizinc_env_new();
+void minizinc_env_free(MiniZinc::Flattener* env);
+MiniZincModel* minizinc_parse_model(MiniZinc::Flattener* env_ptr, const char* model_str, const char* filename);
+int minizinc_parse_data_from_string(MiniZinc::Flattener* env_ptr, MiniZincModel* model_ptr, const char* data_str, const char* filename);
 void minizinc_model_free(MiniZincModel* model);
 const char* minizinc_get_version_string();
 }
