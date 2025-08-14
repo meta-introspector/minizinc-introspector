@@ -1,4 +1,5 @@
 #include "minizinc_env_wrapper.h"
+#include "minizinc_opaque_types.h"
 
 namespace MiniZinc {
 

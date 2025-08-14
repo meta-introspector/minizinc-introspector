@@ -1,4 +1,4 @@
-#include "minizinc_c_wrapper.h"
+#include "minizinc_opaque_types.h"
 #include <minizinc/model.hh>
 
 extern "C" {

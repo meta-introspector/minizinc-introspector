@@ -1,45 +1,14 @@
 #ifndef MINIZINC_C_WRAPPER_H
 #define MINIZINC_C_WRAPPER_H
 
-// Include MiniZinc headers directly here (OUTSIDE extern "C")
-#include <minizinc/model.hh>
-#include <minizinc/parser.hh>
-#include <minizinc/flattener.hh>
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// Forward declarations for opaque types
-typedef void MiniZincModel;
-typedef void Item;
-
-// Function to create a new MiniZinc environment
-MiniZinc::Flattener* minizinc_env_new();
-
-// Function to free a MiniZinc environment
-void minizinc_env_free(MiniZinc::Flattener* env);
-
-// Function to parse a MiniZinc model from a string
-MiniZincModel* minizinc_parse_model(MiniZinc::Flattener* env, const char* model_str, const char* filename);
-
-// Function to parse DZN data into a MiniZinc model
-int minizinc_parse_data_from_string(MiniZinc::Flattener* env, MiniZincModel* model, const char* data_str, const char* filename);
-
-// Function to free a MiniZinc model
-void minizinc_model_free(MiniZincModel* model);
-
-// Function to get version string (for testing FFI)
-const char* minizinc_get_version_string();
-
-// New functions for MiniZincModel inspection
-const char* model_get_filename(MiniZincModel* model_ptr);
-const char* model_get_filepath(MiniZincModel* model_ptr);
-uint32_t model_get_num_items(MiniZincModel* model_ptr);
-Item* model_get_item_at_index(MiniZincModel* model_ptr, uint32_t index);
+// Forward declarations for opaque types (handled in Rust)
 
 #ifdef __cplusplus
-}
+} // extern "C"
 #endif
 
 #endif // MINIZINC_C_WRAPPER_H

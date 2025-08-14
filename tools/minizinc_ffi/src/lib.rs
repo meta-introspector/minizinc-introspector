@@ -1,38 +1,36 @@
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 
-// Opaque types for MiniZincModel and Flattener
-type MiniZincModel = std::os::raw::c_void;
-type Flattener = std::os::raw::c_void; // Changed from MiniZincEnv
+// Opaque types for MiniZincModel and Item
+pub struct MiniZincModel(pub *mut std::os::raw::c_void);
+pub struct MiniZincItem(pub *mut std::os::raw::c_void);
 
 unsafe extern "C" {
-    fn minizinc_env_new() -> *mut Flattener; // Updated return type
-    fn minizinc_env_free(env: *mut Flattener); // Updated parameter type
-    fn minizinc_parse_model( // Updated function name
-        env: *mut Flattener, // Updated parameter type
+    fn minizinc_env_new() -> *mut std::os::raw::c_void;
+    fn minizinc_env_free(env: *mut std::os::raw::c_void);
+    fn minizinc_parse_model(
+        env: *mut std::os::raw::c_void,
         model_str: *const c_char,
         filename: *const c_char,
-    ) -> *mut MiniZincModel;
+    ) -> *mut std::os::raw::c_void;
     fn minizinc_parse_data_from_string(
-        env: *mut Flattener, // Updated parameter type
-        model: *mut MiniZincModel,
+        env: *mut std::os::raw::c_void,
+        model: *mut std::os::raw::c_void,
         data_str: *const c_char,
         filename: *const c_char,
     ) -> std::os::raw::c_int;
-    fn minizinc_model_free(model: *mut MiniZincModel);
+    fn minizinc_model_free(model: *mut std::os::raw::c_void);
     fn minizinc_get_version_string() -> *const c_char;
 
     // New functions for MiniZincModel inspection
-    fn model_get_filename(model_ptr: *mut MiniZincModel) -> *const c_char;
-    fn model_get_filepath(model_ptr: *mut MiniZincModel) -> *const c_char;
-    fn model_get_num_items(model_ptr: *mut MiniZincModel) -> u32;
-    fn model_get_item_at_index(model_ptr: *mut MiniZincModel, index: u32) -> *mut Item;
+    fn model_get_filename(model_ptr: *mut std::os::raw::c_void) -> *const c_char;
+    fn model_get_filepath(model_ptr: *mut std::os::raw::c_void) -> *const c_char;
+    fn model_get_num_items(model_ptr: *mut std::os::raw::c_void) -> u32;
+    fn model_get_item_at_index(model_ptr: *mut std::os::raw::c_void, index: u32) -> *mut std::os::raw::c_void;
 }
 
 // Safe Rust wrappers for FFI functions
-pub struct MiniZincEnvironment(*mut Flattener);
-pub struct MiniZincModel(*mut MiniZincModel);
-pub struct MiniZincItem(*mut Item);
+pub struct MiniZincEnvironment(pub *mut std::os::raw::c_void);
 
 impl MiniZincEnvironment {
     pub fn new() -> Result<Self, String> {
@@ -145,7 +143,7 @@ mod tests {
     fn test_parse_model_from_string() {
         let env = MiniZincEnvironment::new().unwrap();
         // Model with x defined
-        let model_code = "int: x; solve satisfy;";
+        let model_code = "var int: x;";
         let filename = "test_model.mzn";
         let model = env.parse_model(model_code, filename);
         assert!(model.is_ok());

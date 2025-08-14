@@ -1,4 +1,4 @@
-#include "minizinc_c_wrapper.h"
+#include "minizinc_opaque_types.h"
 #include "minizinc_env_wrapper.h"
 #include <minizinc/model.hh>
 #include <iostream>
@@ -65,7 +65,7 @@ int minizinc_parse_data_from_string(MiniZinc::Flattener* env_ptr, MiniZincModel*
         // Clean up temporary file
         std::remove(temp_data_filename.c_str()); // Use C-style remove for broader compatibility
 
-        std::cerr << "DEBUG: minizinc_parse_data_from_string - Exit Success" << std::endl; std::cerr.flush();
+        std::cerr << "DEBUG: minizinc_parse_data_from_string - Exit Success"; std::cerr.flush();
         return 0; // Success
     } catch (const MiniZinc::Exception& e) {
         std::cerr << "MiniZinc data parsing error (captured): " << e.what() << std::endl; std::cerr.flush();
