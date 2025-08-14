@@ -1,0 +1,5 @@
+alpha_coeff = [0.0]; % ➡️🔢 -- Alpha Coefficients, Scaling the Vector's Influence! -- 📈✨
+beta_coeff = [0.0]; % ➡️🔢 -- Beta Coefficients, Modulating the Vector's Harmony! -- 🎶✨
+m_idx = [0]; % ➡️🔢 -- Indices of Vector M, A Pillar of Axiomatic Construction! -- 🏗️✨
+n_idx = [0]; % ➡️🔢 -- Indices of Vector N, Another Pillar of Axiomatic Construction! -- 🏗️✨
+t_idx = [0]; % ➡️🔢 -- Indices of Vector T, The Target of Axiomatic Alignment! -- 🎯✨
