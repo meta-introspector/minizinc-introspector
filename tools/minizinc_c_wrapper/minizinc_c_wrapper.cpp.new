@@ -26,8 +26,8 @@ void minizinc_env_free(Flattener* env) {
 // Function to parse a MiniZinc model from a string (now takes Flattener*)
 MiniZincModel* minizinc_parse_model_from_string(Flattener* env_ptr, const char* model_str, const char* filename) {
     MiniZinc::Flattener* flattener = reinterpret_cast<MiniZinc::Flattener*>(env_ptr);
-    MiniZinc::Env& env = flattener->getEnv(); // Get the Env from Flattener
-
+    MiniZinc::Env& env = *(flattener->getEnv()); // Dereference the pointer
+    
     std::string model_s(model_str);
     std::string filename_s = "/tmp/" + std::string(filename); // Prepend dummy absolute path
     std::vector<std::string> include_paths;
@@ -62,7 +62,7 @@ MiniZincModel* minizinc_parse_model_from_string(Flattener* env_ptr, const char* 
 int minizinc_parse_data_from_string(Flattener* env_ptr, MiniZincModel* model_ptr, const char* data_str,
        const char* filename) {
     MiniZinc::Flattener* flattener = reinterpret_cast<MiniZinc::Flattener*>(env_ptr);
-    MiniZinc::Env& env = flattener->getEnv(); // Get the Env from Flattener
+    MiniZinc::Env& env = *(flattener->getEnv()); // Dereference the pointer
     MiniZinc::Model* model = reinterpret_cast<MiniZinc::Model*>(model_ptr);
     std::string data_s(data_str);
     std::string filename_s = "/tmp/" + std::string(filename); // Prepend dummy absolute path
