@@ -24,7 +24,9 @@ MiniZincModel* minizinc_parse_model_from_string(MiniZincEnv* env_ptr, const char
     MiniZinc::Env* env = reinterpret_cast<MiniZinc::Env*>(env_ptr);
     std::string model_s(model_str);
     std::string filename_s(filename);
-    std::vector<std::string> include_paths; // Empty for now
+    std::vector<std::string> include_paths;
+    // Add MiniZinc standard library path
+    include_paths.push_back("/data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc");
     bool is_flatzinc = false;
     bool ignore_stdlib = false;
     bool parse_doc_comments = false;
@@ -56,7 +58,9 @@ int minizinc_parse_data_from_string(MiniZincEnv* env_ptr, MiniZincModel* model_p
     MiniZinc::Model* model = reinterpret_cast<MiniZinc::Model*>(model_ptr);
     std::string data_s(data_str);
     std::string filename_s(filename);
-    std::vector<std::string> include_paths; // Empty for now
+    std::vector<std::string> include_paths;
+    // Add MiniZinc standard library path
+    include_paths.push_back("/data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc");
     bool is_flatzinc = false;
     bool ignore_stdlib = false;
     bool parse_doc_comments = false;
