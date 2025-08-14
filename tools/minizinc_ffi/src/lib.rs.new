@@ -1,20 +1,20 @@
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 
-// Opaque types for MiniZincModel and MiniZincEnv
+// Opaque types for MiniZincModel and Flattener
 type MiniZincModel = std::os::raw::c_void;
-type MiniZincEnv = std::os::raw::c_void;
+type Flattener = std::os::raw::c_void; // Changed from MiniZincEnv
 
 unsafe extern "C" {
-    fn minizinc_env_new() -> *mut MiniZincEnv;
-    fn minizinc_env_free(env: *mut MiniZincEnv);
-    fn minizinc_parse_model_from_string(
-        env: *mut MiniZincEnv,
+    fn minizinc_env_new() -> *mut Flattener; // Updated return type
+    fn minizinc_env_free(env: *mut Flattener); // Updated parameter type
+    fn minizinc_parse_model( // Updated function name
+        env: *mut Flattener, // Updated parameter type
         model_str: *const c_char,
         filename: *const c_char,
     ) -> *mut MiniZincModel;
     fn minizinc_parse_data_from_string(
-        env: *mut MiniZincEnv,
+        env: *mut Flattener, // Updated parameter type
         model: *mut MiniZincModel,
         data_str: *const c_char,
         filename: *const c_char,
@@ -24,7 +24,7 @@ unsafe extern "C" {
 }
 
 // Safe Rust wrappers for FFI functions
-pub struct MiniZincEnvironment(*mut MiniZincEnv);
+pub struct MiniZincEnvironment(*mut Flattener); // Updated to hold Flattener
 
 impl MiniZincEnvironment {
     pub fn new() -> Result<Self, String> {
@@ -40,7 +40,7 @@ impl MiniZincEnvironment {
         let model_cstr = CString::new(model_code).expect("CString::new failed");
         let filename_cstr = CString::new(filename).expect("CString::new failed");
         let model_ptr = unsafe {
-            minizinc_parse_model_from_string(
+            minizinc_parse_model( // Updated function call
                 self.0,
                 model_cstr.as_ptr(),
                 filename_cstr.as_ptr(),
@@ -58,7 +58,7 @@ impl MiniZincEnvironment {
         let filename_cstr = CString::new(filename).expect("CString::new failed");
         let result = unsafe {
             minizinc_parse_data_from_string(
-                self.0,
+                self.0, // Pass Flattener*
                 model,
                 data_cstr.as_ptr(),
                 filename_cstr.as_ptr(),
@@ -106,7 +106,7 @@ mod tests {
     fn test_parse_model_from_string() {
         let env = MiniZincEnvironment::new().unwrap();
         // Model with x defined
-        let model_code = "int: x = 1; solve satisfy;"; // Modified line: removed include "globals.mzn";
+        let model_code = "int: x = 1; solve satisfy;";
         let filename = "test_model.mzn";
         let model_ptr = env.parse_model(model_code, filename);
         assert!(model_ptr.is_ok());
@@ -119,7 +119,7 @@ mod tests {
     fn test_parse_data_from_string() {
         let env = MiniZincEnvironment::new().unwrap();
         // Model with x as a parameter (to be defined by data)
-        let model_code = "int: x; solve satisfy;"; // Modified line: removed include "globals.mzn";
+        let model_code = "int: x; solve satisfy;";
         let model_filename = "test_model_for_data.mzn";
         let model_ptr = env.parse_model(model_code, model_filename);
         assert!(model_ptr.is_ok()); // Ensure model parsing itself is successful
