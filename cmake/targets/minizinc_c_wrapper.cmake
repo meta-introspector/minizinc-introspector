@@ -1,6 +1,13 @@
 # Define the minizinc_c_wrapper library
 add_library(minizinc_c_wrapper SHARED
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper/minizinc_c_wrapper.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_env_wrapper.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_env_new.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_env_free.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_parse_model.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_parse_data_from_string.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_model_free.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_get_version_string.cpp
 )
 
 # Link against libmzn (the main MiniZinc library)
@@ -10,6 +17,8 @@ target_link_libraries(minizinc_c_wrapper PRIVATE mzn)
 target_include_directories(minizinc_c_wrapper PRIVATE
     ${PROJECT_SOURCE_DIR}/include
     ${PROJECT_BINARY_DIR}/include
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper
 )
 
 # Set RPATH for the C wrapper to find libmzn.so at runtime

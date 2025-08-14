@@ -12,19 +12,19 @@ extern "C" {
 
 // Forward declarations for opaque types
 typedef void MiniZincModel;
-typedef void Flattener; // Re-added
+
 
 // Function to create a new MiniZinc environment
-Flattener* minizinc_env_new();
+MiniZinc::Flattener* minizinc_env_new();
 
 // Function to free a MiniZinc environment
-void minizinc_env_free(Flattener* env);
+void minizinc_env_free(MiniZinc::Flattener* env);
 
 // Function to parse a MiniZinc model from a string
-MiniZincModel* minizinc_parse_model(Flattener* env, const char* model_str, const char* filename);
+MiniZincModel* minizinc_parse_model(MiniZinc::Flattener* env, const char* model_str, const char* filename);
 
 // Function to parse DZN data into a MiniZinc model
-int minizinc_parse_data_from_string(Flattener* env, MiniZincModel* model, const char* data_str, const char* filename);
+int minizinc_parse_data_from_string(MiniZinc::Flattener* env, MiniZincModel* model, const char* data_str, const char* filename);
 
 // Function to free a MiniZinc model
 void minizinc_model_free(MiniZincModel* model);

@@ -106,7 +106,7 @@ mod tests {
     fn test_parse_model_from_string() {
         let env = MiniZincEnvironment::new().unwrap();
         // Model with x defined
-        let model_code = "var int: x;";
+        let model_code = "int: x; solve satisfy;";
         let filename = "test_model.mzn";
         let model_ptr = env.parse_model(model_code, filename);
         assert!(model_ptr.is_ok());
