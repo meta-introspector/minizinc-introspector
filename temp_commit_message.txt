@@ -1,10 +1,9 @@
-feat: Implement Makefile-based MiniZinc test runner with descriptions and emojis
+feat: Refactor MiniZinc test runner to Rust and fix DZN generation
 
-This commit refactors the MiniZinc testing framework to use a Makefile-based system for improved dependency checking and test orchestration.
-
-Key changes include:
-- **`scripts/run_minizinc_test.sh`**: Updated with descriptions and emojis, and modified to copy `.dzn` files to a temporary project-local directory before execution to mitigate environment-specific permission issues.
-- **`scripts/run_all_minizinc_tests.sh`**: Updated with descriptions and emojis, and refactored to delegate test execution and dependency management to the new `Makefile`.
-- **`tests/minizinc_tests/Makefile`**: A new Makefile specifically for MiniZinc tests, located in `tests/minizinc_tests/`. It defines rules for running individual `.mzn` files, leveraging `make`'s dependency tracking to re-run tests only when their corresponding `.mzn` files (or their explicitly listed `.dzn` files) change. Descriptions and emojis have been added for clarity.
-
-This change aims to provide a more robust and efficient testing workflow, despite persistent environmental permission challenges with `.dzn` files in the `Makefile`'s dependency evaluation.
+- Created `minizinc_data_generator_rs` Rust crate for dynamic DZN array generation.
+- Created `minizinc_test_runner_rs` Rust crate to replace shell-based test runner.
+- Updated `run_embedding_model_v7.sh` to use the Rust DZN generator.
+- Updated `run_v7_debug_tests.sh` to call the new Rust test runner.
+- Removed obsolete `generate_vector_params.mzn` and old shell scripts (`run_all_v6_tests.sh`).
+- Ensured correct DZN array formatting from Rust generator.
+- Obtained accurate performance data for `num_vec` variations.
