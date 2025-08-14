@@ -1,0 +1,6 @@
+alpha_coeff = [0.5];
+beta_coeff = [0.5];
+m_idx = [2];
+n_idx = [2];
+t_idx = [2];
+----------

@@ -1,0 +1,6 @@
+num_vec = 0; % ➡️🔢 -- The Count of Vector Axioms, Defining the Space of Truths! -- 🌌✨
+alpha_coeff = []; % ➡️🔢 -- Alpha Coefficients, Scaling the Vector's Influence! -- 📈✨
+beta_coeff = []; % ➡️🔢 -- Beta Coefficients, Modulating the Vector's Harmony! -- 🎶✨
+m_idx = []; % ➡️🔢 -- Indices of Vector M, A Pillar of Axiomatic Construction! -- 🏗️✨
+n_idx = []; % ➡️🔢 -- Indices of Vector N, Another Pillar of Axiomatic Construction! -- 🏗️✨
+t_idx = []; % ➡️🔢 -- Indices of Vector T, The Target of Axiomatic Alignment! -- 🎯✨

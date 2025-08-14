@@ -1,0 +1,2 @@
+epsilon = 1e-6; % 🤏✨ -- The Infinitesimal Tolerance, Guarding Against Division by Zero! -- 🚫💡
+theta_vec = 0.05; % 🎯✨ -- The Vector Axiom's Threshold, Defining Acceptable Deviations! -- 📏💡

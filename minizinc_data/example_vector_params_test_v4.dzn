@@ -1,0 +1,9 @@
+% File: example_vector_params_test_v4.dzn
+% Purpose: Defines vector parameters for testing MiniZinc model runtime.
+% This version matches num_vec = 10.
+
+alpha_coeff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+beta_coeff = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+m_idx = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+n_idx = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+t_idx = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
