@@ -68,15 +68,17 @@ cp "$VECTOR_PARAMS_FILE" "$PROOF_TAPE_DIR/"
 
 # Run MiniZinc and capture output
 echo "Current working directory: $(pwd)"
-MINIZINC_COMMAND="$LIBMINIZINC_BUILD_DIR/minizinc -v -s --time-limit 60000 --json-stream $MODEL_FILE $CORE_PARAMS_FILE $KAPPA_PARAMS_FILE $OTHER_PARAMS_FILE $RELATIONS_FILE $VECTOR_PARAMS_FILE"
+MINIZINC_COMMAND="$LIBMINIZINC_BUILD_DIR/minizinc  -s --time-limit 60000 --json-stream $MODEL_FILE $CORE_PARAMS_FILE $KAPPA_PARAMS_FILE $OTHER_PARAMS_FILE $RELATIONS_FILE $VECTOR_PARAMS_FILE"
 echo "MiniZinc command: $MINIZINC_COMMAND" >&2
-eval $MINIZINC_COMMAND > "${PROOF_TAPE_DIR}/full_output.log" 2>&1
+eval $MINIZINC_COMMAND | tee "${PROOF_TAPE_DIR}/full_output.log" 2>&1
 
 MINIZINC_EXIT_CODE=$?
 
 # Display head of stdout.log and stderr.log
-echo "--- Head of full_output.log ---"
-head -n 20 "${PROOF_TAPE_DIR}/full_output.log"
+#[<0;60;7Mecho "--- Head of full_output.log ---"
+#grep -v "processing file"  "${PROOF_TAPE_DIR}/full_output.log" | grep -v "processing data" | head -n 20
+
+#ls -latr "${PROOF_TAPE_DIR}/"
 
 if [ $MINIZINC_EXIT_CODE -ne 0 ]; then
     echo "MiniZinc model run failed! Check ${PROOF_TAPE_DIR}/full_output.log for details." | tee -a "${PROOF_TAPE_DIR}/error.log"

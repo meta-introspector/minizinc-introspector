@@ -1,5 +1,17 @@
 % File: example_core_params_nv17.dzn
-% Purpose: Defines core parameters for testing MiniZinc model runtime.
-% This version sets num_vec to 17.
+% Purpose: Defines core parameters for the MiniZinc lambda calculus embedding model.
+% These parameters influence the size and complexity of the problem.
 
-num_vec = 17;
+n = 7; % int: The count of subterms or nodes in the abstract syntax tree.
+       %      A larger 'n' increases the number of elements in arrays and sets.
+d = 8; % int: The dimensionality of the embedding space.
+       %      A larger 'd' increases the number of variables for each vector.
+P = 5; % int: The number of partitions or clusters in the manifold.
+       %      A larger 'P' can increase the complexity of partitioning constraints.
+KAPPA_SCALE = 100; % int: Scaling factor for kappa parameters.
+                   %      Used to adjust the influence of different forces in the embedding.
+PARTITION_SCALE = 100; % int: Scaling factor for partition-related parameters.
+                       %      Used to adjust the granularity of the manifold partitioning.
+num_vec = 17; % int: The number of vectors or entities being modeled.
+              %      A larger 'num_vec' significantly increases the problem size
+              %      (variables and constraints), leading to longer solution times.
