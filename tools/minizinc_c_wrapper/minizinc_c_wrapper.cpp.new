@@ -2,6 +2,7 @@
 #include <minizinc/model.hh>
 #include <minizinc/parser.hh>
 #include <minizinc/flattener.hh> // Include Flattener header
+#include <minizinc/solver.hh> // Include Solver header for SolverInitialiser
 // #include <minizinc/version.hh> // For version string
 
 #include <iostream> // For debugging
@@ -11,6 +12,9 @@
 
 // Function to create a new MiniZinc environment (now returns Flattener*)
 Flattener* minizinc_env_new() {
+    // Create a static SolverInitialiser to ensure global MiniZinc setup
+    static MiniZinc::SolverInitialiser solver_initialiser;
+
     // MiniZinc::Flattener constructor takes ostream& os, ostream& log, string stdlibDir
     // For simplicity, we'll use default streams for now.
     // The stdlibDir is crucial for parsing.
