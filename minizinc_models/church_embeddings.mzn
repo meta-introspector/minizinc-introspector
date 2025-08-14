@@ -121,7 +121,7 @@ function int: church_mod(int: m, int: n) = m mod n;
 % --- Sieve of Eratosthenes (Declarative Approach) ---
 % Uses a boolean array to mark primality.
 
-int: MAX_SIEVE_NUM = 5; % The maximum number for the sieve
+int: MAX_SIEVE_NUM = 100; % The maximum number for the sieve
 
 array[2..MAX_SIEVE_NUM] of var bool: is_prime;
 
