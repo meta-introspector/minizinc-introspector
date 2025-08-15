@@ -9,6 +9,7 @@ extern "C" {
 
 // Change return type to MiniZincEnvWrapper*
 MiniZincEnvWrapper* minizinc_env_new() {
+    MiniZinc::GCLock lock; // Acquire GC lock for this function
     // Use a static Timer to ensure it's allocated once and lives for the program's duration.
     // This prevents a memory leak as MznSolver expects a Timer reference.
     static MiniZinc::Timer timer; 

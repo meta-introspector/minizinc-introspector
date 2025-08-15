@@ -13,6 +13,7 @@
 extern "C" {
 
 MiniZincModel* minizinc_parse_model(MiniZincEnvWrapper* wrapper_ptr, const char* model_str, const char* filename) {
+    MiniZinc::GCLock lock; // Acquire GC lock for this function
     std::cerr << "[minizinc_parse_model] Starting parse process." << std::endl; std::cerr.flush();
     std::cerr << "[minizinc_parse_model] model_str: " << (model_str ? model_str : "(null)") << std::endl; std::cerr.flush();
     std::cerr << "[minizinc_parse_model] filename (initial const char*): " << (filename ? filename : "(null)") << std::endl; std::cerr.flush();
@@ -79,6 +80,7 @@ MiniZincModel* minizinc_parse_model(MiniZincEnvWrapper* wrapper_ptr, const char*
 }
   
 MiniZincModel* minizinc_parse_model2(MiniZincEnvWrapper* wrapper_ptr, const char* model_str, const char* filename) {
+    MiniZinc::GCLock lock; // Acquire GC lock for this function
     std::cerr << "[minizinc_parse_model] Starting parse process." << std::endl;
     std::cerr.flush();
     std::cerr << "[minizinc_parse_model] model_str: " << (model_str ? model_str : "(null)") << std::endl; std::cerr.flush();

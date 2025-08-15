@@ -8,6 +8,7 @@
 extern "C" {
 
 int minizinc_solver_get_solution_value_int(MiniZincEnvWrapper* wrapper_ptr, const char* var_name) {
+    MiniZinc::GCLock lock; // Acquire GC lock for this function
     MiniZinc::MznSolver* solver = reinterpret_cast<MiniZinc::MznSolver*>(wrapper_ptr->solver);
 
     // Ensure the solution is evaluated and available in s2out.solution

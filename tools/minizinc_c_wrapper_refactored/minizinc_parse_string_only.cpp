@@ -22,6 +22,7 @@
 extern "C" {
 
 MiniZincModel* minizinc_parse_string_only(MiniZincEnvWrapper* solver_ptr, const char* model_str) {
+    MiniZinc::GCLock lock; // Acquire GC lock for this function
     // MiniZinc::MznSolver* solver = reinterpret_cast<MiniZinc::MznSolver*>(solver_ptr);
     // We don't need the MznSolver here, as parsing is done via MiniZinc::parse
     // and the Env is created locally.
