@@ -18,16 +18,7 @@ set(MINIZINC_EXPRESSION_SOURCES
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_as_id.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/id_get_value.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_is_anon_var.cpp
-        ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_as_anon_var.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_is_arraylit.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_as_arraylit.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/arraylit_get_size.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/arraylit_get_element_at_index.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_is_arraylit.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_as_arraylit.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/arraylit_get_size.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/arraylit_get_element_at_index.cpp
-)
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_as_anon_var.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_is_arraylit.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_as_arraylit.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/arraylit_get_size.cpp

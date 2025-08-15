@@ -1,7 +1,6 @@
-use std::ffi::{CStr, CString};
-use std::os::raw::c_char;
-
-pub struct MiniZincVarDecl(pub *mut std::os::raw::c_void);
+use std::ffi::CStr;
+use crate::types::{MiniZincExpression, MiniZincTypeInst, MiniZincVarDecl};
+use crate::ffi_bindings::{vardecl_get_id, vardecl_get_type_inst, vardecl_get_expression, vardecl_is_toplevel, vardecl_is_introduced, vardecl_is_evaluated, vardecl_get_payload, vardecl_is_type_alias};
 
 impl MiniZincVarDecl {
     pub fn id(&self) -> String {

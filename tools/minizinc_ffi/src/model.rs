@@ -1,5 +1,6 @@
-use std::ffi::{CStr, CString};
-use std::os::raw::c_char;
+use std::ffi::CStr;
+use crate::types::{MiniZincModel, MiniZincItem, MiniZincSolveItem, MiniZincOutputItem};
+use crate::ffi_bindings::{minizinc_model_free, model_get_filename, model_get_filepath, model_get_num_items, model_get_item_at_index, minizinc_model_get_doc_comment, minizinc_model_get_parent, minizinc_model_get_solve_item, minizinc_model_get_output_item};
 
 impl Drop for MiniZincModel {
     fn drop(&mut self) {

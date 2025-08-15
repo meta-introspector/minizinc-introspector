@@ -1,3 +1,6 @@
+use crate::types::{MiniZincSetLit, MiniZincExpression};
+use crate::ffi_bindings::{setlit_get_size, setlit_get_element_at_index};
+
 impl MiniZincSetLit {
     pub fn size(&self) -> u32 {
         unsafe { setlit_get_size(self.0) }

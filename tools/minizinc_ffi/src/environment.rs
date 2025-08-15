@@ -1,6 +1,9 @@
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
+use crate::types::{MznSolver, MiniZincModel};
+use crate::ffi_bindings::{minizinc_env_new, minizinc_env_free, minizinc_parse_model, minizinc_parse_data_from_string, minizinc_get_version_string, minizinc_get_mznlib_dir, minizinc_get_executable_path, test_ffi_access};
 
+// Safe Rust wrappers for FFI functions
 pub struct MiniZincEnvironment(pub *mut MznSolver);
 
 impl MiniZincEnvironment {
@@ -9,6 +12,8 @@ impl MiniZincEnvironment {
         if env_ptr.is_null() {
             Err("Failed to create MiniZinc environment".to_string())
         } else {
+            let test_val = ffi_bindings::test_ffi_access();
+            println!("Test FFI Access: {}", test_val);
             Ok(MiniZincEnvironment(env_ptr))
         }
     }

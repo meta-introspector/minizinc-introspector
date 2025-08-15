@@ -1,8 +1,6 @@
-use std::ffi::{CStr, CString};
-use std::os::raw::c_char;
-
-#[derive(Debug)]
-pub struct MiniZincTypeInst(pub *mut std::os::raw::c_void);
+use crate::base_type::MiniZincBaseType;
+use crate::types::MiniZincTypeInst;
+use crate::ffi_bindings::{typeinst_get_base_type, typeinst_is_var, typeinst_is_par, typeinst_is_opt, typeinst_is_present, typeinst_is_set, typeinst_is_int, typeinst_is_bool, typeinst_is_float, typeinst_is_string, typeinst_is_ann, typeinst_is_unknown, typeinst_is_plain, typeinst_is_bot, typeinst_is_top, typeinst_is_int_set, typeinst_is_bool_set, typeinst_is_float_set, typeinst_is_int_array, typeinst_is_bool_array, typeinst_is_int_set_array};
 
 impl MiniZincTypeInst {
     pub fn base_type(&self) -> MiniZincBaseType {
@@ -84,14 +82,6 @@ impl MiniZincTypeInst {
 
     pub fn is_bool_array(&self) -> bool {
         unsafe { typeinst_is_bool_array(self.0) }
-    }
-
-    pub fn is_int_set_array(&self) -> bool {
-        unsafe { typeinst_is_int_set_array(self.0) }
-    }
-
-    pub fn is_int_set_array(&self) -> bool {
-        unsafe { typeinst_is_int_set_array(self.0) }
     }
 
     pub fn is_int_set_array(&self) -> bool {

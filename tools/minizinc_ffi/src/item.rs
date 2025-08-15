@@ -1,5 +1,6 @@
-use std::ffi::{CStr, CString};
-use std::os::raw::c_char;
+use crate::item_id::ItemId;
+use crate::types::{MiniZincItem, MiniZincVarDecl, MiniZincAssignItem, MiniZincConstraintItem, MiniZincIncludeItem, MiniZincFunctionItem};
+use crate::ffi_bindings::{item_get_id, item_is_vardecl, item_as_vardecl, item_is_assign, item_as_assign, item_is_constraint, item_as_constraint, item_is_include, item_as_include, item_is_function, item_as_function};
 
 impl MiniZincItem {
     pub fn item_id(&self) -> ItemId {
