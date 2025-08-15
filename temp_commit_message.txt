@@ -1,3 +1,6 @@
-Fix: Remove duplicate GCLock declaration in minizinc_parse_model_with_flags.cpp
+Feat: Expose MiniZinc GC lock/unlock via FFI
 
-- Removed a duplicate `MiniZinc::GCLock lock;` declaration in `minizinc_parse_model_with_flags.cpp` that was causing a redefinition error.
+- Added `minizinc_gc_lock.cpp` and `minizinc_gc_unlock.cpp` to expose `MiniZinc::GC::lock()` and `MiniZinc::GC::unlock()` via the C FFI.
+- Updated `cmake/targets/minizinc_c_wrapper.cmake` to include the new source files.
+- Updated `minizinc_ffi_declarations_v2.h` to include the new FFI declarations.
+- This is a preparatory step to manage MiniZinc's global GC state from Rust tests.

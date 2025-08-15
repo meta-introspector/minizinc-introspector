@@ -26,6 +26,8 @@ extern "C" {
 #include "declarations/item_is_vardecl.h"
 #include "declarations/minizinc_env_free.h"
 #include "declarations/minizinc_env_new.h"
+#include "declarations/minizinc_gc_lock.h"
+#include "declarations/minizinc_gc_unlock.h"
 #include "declarations/minizinc_get_executable_path.h"
 #include "declarations/minizinc_get_version_string.h"
 #include "declarations/minizinc_model_free.h"

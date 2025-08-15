@@ -1,0 +1,1 @@
+void minizinc_gc_lock();
