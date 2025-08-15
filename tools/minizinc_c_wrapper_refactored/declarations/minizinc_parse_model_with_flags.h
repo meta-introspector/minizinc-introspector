@@ -1,1 +1,1 @@
-MiniZincModel* minizinc_parse_model_with_flags(MiniZincEnvWrapper* env, const char* model_str, const char* filename, bool is_model_string);
+MiniZincModel* minizinc_parse_model_with_flags(MiniZinc::MznSolver* env, const char* model_str, const char* filename, bool is_model_string);

@@ -8,11 +8,12 @@ extern "C" {
 
 // Change return type to MiniZincEnvWrapper*
 MiniZinc::MznSolver* minizinc_env_new() {
-    // Allocate Timer on the heap
-    MiniZinc::Timer* timer = new MiniZinc::Timer();
+    // Use a static Timer to ensure it's allocated once and lives for the program's duration.
+    // This prevents a memory leak as MznSolver expects a Timer reference.
+    static MiniZinc::Timer timer; 
 
-    // Allocate MznSolver on the heap, passing the Timer reference
-    MiniZinc::MznSolver* solver = new MiniZinc::MznSolver(std::cout, std::cerr, *timer);
+    // Allocate MznSolver on the heap, passing the static Timer reference
+    MiniZinc::MznSolver* solver = new MiniZinc::MznSolver(std::cout, std::cerr, timer);
     std::cerr << "DEBUG: minizinc_env_new - Created MznSolver at: " << solver << std::endl; std::cerr.flush();
 
     // Set verbose flag if needed (MznSolver has its own flagVerbose)

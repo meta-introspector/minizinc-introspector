@@ -11,7 +11,55 @@
 
 extern "C" {
 
-MiniZincModel* minizinc_parse_model(MiniZinc::MznSolver* solver_ptr, const char* model_str, const char* filename) {
+MiniZincModel* minizinc_parse_model(MiniZinc::MznSolver* wrapper_ptr, const char* model_str, const char* filename) {
+    std::cerr << "[minizinc_parse_model] Starting parse process." << std::endl; std::cerr.flush();
+    std::cerr << "[minizinc_parse_model] model_str: " << (model_str ? model_str : "(null)") << std::endl; std::cerr.flush();
+    std::cerr << "[minizinc_parse_model] filename (initial const char*): " << (filename ? filename : "(null)") << std::endl; std::cerr.flush();
+
+    std::string model_s(model_str);
+    std::string filename_s(filename ? filename : "");
+
+    std::cerr << "[minizinc_parse_model] DEBUG: filename_s after std::string conversion: \"" << filename_s <<চ্ছিলেন" << std::endl; std::cerr.flush();
+    std::cerr << "[minizinc_parse_model] DEBUG: filename_s.empty() after conversion: " << (filename_s.empty() ? "true" : "false") << std::endl; std::cerr.flush();
+
+    // Determine the filename to pass to MiniZinc::parse_from_string
+    std::string filename_to_pass;
+    if (filename_s.empty()) {
+        filename_to_pass = "<string>";
+    } else {
+        filename_to_pass = filename_s;
+    }
+    std::cerr << "[minizinc_parse_model]   filename_to_pass (after conditional, now always empty): \"" << filename_to_pass <<চ্ছিলেন" << std::endl; std::cerr.flush();
+
+    try {
+        MiniZinc::Env env; // Create an environment object
+        std::cerr << "[minizinc_parse_model] MiniZinc::Env created." << std::endl; std::cerr.flush();
+
+        MiniZinc::Model* model = MiniZinc::parse_from_string(env, model_s, filename_to_pass);
+        std::cerr << "[minizinc_parse_model] MiniZinc::parse_from_string returned." << std::cerr.flush();
+
+        std::cerr << "[minizinc_parse_model] DEBUG: model: " << model << std::endl; std::cerr.flush();
+
+        if (model == nullptr) {
+            std::cerr << "[minizinc_parse_model] Error: MiniZinc::parse_from_string returned nullptr." << std::endl; std::cerr.flush();
+            return nullptr; // Return nullptr on error
+        }
+
+        std::cerr << "[minizinc_parse_model] Model parsed successfully." << std::endl; std::cerr.flush();
+        return reinterpret_cast<MiniZincModel*>(model);
+
+    } catch (const MiniZinc::Exception& e) {
+        std::cerr << "[minizinc_parse_model] MiniZinc parsing error (captured): ";
+        e.print(std::cerr); std::cerr.flush();
+        return nullptr;
+    } catch (const std::exception& e) {
+        std::cerr << "[minizinc_parse_model] Standard exception (captured): " << e.what() << std::endl; std::cerr.flush();
+        return nullptr;
+    } catch (...) {
+        std::cerr << "[minizinc_parse_model] Unknown exception during parsing (captured)." << std::endl; std::cerr.flush();
+        return nullptr;
+    }
+}
     std::cerr << "[minizinc_parse_model] Starting parse process." << std::endl; std::cerr.flush();
     std::cerr << "[minizinc_parse_model] model_str: " << (model_str ? model_str : "(null)") << std::endl; std::cerr.flush();
     std::cerr << "[minizinc_parse_model] filename (initial const char*): " << (filename ? filename : "(null)") << std::endl; std::cerr.flush();
@@ -45,7 +93,7 @@ MiniZincModel* minizinc_parse_model(MiniZinc::MznSolver* solver_ptr, const char*
 
     try {
         MiniZinc::Env env; // Create an environment object
-        std::cerr << "[minizinc_parse_model] MiniZinc::Env created." << std::endl; std::cerr.flush();
+        
 
         // Call the MiniZinc::parse_from_string function
         MiniZinc::Model* model = MiniZinc::parse_from_string(env,

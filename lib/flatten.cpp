@@ -1957,7 +1957,7 @@ FlatteningError::FlatteningError(EnvI& env, const Location& loc, const std::stri
     : LocationException(env, loc, msg) {}
 
 Env::Env(Model* m, std::ostream& outstream, std::ostream& errstream)
-    : _e(new EnvI(m, outstream, errstream)) {}
+    : _e(new EnvI(m, outstream, errstream)) { std::cerr << "DEBUG: MiniZinc::Env constructor called." << std::endl; std::cerr.flush(); }
 Env::~Env() { delete _e; }
 
 Model* Env::model() { return _e->model; }

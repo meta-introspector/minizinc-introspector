@@ -14,7 +14,56 @@
 
 extern "C" {
 
-MiniZincModel* minizinc_parse_model_with_flags(MiniZincEnvWrapper* wrapper_ptr, const char* model_str, const char* filename, bool is_model_string_flag) {
+MiniZincModel* minizinc_parse_model_with_flags(MiniZinc::MznSolver* wrapper_ptr, const char* model_str, const char* filename, bool is_model_string_flag) {
+    std::cerr << "[minizinc_parse_model_with_flags] Starting parse process." << std::endl; std::cerr.flush();
+    std::cerr << "[minizinc_parse_model_with_flags] model_str: " << (model_str ? model_str : "(null)") << std::endl; std::cerr.flush();
+    std::cerr << "[minizinc_parse_model_with_flags] filename (initial const char*): " << (filename ? filename : "(null)") << std::endl; std::cerr.flush();
+    std::cerr << "[minizinc_parse_model_with_flags] is_model_string_flag: " << (is_model_string_flag ? "true" : "false") << std::endl; std::cerr.flush();
+
+    std::string model_s(model_str);
+    std::string filename_s(filename ? filename : "");
+
+    std::cerr << "[minizinc_parse_model_with_flags] DEBUG: filename_s after std::string conversion: \"" << filename_s << "\"" << std::endl; std::cerr.flush();
+    std::cerr << "[minizinc_parse_model_with_flags] DEBUG: filename_s.empty() after conversion: " << (filename_s.empty() ? "true" : "false") << std::endl; std::cerr.flush();
+
+    // Determine the filename to pass to MiniZinc::parse
+    std::string filename_to_pass;
+    if (is_model_string_flag) {
+        filename_to_pass = "<string>";
+    } else {
+        filename_to_pass = filename_s;
+    }
+    std::cerr << "[minizinc_parse_model_with_flags]   filename_to_pass (after conditional, now always empty): \"" << filename_to_pass << "\"" << std::endl; std::cerr.flush();
+
+    try {
+        MiniZinc::Env env; // Create an environment object
+        std::cerr << "[minizinc_parse_model_with_flags] MiniZinc::Env created." << std::endl; std::cerr.flush();
+
+        MiniZinc::Model* model = MiniZinc::parse(env, model_s, filename_to_pass, is_model_string_flag);
+        std::cerr << "[minizinc_parse_model_with_flags] MiniZinc::parse returned." << std::endl; std::cerr.flush();
+
+        std::cerr << "[minizinc_parse_model_with_flags] DEBUG: model: " << model << std::endl; std::cerr.flush();
+
+        if (model == nullptr) {
+            std::cerr << "[minizinc_parse_model_with_flags] Error: MiniZinc::parse returned nullptr." << std::endl; std::cerr.flush();
+            return nullptr; // Return nullptr on error
+        }
+
+        std::cerr << "[minizinc_parse_model_with_flags] Model parsed successfully." << std::endl; std::cerr.flush();
+        return reinterpret_cast<MiniZincModel*>(model);
+
+    } catch (const MiniZinc::Exception& e) {
+        std::cerr << "[minizinc_parse_model_with_flags] MiniZinc parsing error (captured): ";
+        e.print(std::cerr); std::cerr.flush();
+        return nullptr;
+    } catch (const std::exception& e) {
+        std::cerr << "[minizinc_parse_model_with_flags] Standard exception (captured): " << e.what() << std::endl; std::cerr.flush();
+        return nullptr;
+    } catch (...) {
+        std::cerr << "[minizinc_parse_model_with_flags] Unknown exception during parsing (captured)." << std::endl; std::cerr.flush();
+        return nullptr;
+    }
+}
     // MiniZinc::MznSolver* solver = reinterpret_cast<MiniZinc::MznSolver*>(solver_ptr);
     // We don't need the MznSolver here, as parsing is done via MiniZinc::parse
     // and the Env is created locally.
@@ -56,7 +105,7 @@ MiniZincModel* minizinc_parse_model_with_flags(MiniZincEnvWrapper* wrapper_ptr, 
 
     try {
         MiniZinc::Env env; // Create an environment object
-        std::cerr << "[minizinc_parse_model_with_flags] MiniZinc::Env created." << std::endl; std::cerr.flush();
+        
 
         // Directly call the parse function
         MiniZinc::Model* model = parse(env, filenames_vec, datafiles_vec, model_s, filename_to_pass,
