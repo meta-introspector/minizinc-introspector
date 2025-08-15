@@ -1,4 +1,4 @@
-Fix: Use absolute path for C library linking in build.rs
+Fix: Revert build.rs to standard C library linking approach
 
-- Modified `build.rs` in `tools/minizinc_ffi/` to use `cargo:rustc-link-arg` with the absolute path to `libminizinc_c_wrapper.so`.
-- This is another attempt to resolve the `cannot locate symbol` linker error by providing a more direct linking instruction.
+- Reverted `build.rs` in `tools/minizinc_ffi/` to use `cargo:rustc-link-search=native=...` and `cargo:rustc-link-lib=...`.
+- This is the standard and recommended way to link external C libraries in Rust, and should resolve the persistent linker errors.
