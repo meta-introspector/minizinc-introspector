@@ -1,4 +1,4 @@
-Fix: Revert to direct MiniZinc::Env creation in C wrapper parsing functions
+Fix: Resolve remaining C++ FFI build errors
 
-- Updated `minizinc_parse_model_v2.cpp`, `minizinc_parse_model_with_flags.cpp`, and `minizinc_parse_string_only.cpp` to create their own `MiniZinc::Env` objects for parsing, bypassing the `MznSolver`'s internal `_flt` member.
-- This addresses the 'private member' access errors and simplifies the C wrapper's dependency on MiniZinc's internal structure for parsing.
+- Corrected internal type mismatch in `minizinc_solver_get_solver_instance.cpp`.
+- Updated `minizinc_env_new.h` to reflect the correct return type of `minizinc_env_new()`.
