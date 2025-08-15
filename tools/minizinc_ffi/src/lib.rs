@@ -4,7 +4,7 @@ use std::os::raw::c_char;
 mod feature_tests;
 
 // Opaque types for MiniZincModel, Item, SolveItem, and OutputItem
-// Opaque types for MiniZincModel, Item, SolveItem, OutputItem, AssignItem, ConstraintItem, IncludeItem, FunctionItem, FloatLit, and SetLit
+// Opaque types for MiniZincModel, Item, SolveItem, OutputItem, AssignItem, ConstraintItem, IncludeItem, FunctionItem, FloatLit, SetLit, and BoolLit
 pub struct MiniZincModel(pub *mut std::os::raw::c_void);
 pub struct MiniZincItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincSolveItem(pub *mut std::os::raw::c_void);
@@ -15,6 +15,7 @@ pub struct MiniZincIncludeItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincFunctionItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincFloatLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincSetLit(pub *mut std::os::raw::c_void);
+pub struct MiniZincBoolLit(pub *mut std::os::raw::c_void);
 
 impl MiniZincFloatLit {
     pub fn value(&self) -> f64 {
@@ -172,6 +173,9 @@ unsafe extern "C" {
 
     // New function for TypeInst is_int_array
     fn typeinst_is_int_array(typeinst_ptr: *mut std::os::raw::c_void) -> bool;
+
+    // New function for TypeInst is_int_set_array
+    fn typeinst_is_int_set_array(typeinst_ptr: *mut std::os::raw::c_void) -> bool;
 
     // New function for TypeInst is_int_set_array
     fn typeinst_is_int_set_array(typeinst_ptr: *mut std::os::raw::c_void) -> bool;
@@ -549,6 +553,10 @@ impl MiniZincTypeInst {
 
     pub fn is_bool_array(&self) -> bool {
         unsafe { typeinst_is_bool_array(self.0) }
+    }
+
+    pub fn is_int_set_array(&self) -> bool {
+        unsafe { typeinst_is_int_set_array(self.0) }
     }
 
     pub fn is_int_set_array(&self) -> bool {

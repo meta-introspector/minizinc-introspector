@@ -171,6 +171,13 @@ MiniZinc::SetLit* expression_as_setlit(MiniZinc::Expression* expr_ptr);
 unsigned int setlit_get_size(MiniZinc::SetLit* setlit_ptr);
 MiniZinc::Expression* setlit_get_element_at_index(MiniZinc::SetLit* setlit_ptr, unsigned int index);
 
+// New functions for Expression boolean literal
+bool expression_is_boollit(MiniZinc::Expression* expr_ptr);
+MiniZinc::BoolLit* expression_as_boollit(MiniZinc::Expression* expr_ptr);
+
+// New function for BoolLit value
+bool boollit_get_value(MiniZinc::BoolLit* boollit_ptr);
+
 // New functions for getting MiniZinc library paths
 const char* minizinc_get_mznlib_dir(MiniZinc::MznSolver* env_ptr);
 const char* minizinc_get_executable_path();

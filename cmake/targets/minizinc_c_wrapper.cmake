@@ -55,6 +55,9 @@ add_library(minizinc_c_wrapper SHARED
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_as_setlit.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/setlit_get_size.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/setlit_get_element_at_index.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_is_boollit.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_as_boollit.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/boollit_get_value.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_id.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_type_inst.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_expression.cpp
