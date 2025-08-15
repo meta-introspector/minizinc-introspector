@@ -1,11 +1,5 @@
-refactor: Extract expression FFI declarations and sources into separate files
+docs: Add SOP for onboarding new interns
 
-This commit refactors the MiniZinc C++ FFI by extracting all declarations and source file paths related to `MiniZinc::Expression` and its subclasses into dedicated files. This addresses the issue of `CMakeLists.txt` and `minizinc_ffi_declarations.h` becoming unwieldy due to repeated declarations and source file entries.
+This commit introduces a new Standard Operating Procedure (SOP) document at `docs/sops/onboarding_n00b_interns.md`. This SOP is designed to guide new interns through the project setup, current state of FFI refactoring, and their immediate tasks related to splitting `lib.rs` into smaller, modular files. It also outlines tools, resources, and communication guidelines.
 
-Changes include:
-- Created `tools/minizinc_c_wrapper_refactored/minizinc_expression_declarations.h` to house all FFI declarations for expression types.
-- Cleaned up `tools/minizinc_c_wrapper_refactored/minizinc_ffi_declarations.h` by removing the moved declarations and adding an `#include` statement for the new header.
-- Created `cmake/targets/minizinc_expression_sources.cmake` to list all source files related to expression types.
-- Cleaned up `cmake/targets/minizinc_c_wrapper.cmake` by removing the moved source file paths and adding an `include` statement for the new CMake file.
-
-This refactoring improves modularity, readability, and maintainability of the FFI, making it easier to extend in the future.
+This document serves as a key part of our knowledge transfer and onboarding process.
