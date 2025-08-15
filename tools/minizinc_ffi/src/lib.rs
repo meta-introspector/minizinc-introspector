@@ -3,10 +3,11 @@ use std::os::raw::c_char;
 
 mod feature_tests;
 
-// Opaque types for MiniZincModel, Item, and SolveItem
+// Opaque types for MiniZincModel, Item, SolveItem, and OutputItem
 pub struct MiniZincModel(pub *mut std::os::raw::c_void);
 pub struct MiniZincItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincSolveItem(pub *mut std::os::raw::c_void);
+pub struct MiniZincOutputItem(pub *mut std::os::raw::c_void);
 
 #[repr(C)]
 pub struct MznSolver { _data: [u8; 0] }
@@ -75,6 +76,9 @@ unsafe extern "C" {
 
     // New function for MiniZincModel solve item
     fn minizinc_model_get_solve_item(model_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+
+    // New function for MiniZincModel output item
+    fn minizinc_model_get_output_item(model_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
 }
 
 // Safe Rust wrappers for FFI functions
@@ -197,6 +201,15 @@ impl MiniZincModel {
             None
         } else {
             Some(MiniZincSolveItem(solve_item_ptr))
+        }
+    }
+
+    pub fn output_item(&self) -> Option<MiniZincOutputItem> {
+        let output_item_ptr = unsafe { minizinc_model_get_output_item(self.0) };
+        if output_item_ptr.is_null() {
+            None
+        } else {
+            Some(MiniZincOutputItem(output_item_ptr))
         }
     }
 }
