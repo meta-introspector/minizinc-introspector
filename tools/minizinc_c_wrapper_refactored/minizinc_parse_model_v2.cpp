@@ -19,7 +19,7 @@ MiniZincModel* minizinc_parse_model(MiniZinc::MznSolver* wrapper_ptr, const char
     std::string model_s(model_str);
     std::string filename_s(filename ? filename : "");
 
-    std::cerr << "[minizinc_parse_model] DEBUG: filename_s after std::string conversion: \"" << filename_s <<চ্ছিলেন" << std::endl; std::cerr.flush();
+    std::cerr << "[minizinc_parse_model] DEBUG: filename_s after std::string conversion: \"" << filename_s  << std::endl; std::cerr.flush();
     std::cerr << "[minizinc_parse_model] DEBUG: filename_s.empty() after conversion: " << (filename_s.empty() ? "true" : "false") << std::endl; std::cerr.flush();
 
     // Determine the filename to pass to MiniZinc::parse_from_string
@@ -29,14 +29,30 @@ MiniZincModel* minizinc_parse_model(MiniZinc::MznSolver* wrapper_ptr, const char
     } else {
         filename_to_pass = filename_s;
     }
-    std::cerr << "[minizinc_parse_model]   filename_to_pass (after conditional, now always empty): \"" << filename_to_pass <<চ্ছিলেন" << std::endl; std::cerr.flush();
+    std::cerr << "[minizinc_parse_model]   filename_to_pass (after conditional, now always empty): \"" << filename_to_pass  << std::endl; std::cerr.flush();
+
+    // Default values for arguments not directly provided by the FFI
+    std::vector<std::string> includePaths_vec; // Empty for now
+    bool isFlatZinc = false;
+    bool ignoreStdlib = false;
+    bool parseDocComments = false;
+    bool verbose = true; // <--- Set verbose to true here
+    std::ostream& err_stream = std::cerr; // Use cerr for errors
 
     try {
         MiniZinc::Env env; // Create an environment object
         std::cerr << "[minizinc_parse_model] MiniZinc::Env created." << std::endl; std::cerr.flush();
 
-        MiniZinc::Model* model = MiniZinc::parse_from_string(env, model_s, filename_to_pass);
-        std::cerr << "[minizinc_parse_model] MiniZinc::parse_from_string returned." << std::cerr.flush();
+        MiniZinc::Model* model = MiniZinc::parse_from_string(env,
+                                                             model_s,
+                                                             filename_to_pass,
+                                                             includePaths_vec,
+                                                             isFlatZinc,
+                                                             ignoreStdlib,
+                                                             parseDocComments,
+                                                             verbose,
+                                                             err_stream);
+        std::cerr << "[minizinc_parse_model] MiniZinc::parse_from_string returned." << std::endl; std::cerr.flush();
 
         std::cerr << "[minizinc_parse_model] DEBUG: model: " << model << std::endl; std::cerr.flush();
 
@@ -60,7 +76,10 @@ MiniZincModel* minizinc_parse_model(MiniZinc::MznSolver* wrapper_ptr, const char
         return nullptr;
     }
 }
-    std::cerr << "[minizinc_parse_model] Starting parse process." << std::endl; std::cerr.flush();
+  
+MiniZincModel* minizinc_parse_model2(MiniZinc::MznSolver* wrapper_ptr, const char* model_str, const char* filename) {
+    std::cerr << "[minizinc_parse_model] Starting parse process." << std::endl;
+    std::cerr.flush();
     std::cerr << "[minizinc_parse_model] model_str: " << (model_str ? model_str : "(null)") << std::endl; std::cerr.flush();
     std::cerr << "[minizinc_parse_model] filename (initial const char*): " << (filename ? filename : "(null)") << std::endl; std::cerr.flush();
 

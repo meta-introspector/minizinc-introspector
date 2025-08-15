@@ -1,7 +1,15 @@
 use std::ffi::{CStr, CString};
 use crate::types::{MiniZincModel, MiniZincItem, MiniZincSolveItem, MiniZincOutputItem};
-use crate::ffi_bindings::{minizinc_model_free, model_get_filename, model_get_filepath, minizinc_string_free, model_get_num_items, model_get_item_at_index, minizinc_model_get_doc_comment, minizinc_model_get_parent, minizinc_model_get_solve_item, minizinc_model_get_output_item};
-
+use crate::ffi_bindings::model_get_filename;
+use crate::ffi_bindings::model_get_filepath;
+use crate::ffi_bindings::model_get_num_items;
+use crate::ffi_bindings::model_get_item_at_index;
+use crate::ffi_bindings::minizinc_model_get_doc_comment;
+use crate::ffi_bindings::minizinc_model_get_parent;
+use crate::ffi_bindings::minizinc_model_get_solve_item;
+use crate::ffi_bindings::minizinc_model_get_output_item;
+//use crate::ffi_bindings::{minizinc_model_free, model_get_filename, model_get_filepath, minizinc_string_free, model_get_num_items, model_get_item_at_index, minizinc_model_get_doc_comment, minizinc_model_get_parent, minizinc_model_get_solve_item, minizinc_model_get_output_item};
+use crate::ffi_bindings::minizinc_string_free;
 /// A newtype wrapper for C-allocated strings (`char*`) that ensures proper memory deallocation
 /// when the Rust `MiniZincString` goes out of scope. This is crucial for FFI safety.
 pub struct MiniZincString(*mut CString);

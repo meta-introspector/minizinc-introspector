@@ -1,7 +1,7 @@
-use std::ffi::{CStr, CString};
+//use std::ffi::{CStr, CString};
 use crate::types::MiniZincModel;
 use super::minizinc_environment_struct::MiniZincEnvironment;
-
+use std::ffi::CString;
 impl MiniZincEnvironment {
     pub fn parse_model(&self, model_code: &str, filename: &str) -> Result<MiniZincModel, String> {
         let model_cstr = CString::new(model_code).expect("CString::new failed");

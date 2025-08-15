@@ -1,4 +1,4 @@
-use crate::types::MznSolver;
+//use crate::types::MznSolver;
 use super::minizinc_environment_struct::MiniZincEnvironment;
 
 impl MiniZincEnvironment {
