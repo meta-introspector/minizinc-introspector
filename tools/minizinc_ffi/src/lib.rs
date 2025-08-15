@@ -4,7 +4,7 @@ use std::os::raw::c_char;
 mod feature_tests;
 
 // Opaque types for MiniZincModel, Item, SolveItem, and OutputItem
-// Opaque types for MiniZincModel, Item, SolveItem, OutputItem, AssignItem, ConstraintItem, IncludeItem, FunctionItem, FloatLit, SetLit, and BoolLit
+// Opaque types for MiniZincModel, Item, SolveItem, OutputItem, AssignItem, ConstraintItem, IncludeItem, FunctionItem, FloatLit, SetLit, BoolLit, StringLit, and Id
 pub struct MiniZincModel(pub *mut std::os::raw::c_void);
 pub struct MiniZincItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincSolveItem(pub *mut std::os::raw::c_void);
@@ -16,6 +16,8 @@ pub struct MiniZincFunctionItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincFloatLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincSetLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincBoolLit(pub *mut std::os::raw::c_void);
+pub struct MiniZincStringLit(pub *mut std::os::raw::c_void);
+pub struct MiniZincId(pub *mut std::os::raw::c_void);
 
 impl MiniZincFloatLit {
     pub fn value(&self) -> f64 {
@@ -35,6 +37,12 @@ impl MiniZincSetLit {
         } else {
             Some(MiniZincExpression(expr_ptr))
         }
+    }
+}
+
+impl MiniZincBoolLit {
+    pub fn value(&self) -> bool {
+        unsafe { boollit_get_value(self.0) }
     }
 }
 
@@ -604,6 +612,19 @@ impl MiniZincExpression {
             None
         } else {
             Some(MiniZincSetLit(setlit_ptr))
+        }
+    }
+
+    pub fn is_boollit(&self) -> bool {
+        unsafe { expression_is_boollit(self.0) }
+    }
+
+    pub fn as_boollit(&self) -> Option<MiniZincBoolLit> {
+        let boollit_ptr = unsafe { expression_as_boollit(self.0) };
+        if boollit_ptr.is_null() {
+            None
+        } else {
+            Some(MiniZincBoolLit(boollit_ptr))
         }
     }
 }
