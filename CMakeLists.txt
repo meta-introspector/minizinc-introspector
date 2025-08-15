@@ -93,6 +93,9 @@ include(cmake/targets/minizinc_c_wrapper.cmake)
 include(cmake/targets/minizinc.cmake)
 include(cmake/targets/mzn2doc.cmake)
 
+add_executable(test_ffi_parser tools/minizinc_c_wrapper_refactored/test_ffi_parser.cpp)
+target_link_libraries(test_ffi_parser PRIVATE minizinc_c_wrapper mzn)
+
 # -------------------------------------------------------------------------------------------------------------------
 #  -- Platform Specific configuration
 include(cmake/support/config_emscripten.cmake)
