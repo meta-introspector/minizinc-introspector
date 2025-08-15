@@ -562,6 +562,10 @@ impl MiniZincTypeInst {
     pub fn is_int_set_array(&self) -> bool {
         unsafe { typeinst_is_int_set_array(self.0) }
     }
+
+    pub fn is_int_set_array(&self) -> bool {
+        unsafe { typeinst_is_int_set_array(self.0) }
+    }
 }
 
 #[derive(Debug)]
