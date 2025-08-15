@@ -35,6 +35,7 @@ add_library(minizinc_c_wrapper SHARED
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/item_is_vardecl.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_env_free.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_env_new.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_ffi_helpers.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_env_wrapper.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_get_executable_path.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_get_version_string.cpp

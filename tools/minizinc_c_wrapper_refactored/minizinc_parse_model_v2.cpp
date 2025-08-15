@@ -1,4 +1,4 @@
-#include "minizinc_opaque_types.h"
+#include "minizinc_opaque_types.h"\n#include "minizinc_ffi_helpers.h" // Include helper functions
 #include <minizinc/solver.hh> // Include MznSolver (though not directly used for parsing now)
 #include <minizinc/model.hh>
 #include <minizinc/parser.hh> // Include Parser (for MiniZinc::parse_from_string function)
@@ -40,7 +40,7 @@ MiniZincModel* minizinc_parse_model(MiniZinc::MznSolver* wrapper_ptr, const char
     std::ostream& err_stream = std::cerr; // Use cerr for errors
 
     try {
-        MiniZinc::Env env; // Create an environment object
+        MiniZinc::Env& env = wrapper_ptr->env; // Use the environment from the wrapper
         std::cerr << "[minizinc_parse_model] MiniZinc::Env created." << std::endl; std::cerr.flush();
 
         MiniZinc::Model* model = MiniZinc::parse_from_string(env,
@@ -111,7 +111,7 @@ MiniZincModel* minizinc_parse_model2(MiniZinc::MznSolver* wrapper_ptr, const cha
     std::cerr << "[minizinc_parse_model]   filename_to_pass (after conditional, now always empty): \"" << filename_to_pass << "\"" << std::endl; std::cerr.flush();
 
     try {
-        MiniZinc::Env env; // Create an environment object
+        MiniZinc::Env& env = wrapper_ptr->env; // Use the environment from the wrapper
         
 
         // Call the MiniZinc::parse_from_string function

@@ -1,4 +1,5 @@
 #include "minizinc_opaque_types.h"
+#include "minizinc_ffi_helpers.h" // Include helper functions
 #include <minizinc/solver.hh>
 #include <minizinc/solns2out.hh>
 #include <string>

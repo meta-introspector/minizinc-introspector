@@ -1,4 +1,5 @@
 #include "minizinc_opaque_types.h"
+#include "minizinc_ffi_helpers.h" // Include helper functions
 #include <minizinc/solver.hh>
 #include <minizinc/solver_instance_base.hh>
 
