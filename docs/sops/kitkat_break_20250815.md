@@ -24,10 +24,11 @@
 
 ## Plan for After the KitKat Break
 
-### 1. Address Rust Linking Issue (Re-evaluation)
-*   **Re-verify `cp` command**: Double-check if the `cp` command in `build_test_c_rust.sh` is actually copying `libminizinc_c_wrapper.so` to `tools/minizinc_ffi/target/debug/` and if the library is indeed present there before the Rust tests run. If it is, and linking still fails, this points to a deeper linker issue on the environment.
-*   **Explore alternative linking strategies**: If copying fails, we might need to:
-    *   Investigate `dlopen`/`LoadLibrary` in Rust to explicitly load the shared library at runtime. This would bypass the linker's search paths.
+### 1. Address Rust Linking Issue (LD_PRELOAD Strategy)
+*   **LD_PRELOAD**: The preferred strategy for ensuring `libminizinc_c_wrapper.so` is found at runtime is to use `LD_PRELOAD`. This bypasses standard linker search paths and explicitly loads the shared library before program execution.
+*   **Action**: Ensure `build_test_c_rust.sh` correctly sets `LD_PRELOAD` for Rust test execution. This will involve verifying the path to `libminizinc_c_wrapper.so` and setting the environment variable appropriately.
+*   **Alternative strategies (if LD_PRELOAD fails)**: If `LD_PRELOAD` proves insufficient, we may need to:
+    *   Investigate `dlopen`/`LoadLibrary` in Rust to explicitly load the shared library at runtime.
     *   Consider a custom test harness in Rust that manages the shared library loading.
     *   As a last resort, explore if MiniZinc can be built as a static library to eliminate dynamic linking entirely.
 
