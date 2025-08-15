@@ -32,7 +32,8 @@ unsafe extern "C" {
 
     // New functions for MiniZincModel inspection
     pub fn model_get_filename(model_ptr: *mut std::os::raw::c_void) -> *const c_char;
-    pub fn model_get_filepath(model_ptr: *mut std::os::raw::c_void) -> *const c_char;
+    pub fn model_get_filepath(model_ptr: *mut std::os::raw::c_void) -> *mut c_char;
+    pub fn minizinc_string_free(s: *mut c_char);
     pub fn model_get_num_items(model_ptr: *mut std::os::raw::c_void) -> u32;
     pub fn model_get_item_at_index(model_ptr: *mut std::os::raw::c_void, index: u32) -> *mut std::os::raw::c_void;
 

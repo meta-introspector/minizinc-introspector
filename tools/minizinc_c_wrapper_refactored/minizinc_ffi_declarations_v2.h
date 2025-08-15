@@ -39,7 +39,8 @@ const char* minizinc_get_version_string();
 
 // New functions for MiniZincModel inspection
 const char* model_get_filename(MiniZincModel* model_ptr);
-const char* model_get_filepath(MiniZincModel* model_ptr);
+char* model_get_filepath(MiniZincModel* model_ptr);
+void minizinc_string_free(char* s);
 uint32_t model_get_num_items(MiniZincModel* model_ptr);
 Item* model_get_item_at_index(MiniZincModel* model_ptr, uint32_t index);
 

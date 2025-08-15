@@ -1,5 +1,5 @@
-docs: Add SOP for onboarding new interns
+feat: Improve FFI string handling and modularize Rust environment
 
-This commit introduces a new Standard Operating Procedure (SOP) document at `docs/sops/onboarding_n00b_interns.md`. This SOP is designed to guide new interns through the project setup, current state of FFI refactoring, and their immediate tasks related to splitting `lib.rs` into smaller, modular files. It also outlines tools, resources, and communication guidelines.
+This commit refactors the MiniZinc FFI to correctly handle C-allocated strings, specifically for `model_get_filepath`. A new C function `minizinc_string_free` is introduced to deallocate these strings, and a `MiniZincString` wrapper is added to the Rust FFI to ensure proper memory management via `Drop` implementation.
 
-This document serves as a key part of our knowledge transfer and onboarding process.
+Additionally, the Rust FFI environment has been further modularized by extracting `impl_parse_string` into its own file, adhering to the 'one declaration per file' principle.
