@@ -146,6 +146,9 @@ bool typeinst_is_float_set(MiniZinc::TypeInst* typeinst_ptr);
 // New function for TypeInst is_int_array
 bool typeinst_is_int_array(MiniZinc::TypeInst* typeinst_ptr);
 
+// New function for TypeInst is_bool_array
+bool typeinst_is_bool_array(MiniZinc::TypeInst* typeinst_ptr);
+
 // New functions for Expression inspection
 int expression_get_id(MiniZinc::Expression* expr_ptr);
 bool expression_is_intlit(MiniZinc::Expression* expr_ptr);
