@@ -36,6 +36,9 @@ const char* model_get_filepath(MiniZincModel* model_ptr);
 uint32_t model_get_num_items(MiniZincModel* model_ptr);
 Item* model_get_item_at_index(MiniZincModel* model_ptr, uint32_t index);
 
+// New function for MiniZincModel documentation comment
+const char* minizinc_model_get_doc_comment(MiniZincModel* model_ptr);
+
 // New functions for MiniZincItem inspection
 int item_get_id(Item* item_ptr);
 bool item_is_vardecl(Item* item_ptr);

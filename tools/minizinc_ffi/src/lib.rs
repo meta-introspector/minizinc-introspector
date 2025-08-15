@@ -65,6 +65,9 @@ unsafe extern "C" {
     // New functions for getting MiniZinc library paths
     fn minizinc_get_mznlib_dir(env_ptr: *mut MznSolver) -> *const c_char;
     fn minizinc_get_executable_path() -> *const c_char;
+
+    // New function for MiniZincModel documentation comment
+    fn minizinc_model_get_doc_comment(model_ptr: *mut std::os::raw::c_void) -> *const c_char;
 }
 
 // Safe Rust wrappers for FFI functions
@@ -165,6 +168,11 @@ impl MiniZincModel {
         } else {
             Some(MiniZincItem(item_ptr))
         }
+    }
+
+    pub fn doc_comment(&self) -> String {
+        let c_str = unsafe { minizinc_model_get_doc_comment(self.0) };
+        unsafe { CStr::from_ptr(c_str).to_str().unwrap().to_string() }
     }
 }
 
