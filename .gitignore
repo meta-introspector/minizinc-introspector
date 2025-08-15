@@ -46,3 +46,13 @@ proof_tapes/
 /crash_reproduce_stdout.log
 /strace.log
 /build_coverage/
+
+# Custom additions
+temp_commit_message.txt
+
+# Emacs
+*#
+.#*
+*.elc
+auto-save-list/
+tramp
