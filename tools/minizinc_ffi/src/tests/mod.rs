@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod tests {
-    use super::*;
+    
     use crate::environment::MiniZincEnvironment;
-    use crate::ffi_bindings::{minizinc_gc_lock, minizinc_gc_unlock};
-    use crate::coverage_report;
+    use crate::ffi_bindings::minizinc_gc_lock;
+    
     use std::sync::Mutex;
 
     lazy_static! {
