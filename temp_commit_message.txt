@@ -1,5 +1,4 @@
-Feat: Implement global GC lock/unlock in Rust tests
+Feat: Add build.rs for robust C library linking in Rust tests
 
-- Added FFI bindings for `minizinc_gc_lock()` and `minizinc_gc_unlock()` in `tools/minizinc_ffi/src/ffi_bindings.rs`.
-- Modified `tools/minizinc_ffi/src/tests/mod.rs` to call `minizinc_gc_lock()` once at the beginning of the test module using `std::sync::Once`.
-- This aims to resolve the `GC::alloc()` assertion and segmentation faults by ensuring the MiniZinc garbage collector is properly locked during Rust test execution.
+- Created `build.rs` in `tools/minizinc_ffi/` to instruct Cargo on how to find and link `libminizinc_c_wrapper.so`.
+- This addresses the `cannot locate symbol` linker error by providing a more robust linking mechanism than `LD_LIBRARY_PATH`.
