@@ -5,3 +5,4 @@ Welcome to the project documentation. Here you can find various resources to hel
 ## Standard Operating Procedures (SOPs)
 
 *   [Rust FFI Development and "One Declaration Per File" Refactoring SOP](sops/rust_ffi_refactoring_sop.md)
+*   [Advanced Testing, Coverage, and Profiling for Rust-MiniZinc FFI Projects SOP](sops/advanced_testing_profiling_ffi.md)
