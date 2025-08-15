@@ -4,7 +4,7 @@ use std::os::raw::c_char;
 mod feature_tests;
 
 // Opaque types for MiniZincModel, Item, SolveItem, and OutputItem
-// Opaque types for MiniZincModel, Item, SolveItem, OutputItem, AssignItem, ConstraintItem, IncludeItem, FunctionItem, FloatLit, SetLit, BoolLit, StringLit, and Id
+// Opaque types for MiniZincModel, Item, SolveItem, OutputItem, AssignItem, ConstraintItem, IncludeItem, FunctionItem, FloatLit, SetLit, BoolLit, StringLit, Id, and AnonVar
 pub struct MiniZincModel(pub *mut std::os::raw::c_void);
 pub struct MiniZincItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincSolveItem(pub *mut std::os::raw::c_void);
@@ -18,6 +18,7 @@ pub struct MiniZincSetLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincBoolLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincStringLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincId(pub *mut std::os::raw::c_void);
+pub struct MiniZincAnonVar(pub *mut std::os::raw::c_void);
 pub struct MiniZincStringLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincId(pub *mut std::os::raw::c_void);
 pub struct MiniZincStringLit(pub *mut std::os::raw::c_void);
@@ -46,14 +47,33 @@ impl MiniZincSetLit {
 }
 
 impl MiniZincBoolLit {
-    pub fn value(&self) -> bool {
-        unsafe { boollit_get_value(self.0) }
-    }
+    fn boollit_get_value(boollit_ptr: *mut std::os::raw::c_void) -> bool;
+
+    // New functions for Expression string literal
+    fn expression_is_stringlit(expr_ptr: *mut std::os::raw::c_void) -> bool;
+    fn expression_as_stringlit(expr_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+
+    // New function for StringLit value
+    fn stringlit_get_value(stringlit_ptr: *mut std::os::raw::c_void) -> *const c_char;
+
+    // New functions for Expression identifier
+    fn expression_is_id(expr_ptr: *mut std::os::raw::c_void) -> bool;
+    fn expression_as_id(expr_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+
+    // New function for Id value
+    fn id_get_value(id_ptr: *mut std::os::raw::c_void) -> *const c_char;
 }
 
 impl MiniZincStringLit {
     pub fn value(&self) -> String {
         let c_str = unsafe { stringlit_get_value(self.0) };
+        unsafe { CStr::from_ptr(c_str).to_str().unwrap().to_string() }
+    }
+}
+
+impl MiniZincId {
+    pub fn value(&self) -> String {
+        let c_str = unsafe { id_get_value(self.0) };
         unsafe { CStr::from_ptr(c_str).to_str().unwrap().to_string() }
     }
 }
@@ -657,6 +677,19 @@ impl MiniZincExpression {
             None
         } else {
             Some(MiniZincStringLit(stringlit_ptr))
+        }
+    }
+
+    pub fn is_id(&self) -> bool {
+        unsafe { expression_is_id(self.0) }
+    }
+
+    pub fn as_id(&self) -> Option<MiniZincId> {
+        let id_ptr = unsafe { expression_as_id(self.0) };
+        if id_ptr.is_null() {
+            None
+        } else {
+            Some(MiniZincId(id_ptr))
         }
     }
 

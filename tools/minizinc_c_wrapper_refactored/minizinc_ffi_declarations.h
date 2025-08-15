@@ -171,6 +171,18 @@ MiniZinc::SetLit* expression_as_setlit(MiniZinc::Expression* expr_ptr);
 unsigned int setlit_get_size(MiniZinc::SetLit* setlit_ptr);
 MiniZinc::Expression* setlit_get_element_at_index(MiniZinc::SetLit* setlit_ptr, unsigned int index);
 
+// New functions for Expression identifier
+bool expression_is_id(MiniZinc::Expression* expr_ptr);
+MiniZinc::Id* expression_as_id(MiniZinc::Expression* expr_ptr);
+
+// New function for Id value
+const char* id_get_value(MiniZinc::Id* id_ptr);
+
+// New functions for Expression anonymous variable
+bool expression_is_anon_var(MiniZinc::Expression* expr_ptr);
+MiniZinc::AnonVar* expression_as_anon_var(MiniZinc::Expression* expr_ptr);
+MiniZinc::Expression* setlit_get_element_at_index(MiniZinc::SetLit* setlit_ptr, unsigned int index);
+
 // New functions for Expression boolean literal
 bool expression_is_boollit(MiniZinc::Expression* expr_ptr);
 MiniZinc::BoolLit* expression_as_boollit(MiniZinc::Expression* expr_ptr);
