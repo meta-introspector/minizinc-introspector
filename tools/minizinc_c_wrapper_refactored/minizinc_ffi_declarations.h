@@ -86,6 +86,9 @@ bool vardecl_is_evaluated(MiniZinc::VarDeclI* vardecl_ptr);
 // New function for VarDeclI payload
 int vardecl_get_payload(MiniZinc::VarDeclI* vardecl_ptr);
 
+// New function for VarDeclI type alias
+bool vardecl_is_type_alias(MiniZinc::VarDeclI* vardecl_ptr);
+
 // New functions for TypeInst inspection
 int typeinst_get_base_type(MiniZinc::TypeInst* typeinst_ptr);
 

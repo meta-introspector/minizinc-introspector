@@ -90,6 +90,9 @@ unsafe extern "C" {
     // New function for VarDeclI payload
     fn vardecl_get_payload(vardecl_ptr: *mut std::os::raw::c_void) -> i32;
 
+    // New function for VarDeclI type alias
+    fn vardecl_is_type_alias(vardecl_ptr: *mut std::os::raw::c_void) -> bool;
+
     // New functions for TypeInst inspection
     fn typeinst_get_base_type(typeinst_ptr: *mut std::os::raw::c_void) -> i32;
 
@@ -355,6 +358,10 @@ impl MiniZincVarDecl {
 
     pub fn payload(&self) -> i32 {
         unsafe { vardecl_get_payload(self.0) }
+    }
+
+    pub fn is_type_alias(&self) -> bool {
+        unsafe { vardecl_is_type_alias(self.0) }
     }
 }
 
