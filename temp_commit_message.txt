@@ -1,6 +1,5 @@
-Feat: Expose MiniZinc GC lock/unlock via FFI
+Feat: Implement global GC lock/unlock in Rust tests
 
-- Added `minizinc_gc_lock.cpp` and `minizinc_gc_unlock.cpp` to expose `MiniZinc::GC::lock()` and `MiniZinc::GC::unlock()` via the C FFI.
-- Updated `cmake/targets/minizinc_c_wrapper.cmake` to include the new source files.
-- Updated `minizinc_ffi_declarations_v2.h` to include the new FFI declarations.
-- This is a preparatory step to manage MiniZinc's global GC state from Rust tests.
+- Added FFI bindings for `minizinc_gc_lock()` and `minizinc_gc_unlock()` in `tools/minizinc_ffi/src/ffi_bindings.rs`.
+- Modified `tools/minizinc_ffi/src/tests/mod.rs` to call `minizinc_gc_lock()` once at the beginning of the test module using `std::sync::Once`.
+- This aims to resolve the `GC::alloc()` assertion and segmentation faults by ensuring the MiniZinc garbage collector is properly locked during Rust test execution.

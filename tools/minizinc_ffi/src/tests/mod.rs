@@ -2,10 +2,25 @@
 mod tests {
     use super::*;
     use crate::environment::MiniZincEnvironment;
+    use crate::ffi_bindings::{minizinc_gc_lock, minizinc_gc_unlock};
+    use std::sync::Once;
     use crate::coverage_report;
+
+    static INIT: Once = Once::new();
+
+    pub fn setup() {
+        INIT.call_once(|| {
+            // Initialize logging or other test-wide setup
+            println!("---> Initializing MiniZinc GC lock <---");
+            unsafe {
+                minizinc_gc_lock();
+            }
+        });
+    }
 
     #[test]
     fn test_get_version_string() {
+        setup();
         let env = MiniZincEnvironment::new().unwrap();
         let version = env.get_version_string();
         println!("MiniZinc Version: {}", version);
@@ -14,6 +29,7 @@ mod tests {
 
     #[test]
     fn test_env_creation_and_free() {
+        setup();
         let env = MiniZincEnvironment::new();
         assert!(env.is_ok());
         // Drop will be called automatically when env goes out of scope
@@ -21,6 +37,7 @@ mod tests {
 
     #[test]
     fn test_parse_string() {
+        setup();
         let env = MiniZincEnvironment::new().unwrap();
         let model_code = "var int: x; solve satisfy;";
         let model = env.parse_string(model_code);
@@ -32,6 +49,7 @@ mod tests {
 
     #[test]
     fn test_solve_and_extract_int() {
+        setup();
         let env = MiniZincEnvironment::new().unwrap();
         let model_code = "var int: x; constraint x > 5; solve minimize x;";
 

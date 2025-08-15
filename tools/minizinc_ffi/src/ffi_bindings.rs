@@ -195,4 +195,8 @@ unsafe extern "C" {
 
     // New function for MiniZincModel output item
     //pub fn minizinc_model_get_output_item(model_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+
+    // New functions for GC management
+    pub fn minizinc_gc_lock();
+    pub fn minizinc_gc_unlock();
 }
