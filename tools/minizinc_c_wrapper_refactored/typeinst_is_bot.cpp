@@ -8,7 +8,7 @@ bool typeinst_is_bot(MiniZinc::TypeInst* typeinst_ptr) {
     if (!typeinst) {
         return false;
     }
-    return typeinst->type().isBot();
+    return typeinst->type().isbot();
 }
 
 } // extern "C"

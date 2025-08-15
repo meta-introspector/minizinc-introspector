@@ -8,7 +8,7 @@ bool typeinst_is_top(MiniZinc::TypeInst* typeinst_ptr) {
     if (!typeinst) {
         return false;
     }
-    return typeinst->type().isTop();
+    return typeinst->type().istop();
 }
 
 } // extern "C"

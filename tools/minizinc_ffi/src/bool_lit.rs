@@ -1,8 +1,8 @@
 use crate::types::MiniZincBoolLit;
-use crate::ffi_bindings;
+use crate::ffi_bindings::boollit_get_value;
 
 impl MiniZincBoolLit {
     pub fn value(&self) -> bool {
-        unsafe { ffi_bindings::boollit_get_value(self.0) }
+        unsafe { boollit_get_value(self.0) }
     }
 }

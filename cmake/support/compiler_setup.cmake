@@ -1,12 +1,16 @@
 set(CMAKE_CXX_STANDARD 11)
 
 option(USE_ADDRESS_SANITIZER "Use GCC Address Sanitizer" OFF)
-if(USE_ADDRESS_SANITIZER)
+if(USE_ADDRESS_SANITizer)
   set(CMAKE_CXX_FLAGS
     "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer")
   set(CMAKE_EXE_LINKER_FLAGS
     "${CMAKE_EXE_LINKER_FLAGS} -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer")
 endif()
+
+# Add coverage flags
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fprofile-arcs -ftest-coverage")
 
 set(CMAKE_REQUIRED_QUIET $<NOT:${VERBOSE}>)
 
@@ -25,8 +29,7 @@ if(NOT HAS_ATTR_THREAD)
   check_cxx_source_compiles("int main(void) { __declspec(thread) static int x; (void)x; return 0;}" HAS_DECLSPEC_THREAD)
 endif()
 
-check_cxx_source_compiles("#include <cstdlib>
-int main(void) { long long int x = atoll(\"123\"); (void)x; }" HAS_ATOLL)
+check_cxx_source_compiles("#include <cstdlib>\nint main(void) { long long int x = atoll(\"123\"); (void)x; }" HAS_ATOLL)
 check_cxx_source_compiles("
 #include <stdio.h>
 #include <stdlib.h>
