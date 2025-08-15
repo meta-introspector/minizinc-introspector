@@ -8,7 +8,7 @@
 extern "C" {
 
 // Change return type to MiniZincEnvWrapper*
-MiniZinc::MznSolver* minizinc_env_new() {
+MiniZincEnvWrapper* minizinc_env_new() {
     // Use a static Timer to ensure it's allocated once and lives for the program's duration.
     // This prevents a memory leak as MznSolver expects a Timer reference.
     static MiniZinc::Timer timer; 
@@ -24,7 +24,7 @@ MiniZinc::MznSolver* minizinc_env_new() {
     MiniZincEnvWrapper* env_wrapper = new MiniZincEnvWrapper();
     env_wrapper->solver = solver;
     // env_wrapper->env is default constructed, no need to explicitly set it unless needed
-    return reinterpret_cast<MiniZinc::MznSolver*>(env_wrapper);
+    return env_wrapper;
 }
 
 } // extern "C"

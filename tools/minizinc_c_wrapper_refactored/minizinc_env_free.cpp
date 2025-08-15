@@ -4,9 +4,10 @@
 
 extern "C" {
 
-void minizinc_env_free(MiniZinc::MznSolver* solver_ptr) {
-    MiniZinc::MznSolver* solver = reinterpret_cast<MiniZinc::MznSolver*>(solver_ptr);
-    delete solver;
+void minizinc_env_free(MiniZincEnvWrapper* env_wrapper) {
+    
+    delete env_wrapper->solver;
+    delete env_wrapper;
 }
 
 } // extern "C"

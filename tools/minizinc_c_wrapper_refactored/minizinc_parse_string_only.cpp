@@ -21,7 +21,7 @@
 
 extern "C" {
 
-MiniZincModel* minizinc_parse_string_only(MiniZinc::MznSolver* solver_ptr, const char* model_str) {
+MiniZincModel* minizinc_parse_string_only(MiniZincEnvWrapper* solver_ptr, const char* model_str) {
     // MiniZinc::MznSolver* solver = reinterpret_cast<MiniZinc::MznSolver*>(solver_ptr);
     // We don't need the MznSolver here, as parsing is done via MiniZinc::parse
     // and the Env is created locally.
@@ -35,7 +35,7 @@ MiniZincModel* minizinc_parse_string_only(MiniZinc::MznSolver* solver_ptr, const
     std::string dummy_filename = "<string>"; // Use a dummy filename for ParserState
 
     try {
-        MiniZinc::Env& env = *(solver_ptr->_flt.getEnv()); // Use the environment from the wrapper
+        MiniZinc::Env& env = *(solver_ptr->solver->_flt.getEnv()); // Use the environment from the wrapper
         std::cerr << "[minizinc_parse_string_only] MiniZinc::Env created." << std::endl; std::cerr.flush();
 
         MiniZinc::Model* model = new MiniZinc::Model();

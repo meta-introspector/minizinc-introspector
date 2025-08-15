@@ -12,7 +12,7 @@
 
 extern "C" {
 
-MiniZincModel* minizinc_parse_model(MiniZinc::MznSolver* wrapper_ptr, const char* model_str, const char* filename) {
+MiniZincModel* minizinc_parse_model(MiniZincEnvWrapper* wrapper_ptr, const char* model_str, const char* filename) {
     std::cerr << "[minizinc_parse_model] Starting parse process." << std::endl; std::cerr.flush();
     std::cerr << "[minizinc_parse_model] model_str: " << (model_str ? model_str : "(null)") << std::endl; std::cerr.flush();
     std::cerr << "[minizinc_parse_model] filename (initial const char*): " << (filename ? filename : "(null)") << std::endl; std::cerr.flush();
@@ -41,7 +41,7 @@ MiniZincModel* minizinc_parse_model(MiniZinc::MznSolver* wrapper_ptr, const char
     std::ostream& err_stream = std::cerr; // Use cerr for errors
 
     try {
-        MiniZinc::Env& env = *(wrapper_ptr->_flt.getEnv()); // Use the environment from the wrapper
+        MiniZinc::Env& env = *(wrapper_ptr->solver->_flt.getEnv()); // Use the environment from the wrapper
         std::cerr << "[minizinc_parse_model] MiniZinc::Env created." << std::endl; std::cerr.flush();
 
         MiniZinc::Model* model = MiniZinc::parse_from_string(env,
@@ -78,7 +78,7 @@ MiniZincModel* minizinc_parse_model(MiniZinc::MznSolver* wrapper_ptr, const char
     }
 }
   
-MiniZincModel* minizinc_parse_model2(MiniZinc::MznSolver* wrapper_ptr, const char* model_str, const char* filename) {
+MiniZincModel* minizinc_parse_model2(MiniZincEnvWrapper* wrapper_ptr, const char* model_str, const char* filename) {
     std::cerr << "[minizinc_parse_model] Starting parse process." << std::endl;
     std::cerr.flush();
     std::cerr << "[minizinc_parse_model] model_str: " << (model_str ? model_str : "(null)") << std::endl; std::cerr.flush();
@@ -112,7 +112,7 @@ MiniZincModel* minizinc_parse_model2(MiniZinc::MznSolver* wrapper_ptr, const cha
     std::cerr << "[minizinc_parse_model]   filename_to_pass (after conditional, now always empty): \"" << filename_to_pass << "\"" << std::endl; std::cerr.flush();
 
     try {
-        MiniZinc::Env& env = *(wrapper_ptr->_flt.getEnv()); // Use the environment from the wrapper
+        MiniZinc::Env& env = *(wrapper_ptr->solver->_flt.getEnv()); // Use the environment from the wrapper
         
 
         // Call the MiniZinc::parse_from_string function
