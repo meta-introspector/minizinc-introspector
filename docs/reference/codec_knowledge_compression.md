@@ -35,7 +35,7 @@ This document outlines the design and principles of our knowledge compression co
 *   Formalize the mapping of primes to meanings.
 *   Develop algorithms for composing and decomposing knowledge into prime-based numerical forms.
 *   Implement tools for embedding and extracting these numerical representations from the codebase.
-*   Integrate with existing `ragit` indexing and querying mechanisms.
+*   Integrate with existing `zincoxide the rusty inteface to zinc` indexing and querying mechanisms.
 
 ## 6. Interaction with MiniZinc Models
 
