@@ -48,22 +48,8 @@ add_library(minizinc_c_wrapper SHARED
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/typeinst_is_int_array.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/typeinst_is_bool_array.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/typeinst_is_int_set_array.cpp
-    )
-include(cmake/targets/minizinc_expression_sources.cmake)
-add_library(minizinc_c_wrapper SHARED
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_id.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_type_inst.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_expression.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/typeinst_get_base_type.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_get_id.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_is_intlit.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_get_mznlib_dir.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_get_executable_path.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_model_doc_comment.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_model_get_parent.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_model_get_solve_item.cpp
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_model_get_output_item.cpp
 )
+include(cmake/targets/minizinc_expression_sources.cmake)
 
 # Link against libmzn (the main MiniZinc library)
 target_link_libraries(minizinc_c_wrapper PRIVATE mzn)
