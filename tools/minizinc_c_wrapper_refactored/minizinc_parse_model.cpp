@@ -1,55 +1,53 @@
 #include "minizinc_opaque_types.h"
-#include <minizinc/solver.hh> // Include MznSolver
+#include <minizinc/solver.hh> // Include MznSolver (though not directly used for parsing now)
 #include <minizinc/model.hh>
-#include <minizinc/parser.hh>
+#include <minizinc/parser.hh> // Include Parser (for MiniZinc::parse function)
 #include <iostream>
 #include <fstream>
 #include <cstdio>
 #include <sstream>
 #include <vector> // For std::vector
+#include <unordered_set> // For std::unordered_set
 
 extern "C" {
 
 MiniZincModel* minizinc_parse_model(MiniZinc::MznSolver* solver_ptr, const char* model_str, const char* filename) {
-    std::cerr << "Starting MiniZinc parse process (via MznSolver::run)" << std::endl; std::cerr.flush();
+    std::cerr << "Starting MiniZinc parse process (via MiniZinc::parse function with all arguments)" << std::endl; std::cerr.flush();
 
     std::string model_s(model_str);
     std::string filename_s(filename);
 
-    // Construct arguments for MznSolver::run()
-    std::vector<std::string> args;
-    // The first argument is typically the executable name, which MznSolver::run handles
-    // The model content is passed directly to run()
-    // The filename is also passed to run()
-
-    // MznSolver::run expects the model content as a string, and the filename.
-    // It will internally handle parsing and flattening.
+    // Default values for arguments not directly provided by the FFI
+    std::vector<std::string> filenames_vec; // Empty for parsing from string
+    std::vector<std::string> datafiles_vec; // Empty for parsing from string
+    std::vector<std::string> includePaths_vec; // Empty for now
+    std::unordered_set<std::string> globalInc_set; // Empty for now
+    bool isFlatZinc = false;
+    bool ignoreStdlib = false;
+    bool parseDocComments = false;
+    bool verbose = false;
+    std::ostream& err_stream = std::cerr; // Use cerr for errors
 
     try {
-        // Call MznSolver::run()
-        // The model content is passed as the second argument (model string)
-        // The filename is passed as the fourth argument (model name)
-        MiniZinc::SolverInstance::Status status = solver_ptr->run(args, model_s, "minizinc", filename_s);
+        MiniZinc::Env env; // Create an environment object
 
-        if (status == MiniZinc::SolverInstance::ERROR) {
-            std::cerr << "Error: MznSolver::run() returned an error status." << std::endl;
-            return nullptr;
-        }
+        // Call the MiniZinc::parse function with all required arguments
+        MiniZinc::Model* model = MiniZinc::parse(env,
+                                                 filenames_vec,
+                                                 datafiles_vec,
+                                                 model_s,
+                                                 filename_s,
+                                                 includePaths_vec,
+                                                 globalInc_set,
+                                                 isFlatZinc,
+                                                 ignoreStdlib,
+                                                 parseDocComments,
+                                                 verbose,
+                                                 err_stream);
 
-        // After run() completes, the parsed model should be available in the solver's environment
-        MiniZinc::Env* mzn_env_ptr = solver_ptr->getFlt().getEnv(); // Access Flattener from MznSolver, then Env
-        std::cerr << "DEBUG: mzn_env_ptr: " << mzn_env_ptr << std::endl; std::cerr.flush();
-
-        if (!mzn_env_ptr) {
-            std::cerr << "Error: MznSolver's Flattener->getEnv() returned nullptr after run." << std::endl;
-            return nullptr;
-        }
-        MiniZinc::Env& env = *mzn_env_ptr;
-
-        MiniZinc::Model* model = env.model();
         std::cerr << "DEBUG: model: " << model << std::endl; std::cerr.flush();
         if (!model) {
-            std::cerr << "Error: Env->model() returned nullptr after run." << std::endl;
+            std::cerr << "Error: MiniZinc::parse returned nullptr." << std::endl;
             return nullptr;
         }
         return reinterpret_cast<MiniZincModel*>(model);

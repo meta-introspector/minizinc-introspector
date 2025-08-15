@@ -1,5 +1,5 @@
 #include "minizinc_opaque_types.h"
-#include <minizinc/type.hh>
+#include <minizinc/ast.hh>
 
 extern "C" {
 
@@ -8,7 +8,7 @@ bool typeinst_is_top(MiniZinc::TypeInst* typeinst_ptr) {
     if (!typeinst) {
         return false;
     }
-    return typeinst->type().istop();
+    return typeinst->type().isTop();
 }
 
 } // extern "C"

@@ -44,10 +44,10 @@ const char* minizinc_model_get_doc_comment(MiniZincModel* model_ptr);
 MiniZincModel* minizinc_model_get_parent(MiniZincModel* model_ptr);
 
 // New function for MiniZincModel solve item
-SolveI* minizinc_model_get_solve_item(MiniZincModel* model_ptr);
+MiniZinc::SolveI* minizinc_model_get_solve_item(MiniZincModel* model_ptr);
 
 // New function for MiniZincModel output item
-OutputI* minizinc_model_get_output_item(MiniZincModel* model_ptr);
+MiniZinc::OutputI* minizinc_model_get_output_item(MiniZincModel* model_ptr);
 
 // New functions for MiniZincItem inspection
 int item_get_id(Item* item_ptr);

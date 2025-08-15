@@ -13,8 +13,8 @@ cd "$PROJECT_ROOT"
 export MZN_STDLIB_DIR="$PROJECT_ROOT/share/minizinc"
 
 echo "Building C++ wrapper..."
-# Clean and build the C++ wrapper
-rm -rf build/*
+# DO NOT Clean and build the C++ wrapper
+# echo DO NOT ever clean rm -rf build/*
 cmake -B build -S .
 cmake --build build/
 

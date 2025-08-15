@@ -1,5 +1,5 @@
 #include "minizinc_opaque_types.h"
-#include <minizinc/type.hh>
+#include <minizinc/ast.hh>
 
 extern "C" {
 
