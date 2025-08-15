@@ -4,7 +4,7 @@ use std::os::raw::c_char;
 mod feature_tests;
 
 // Opaque types for MiniZincModel, Item, SolveItem, and OutputItem
-// Opaque types for MiniZincModel, Item, SolveItem, OutputItem, AssignItem, ConstraintItem, IncludeItem, and FunctionItem
+// Opaque types for MiniZincModel, Item, SolveItem, OutputItem, AssignItem, ConstraintItem, IncludeItem, FunctionItem, and FloatLit
 pub struct MiniZincModel(pub *mut std::os::raw::c_void);
 pub struct MiniZincItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincSolveItem(pub *mut std::os::raw::c_void);
@@ -13,6 +13,13 @@ pub struct MiniZincAssignItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincConstraintItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincIncludeItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincFunctionItem(pub *mut std::os::raw::c_void);
+pub struct MiniZincFloatLit(pub *mut std::os::raw::c_void);
+
+impl MiniZincFloatLit {
+    pub fn value(&self) -> f64 {
+        unsafe { floatlit_get_value(self.0) }
+    }
+}
 
 #[repr(C)]
 pub struct MznSolver { _data: [u8; 0] }
@@ -162,6 +169,13 @@ unsafe extern "C" {
     // New functions for Expression inspection
     fn expression_get_id(expr_ptr: *mut std::os::raw::c_void) -> i32;
     fn expression_is_intlit(expr_ptr: *mut std::os::raw::c_void) -> bool;
+
+    // New functions for Expression float literal
+    fn expression_is_floatlit(expr_ptr: *mut std::os::raw::c_void) -> bool;
+    fn expression_as_floatlit(expr_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+
+    // New function for FloatLit value
+    fn floatlit_get_value(floatlit_ptr: *mut std::os::raw::c_void) -> f64;
 
     // New functions for getting MiniZinc library paths
     fn minizinc_get_mznlib_dir(env_ptr: *mut MznSolver) -> *const c_char;
@@ -529,6 +543,19 @@ impl MiniZincExpression {
 
     pub fn is_intlit(&self) -> bool {
         unsafe { expression_is_intlit(self.0) }
+    }
+
+    pub fn is_floatlit(&self) -> bool {
+        unsafe { expression_is_floatlit(self.0) }
+    }
+
+    pub fn as_floatlit(&self) -> Option<MiniZincFloatLit> {
+        let floatlit_ptr = unsafe { expression_as_floatlit(self.0) };
+        if floatlit_ptr.is_null() {
+            None
+        } else {
+            Some(MiniZincFloatLit(floatlit_ptr))
+        }
     }
 }
 

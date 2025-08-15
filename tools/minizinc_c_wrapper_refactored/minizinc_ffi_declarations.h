@@ -156,6 +156,13 @@ bool typeinst_is_int_set_array(MiniZinc::TypeInst* typeinst_ptr);
 int expression_get_id(MiniZinc::Expression* expr_ptr);
 bool expression_is_intlit(MiniZinc::Expression* expr_ptr);
 
+// New functions for Expression float literal
+bool expression_is_floatlit(MiniZinc::Expression* expr_ptr);
+MiniZinc::FloatLit* expression_as_floatlit(MiniZinc::Expression* expr_ptr);
+
+// New function for FloatLit value
+double floatlit_get_value(MiniZinc::FloatLit* floatlit_ptr);
+
 // New functions for getting MiniZinc library paths
 const char* minizinc_get_mznlib_dir(MiniZinc::MznSolver* env_ptr);
 const char* minizinc_get_executable_path();
