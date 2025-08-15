@@ -11,7 +11,8 @@ MiniZinc::Flattener* minizinc_env_new() {
     
     MiniZinc::MiniZincEnvWrapper* new_wrapper = new MiniZinc::MiniZincEnvWrapper(std::cout, std::cerr, stdlib_path);
     std::cerr << "DEBUG: minizinc_env_new - Created Wrapper at: " << new_wrapper << std::endl; std::cerr.flush();
-    
+    std::cerr << "DEBUG: minizinc_env_new - _solverConfigs.mznlibDir(): " << new_wrapper->getFlattener()->getSolverConfigs().mznlibDir() << std::endl; std::cerr.flush();
+
     return reinterpret_cast<MiniZinc::Flattener*>(new_wrapper);
 }
 

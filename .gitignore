@@ -42,3 +42,6 @@ install/
 proof_tapes/
 /tools/minizinc_ffi/target/
 /target/
+/crash_reproduce_stderr.log
+/crash_reproduce_stdout.log
+/strace.log

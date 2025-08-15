@@ -1,3 +1,18 @@
-fix: Add null checks for Flattener->getEnv() in C wrapper
+feat: Refactor C++ FFI wrapper and expose MiniZinc model inspection in Rust
 
-Added defensive null checks for the return value of `Flattener::getEnv()` in `minizinc_parse_model` and `minizinc_parse_data_from_string` to prevent crashes if the environment is not properly initialized after `flatten()` is called. This provides more robust error handling and debugging information.
+This commit refactors the C++ FFI wrapper for MiniZinc, addressing persistent linking and compilation issues, and introduces initial capabilities for inspecting MiniZinc models directly from Rust.
+
+Key changes include:
+
+- **C++ FFI Wrapper Refactoring:**
+    - Split `minizinc_c_wrapper.cpp` into smaller, single-purpose files in `tools/minizinc_c_wrapper_refactored/` for improved modularity and maintainability.
+    - Introduced `MiniZincEnvWrapper` to encapsulate `MiniZinc::Flattener` and `MiniZinc::SolverInitialiser`, ensuring proper object lifecycle management and isolated MiniZinc contexts for FFI calls.
+    - Resolved complex linking issues by correctly configuring CMake to build the refactored C++ code and updating `build.rs` in the Rust FFI crate to link against the newly built shared library.
+    - Eliminated `SIGSEGV` crashes and transitioned from generic "type errors" to more specific MiniZinc parsing diagnostics.
+
+- **Rust FFI Enhancements:**
+    - Defined Rust newtype wrappers (`MiniZincModel`, `MiniZincItem`) for opaque MiniZinc C++ types, adhering to Rust's FFI best practices.
+    - Exposed FFI functions to retrieve basic `MiniZincModel` properties: `filename`, `filepath`, and `num_items`.
+    - Updated Rust tests to demonstrate the new model inspection capabilities.
+
+This refactoring provides a stable foundation for further integration with the MiniZinc library from Rust, enabling more detailed analysis and manipulation of MiniZinc models.
