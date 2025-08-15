@@ -1,8 +1,9 @@
-use crate::*;
+use crate::environment::MiniZincEnvironment;
+use crate::tests::GLOBAL_MINIZINC_ENV;
 
 #[test]
 fn test_empty_model() {
-    let env = MiniZincEnvironment::new().unwrap();
+    let env = GLOBAL_MINIZINC_ENV.lock().unwrap();
     let model_code = "% This is an empty model";
     let filename = "empty.mzn";
     let model = env.parse_model(model_code, filename);

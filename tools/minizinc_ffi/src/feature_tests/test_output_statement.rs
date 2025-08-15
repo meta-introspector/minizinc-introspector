@@ -1,8 +1,9 @@
-use crate::*;
+use crate::environment::MiniZincEnvironment;
+use crate::tests::GLOBAL_MINIZINC_ENV;
 
 #[test]
 fn test_output_statement() {
-    let env = MiniZincEnvironment::new().unwrap();
+    let env = GLOBAL_MINIZINC_ENV.lock().unwrap();
     let model_code = "var int: x; solve satisfy; output [\"x = \\(x)\\n\"];";
     let filename = "output_statement.mzn";
     let model = env.parse_model(model_code, filename);
@@ -19,4 +20,3 @@ fn test_output_statement() {
     // We can't easily inspect the output statement content via the current FFI, 
     // but we can assert that the model parsed successfully.
 }
-
