@@ -4,7 +4,7 @@ use std::os::raw::c_char;
 mod feature_tests;
 
 // Opaque types for MiniZincModel, Item, SolveItem, and OutputItem
-// Opaque types for MiniZincModel, Item, SolveItem, OutputItem, AssignItem, ConstraintItem, IncludeItem, FunctionItem, FloatLit, SetLit, BoolLit, StringLit, Id, and AnonVar
+// Opaque types for MiniZincModel, Item, SolveItem, OutputItem, AssignItem, ConstraintItem, IncludeItem, FunctionItem, FloatLit, SetLit, BoolLit, StringLit, Id, AnonVar, and ArrayLit
 pub struct MiniZincModel(pub *mut std::os::raw::c_void);
 pub struct MiniZincItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincSolveItem(pub *mut std::os::raw::c_void);
@@ -19,6 +19,8 @@ pub struct MiniZincBoolLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincStringLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincId(pub *mut std::os::raw::c_void);
 pub struct MiniZincAnonVar(pub *mut std::os::raw::c_void);
+
+pub struct MiniZincArrayLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincAnonVar(pub *mut std::os::raw::c_void);
 pub struct MiniZincStringLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincId(pub *mut std::os::raw::c_void);
@@ -67,6 +69,22 @@ impl MiniZincBoolLit {
     // New functions for Expression anonymous variable
     fn expression_is_anon_var(expr_ptr: *mut std::os::raw::c_void) -> bool;
     fn expression_as_anon_var(expr_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+
+    // New functions for Expression array literal
+    fn expression_is_arraylit(expr_ptr: *mut std::os::raw::c_void) -> bool;
+    fn expression_as_arraylit(expr_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+
+    // New functions for ArrayLit
+    fn arraylit_get_size(arraylit_ptr: *mut std::os::raw::c_void) -> u32;
+    fn arraylit_get_element_at_index(arraylit_ptr: *mut std::os::raw::c_void, index: u32) -> *mut std::os::raw::c_void;
+
+    // New functions for Expression array literal
+    fn expression_is_arraylit(expr_ptr: *mut std::os::raw::c_void) -> bool;
+    fn expression_as_arraylit(expr_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+
+    // New functions for ArrayLit
+    fn arraylit_get_size(arraylit_ptr: *mut std::os::raw::c_void) -> u32;
+    fn arraylit_get_element_at_index(arraylit_ptr: *mut std::os::raw::c_void, index: u32) -> *mut std::os::raw::c_void;
 }
 
 impl MiniZincStringLit {
@@ -708,6 +726,32 @@ impl MiniZincExpression {
             None
         } else {
             Some(MiniZincAnonVar(anon_var_ptr))
+        }
+    }
+
+    pub fn is_arraylit(&self) -> bool {
+        unsafe { expression_is_arraylit(self.0) }
+    }
+
+    pub fn as_arraylit(&self) -> Option<MiniZincArrayLit> {
+        let arraylit_ptr = unsafe { expression_as_arraylit(self.0) };
+        if arraylit_ptr.is_null() {
+            None
+        } else {
+            Some(MiniZincArrayLit(arraylit_ptr))
+        }
+    }
+
+    pub fn is_arraylit(&self) -> bool {
+        unsafe { expression_is_arraylit(self.0) }
+    }
+
+    pub fn as_arraylit(&self) -> Option<MiniZincArrayLit> {
+        let arraylit_ptr = unsafe { expression_as_arraylit(self.0) };
+        if arraylit_ptr.is_null() {
+            None
+        } else {
+            Some(MiniZincArrayLit(arraylit_ptr))
         }
     }
 

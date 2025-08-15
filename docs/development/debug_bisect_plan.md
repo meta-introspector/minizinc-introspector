@@ -7,7 +7,7 @@ The `SIGSEGV` is accompanied by a generic "MiniZinc parsing error (captured): | 
 
 ## 2. Current State of Relevant Files
 
-### 2.1. `tools/minizinc_c_wrapper/minizinc_c_wrapper.cpp`
+### 2.1. `tools/minizinc_c_wrapper_refactored/minizinc_c_wrapper.cpp`
 ```cpp
 #include "minizinc_c_wrapper.h"
 #include <minizinc/model.hh>
@@ -312,7 +312,7 @@ include(cmake/targets/minizinc_c_wrapper.cmake)
 ```cmake
 # Define the minizinc_c_wrapper library
 add_library(minizinc_c_wrapper SHARED
-    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper/minizinc_c_wrapper.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_c_wrapper.cpp
 )
 
 # Link against libmzn (the main MiniZinc library)

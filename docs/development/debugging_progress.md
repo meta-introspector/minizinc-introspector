@@ -40,7 +40,7 @@ To get the Rust FFI for MiniZinc working correctly, specifically focusing on par
 
 ### 6. Direct `minizinc` Executable Test:
 *   **Action:** Located `build/minizinc` executable (version 2.9.3).
-*   **Action:** Ran `MZN_STDLIB_DIR=/data/data/com.termux/files/home/storage/github/libminizinc/share/minizinc /data/data/com.termux/files/home/storage/github/libminizinc/build/minizinc /data/data/com.termux/files/home/storage/github/libminizinc/temp_test_model.mzn` (with `temp_test_model.mzn` containing `var int: x; solve satisfy;`).
+*   **Action:** Ran `MZN_STDLIB_DIR=./share/minizinc ./build/minizinc ./temp_test_model.mzn` (with `temp_test_model.mzn` containing `var int: x; solve satisfy;`).
 *   **Observation:** The `minizinc` executable ran successfully, producing a valid solution. This was a **major breakthrough**, indicating the problem was in the FFI, not the MiniZinc library itself.
 
 ### 7. Refactoring FFI to use `MznSolver`:
@@ -55,6 +55,6 @@ To get the Rust FFI for MiniZinc working correctly, specifically focusing on par
 *   **Reason:** `LD_LIBRARY_PATH` is not set for `cargo test`.
 
 ## Next Steps:
-1.  **Set `LD_LIBRARY_PATH` for `cargo test`:** Run `LD_LIBRARY_PATH=/data/data/com.termux/files/home/storage/github/libminizinc/build/:/data/data/com.termux/files/home/storage/github/libminizinc/install/lib/ RUST_BACKTRACE=full cargo test --package minizinc_ffi`.
+1.  **Set `LD_LIBRARY_PATH` for `cargo test`:** Run `LD_LIBRARY_PATH=./build/:./install/lib/ RUST_BACKTRACE=full cargo test --package minizinc_ffi`.
 2.  **Re-add `get_version_string`, `get_mznlib_dir`, `get_executable_path` methods to `impl MiniZincEnvironment`:** After the `LD_LIBRARY_PATH` issue is resolved, I will re-insert these methods into `lib.rs`.
 3.  **Refactor `minizinc_parse_model.cpp` to use `MznSolver::run()`:** This is still pending and crucial for proper MiniZinc environment setup.

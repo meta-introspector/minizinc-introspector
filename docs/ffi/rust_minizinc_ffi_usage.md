@@ -11,7 +11,7 @@ Ensure your Rust project is configured to link against the `minizinc_ffi` crate 
 To build both the C++ FFI wrapper and the Rust project, navigate to the project root directory and run the `build_and_test.sh` script:
 
 ```bash
-./build_and_test.sh
+../../build_and_test.sh
 ```
 
 This script will:

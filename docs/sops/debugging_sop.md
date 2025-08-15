@@ -18,7 +18,7 @@ This SOP applies to debugging the `minizinc_ffi` Rust crate and its underlying C
 ### Phase 1: Initial Triage and Information Gathering
 
 1.  **Reproduce the Issue:**
-    *   Run the minimal reproduction script: `./reproduce_minizinc_ffi_bug.sh`
+    *   Run the minimal reproduction script: `../../reproduce_minizinc_ffi_bug.sh`
     *   Observe the output. Note any error messages, especially Rust panics, C++ compilation errors, or MiniZinc parsing errors.
     *   **If a crash occurs (SIGSEGV, SIGABRT):** Proceed to Phase 2.
     *   **If a MiniZinc parsing error occurs (e.g., "undefined identifier"):** Proceed to Phase 3.
@@ -27,7 +27,7 @@ This SOP applies to debugging the `minizinc_ffi` Rust crate and its underlying C
 ### Phase 2: Analyzing Crashes (SIGSEGV, SIGABRT)
 
 1.  **Get a Rust Backtrace:**
-    *   Run the reproduction script with `RUST_BACKTRACE=full`: `RUST_BACKTRACE=full ./reproduce_minizinc_ffi_bug.sh`
+    *   Run the reproduction script with `RUST_BACKTRACE=full`: `RUST_BACKTRACE=full ../../reproduce_minizinc_ffi_bug.sh`
     *   Analyze the backtrace. The top of the backtrace (closest to `__rust_begin_unwind`) will show the Rust code that panicked. Look for lines originating from `minizinc_ffi/src/lib.rs`.
     *   If the crash is in C++ code, the backtrace might show `unknown` frames or point to FFI calls.
 2.  **Use `strace` for System Call Tracing:**
@@ -72,4 +72,4 @@ This SOP applies to debugging the `minizinc_ffi` Rust crate and its underlying C
 *   **Search Online:** Use search engines and forums (MiniZinc community, Rust forums, Termux community) to look for similar issues.
 
 ## Reporting a Bug
-If you identify a bug, create a detailed bug report using the `docs/bug_report_minizinc_ffi.md` template and provide a minimal reproduction script (`reproduce_minizinc_ffi_bug.sh`).
+If you identify a bug, create a detailed bug report using the `../development/bug_report_minizinc_ffi.md` template and provide a minimal reproduction script (`reproduce_minizinc_ffi_bug.sh`).

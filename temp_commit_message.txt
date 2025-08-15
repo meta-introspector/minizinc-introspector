@@ -1,17 +1,11 @@
-feat: Debugging infrastructure and FFI introspection
+refactor: Extract expression FFI declarations and sources into separate files
 
-This commit introduces significant debugging infrastructure and enhances the MiniZinc FFI with introspection capabilities, laying the groundwork for resolving persistent runtime issues.
+This commit refactors the MiniZinc C++ FFI by extracting all declarations and source file paths related to `MiniZinc::Expression` and its subclasses into dedicated files. This addresses the issue of `CMakeLists.txt` and `minizinc_ffi_declarations.h` becoming unwieldy due to repeated declarations and source file entries.
 
-Key changes include:
+Changes include:
+- Created `tools/minizinc_c_wrapper_refactored/minizinc_expression_declarations.h` to house all FFI declarations for expression types.
+- Cleaned up `tools/minizinc_c_wrapper_refactored/minizinc_ffi_declarations.h` by removing the moved declarations and adding an `#include` statement for the new header.
+- Created `cmake/targets/minizinc_expression_sources.cmake` to list all source files related to expression types.
+- Cleaned up `cmake/targets/minizinc_c_wrapper.cmake` by removing the moved source file paths and adding an `include` statement for the new CMake file.
 
-- **Debugging SOP:** Added `docs/debugging_sop.md` to provide a structured guide for debugging MiniZinc FFI issues on Android/Termux, empowering new contributors.
-- **Minimal Reproduction Script:** Created `reproduce_minizinc_ffi_bug.sh` to provide a consistent and minimal way to reproduce the current `SIGABRT` and MiniZinc parsing errors.
-- **FFI Introspection:**
-    - Implemented C++ FFI functions (`minizinc_get_executable_path`, `minizinc_get_mznlib_dir`) to expose MiniZinc's executable path and standard library directory to Rust.
-    - Integrated these functions into the Rust FFI (`MiniZincEnvironment::get_executable_path`, `MiniZincEnvironment::get_mznlib_dir`) and added print statements in tests to provide crucial environmental context during runtime.
-    - Added a minimal MiniZinc model (`test_minimal.mzn`) for focused testing.
-- **C++ FFI Refinements:**
-    - Modified `minizinc_env_wrapper.h` and `minizinc_env_wrapper.cpp` to support a verbose flag, enabling more detailed MiniZinc internal logging.
-    - Updated CMake configuration to include new C++ source files for introspection.
-
-This commit marks a critical step in understanding and resolving the underlying MiniZinc library issues, moving us closer to a stable and fully functional FFI.
+This refactoring improves modularity, readability, and maintainability of the FFI, making it easier to extend in the future.

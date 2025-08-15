@@ -76,6 +76,14 @@ MiniZinc::ArrayLit* expression_as_arraylit(MiniZinc::Expression* expr_ptr);
 unsigned int arraylit_get_size(MiniZinc::ArrayLit* arraylit_ptr);
 MiniZinc::Expression* arraylit_get_element_at_index(MiniZinc::ArrayLit* arraylit_ptr, unsigned int index);
 
+// New functions for Expression array literal
+bool expression_is_arraylit(MiniZinc::Expression* expr_ptr);
+MiniZinc::ArrayLit* expression_as_arraylit(MiniZinc::Expression* expr_ptr);
+
+// New functions for ArrayLit
+unsigned int arraylit_get_size(MiniZinc::ArrayLit* arraylit_ptr);
+MiniZinc::Expression* arraylit_get_element_at_index(MiniZinc::ArrayLit* arraylit_ptr, unsigned int index);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

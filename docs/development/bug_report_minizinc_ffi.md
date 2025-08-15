@@ -8,7 +8,7 @@
 *   **MiniZinc Version:** 2.9.3 (built from source)
 *   **Rust Version:** `rustc 1.88.0 (6b00bc388 2025-06-23)`
 *   **CMake Version:** `cmake version 4.0.3`
-*   **`libminizinc` repository:** `https://github.com/your-repo/libminizinc` (assuming our fork)
+*   **`libminizinc` repository:** `https://github.com/MiniZinc/libminizinc.git` (assuming our fork)
 
 ## Description
 This bug report details a persistent issue encountered while developing a Rust Foreign Function Interface (FFI) for the MiniZinc library. The primary goal is to enable parsing and inspection of MiniZinc models directly from Rust.
@@ -24,7 +24,7 @@ To reproduce the error, follow these steps:
 
 1.  **Clone the `libminizinc` repository:**
     ```bash
-    git clone https://github.com/your-repo/libminizinc.git
+    git clone https://github.com/MiniZinc/libminizinc.git
     cd libminizinc
     ```
     *(Note: Replace `https://github.com/your-repo/libminizinc.git` with the actual URL of our fork if different.)*
@@ -33,7 +33,7 @@ To reproduce the error, follow these steps:
 
 3.  **Build the C++ FFI wrapper and run Rust tests:**
     ```bash
-    ./reproduce_minizinc_ffi_bug.sh
+    ../../reproduce_minizinc_ffi_bug.sh
     ```
 
 ## Expected Behavior
@@ -44,9 +44,9 @@ The `reproduce_minizinc_ffi_bug.sh` script will output a `SIGSEGV` (signal 11) a
 
 ```
 MiniZinc parsing error (captured): Error: type error: undefined identifier `promise_commutative', did you mean `promise_commutative'?
-/data/data/com.termux/files/home/storage/github/libminizinc/share/minizinc/std/stdlib/stdlib_logic.mzn:17.62-80
+share/minizinc/std/stdlib/stdlib_logic.mzn:17.62-80
 MiniZinc parsing error (captured): Error: type error: undefined identifier `promise_commutative', did you mean `promise_commutative'?
-/data/data/com.termux/files/home/storage/github/libminizinc/share/minizinc/std/stdlib/stdlib_opt.mzn:79.52-65
+share/minizinc/std/stdlib/stdlib_opt.mzn:79.52-65
 
 Caused by:
   process didn't exit successfully: `/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/minizinc_ffi-xxxxxxxxxxxx` (signal: 11, SIGSEGV: invalid memory reference)
