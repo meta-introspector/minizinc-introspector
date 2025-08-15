@@ -122,6 +122,9 @@ bool typeinst_is_string(MiniZinc::TypeInst* typeinst_ptr);
 // New function for TypeInst is_ann
 bool typeinst_is_ann(MiniZinc::TypeInst* typeinst_ptr);
 
+// New function for TypeInst is_unknown
+bool typeinst_is_unknown(MiniZinc::TypeInst* typeinst_ptr);
+
 // New functions for Expression inspection
 int expression_get_id(MiniZinc::Expression* expr_ptr);
 bool expression_is_intlit(MiniZinc::Expression* expr_ptr);

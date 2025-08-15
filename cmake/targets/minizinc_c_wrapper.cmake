@@ -38,6 +38,7 @@ add_library(minizinc_c_wrapper SHARED
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/typeinst_is_float.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/typeinst_is_string.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/typeinst_is_ann.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/typeinst_is_unknown.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_id.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_type_inst.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_expression.cpp
