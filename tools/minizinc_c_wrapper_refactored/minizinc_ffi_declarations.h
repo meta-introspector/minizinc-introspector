@@ -176,6 +176,21 @@ bool expression_is_boollit(MiniZinc::Expression* expr_ptr);
 MiniZinc::BoolLit* expression_as_boollit(MiniZinc::Expression* expr_ptr);
 
 // New function for BoolLit value
+bool boollit_get_value(MiniZinc::Bool::BoolLit* boollit_ptr);
+
+// New functions for Expression string literal
+bool expression_is_stringlit(MiniZinc::Expression* expr_ptr);
+MiniZinc::StringLit* expression_as_stringlit(MiniZinc::Expression* expr_ptr);
+
+// New function for StringLit value
+const char* stringlit_get_value(MiniZinc::StringLit* stringlit_ptr);
+MiniZinc::Expression* setlit_get_element_at_index(MiniZinc::SetLit* setlit_ptr, unsigned int index);
+
+// New functions for Expression boolean literal
+bool expression_is_boollit(MiniZinc::Expression* expr_ptr);
+MiniZinc::BoolLit* expression_as_boollit(MiniZinc::Expression* expr_ptr);
+
+// New function for BoolLit value
 bool boollit_get_value(MiniZinc::BoolLit* boollit_ptr);
 
 // New functions for Expression boolean literal

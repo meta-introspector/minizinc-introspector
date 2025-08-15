@@ -17,6 +17,7 @@ pub struct MiniZincFloatLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincSetLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincBoolLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincStringLit(pub *mut std::os::raw::c_void);
+pub struct MiniZincStringLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincId(pub *mut std::os::raw::c_void);
 
 impl MiniZincFloatLit {
@@ -43,6 +44,13 @@ impl MiniZincSetLit {
 impl MiniZincBoolLit {
     pub fn value(&self) -> bool {
         unsafe { boollit_get_value(self.0) }
+    }
+}
+
+impl MiniZincStringLit {
+    pub fn value(&self) -> String {
+        let c_str = unsafe { stringlit_get_value(self.0) };
+        unsafe { CStr::from_ptr(c_str).to_str().unwrap().to_string() }
     }
 }
 
@@ -625,6 +633,19 @@ impl MiniZincExpression {
             None
         } else {
             Some(MiniZincBoolLit(boollit_ptr))
+        }
+    }
+
+    pub fn is_stringlit(&self) -> bool {
+        unsafe { expression_is_stringlit(self.0) }
+    }
+
+    pub fn as_stringlit(&self) -> Option<MiniZincStringLit> {
+        let stringlit_ptr = unsafe { expression_as_stringlit(self.0) };
+        if stringlit_ptr.is_null() {
+            None
+        } else {
+            Some(MiniZincStringLit(stringlit_ptr))
         }
     }
 }
