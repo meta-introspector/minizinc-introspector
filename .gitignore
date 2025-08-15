@@ -45,3 +45,4 @@ proof_tapes/
 /crash_reproduce_stderr.log
 /crash_reproduce_stdout.log
 /strace.log
+/build_coverage/

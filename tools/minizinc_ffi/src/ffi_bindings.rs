@@ -4,10 +4,17 @@ use crate::types::MznSolver;
 unsafe extern "C" {
     pub fn minizinc_env_new() -> *mut MznSolver;
     pub fn minizinc_env_free(env: *mut MznSolver);
-    pub fn minizinc_parse_model(
+    // pub fn minizinc_parse_model(
+    //     env: *mut MznSolver,
+    //     model_str: *const c_char,
+    //     filename: *const c_char,
+    // ) -> *mut std::os::raw::c_void;
+
+    pub fn minizinc_parse_model_with_flags(
         env: *mut MznSolver,
         model_str: *const c_char,
         filename: *const c_char,
+        is_model_string: bool,
     ) -> *mut std::os::raw::c_void;
     pub fn minizinc_parse_data_from_string(
         env: *mut MznSolver,

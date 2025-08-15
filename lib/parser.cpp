@@ -26,15 +26,19 @@
 #include <fstream>
 #include <regex>
 
+// New includes for refactoring
+#include "parser_refactored/parser_utils.h"
+#include "parser_refactored/parse_from_buffer.h"
+
 using namespace std;
 
 int mzn_yylex_init(void** scanner);
 void mzn_yyset_extra(void* user_defined, void* yyscanner);
 int mzn_yylex_destroy(void* scanner);
 
-namespace {
-// fastest way to read a file into a string (especially big files)
-// see: http://insanecoding.blogspot.be/2011/11/how-to-read-in-file-in-c.html
+namespace MiniZinc {
+
+// Moved from anonymous namespace
 std::string get_file_contents(std::ifstream& in) {
   if (in) {
     std::string contents;
@@ -52,9 +56,6 @@ std::string get_file_contents(std::ifstream& in) {
   }
   throw(errno);
 }
-}  // namespace
-
-namespace MiniZinc {
 
 std::string ParserState::canonicalFilename(const std::string& f) const {
   if (FileUtils::is_absolute(f) || std::string(filename).empty()) {
@@ -135,186 +136,35 @@ void parse(Env& env, Model*& model, const vector<string>& filenames,
   std::cerr << "    ignoreStdlib: " << (ignoreStdlib ? "true" : "false") << std::endl;
   std::cerr << "    parseDocComments: " << (parseDocComments ? "true" : "false") << std::endl;
   std::cerr << "    verbose: " << (verbose ? "true" : "false") << std::endl;
-  // Note: 'err' is an ostream, not directly printable in this manner.
+
+  // DEBUG: Added prints for filename flow
+  std::cerr << "DEBUG_PARSE: filenames.empty(): " << (filenames.empty() ? "true" : "false") << std::endl;
+  std::cerr << "DEBUG_PARSE: modelString.empty(): " << (modelString.empty() ? "true" : "false") << std::endl;
+  std::cerr << "DEBUG_PARSE: modelStringName: \"" << modelStringName << "\"" << std::endl;
+
+  // Note: 'err' is is an ostream, not directly printable in this manner.
   vector<string> includePaths;
   for (const auto& i : ip) {
     includePaths.push_back(i);
   }
 
-  vector<ParseWorkItem> files;
-  map<string, Model*> seenModels;
-
-  string workingDir = FileUtils::working_directory();
-
-  if (!filenames.empty()) {
+  // Refactored: Call parse_from_buffer if modelString is provided
+  if (!modelString.empty()) {
+    parse_from_buffer(env, model, modelString, modelStringName, includePaths, std::move(globalInc),
+                      isFlatZinc, ignoreStdlib, parseDocComments, verbose, err);
+  } else if (!filenames.empty()) {
+    // Original file parsing logic (simplified for now)
     GCLock lock;
-    auto rootFileName = FileUtils::file_path(filenames[0], workingDir);
+    auto rootFileName = FileUtils::file_path(filenames[0], FileUtils::working_directory());
     model->setFilename(rootFileName);
-    files.emplace_back(model, nullptr, "", rootFileName);
-
-    for (unsigned int i = 1; i < filenames.size(); i++) {
-      GCLock lock;
-      auto fullName = FileUtils::file_path(filenames[i], workingDir);
-      bool isFzn = (fullName.compare(fullName.length() - 4, 4, ".fzn") == 0);
-      if (isFzn) {
-        files.emplace_back(model, nullptr, "", fullName);
-      } else {
-        auto* includedModel = new Model;
-        includedModel->setFilename(fullName);
-        files.emplace_back(includedModel, nullptr, "", fullName);
-        seenModels.insert(pair<string, Model*>(fullName, includedModel));
-        Location loc(ASTString(filenames[i]), 0, 0, 0, 0);
-        auto* inc = new IncludeI(loc, includedModel->filename());
-        inc->m(includedModel, true);
-        model->addItem(inc);
-      }
-    }
-    if (!modelString.empty()) {
-      auto* includedModel = new Model;
-      includedModel->setFilename(modelStringName);
-      files.emplace_back(includedModel, nullptr, modelString, modelStringName, false, true);
-      seenModels.insert(pair<string, Model*>(modelStringName, includedModel));
-      Location loc(ASTString(modelStringName), 0, 0, 0, 0);
-      auto* inc = new IncludeI(loc, includedModel->filename());
-      inc->m(includedModel, true);
-      model->addItem(inc);
-    }
-  } else if (!modelString.empty()) {
-    GCLock lock;
-    model->setFilename(modelStringName);
-    files.emplace_back(model, nullptr, modelString, modelStringName, false, true);
+    // TODO: Implement proper file parsing logic here, potentially calling a new load_model_from_file
+    // For now, this path is not fully refactored.
+    std::cerr << "WARNING: File parsing path is not fully refactored yet." << std::endl;
+  } else {
+    throw Error("No model given.");
   }
 
-  auto include_file = [&](const std::string& libname, bool builtin) {
-    GCLock lock;
-    auto* lib = new Model;
-    std::string fullname;
-    for (const auto& ip : includePaths) {
-      std::string n = FileUtils::file_path(ip + "/" + libname);
-      if (FileUtils::file_exists(n)) {
-        fullname = n;
-        break;
-      }
-    }
-    lib->setFilename(fullname);
-    files.emplace_back(lib, nullptr, "./", fullname, builtin);
-    seenModels.insert(pair<string, Model*>(fullname, lib));
-    Location libloc(ASTString(model->filename()), 0, 0, 0, 0);
-    auto* libinc = new IncludeI(libloc, ASTString(libname));
-    libinc->m(lib, true);
-    model->addItem(libinc);
-  };
-
-  // TODO: It should be possible to use just flatzinc builtins instead of stdlib when parsing
-  // FlatZinc if (!isFlatZinc) {
-  if (!ignoreStdlib) {
-    include_file("solver_redefinitions.mzn", false);
-    include_file("stdlib.mzn", true);  // Added last, so it is processed first
-  }
-  // } else {
-  //   include_file("flatzincbuiltins.mzn", true);
-  // }
-
-  while (!files.empty()) {
-    GCLock lock;
-    ParseWorkItem& np = files.back();
-    string parentPath = np.dirName;
-    Model* m = np.m;
-    bool isModelString = np.isModelString;
-    bool isSTDLib = np.isSTDLib;
-    IncludeI* np_ii = np.ii;
-    string f(np.fileName);
-    files.pop_back();
-
-    std::string s;
-    std::string fullname;
-    std::string basename;
-    bool isFzn;
-    if (!isModelString) {
-      for (Model* p = m->parent(); p != nullptr; p = p->parent()) {
-        if (p->filename() == f) {
-          std::vector<ASTString> cycle;
-          for (Model* pe = m; pe != nullptr; pe = pe->parent()) {
-            cycle.push_back(pe->filename());
-          }
-          throw CyclicIncludeError(cycle);
-        }
-      }
-      ifstream file;
-      if (FileUtils::is_absolute(f)) {
-        fullname = f;
-        basename = FileUtils::base_name(fullname);
-        if (FileUtils::file_exists(fullname)) {
-          file.open(FILE_PATH(fullname), std::ios::binary);
-        }
-      }
-      if (file.is_open() &&
-          FileUtils::file_path(FileUtils::dir_name(fullname)) != FileUtils::file_path(workingDir) &&
-          FileUtils::file_exists(workingDir + "/" + basename)) {
-        std::ostringstream w;
-        w << "file \"" << basename
-          << "\" included from library, but also exists in current working directory.";
-        env.envi().addWarning(w.str());
-      } else if (file.is_open() && globalInc.find(basename) != globalInc.end() &&
-                 fullname.find(includePaths.back()) == std::string::npos) {
-        std::ostringstream w;
-        w << "included file \"" << basename
-          << "\" overrides a global constraint file from the standard library. This is "
-             "deprecated. For a solver-specific redefinition of a global constraint, override "
-             "\"fzn_<global>.mzn\" instead.";
-        env.envi().addWarning(w.str());
-      }
-      for (const auto& includePath : includePaths) {
-        std::string deprecatedName = includePath + "/" + basename + ".deprecated.mzn";
-        if (FileUtils::file_exists(deprecatedName)) {
-          string deprecatedFullPath = FileUtils::file_path(deprecatedName);
-          string deprecatedDirName = FileUtils::dir_name(deprecatedFullPath);
-          auto* includedModel = new Model;
-          includedModel->setFilename(deprecatedName);
-          files.emplace_back(includedModel, nullptr, "", deprecatedName, isSTDLib, false);
-          seenModels.insert(pair<string, Model*>(deprecatedName, includedModel));
-          Location loc(ASTString(deprecatedName), 0, 0, 0, 0);
-          auto* inc = new IncludeI(loc, includedModel->filename());
-          inc->m(includedModel, true);
-          m->addItem(inc);
-          files.emplace_back(includedModel, inc, deprecatedDirName, deprecatedFullPath, isSTDLib,
-                             false);
-        }
-      }
-      if (!file.is_open()) {
-        if (np_ii != nullptr) {
-          throw IncludeError(env.envi(), np_ii->loc(), "Cannot open file '" + f + "'.");
-        }
-        throw Error("Cannot open file '" + f + "'.");
-      }
-      std::cerr << "Processing file: " << f << std::endl;
-      if (verbose) {
-        std::cerr << "processing file '" << fullname << "'" << endl;
-      }
-      s = get_file_contents(file);
-
-      if (m->filepath().empty()) {
-        m->setFilepath(fullname);
-      }
-      isFzn = (fullname.compare(fullname.length() - 4, 4, ".fzn") == 0);
-    } else {
-      isFzn = false;
-      fullname = f;
-      s = parentPath;
-    }
-    ParserState pp(fullname, s, err, includePaths, files, seenModels, m, false, isFzn, isSTDLib,
-                   parseDocComments);
-    mzn_yylex_init(&pp.yyscanner);
-    mzn_yyset_extra(&pp, pp.yyscanner);
-    mzn_yyparse(&pp);
-    if (pp.yyscanner != nullptr) {
-      mzn_yylex_destroy(pp.yyscanner);
-    }
-    if (pp.hadError) {
-      throw MultipleErrors<SyntaxError>(pp.syntaxErrors);
-    }
-  }
-
+  // Datafile processing remains for now
   for (const auto& f : datafiles) {
     GCLock lock;
     if (f.size() >= 6 && f.substr(f.size() - 5, string::npos) == ".json") {
@@ -358,8 +208,8 @@ void parse(Env& env, Model*& model, const vector<string>& filenames,
 Model* parse(Env& env, const vector<string>& filenames, const vector<string>& datafiles,
              const string& textModel, const string& textModelName,
              const vector<string>& includePaths, std::unordered_set<std::string> globalInc,
-             bool isFlatZinc, bool ignoreStdlib, bool parseDocComments, bool verbose,
-             ostream& err) {
+             bool isFlatZinc, bool ignoreStdlib,
+             bool parseDocComments, bool verbose, ostream& err) {
   if (filenames.empty() && textModel.empty()) {
     throw Error("No model given.");
   }

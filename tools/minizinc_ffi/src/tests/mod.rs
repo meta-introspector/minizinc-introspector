@@ -23,14 +23,17 @@ mod tests {
     fn test_parse_model() {
         let env = MiniZincEnvironment::new().unwrap();
         let model_code = "var int: x; solve satisfy;";
-        let filename = ""; // Changed to empty string
-        let model = env.parse_model(model_code, filename);
+        let filename = ""; // Use empty string, parse_model now handles it
+        let model = env.parse_model(model_code, filename); // parse_model now calls minizinc_parse_model_with_flags
         assert!(model.is_ok());
         let model_obj = model.unwrap();
         println!("Parsed model filename: {}", model_obj.filename());
         println!("Parsed model filepath: {}", model_obj.filepath());
         println!("Parsed model num_items: {}", model_obj.num_items());
-        assert_eq!(model_obj.filename(), filename);
+        // Note: filename returned by model_obj.filename() will be "dummy_model.mzn"
+        // if an empty string was passed to parse_model.
+        // So, we assert against the expected dummy filename.
+        assert_eq!(model_obj.filename(), "dummy_model.mzn");
         assert_eq!(model_obj.num_items(), 2); // var int: x; solve satisfy;
 
         // Generate C++ coverage report after tests

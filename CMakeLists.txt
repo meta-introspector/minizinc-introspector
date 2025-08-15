@@ -65,6 +65,7 @@ endif()
 #  -- Compiler configuration
 
 include(cmake/support/compiler_setup.cmake)
+include(cmake/support/coverage_setup.cmake)
 
 configure_file(
   ${PROJECT_SOURCE_DIR}/include/minizinc/config.hh.in
