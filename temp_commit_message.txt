@@ -1,4 +1,3 @@
-Fix: Resolve remaining C++ FFI build errors
+Fix: Resolve remaining C++ FFI header declaration errors
 
-- Corrected internal type mismatch in `minizinc_solver_get_solver_instance.cpp`.
-- Updated `minizinc_env_new.h` to reflect the correct return type of `minizinc_env_new()`.
+- Updated `minizinc_env_free.h` to reflect the correct argument type of `minizinc_env_free()`.
