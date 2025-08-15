@@ -1,7 +1,4 @@
 fn main() {
-    // Tell cargo to look for shared libraries in the specified directory
-    println!("cargo:rustc-link-search=/data/data/com.termux/files/home/storage/github/libminizinc/build");
-
-    // Tell cargo to link the `minizinc_c_wrapper` library
-    println!("cargo:rustc-link-lib=minizinc_c_wrapper");
+    // Tell cargo to link the `minizinc_c_wrapper` library with its absolute path
+    println!("cargo:rustc-link-arg=/data/data/com.termux/files/home/storage/github/libminizinc/build/libminizinc_c_wrapper.so");
 }

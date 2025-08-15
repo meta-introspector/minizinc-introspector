@@ -72,6 +72,7 @@ echo "--- Running C ABI standalone test ---"
 ${C_TEST_DIR}/test_c_abi
 
 echo "--- Running Rust interface tests ---"
-LD_LIBRARY_PATH=${BUILD_DIR}:${LD_LIBRARY_PATH} cargo test --package ${RUST_CRATE_NAME}
+cp ${MINIZINC_C_WRAPPER_LIB_PATH} tools/${RUST_CRATE_NAME}/target/debug/
+cargo test --package ${RUST_CRATE_NAME}
 
 echo "--- All build and tests completed successfully ---"
