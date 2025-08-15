@@ -128,6 +128,9 @@ bool typeinst_is_unknown(MiniZinc::TypeInst* typeinst_ptr);
 // New function for TypeInst is_plain
 bool typeinst_is_plain(MiniZinc::TypeInst* typeinst_ptr);
 
+// New function for TypeInst is_bot
+bool typeinst_is_bot(MiniZinc::TypeInst* typeinst_ptr);
+
 // New functions for Expression inspection
 int expression_get_id(MiniZinc::Expression* expr_ptr);
 bool expression_is_intlit(MiniZinc::Expression* expr_ptr);
