@@ -77,6 +77,9 @@ MiniZinc::Expression* vardecl_get_expression(MiniZinc::VarDeclI* vardecl_ptr);
 // New function for VarDeclI toplevel
 bool vardecl_is_toplevel(MiniZinc::VarDeclI* vardecl_ptr);
 
+// New function for VarDeclI introduced
+bool vardecl_is_introduced(MiniZinc::VarDeclI* vardecl_ptr);
+
 // New functions for TypeInst inspection
 int typeinst_get_base_type(MiniZinc::TypeInst* typeinst_ptr);
 
