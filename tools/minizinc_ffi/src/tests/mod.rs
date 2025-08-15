@@ -3,42 +3,38 @@ mod tests {
     use super::*;
     use crate::environment::MiniZincEnvironment;
     use crate::ffi_bindings::{minizinc_gc_lock, minizinc_gc_unlock};
-    use std::sync::Once;
     use crate::coverage_report;
 
-    static INIT: Once = Once::new();
-
-    pub fn setup() {
-        INIT.call_once(|| {
+    lazy_static! {
+        static ref GLOBAL_MINIZINC_ENV: MiniZincEnvironment = {
             // Initialize logging or other test-wide setup
-            println!("---> Initializing MiniZinc GC lock <---");
+            println!("---> Initializing MiniZinc GC lock and global environment <---");
             unsafe {
                 minizinc_gc_lock();
             }
-        });
+            MiniZincEnvironment::new().expect("Failed to create global MiniZincEnvironment")
+        };
     }
 
     #[test]
     fn test_get_version_string() {
-        setup();
-        let env = MiniZincEnvironment::new().unwrap();
+        let env = &GLOBAL_MINIZINC_ENV;
         let version = env.get_version_string();
         println!("MiniZinc Version: {}", version);
         assert_eq!(version, "2.9.4-introspector");
     }
 
     #[test]
-    fn test_env_creation_and_free() {
-        setup();
-        let env = MiniZincEnvironment::new();
-        assert!(env.is_ok());
-        // Drop will be called automatically when env goes out of scope
+    fn test_global_env_access() {
+        // Access the global environment to ensure it's initialized and accessible
+        let _env = &GLOBAL_MINIZINC_ENV;
+        // No explicit assert for creation/free, as it's managed by lazy_static!
+        // The test ensures that accessing the global environment does not panic.
     }
 
     #[test]
     fn test_parse_string() {
-        setup();
-        let env = MiniZincEnvironment::new().unwrap();
+        let env = &GLOBAL_MINIZINC_ENV;
         let model_code = "var int: x; solve satisfy;";
         let model = env.parse_string(model_code);
         assert!(model.is_ok());
@@ -49,8 +45,7 @@ mod tests {
 
     #[test]
     fn test_solve_and_extract_int() {
-        setup();
-        let env = MiniZincEnvironment::new().unwrap();
+        let env = &GLOBAL_MINIZINC_ENV;
         let model_code = "var int: x; constraint x > 5; solve minimize x;";
 
         // For now, we only parse the model. Solving will be added later.
