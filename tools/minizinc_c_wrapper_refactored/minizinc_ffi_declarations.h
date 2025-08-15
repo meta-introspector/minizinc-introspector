@@ -95,6 +95,9 @@ int typeinst_get_base_type(MiniZinc::TypeInst* typeinst_ptr);
 // New function for TypeInst is_var
 bool typeinst_is_var(MiniZinc::TypeInst* typeinst_ptr);
 
+// New function for TypeInst is_par
+bool typeinst_is_par(MiniZinc::TypeInst* typeinst_ptr);
+
 // New functions for Expression inspection
 int expression_get_id(MiniZinc::Expression* expr_ptr);
 bool expression_is_intlit(MiniZinc::Expression* expr_ptr);
