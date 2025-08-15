@@ -1,46 +1,6 @@
-feat: Implement FFI for MiniZinc solving and integer solution extraction
+feat: Add new poems and MiniZinc models, and attempt to fix FFI compilation errors
 
-This commit introduces the foundational FFI for MiniZinc model solving and integer solution extraction. Key changes include:
-
-- **C++ FFI for Solver:** Added `minizinc_solver_run`, `minizinc_solver_free`, `minizinc_solver_get_solver_instance`, `minizinc_solver_instance_next`, `minizinc_solver_instance_print_solution`, and `minizinc_solver_instance_get_solution_value_int` to the C++ wrapper.
-- **Rust FFI Bindings:** Updated `ffi_bindings.rs` with corresponding `extern "C"` declarations.
-- **Rust Environment Methods:** Modularized `MiniZincEnvironment` with new methods for running models, getting solver instances, iterating solutions, printing solutions, and extracting integer values.
-- **CMake Updates:** Modified `cmake/targets/minizinc_c_wrapper.cmake` to include new C++ source files.
-- **Rust Test:** Added `test_solve_and_extract_int` to `tools/minizinc_ffi/src/tests/mod.rs` to verify the new solving and extraction functionality.
-
----
-**KitKat Break: Current Status and New Strategic Plan for FFI Debugging**
-
-**Problem:** `cargo test --package minizinc_ffi` is failing with `assertion "locked()" failed` in `gc.cpp` and `SIGABRT` (process abort signal). The output `[minizinc_parse_string_only] MiniZinc::Env created.` indicates a local `MiniZinc::Env` is still being created, despite efforts to prevent it. This suggests a fundamental conflict in MiniZinc's internal memory management when accessed via FFI.
-
-**Root Cause (Hypothesis):** The `MiniZinc::ParserState` constructor, or some other part of the MiniZinc C++ library, is implicitly creating a `MiniZinc::Env` object when it shouldn't, leading to conflicts with the `MznSolver`'s managed `Env` and MiniZinc's garbage collection system. This might be due to a default constructor being called, or a specific overload that doesn't correctly utilize the provided `Env`.
-
-**Previous Attempts & Learnings:**
-*   Corrected `ffi_bindings.rs` for `unsafe` blocks and type mismatches (`MiniZincEnvWrapper` to `MznSolver`, `MznItem` to `MiniZincItem`).
-*   Explicitly listed C++ source files in `cmake/targets/minizinc_c_wrapper.cmake` to resolve linker errors.
-*   Removed `MiniZincEnvWrapper` from `minizinc_opaque_types.h` and refactored `minizinc_env_new.cpp` and `minizinc_env_free.cpp` to directly manage `MznSolver`.
-*   Modified `minizinc_parse_string_only.cpp` to use the `MznSolver`'s `Env` and removed the explicit `MiniZinc::Env env;` line.
-*   **Key Insight:** The `[minizinc_parse_string_only] MiniZinc::Env created.` message is still appearing, indicating that a local `MiniZinc::Env` is being instantiated *somewhere* within the MiniZinc C++ parsing logic, even after passing the `MznSolver`'s `Env` to `ParserState`.
-
-**New Strategic Plan:**
-
-1.  **Deep Dive into MiniZinc `ParserState` and `Env` Interaction:**
-    *   **Objective:** Identify the exact location in the MiniZinc C++ source code where `MiniZinc::Env` is being instantiated when `minizinc_parse_string_only` is called.
-    *   **Method:** Search the MiniZinc source for `MiniZinc::Env::Env()` or similar constructor calls. Add targeted `std::cerr` debug statements within MiniZinc's core `Env` and `ParserState` constructors to trace the execution flow.
-    *   **Rationale:** Pinpointing the exact instantiation will reveal why a new `Env` is being created despite our efforts to pass an existing one.
-
-2.  **Targeted Debugging/Instrumentation:**
-    *   **Objective:** Gain granular insight into the `Env` lifecycle during parsing.
-    *   **Method:** Insert `std::cerr` statements in `minizinc/lib/gc.cpp` (around `GC::alloc` and `GC::free`) and `minizinc/include/minizinc/aststring.hh` (around `ASTStringData::destroy`) to understand when and why these assertions are triggered.
-    *   **Rationale:** This will help confirm if the `Env` conflict is indeed the cause of the GC and ASTStringData assertions.
-
-3.  **Re-evaluate `minizinc_parse_string_only` Implementation:**
-    *   **Objective:** Ensure `minizinc_parse_string_only` correctly uses the `MznSolver`'s `Env` and does not trigger any implicit `Env` creation within MiniZinc's parsing pipeline.
-    *   **Method:** Based on the findings from step 1, adjust the `ParserState` initialization or other relevant parts of `minizinc_parse_string_only.cpp` to strictly adhere to MiniZinc's expected `Env` management for parsing. This might involve using a different `ParserState` constructor or a different parsing API if available.
-    *   **Rationale:** This is the core fix to prevent the `Env` conflicts.
-
-4.  **Iterative Build and Test:**
-    *   **Method:** After each significant change, perform a clean build of the C++ wrapper (`rm -rf build build_coverage && cmake -B build && cmake --build build && cmake -B build_coverage -DCMAKE_BUILD_TYPE=Coverage && cmake --build build_coverage`) followed by `cargo test --package minizinc_ffi`.
-    *   **Rationale:** This ensures that changes are properly reflected in the compiled binaries and allows for rapid iteration and verification.
-
-This detailed plan will guide my next steps. I will now commit these changes to `temp_commit_message.txt` and then proceed with the first step of the new strategic plan: deep diving into MiniZinc's `ParserState` and `Env` interaction.
+This commit includes:
+- Two new poems in `docs/poems/` exploring simulated machine consciousness, Gödel numbers, and closed worlds.
+- Two MiniZinc models in `minizinc_models/` for encoding emoji poems as Gödel numbers, demonstrating the concept.
+- Attempts to resolve compilation errors in the FFI wrapper, specifically type mismatches related to `MiniZincEnvWrapper` and `MiniZinc::MznSolver*`. This involved renaming `minizinc_env_new` to `minizinc_env_new_wrapper` and applying `reinterpret_cast` workarounds in `test_ffi_parser.cpp`.
