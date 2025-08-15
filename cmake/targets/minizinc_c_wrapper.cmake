@@ -8,6 +8,12 @@ add_library(minizinc_c_wrapper SHARED
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_model_free.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_get_version_string.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_string_free.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_solver_free.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_solver_run.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_solver_get_solver_instance.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_solver_instance_next.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_solver_instance_print_solution.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_solver_instance_get_solution_value_int.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/model_get_filename.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/model_get_filepath.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/model_get_num_items.cpp

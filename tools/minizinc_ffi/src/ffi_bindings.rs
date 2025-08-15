@@ -164,6 +164,18 @@ unsafe extern "C" {
     pub fn minizinc_get_mznlib_dir(env_ptr: *mut MznSolver) -> *const c_char;
     pub fn minizinc_get_executable_path() -> *const c_char;
 
+    // New functions for solving
+    pub fn minizinc_solver_run(solver_ptr: *mut MznSolver, model_str: *const c_char, args: *const *const c_char, num_args: i32) -> i32;
+    pub fn minizinc_solver_free(solver_ptr: *mut MznSolver);
+    pub fn minizinc_solver_get_solver_instance(solver_ptr: *mut MznSolver) -> *mut std::os::raw::c_void;
+
+    // New functions for SolverInstanceBase
+    pub fn minizinc_solver_instance_next(si_ptr: *mut std::os::raw::c_void) -> i32;
+    pub fn minizinc_solver_instance_print_solution(si_ptr: *mut std::os::raw::c_void);
+
+    // New functions for solution value extraction
+    pub fn minizinc_solver_instance_get_solution_value_int(si_ptr: *mut std::os::raw::c_void, var_name: *const c_char) -> i32;
+
     // New function for MiniZincModel documentation comment
     pub fn minizinc_model_get_doc_comment(model_ptr: *mut std::os::raw::c_void) -> *const c_char;
 

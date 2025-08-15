@@ -7,6 +7,11 @@ pub mod impl_get_version_string;
 pub mod impl_get_mznlib_dir;
 pub mod impl_get_executable_path;
 pub mod impl_drop;
+pub mod impl_run_model;
+pub mod impl_get_solver_instance;
+pub mod impl_solver_instance_next;
+pub mod impl_solver_instance_print_solution;
+pub mod impl_get_solution_value_int;
 
 pub use minizinc_environment_struct::MiniZincEnvironment;
 pub use impl_new::*;

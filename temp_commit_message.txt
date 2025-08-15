@@ -1,5 +1,9 @@
-feat: Improve FFI string handling and modularize Rust environment
+feat: Implement FFI for MiniZinc solving and integer solution extraction
 
-This commit refactors the MiniZinc FFI to correctly handle C-allocated strings, specifically for `model_get_filepath`. A new C function `minizinc_string_free` is introduced to deallocate these strings, and a `MiniZincString` wrapper is added to the Rust FFI to ensure proper memory management via `Drop` implementation.
+This commit introduces the foundational FFI for MiniZinc model solving and integer solution extraction. Key changes include:
 
-Additionally, the Rust FFI environment has been further modularized by extracting `impl_parse_string` into its own file, adhering to the 'one declaration per file' principle.
+- **C++ FFI for Solver:** Added `minizinc_solver_run`, `minizinc_solver_free`, `minizinc_solver_get_solver_instance`, `minizinc_solver_instance_next`, `minizinc_solver_instance_print_solution`, and `minizinc_solver_instance_get_solution_value_int` to the C++ wrapper.
+- **Rust FFI Bindings:** Updated `ffi_bindings.rs` with corresponding `extern "C"` declarations.
+- **Rust Environment Methods:** Modularized `MiniZincEnvironment` with new methods for running models, getting solver instances, iterating solutions, printing solutions, and extracting integer values.
+- **CMake Updates:** Modified `cmake/targets/minizinc_c_wrapper.cmake` to include new C++ source files.
+- **Rust Test:** Added `test_solve_and_extract_int` to `tools/minizinc_ffi/src/tests/mod.rs` to verify the new solving and extraction functionality.

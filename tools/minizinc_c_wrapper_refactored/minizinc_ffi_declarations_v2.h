@@ -166,6 +166,18 @@ bool typeinst_is_int_set_array(MiniZinc::TypeInst* typeinst_ptr);
 const char* minizinc_get_mznlib_dir(MiniZinc::MznSolver* env_ptr);
 const char* minizinc_get_executable_path();
 
+// New functions for solving
+int minizinc_solver_run(MiniZinc::MznSolver* solver_ptr, const char* model_str, const char** args, int num_args);
+void minizinc_solver_free(MiniZinc::MznSolver* solver_ptr);
+MiniZinc::SolverInstanceBase* minizinc_solver_get_solver_instance(MiniZinc::MznSolver* solver_ptr);
+
+// New functions for SolverInstanceBase
+int minizinc_solver_instance_next(MiniZinc::SolverInstanceBase* si_ptr);
+void minizinc_solver_instance_print_solution(MiniZinc::SolverInstanceBase* si_ptr);
+
+// New functions for solution value extraction
+int minizinc_solver_instance_get_solution_value_int(MiniZinc::SolverInstanceBase* si_ptr, const char* var_name);
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
