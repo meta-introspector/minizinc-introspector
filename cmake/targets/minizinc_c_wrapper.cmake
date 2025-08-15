@@ -25,6 +25,7 @@ add_library(minizinc_c_wrapper SHARED
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_get_executable_path.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_model_doc_comment.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_model_get_parent.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_model_get_solve_item.cpp
 )
 
 # Link against libmzn (the main MiniZinc library)

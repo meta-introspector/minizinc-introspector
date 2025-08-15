@@ -42,6 +42,9 @@ const char* minizinc_model_get_doc_comment(MiniZincModel* model_ptr);
 // New function for MiniZincModel parent
 MiniZincModel* minizinc_model_get_parent(MiniZincModel* model_ptr);
 
+// New function for MiniZincModel solve item
+SolveI* minizinc_model_get_solve_item(MiniZincModel* model_ptr);
+
 // New functions for MiniZincItem inspection
 int item_get_id(Item* item_ptr);
 bool item_is_vardecl(Item* item_ptr);
