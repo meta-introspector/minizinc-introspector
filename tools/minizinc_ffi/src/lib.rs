@@ -108,6 +108,9 @@ unsafe extern "C" {
     // New function for TypeInst is_present
     fn typeinst_is_present(typeinst_ptr: *mut std::os::raw::c_void) -> bool;
 
+    // New function for TypeInst is_set
+    fn typeinst_is_set(typeinst_ptr: *mut std::os::raw::c_void) -> bool;
+
     // New functions for Expression inspection
     fn expression_get_id(expr_ptr: *mut std::os::raw::c_void) -> i32;
     fn expression_is_intlit(expr_ptr: *mut std::os::raw::c_void) -> bool;
@@ -400,6 +403,10 @@ impl MiniZincTypeInst {
 
     pub fn is_present(&self) -> bool {
         unsafe { typeinst_is_present(self.0) }
+    }
+
+    pub fn is_set(&self) -> bool {
+        unsafe { typeinst_is_set(self.0) }
     }
 }
 
