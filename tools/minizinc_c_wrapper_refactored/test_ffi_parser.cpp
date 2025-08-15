@@ -51,7 +51,7 @@ int main() {
     std::cout << "minizinc_solver_get_solver_instance test passed." << std::endl;
 
     // Test minizinc_env_free
-    minizinc_env_free(reinterpret_cast<MiniZinc::MznSolver*>(env_wrapper));
+    minizinc_env_free(env_wrapper);
     std::cout << "All tests passed successfully!" << std::endl;
 
     return 0;
