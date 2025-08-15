@@ -56,7 +56,7 @@ MiniZincModel* minizinc_parse_model_with_flags(MiniZincEnvWrapper* wrapper_ptr, 
     std::cerr << "[minizinc_parse_model_with_flags]   filename_to_pass (after conditional, now always empty): \"" << filename_to_pass << "\"" << std::endl; std::cerr.flush();
 
     try {
-        MiniZinc::Env& env = *(wrapper_ptr->solver->_flt.getEnv()); // Use the environment from the wrapper
+        MiniZinc::Env env(nullptr, std::cerr, std::cerr); // Create an environment object
         
 
         // Directly call the parse function

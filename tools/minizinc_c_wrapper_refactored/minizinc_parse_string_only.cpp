@@ -35,7 +35,7 @@ MiniZincModel* minizinc_parse_string_only(MiniZincEnvWrapper* solver_ptr, const 
     std::string dummy_filename = "<string>"; // Use a dummy filename for ParserState
 
     try {
-        MiniZinc::Env& env = *(solver_ptr->solver->_flt.getEnv()); // Use the environment from the wrapper
+        MiniZinc::Env env(nullptr, std::cerr, std::cerr); // Create an environment object
         std::cerr << "[minizinc_parse_string_only] MiniZinc::Env created." << std::endl; std::cerr.flush();
 
         MiniZinc::Model* model = new MiniZinc::Model();

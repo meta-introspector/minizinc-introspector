@@ -1,1 +1,1 @@
-MiniZincModel* minizinc_parse_string_only(MiniZinc::MznSolver* env, const char* model_str);
+MiniZincModel* minizinc_parse_string_only(MiniZincEnvWrapper* solver_ptr, const char* model_str);
