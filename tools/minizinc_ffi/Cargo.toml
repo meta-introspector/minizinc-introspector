@@ -6,3 +6,4 @@ build = "build.rs"
 links = "minizinc_c_wrapper"
 
 [dependencies]
+lazy_static = "1.4.0"

@@ -1,4 +1,5 @@
-Fix: Revert build.rs to standard C library linking approach
+Docs: KitKat Break - Document current status and plan
 
-- Reverted `build.rs` in `tools/minizinc_ffi/` to use `cargo:rustc-link-search=native=...` and `cargo:rustc-link-lib=...`.
-- This is the standard and recommended way to link external C libraries in Rust, and should resolve the persistent linker errors.
+- Documented the current status of the MiniZinc FFI project, including learnings from C ABI and Rust FFI linking issues, and MiniZinc GC/memory management problems.
+- Outlined the plan for addressing these issues after the KitKat break, focusing on Rust linking, global `MiniZinc::Env` management in Rust tests, and cleaning up unused imports.
+- This commit marks a strategic pause in development as per the KitKat Meta-Program SOP.
