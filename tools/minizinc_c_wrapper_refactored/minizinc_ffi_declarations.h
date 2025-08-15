@@ -137,6 +137,9 @@ bool typeinst_is_top(MiniZinc::TypeInst* typeinst_ptr);
 // New function for TypeInst is_int_set
 bool typeinst_is_int_set(MiniZinc::TypeInst* typeinst_ptr);
 
+// New function for TypeInst is_bool_set
+bool typeinst_is_bool_set(MiniZinc::TypeInst* typeinst_ptr);
+
 // New functions for Expression inspection
 int expression_get_id(MiniZinc::Expression* expr_ptr);
 bool expression_is_intlit(MiniZinc::Expression* expr_ptr);
