@@ -19,6 +19,8 @@ add_library(minizinc_c_wrapper SHARED
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/item_as_assign.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/item_is_constraint.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/item_as_constraint.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/item_is_include.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/item_as_include.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_id.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_type_inst.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_expression.cpp

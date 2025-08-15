@@ -61,6 +61,10 @@ MiniZinc::AssignI* item_as_assign(Item* item_ptr);
 bool item_is_constraint(Item* item_ptr);
 MiniZinc::ConstraintI* item_as_constraint(Item* item_ptr);
 
+// New functions for MiniZincItem include
+bool item_is_include(Item* item_ptr);
+MiniZinc::IncludeI* item_as_include(Item* item_ptr);
+
 // New functions for VarDeclI inspection
 const char* vardecl_get_id(MiniZinc::VarDeclI* vardecl_ptr);
 MiniZinc::TypeInst* vardecl_get_type_inst(MiniZinc::VarDeclI* vardecl_ptr);
