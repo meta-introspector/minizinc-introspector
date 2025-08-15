@@ -4,10 +4,12 @@ use std::os::raw::c_char;
 mod feature_tests;
 
 // Opaque types for MiniZincModel, Item, SolveItem, and OutputItem
+// Opaque types for MiniZincModel, Item, SolveItem, OutputItem, and AssignItem
 pub struct MiniZincModel(pub *mut std::os::raw::c_void);
 pub struct MiniZincItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincSolveItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincOutputItem(pub *mut std::os::raw::c_void);
+pub struct MiniZincAssignItem(pub *mut std::os::raw::c_void);
 
 #[repr(C)]
 pub struct MznSolver { _data: [u8; 0] }
@@ -51,6 +53,10 @@ unsafe extern "C" {
     fn item_get_id(item_ptr: *mut std::os::raw::c_void) -> i32;
     fn item_is_vardecl(item_ptr: *mut std::os::raw::c_void) -> bool;
     fn item_as_vardecl(item_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+
+    // New functions for MiniZincItem assignment
+    fn item_is_assign(item_ptr: *mut std::os::raw::c_void) -> bool;
+    fn item_as_assign(item_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
 
     // New functions for VarDeclI inspection
     fn vardecl_get_id(vardecl_ptr: *mut std::os::raw::c_void) -> *const c_char;
@@ -230,6 +236,19 @@ impl MiniZincItem {
             None
         } else {
             Some(MiniZincVarDecl(vardecl_ptr))
+        }
+    }
+
+    pub fn is_assign(&self) -> bool {
+        unsafe { item_is_assign(self.0) }
+    }
+
+    pub fn as_assign(&self) -> Option<MiniZincAssignItem> {
+        let assign_ptr = unsafe { item_as_assign(self.0) };
+        if assign_ptr.is_null() {
+            None
+        } else {
+            Some(MiniZincAssignItem(assign_ptr))
         }
     }
 }
