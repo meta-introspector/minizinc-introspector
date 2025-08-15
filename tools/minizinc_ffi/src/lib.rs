@@ -144,6 +144,9 @@ unsafe extern "C" {
     // New function for TypeInst is_bool_set
     fn typeinst_is_bool_set(typeinst_ptr: *mut std::os::raw::c_void) -> bool;
 
+    // New function for TypeInst is_float_set
+    fn typeinst_is_float_set(typeinst_ptr: *mut std::os::raw::c_void) -> bool;
+
     // New functions for Expression inspection
     fn expression_get_id(expr_ptr: *mut std::os::raw::c_void) -> i32;
     fn expression_is_intlit(expr_ptr: *mut std::os::raw::c_void) -> bool;
@@ -484,6 +487,10 @@ impl MiniZincTypeInst {
 
     pub fn is_bool_set(&self) -> bool {
         unsafe { typeinst_is_bool_set(self.0) }
+    }
+
+    pub fn is_float_set(&self) -> bool {
+        unsafe { typeinst_is_float_set(self.0) }
     }
 }
 
