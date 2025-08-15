@@ -1,10 +1,10 @@
 #ifndef MINIZINC_FFI_DECLARATIONS_H
 #define MINIZINC_FFI_DECLARATIONS_H
 
-#include <minizinc/flattener.hh>
 #include <minizinc/model.hh>
 #include <minizinc/parser.hh>
 #include <minizinc/ast.hh> // Added for ItemId
+#include <minizinc/solver.hh> // Include MznSolver
 
 #include "minizinc_opaque_types.h"
 
@@ -13,16 +13,16 @@ extern "C" {
 #endif
 
 // Function to create a new MiniZinc environment
-MiniZinc::Flattener* minizinc_env_new();
+MiniZinc::MznSolver* minizinc_env_new();
 
 // Function to free a MiniZinc environment
-void minizinc_env_free(MiniZinc::Flattener* env);
+void minizinc_env_free(MiniZinc::MznSolver* env);
 
 // Function to parse a MiniZinc model from a string
-MiniZincModel* minizinc_parse_model(MiniZinc::Flattener* env, const char* model_str, const char* filename);
+MiniZincModel* minizinc_parse_model(MiniZinc::MznSolver* env, const char* model_str, const char* filename);
 
 // Function to parse DZN data into a MiniZinc model
-int minizinc_parse_data_from_string(MiniZinc::Flattener* env, MiniZincModel* model, const char* data_str, const char* filename);
+int minizinc_parse_data_from_string(MiniZinc::MznSolver* env, MiniZincModel* model, const char* data_str, const char* filename);
 
 // Function to free a MiniZinc model
 void minizinc_model_free(MiniZincModel* model);
@@ -54,7 +54,7 @@ int expression_get_id(MiniZinc::Expression* expr_ptr);
 bool expression_is_intlit(MiniZinc::Expression* expr_ptr);
 
 // New functions for getting MiniZinc library paths
-const char* minizinc_get_mznlib_dir(MiniZinc::Flattener* env_ptr);
+const char* minizinc_get_mznlib_dir(MiniZinc::MznSolver* env_ptr);
 const char* minizinc_get_executable_path();
 
 #ifdef __cplusplus

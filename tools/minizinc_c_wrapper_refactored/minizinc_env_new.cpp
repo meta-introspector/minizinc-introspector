@@ -1,19 +1,24 @@
 #include "minizinc_opaque_types.h"
-#include "minizinc_env_wrapper.h"
+#include <minizinc/solver.hh> // Include MznSolver
 #include <iostream>
 #include <string>
+#include <chrono> // For Timer
 
 extern "C" {
 
-MiniZinc::Flattener* minizinc_env_new() {
-    std::string stdlib_path = "/data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc";
-    std::cerr << "DEBUG: minizinc_env_new - Using stdlib_path: " << std::endl; std::cerr.flush();
-    
-    // Pass true for verbose mode
-    MiniZinc::MiniZincEnvWrapper* new_wrapper = new MiniZinc::MiniZincEnvWrapper(std::cout, std::cerr, stdlib_path, true);
-    std::cerr << "DEBUG: minizinc_env_new - Created Wrapper at: " << new_wrapper << std::endl; std::cerr.flush();
+// Change return type to MznSolver*
+MiniZinc::MznSolver* minizinc_env_new() {
+    // Create a dummy Timer for MznSolver constructor
+    MiniZinc::Timer dummy_timer; // MznSolver expects a Timer object
 
-    return reinterpret_cast<MiniZinc::Flattener*>(new_wrapper);
+    // Create an MznSolver object
+    MiniZinc::MznSolver* solver = new MiniZinc::MznSolver(std::cout, std::cerr, dummy_timer);
+    std::cerr << "DEBUG: minizinc_env_new - Created MznSolver at: " << solver << std::endl; std::cerr.flush();
+
+    // Set verbose flag if needed (MznSolver has its own flagVerbose)
+    solver->flagVerbose = true;
+
+    return solver;
 }
 
 } // extern "C"
