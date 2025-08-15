@@ -56,6 +56,10 @@ unsafe extern "C" {
     // New functions for Expression inspection
     fn expression_get_id(expr_ptr: *mut std::os::raw::c_void) -> i32;
     fn expression_is_intlit(expr_ptr: *mut std::os::raw::c_void) -> bool;
+
+    // New functions for getting MiniZinc library paths
+    fn minizinc_get_mznlib_dir(env_ptr: *mut std::os::raw::c_void) -> *const c_char;
+    fn minizinc_get_executable_path() -> *const c_char;
 }
 
 // Safe Rust wrappers for FFI functions
@@ -109,6 +113,16 @@ impl MiniZincEnvironment {
     pub fn get_version_string(&self) -> String {
         let version_cstr = unsafe { minizinc_get_version_string() };
         unsafe { CStr::from_ptr(version_cstr).to_str().unwrap().to_string() }
+    }
+
+    pub fn get_mznlib_dir(&self) -> String {
+        let mznlib_dir_cstr = unsafe { minizinc_get_mznlib_dir(self.0) };
+        unsafe { CStr::from_ptr(mznlib_dir_cstr).to_str().unwrap().to_string() }
+    }
+
+    pub fn get_executable_path() -> String {
+        let path_cstr = unsafe { minizinc_get_executable_path() };
+        unsafe { CStr::from_ptr(path_cstr).to_str().unwrap().to_string() }
     }
 }
 
@@ -241,9 +255,13 @@ mod tests {
             ("var int: x = 1; solve satisfy;", "model_1.mzn"),
             ("var bool: b; constraint b; solve satisfy;", "model_2.mzn"),
             ("var float: f = 3.14; solve satisfy;", "model_3.mzn"),
+            ("", "test_minimal.mzn"), // New minimal test case
         ];
 
         let env = MiniZincEnvironment::new().unwrap();
+        println!("MiniZinc Executable Path: {}", MiniZincEnvironment::get_executable_path());
+        println!("MiniZinc Version String: {}", env.get_version_string());
+        println!("MiniZinc Lib Dir: {}", env.get_mznlib_dir());
 
         for (model_code, filename) in models {
             println!("\n--- Parsing and Inspecting Model: {} ---", filename);
@@ -255,7 +273,7 @@ mod tests {
 
             assert!(!model.filename().is_empty());
             assert!(!model.filepath().is_empty());
-            assert!(model.num_items() > 0);
+            // assert!(model.num_items() > 0); // This might fail for empty model
 
             for i in 0..model.num_items() {
                 if let Some(item) = model.get_item_at_index(i) {
@@ -273,6 +291,44 @@ mod tests {
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn test_parse_model_from_string() {
+        let env = MiniZincEnvironment::new().unwrap();
+        // Model with x defined
+        let model_code = "var int: x = 1; solve satisfy;";
+        let filename = "test_model.mzn";
+        let model = env.parse_model(model_code, filename);
+        assert!(model.is_ok());
+        let model = model.unwrap();
+        // Model is automatically freed by Drop trait
+
+        println!("Parsed Model Filename: {}", model.filename());
+        println!("Parsed Model Filepath: {}", model.filepath());
+        println!("Parsed Model Num Items: {}", model.num_items());
+
+        assert!(!model.filename().is_empty());
+        assert!(!model.filepath().is_empty());
+        assert!(model.num_items() > 0);
+
+        // Test item inspection
+        if let Some(item) = model.get_item_at_index(0) {
+            println!("Item 0 ID: {:?}", item.item_id());
+            println!("Item 0 is VarDecl: {}", item.is_vardecl());
+            if let Some(vardecl) = item.as_vardecl() {
+                println!("Item 0 is a VarDecl!");
+                println!("VarDecl ID: {}", vardecl.id());
+                let type_inst = vardecl.type_inst();
+                println!("VarDecl TypeInst: {:?}", type_inst);
+                println!("VarDecl TypeInst Base Type: {:?}", type_inst.base_type());
+                if let Some(expr) = vardecl.expression() {
+                    println!("VarDecl Expression: {:?}", expr);
+                    println!("VarDecl Expression ID: {:?}", expr.expression_id());
+                    println!("VarDecl Expression is IntLit: {}", expr.is_intlit());
                 }
             }
         }

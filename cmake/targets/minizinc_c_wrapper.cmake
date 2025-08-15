@@ -21,6 +21,8 @@ add_library(minizinc_c_wrapper SHARED
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/typeinst_get_base_type.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_get_id.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/expression_is_intlit.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_get_mznlib_dir.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/minizinc_get_executable_path.cpp
 )
 
 # Link against libmzn (the main MiniZinc library)

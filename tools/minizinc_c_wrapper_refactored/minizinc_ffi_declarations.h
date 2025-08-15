@@ -53,6 +53,10 @@ int typeinst_get_base_type(MiniZinc::TypeInst* typeinst_ptr);
 int expression_get_id(MiniZinc::Expression* expr_ptr);
 bool expression_is_intlit(MiniZinc::Expression* expr_ptr);
 
+// New functions for getting MiniZinc library paths
+const char* minizinc_get_mznlib_dir(MiniZinc::Flattener* env_ptr);
+const char* minizinc_get_executable_path();
+
 #ifdef __cplusplus
 } // extern "C"
 #endif
