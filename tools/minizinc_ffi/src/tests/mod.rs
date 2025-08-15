@@ -1,13 +1,14 @@
 #[cfg(test)]
 mod tests {
-    
+    use super::*;
     use crate::environment::MiniZincEnvironment;
-    use crate::ffi_bindings::minizinc_gc_lock;
-    
+    use crate::ffi_bindings::{minizinc_gc_lock, minizinc_gc_unlock};
+    use crate::coverage_report;
     use std::sync::Mutex;
 
     lazy_static! {
-        static ref GLOBAL_MINIZINC_ENV: Mutex<MiniZincEnvironment> = {
+        pub static ref GLOBAL_MINIZINC_ENV: Mutex<MiniZincEnvironment> = {
+            println!("---> Initializing GLOBAL_MINIZINC_ENV (should only happen once) <---");
             // Initialize logging or other test-wide setup
             println!("---> Initializing MiniZinc GC lock and global environment <---");
             unsafe {
