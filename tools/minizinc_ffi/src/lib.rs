@@ -138,6 +138,9 @@ unsafe extern "C" {
     // New function for TypeInst is_top
     fn typeinst_is_top(typeinst_ptr: *mut std::os::raw::c_void) -> bool;
 
+    // New function for TypeInst is_int_set
+    fn typeinst_is_int_set(typeinst_ptr: *mut std::os::raw::c_void) -> bool;
+
     // New functions for Expression inspection
     fn expression_get_id(expr_ptr: *mut std::os::raw::c_void) -> i32;
     fn expression_is_intlit(expr_ptr: *mut std::os::raw::c_void) -> bool;
@@ -470,6 +473,10 @@ impl MiniZincTypeInst {
 
     pub fn is_top(&self) -> bool {
         unsafe { typeinst_is_top(self.0) }
+    }
+
+    pub fn is_int_set(&self) -> bool {
+        unsafe { typeinst_is_int_set(self.0) }
     }
 }
 
