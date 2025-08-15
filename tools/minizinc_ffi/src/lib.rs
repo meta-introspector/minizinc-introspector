@@ -1,9 +1,14 @@
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 
+mod feature_tests;
+
 // Opaque types for MiniZincModel and Item
 pub struct MiniZincModel(pub *mut std::os::raw::c_void);
 pub struct MiniZincItem(pub *mut std::os::raw::c_void);
+
+#[repr(C)]
+pub struct MznSolver { _data: [u8; 0] }
 
 // Import the ItemId enum
 mod item_id;
@@ -18,15 +23,15 @@ mod expression_id;
 use expression_id::MiniZincExpressionId;
 
 unsafe extern "C" {
-    fn minizinc_env_new() -> *mut std::os::raw::c_void;
-    fn minizinc_env_free(env: *mut std::os::raw::c_void);
+    fn minizinc_env_new() -> *mut MznSolver;
+    fn minizinc_env_free(env: *mut MznSolver);
     fn minizinc_parse_model(
-        env: *mut std::os::raw::c_void,
+        env: *mut MznSolver,
         model_str: *const c_char,
         filename: *const c_char,
     ) -> *mut std::os::raw::c_void;
     fn minizinc_parse_data_from_string(
-        env: *mut std::os::raw::c_void,
+        env: *mut MznSolver,
         model: *mut std::os::raw::c_void,
         data_str: *const c_char,
         filename: *const c_char,
@@ -58,12 +63,12 @@ unsafe extern "C" {
     fn expression_is_intlit(expr_ptr: *mut std::os::raw::c_void) -> bool;
 
     // New functions for getting MiniZinc library paths
-    fn minizinc_get_mznlib_dir(env_ptr: *mut std::os::raw::c_void) -> *const c_char;
+    fn minizinc_get_mznlib_dir(env_ptr: *mut MznSolver) -> *const c_char;
     fn minizinc_get_executable_path() -> *const c_char;
 }
 
 // Safe Rust wrappers for FFI functions
-pub struct MiniZincEnvironment(pub *mut std::os::raw::c_void);
+pub struct MiniZincEnvironment(pub *mut MznSolver);
 
 impl MiniZincEnvironment {
     pub fn new() -> Result<Self, String> {
@@ -97,7 +102,7 @@ impl MiniZincEnvironment {
         let filename_cstr = CString::new(filename).expect("CString::new failed");
         let result = unsafe {
             minizinc_parse_data_from_string(
-                self.0, // Pass Flattener*
+                self.0,
                 model.0,
                 data_cstr.as_ptr(),
                 filename_cstr.as_ptr(),
@@ -247,108 +252,5 @@ mod tests {
         let env = MiniZincEnvironment::new();
         assert!(env.is_ok());
         // Drop will be called automatically when env goes out of scope
-    }
-
-    #[test]
-    fn test_parse_and_inspect_models() {
-        let models = vec![
-            ("var int: x = 1; solve satisfy;", "model_1.mzn"),
-            ("var bool: b; constraint b; solve satisfy;", "model_2.mzn"),
-            ("var float: f = 3.14; solve satisfy;", "model_3.mzn"),
-            ("", "test_minimal.mzn"), // New minimal test case
-        ];
-
-        let env = MiniZincEnvironment::new().unwrap();
-        println!("MiniZinc Executable Path: {}", MiniZincEnvironment::get_executable_path());
-        println!("MiniZinc Version String: {}", env.get_version_string());
-        println!("MiniZinc Lib Dir: {}", env.get_mznlib_dir());
-
-        for (model_code, filename) in models {
-            println!("\n--- Parsing and Inspecting Model: {} ---", filename);
-            let model = env.parse_model(model_code, filename).expect("Failed to parse MiniZinc model");
-
-            println!("Parsed Model Filename: {}", model.filename());
-            println!("Parsed Model Filepath: {}", model.filepath());
-            println!("Parsed Model Num Items: {}", model.num_items());
-
-            assert!(!model.filename().is_empty());
-            assert!(!model.filepath().is_empty());
-            // assert!(model.num_items() > 0); // This might fail for empty model
-
-            for i in 0..model.num_items() {
-                if let Some(item) = model.get_item_at_index(i) {
-                    println!("  Item {}: ID: {:?}", i, item.item_id());
-                    if item.is_vardecl() {
-                        if let Some(vardecl) = item.as_vardecl() {
-                            println!("    VarDecl ID: {}", vardecl.id());
-                            let type_inst = vardecl.type_inst();
-                            println!("    VarDecl TypeInst Base Type: {:?}", type_inst.base_type());
-                            if let Some(expr) = vardecl.expression() {
-                                println!("    VarDecl Expression ID: {:?}", expr.expression_id());
-                                if expr.is_intlit() {
-                                    println!("      Expression is IntLit!");
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    #[test]
-    fn test_parse_model_from_string() {
-        let env = MiniZincEnvironment::new().unwrap();
-        // Model with x defined
-        let model_code = "var int: x = 1; solve satisfy;";
-        let filename = "test_model.mzn";
-        let model = env.parse_model(model_code, filename);
-        assert!(model.is_ok());
-        let model = model.unwrap();
-        // Model is automatically freed by Drop trait
-
-        println!("Parsed Model Filename: {}", model.filename());
-        println!("Parsed Model Filepath: {}", model.filepath());
-        println!("Parsed Model Num Items: {}", model.num_items());
-
-        assert!(!model.filename().is_empty());
-        assert!(!model.filepath().is_empty());
-        assert!(model.num_items() > 0);
-
-        // Test item inspection
-        if let Some(item) = model.get_item_at_index(0) {
-            println!("Item 0 ID: {:?}", item.item_id());
-            println!("Item 0 is VarDecl: {}", item.is_vardecl());
-            if let Some(vardecl) = item.as_vardecl() {
-                println!("Item 0 is a VarDecl!");
-                println!("VarDecl ID: {}", vardecl.id());
-                let type_inst = vardecl.type_inst();
-                println!("VarDecl TypeInst: {:?}", type_inst);
-                println!("VarDecl TypeInst Base Type: {:?}", type_inst.base_type());
-                if let Some(expr) = vardecl.expression() {
-                    println!("VarDecl Expression: {:?}", expr);
-                    println!("VarDecl Expression ID: {:?}", expr.expression_id());
-                    println!("VarDecl Expression is IntLit: {}", expr.is_intlit());
-                }
-            }
-        }
-    }
-
-    #[test]
-    fn test_parse_data_from_string() {
-        let env = MiniZincEnvironment::new().unwrap();
-        // Model with x as a parameter (to be defined by data)
-        let model_code = "int: x; solve satisfy;";
-        let model_filename = "test_model_for_data.mzn";
-        let model = env.parse_model(model_code, model_filename);
-        assert!(model.is_ok()); // Ensure model parsing itself is successful
-        let model = model.unwrap();
-
-        let data_code = "x = 10;";
-        let data_filename = "test_data.dzn";
-        let result = env.parse_data(&model, data_code, data_filename); // Pass the model reference
-        assert!(result.is_ok());
-
-        // Model is automatically freed by Drop trait
     }
 }
