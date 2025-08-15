@@ -45,6 +45,10 @@ typedef struct FloatLit FloatLit;
 typedef struct SetLit SetLit;
 
 // Wrapper struct for MiniZinc::MznSolver and its associated Timer
+typedef struct MiniZincEnvWrapper {
+    MiniZinc::MznSolver* solver;
+    MiniZinc::Env env; // Assuming it also needs an Env object
+} MiniZincEnvWrapper;
 
 
 #ifdef __cplusplus
