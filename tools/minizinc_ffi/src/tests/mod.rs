@@ -4,21 +4,22 @@ mod tests {
     use crate::environment::MiniZincEnvironment;
     use crate::ffi_bindings::{minizinc_gc_lock, minizinc_gc_unlock};
     use crate::coverage_report;
+    use std::sync::Mutex;
 
     lazy_static! {
-        static ref GLOBAL_MINIZINC_ENV: MiniZincEnvironment = {
+        static ref GLOBAL_MINIZINC_ENV: Mutex<MiniZincEnvironment> = {
             // Initialize logging or other test-wide setup
             println!("---> Initializing MiniZinc GC lock and global environment <---");
             unsafe {
                 minizinc_gc_lock();
             }
-            MiniZincEnvironment::new().expect("Failed to create global MiniZincEnvironment")
+            Mutex::new(MiniZincEnvironment::new().expect("Failed to create global MiniZincEnvironment"))
         };
     }
 
     #[test]
     fn test_get_version_string() {
-        let env = &GLOBAL_MINIZINC_ENV;
+        let env = GLOBAL_MINIZINC_ENV.lock().unwrap(); // Lock the mutex to get access
         let version = env.get_version_string();
         println!("MiniZinc Version: {}", version);
         assert_eq!(version, "2.9.4-introspector");
@@ -26,15 +27,13 @@ mod tests {
 
     #[test]
     fn test_global_env_access() {
-        // Access the global environment to ensure it's initialized and accessible
-        let _env = &GLOBAL_MINIZINC_ENV;
-        // No explicit assert for creation/free, as it's managed by lazy_static!
+        let _env = GLOBAL_MINIZINC_ENV.lock().unwrap(); // Access the global environment to ensure it's initialized and accessible
         // The test ensures that accessing the global environment does not panic.
     }
 
     #[test]
     fn test_parse_string() {
-        let env = &GLOBAL_MINIZINC_ENV;
+        let env = GLOBAL_MINIZINC_ENV.lock().unwrap(); // Lock the mutex to get access
         let model_code = "var int: x; solve satisfy;";
         let model = env.parse_string(model_code);
         assert!(model.is_ok());
@@ -45,7 +44,7 @@ mod tests {
 
     #[test]
     fn test_solve_and_extract_int() {
-        let env = &GLOBAL_MINIZINC_ENV;
+        let env = GLOBAL_MINIZINC_ENV.lock().unwrap(); // Lock the mutex to get access
         let model_code = "var int: x; constraint x > 5; solve minimize x;";
 
         // For now, we only parse the model. Solving will be added later.
