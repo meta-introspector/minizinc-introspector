@@ -25,6 +25,7 @@ add_library(minizinc_c_wrapper SHARED
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/item_as_function.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_is_toplevel.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_is_introduced.cpp
+    ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_is_evaluated.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_id.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_type_inst.cpp
     ${PROJECT_SOURCE_DIR}/tools/minizinc_c_wrapper_refactored/vardecl_get_expression.cpp

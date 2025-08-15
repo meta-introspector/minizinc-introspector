@@ -84,6 +84,9 @@ unsafe extern "C" {
     // New function for VarDeclI introduced
     fn vardecl_is_introduced(vardecl_ptr: *mut std::os::raw::c_void) -> bool;
 
+    // New function for VarDeclI evaluated
+    fn vardecl_is_evaluated(vardecl_ptr: *mut std::os::raw::c_void) -> bool;
+
     // New functions for TypeInst inspection
     fn typeinst_get_base_type(typeinst_ptr: *mut std::os::raw::c_void) -> i32;
 
@@ -341,6 +344,10 @@ impl MiniZincVarDecl {
 
     pub fn is_introduced(&self) -> bool {
         unsafe { vardecl_is_introduced(self.0) }
+    }
+
+    pub fn is_evaluated(&self) -> bool {
+        unsafe { vardecl_is_evaluated(self.0) }
     }
 }
 
