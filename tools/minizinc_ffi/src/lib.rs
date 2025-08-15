@@ -78,6 +78,9 @@ unsafe extern "C" {
     fn vardecl_get_type_inst(vardecl_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
     fn vardecl_get_expression(vardecl_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
 
+    // New function for VarDeclI toplevel
+    fn vardecl_is_toplevel(vardecl_ptr: *mut std::os::raw::c_void) -> bool;
+
     // New functions for TypeInst inspection
     fn typeinst_get_base_type(typeinst_ptr: *mut std::os::raw::c_void) -> i32;
 
@@ -327,6 +330,10 @@ impl MiniZincVarDecl {
         } else {
             Some(MiniZincExpression(expr_ptr))
         }
+    }
+
+    pub fn is_toplevel(&self) -> bool {
+        unsafe { vardecl_is_toplevel(self.0) }
     }
 }
 

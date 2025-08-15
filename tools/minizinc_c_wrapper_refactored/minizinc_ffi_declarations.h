@@ -74,6 +74,9 @@ const char* vardecl_get_id(MiniZinc::VarDeclI* vardecl_ptr);
 MiniZinc::TypeInst* vardecl_get_type_inst(MiniZinc::VarDeclI* vardecl_ptr);
 MiniZinc::Expression* vardecl_get_expression(MiniZinc::VarDeclI* vardecl_ptr);
 
+// New function for VarDeclI toplevel
+bool vardecl_is_toplevel(MiniZinc::VarDeclI* vardecl_ptr);
+
 // New functions for TypeInst inspection
 int typeinst_get_base_type(MiniZinc::TypeInst* typeinst_ptr);
 
