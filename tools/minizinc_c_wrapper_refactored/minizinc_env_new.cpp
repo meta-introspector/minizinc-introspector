@@ -20,7 +20,10 @@ MiniZinc::MznSolver* minizinc_env_new() {
     solver->flagVerbose = true;
 
     // Return the MznSolver directly
-    return solver;
+    MiniZincEnvWrapper* env_wrapper = new MiniZincEnvWrapper();
+    env_wrapper->solver = solver;
+    // env_wrapper->env is default constructed, no need to explicitly set it unless needed
+    return reinterpret_cast<MiniZinc::MznSolver*>(env_wrapper);
 }
 
 } // extern "C"
