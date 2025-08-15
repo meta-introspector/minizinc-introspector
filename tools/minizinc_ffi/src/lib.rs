@@ -68,6 +68,9 @@ unsafe extern "C" {
 
     // New function for MiniZincModel documentation comment
     fn minizinc_model_get_doc_comment(model_ptr: *mut std::os::raw::c_void) -> *const c_char;
+
+    // New function for MiniZincModel parent
+    fn minizinc_model_get_parent(model_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
 }
 
 // Safe Rust wrappers for FFI functions
@@ -173,6 +176,15 @@ impl MiniZincModel {
     pub fn doc_comment(&self) -> String {
         let c_str = unsafe { minizinc_model_get_doc_comment(self.0) };
         unsafe { CStr::from_ptr(c_str).to_str().unwrap().to_string() }
+    }
+
+    pub fn parent(&self) -> Option<MiniZincModel> {
+        let parent_ptr = unsafe { minizinc_model_get_parent(self.0) };
+        if parent_ptr.is_null() {
+            None
+        } else {
+            Some(MiniZincModel(parent_ptr))
+        }
     }
 }
 
