@@ -19,6 +19,7 @@ pub struct MiniZincBoolLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincStringLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincId(pub *mut std::os::raw::c_void);
 pub struct MiniZincAnonVar(pub *mut std::os::raw::c_void);
+pub struct MiniZincAnonVar(pub *mut std::os::raw::c_void);
 pub struct MiniZincStringLit(pub *mut std::os::raw::c_void);
 pub struct MiniZincId(pub *mut std::os::raw::c_void);
 pub struct MiniZincStringLit(pub *mut std::os::raw::c_void);
@@ -62,6 +63,10 @@ impl MiniZincBoolLit {
 
     // New function for Id value
     fn id_get_value(id_ptr: *mut std::os::raw::c_void) -> *const c_char;
+
+    // New functions for Expression anonymous variable
+    fn expression_is_anon_var(expr_ptr: *mut std::os::raw::c_void) -> bool;
+    fn expression_as_anon_var(expr_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
 }
 
 impl MiniZincStringLit {
@@ -677,6 +682,32 @@ impl MiniZincExpression {
             None
         } else {
             Some(MiniZincStringLit(stringlit_ptr))
+        }
+    }
+
+    pub fn is_id(&self) -> bool {
+        unsafe { expression_is_id(self.0) }
+    }
+
+    pub fn as_id(&self) -> Option<MiniZincId> {
+        let id_ptr = unsafe { expression_as_id(self.0) };
+        if id_ptr.is_null() {
+            None
+        } else {
+            Some(MiniZincId(id_ptr))
+        }
+    }
+
+    pub fn is_anon_var(&self) -> bool {
+        unsafe { expression_is_anon_var(self.0) }
+    }
+
+    pub fn as_anon_var(&self) -> Option<MiniZincAnonVar> {
+        let anon_var_ptr = unsafe { expression_as_anon_var(self.0) };
+        if anon_var_ptr.is_null() {
+            None
+        } else {
+            Some(MiniZincAnonVar(anon_var_ptr))
         }
     }
 
