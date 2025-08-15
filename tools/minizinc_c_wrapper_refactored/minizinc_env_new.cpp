@@ -7,7 +7,7 @@
 extern "C" {
 
 // Change return type to MiniZincEnvWrapper*
-MiniZincEnvWrapper* minizinc_env_new() {
+MiniZinc::MznSolver* minizinc_env_new() {
     // Allocate Timer on the heap
     MiniZinc::Timer* timer = new MiniZinc::Timer();
 
@@ -18,12 +18,8 @@ MiniZincEnvWrapper* minizinc_env_new() {
     // Set verbose flag if needed (MznSolver has its own flagVerbose)
     solver->flagVerbose = true;
 
-    // Create and return MiniZincEnvWrapper
-    MiniZincEnvWrapper* wrapper = new MiniZincEnvWrapper();
-    wrapper->solver = solver;
-    wrapper->timer = timer;
-
-    return wrapper;
+    // Return the MznSolver directly
+    return solver;
 }
 
 } // extern "C"

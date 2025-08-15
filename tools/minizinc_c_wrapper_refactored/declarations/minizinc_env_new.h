@@ -1,1 +1,1 @@
-MiniZincEnvWrapper* minizinc_env_new();
+MiniZinc::MznSolver* minizinc_env_new();

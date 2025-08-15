@@ -1,1 +1,1 @@
-void minizinc_env_free(MiniZincEnvWrapper* env);
+void minizinc_env_free(MiniZinc::MznSolver* env);

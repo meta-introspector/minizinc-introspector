@@ -3,17 +3,9 @@
 
 extern "C" {
 
-void minizinc_env_free(MiniZincEnvWrapper* wrapper_ptr) {
-    MiniZincEnvWrapper* wrapper = reinterpret_cast<MiniZincEnvWrapper*>(wrapper_ptr);
-    if (wrapper) {
-        if (wrapper->solver) {
-            delete wrapper->solver;
-        }
-        if (wrapper->timer) {
-            delete wrapper->timer;
-        }
-        delete wrapper;
-    }
+void minizinc_env_free(MiniZinc::MznSolver* solver_ptr) {
+    MiniZinc::MznSolver* solver = reinterpret_cast<MiniZinc::MznSolver*>(solver_ptr);
+    delete solver;
 }
 
 } // extern "C"

@@ -20,12 +20,9 @@
 
 extern "C" {
 
-MiniZincModel* minizinc_parse_string_only(MiniZincEnvWrapper* wrapper_ptr, const char* model_str) {
-    // MiniZinc::MznSolver* solver = reinterpret_cast<MiniZinc::MznSolver*>(wrapper_ptr->solver);
-    // We don't need the MznSolver here, as parsing is done via MiniZinc::parse
-    // and the Env is created locally.
-    // If we need to pass the MznSolver's Env, we would need to access it from the wrapper.
-    // For now, we create a local Env for parsing.
+MiniZincModel* minizinc_parse_string_only(MiniZinc::MznSolver* solver_ptr, const char* model_str) {
+    MiniZinc::MznSolver* solver = reinterpret_cast<MiniZinc::MznSolver*>(solver_ptr);
+    MiniZinc::Env& env = solver->env(); // Use the environment from the MznSolver
 
     std::cerr << "[minizinc_parse_string_only] Starting parse process." << std::endl; std::cerr.flush();
     std::cerr << "[minizinc_parse_string_only] model_str: " << (model_str ? model_str : "(null)") << std::endl; std::cerr.flush();
@@ -34,8 +31,8 @@ MiniZincModel* minizinc_parse_string_only(MiniZincEnvWrapper* wrapper_ptr, const
     std::string dummy_filename = "<string>"; // Use a dummy filename for ParserState
 
     try {
-        MiniZinc::Env env; // Create an environment object
-        std::cerr << "[minizinc_parse_string_only] MiniZinc::Env created." << std::endl; std::cerr.flush();
+        // The environment is now passed in from the MznSolver object, so we no longer create a local MiniZinc::Env.
+        // This prevents conflicts with MiniZinc's garbage collection and ensures proper memory management.
 
         MiniZinc::Model* model = new MiniZinc::Model();
         model->setFilename(dummy_filename); // Set filename for the model
@@ -47,7 +44,7 @@ MiniZincModel* minizinc_parse_string_only(MiniZincEnvWrapper* wrapper_ptr, const
         std::vector<MiniZinc::ParseWorkItem> files_vec; // Empty
         std::map<std::string, MiniZinc::Model*> seenModels_map; // Empty
 
-        MiniZinc::ParserState pp(dummy_filename, model_s, std::cerr, includePaths_vec, files_vec, seenModels_map, model, false, false, false, false);
+        MiniZinc::ParserState pp(dummy_filename, model_s, std::cerr, env, includePaths_vec, files_vec, seenModels_map, model, false, false, false, false);
 
         mzn_yylex_init(&pp.yyscanner);
         mzn_yyset_extra(&pp, pp.yyscanner);
