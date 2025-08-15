@@ -16,6 +16,11 @@ unsafe extern "C" {
         filename: *const c_char,
         is_model_string: bool,
     ) -> *mut std::os::raw::c_void;
+
+    pub fn minizinc_parse_string_only(
+        env: *mut MznSolver,
+        model_str: *const c_char,
+    ) -> *mut std::os::raw::c_void;
     pub fn minizinc_parse_data_from_string(
         env: *mut MznSolver,
         model: *mut std::os::raw::c_void,

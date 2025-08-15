@@ -10,3 +10,7 @@ Welcome to the project documentation. Here you can find various resources to hel
 ## Architecture
 
 *   [Refactoring the MiniZinc Parser](architecture/parser_refactoring.md)
+
+## Tutorials
+
+*   [Reproducing SIGSEGV on MiniZinc Model Return](tutorials/reproduce_sigsegv_on_model_return.md)

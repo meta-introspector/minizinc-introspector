@@ -25,6 +25,9 @@ MiniZincModel* minizinc_parse_model(MiniZinc::MznSolver* env, const char* model_
 // New function to parse a MiniZinc model from a string with flags
 MiniZincModel* minizinc_parse_model_with_flags(MiniZinc::MznSolver* env, const char* model_str, const char* filename, bool is_model_string);
 
+// New function to parse a MiniZinc model from a string only (no file handling)
+MiniZincModel* minizinc_parse_string_only(MiniZinc::MznSolver* env, const char* model_str);
+
 // Function to parse DZN data into a MiniZinc model
 int minizinc_parse_data_from_string(MiniZinc::MznSolver* env, MiniZincModel* model, const char* data_str, const char* filename);
 
