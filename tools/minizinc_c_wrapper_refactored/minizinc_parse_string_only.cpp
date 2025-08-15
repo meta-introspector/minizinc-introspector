@@ -1,4 +1,5 @@
-#include "minizinc_opaque_types.h"\n#include "minizinc_ffi_helpers.h" // Include helper functions
+#include "minizinc_opaque_types.h"
+#include "minizinc_ffi_helpers.h" // Include helper functions
 #include <minizinc/model.hh>
 #include <minizinc/parser.hh>
 #include <minizinc/astexception.hh>
@@ -34,7 +35,7 @@ MiniZincModel* minizinc_parse_string_only(MiniZinc::MznSolver* solver_ptr, const
     std::string dummy_filename = "<string>"; // Use a dummy filename for ParserState
 
     try {
-        MiniZinc::Env& env = solver_ptr->env; // Use the environment from the wrapper
+        MiniZinc::Env& env = *(solver_ptr->_flt.getEnv()); // Use the environment from the wrapper
         std::cerr << "[minizinc_parse_string_only] MiniZinc::Env created." << std::endl; std::cerr.flush();
 
         MiniZinc::Model* model = new MiniZinc::Model();

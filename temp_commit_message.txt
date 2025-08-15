@@ -1,4 +1,3 @@
-Fix: Correct MiniZinc FFI C++ wrapper issues
+Fix: Correct duplicated include lines after previous fix
 
-- Corrected `MiniZinc::Env` initialization in `minizinc_parse_model_v2.cpp`, `minizinc_parse_model_with_flags.cpp`, and `minizinc_parse_string_only.cpp`.
-- Fixed incorrect include statement formatting for `minizinc_ffi_helpers.h` in `minizinc_env_free.cpp`, `minizinc_env_new.cpp`, `minizinc_solver_get_solution_value_int.cpp`, and `minizinc_solver_get_solver_instance.cpp`.
+- Corrected duplicated include lines for `minizinc_ffi_helpers.h` in `minizinc_parse_model_v2.cpp`, `minizinc_parse_model_with_flags.cpp`, and `minizinc_parse_string_only.cpp`.
