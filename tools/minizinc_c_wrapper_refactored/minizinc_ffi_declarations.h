@@ -163,6 +163,14 @@ MiniZinc::FloatLit* expression_as_floatlit(MiniZinc::Expression* expr_ptr);
 // New function for FloatLit value
 double floatlit_get_value(MiniZinc::FloatLit* floatlit_ptr);
 
+// New functions for Expression set literal
+bool expression_is_setlit(MiniZinc::Expression* expr_ptr);
+MiniZinc::SetLit* expression_as_setlit(MiniZinc::Expression* expr_ptr);
+
+// New functions for SetLit
+unsigned int setlit_get_size(MiniZinc::SetLit* setlit_ptr);
+MiniZinc::Expression* setlit_get_element_at_index(MiniZinc::SetLit* setlit_ptr, unsigned int index);
+
 // New functions for getting MiniZinc library paths
 const char* minizinc_get_mznlib_dir(MiniZinc::MznSolver* env_ptr);
 const char* minizinc_get_executable_path();

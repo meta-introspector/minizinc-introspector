@@ -4,7 +4,7 @@ use std::os::raw::c_char;
 mod feature_tests;
 
 // Opaque types for MiniZincModel, Item, SolveItem, and OutputItem
-// Opaque types for MiniZincModel, Item, SolveItem, OutputItem, AssignItem, ConstraintItem, IncludeItem, FunctionItem, and FloatLit
+// Opaque types for MiniZincModel, Item, SolveItem, OutputItem, AssignItem, ConstraintItem, IncludeItem, FunctionItem, FloatLit, and SetLit
 pub struct MiniZincModel(pub *mut std::os::raw::c_void);
 pub struct MiniZincItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincSolveItem(pub *mut std::os::raw::c_void);
@@ -14,10 +14,26 @@ pub struct MiniZincConstraintItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincIncludeItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincFunctionItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincFloatLit(pub *mut std::os::raw::c_void);
+pub struct MiniZincSetLit(pub *mut std::os::raw::c_void);
 
 impl MiniZincFloatLit {
     pub fn value(&self) -> f64 {
         unsafe { floatlit_get_value(self.0) }
+    }
+}
+
+impl MiniZincSetLit {
+    pub fn size(&self) -> u32 {
+        unsafe { setlit_get_size(self.0) }
+    }
+
+    pub fn get_element_at_index(&self, index: u32) -> Option<MiniZincExpression> {
+        let expr_ptr = unsafe { setlit_get_element_at_index(self.0, index) };
+        if expr_ptr.is_null() {
+            None
+        } else {
+            Some(MiniZincExpression(expr_ptr))
+        }
     }
 }
 
@@ -176,6 +192,14 @@ unsafe extern "C" {
 
     // New function for FloatLit value
     fn floatlit_get_value(floatlit_ptr: *mut std::os::raw::c_void) -> f64;
+
+// New functions for Expression set literal
+bool expression_is_setlit(MiniZinc::Expression* expr_ptr);
+MiniZinc::SetLit* expression_as_setlit(MiniZinc::Expression* expr_ptr);
+
+// New functions for SetLit
+unsigned int setlit_get_size(MiniZinc::SetLit* setlit_ptr);
+MiniZinc::Expression* setlit_get_element_at_index(MiniZinc::SetLit* setlit_ptr, unsigned int index);
 
     // New functions for getting MiniZinc library paths
     fn minizinc_get_mznlib_dir(env_ptr: *mut MznSolver) -> *const c_char;
@@ -555,6 +579,19 @@ impl MiniZincExpression {
             None
         } else {
             Some(MiniZincFloatLit(floatlit_ptr))
+        }
+    }
+
+    pub fn is_setlit(&self) -> bool {
+        unsafe { expression_is_setlit(self.0) }
+    }
+
+    pub fn as_setlit(&self) -> Option<MiniZincSetLit> {
+        let setlit_ptr = unsafe { expression_as_setlit(self.0) };
+        if setlit_ptr.is_null() {
+            None
+        } else {
+            Some(MiniZincSetLit(setlit_ptr))
         }
     }
 }
