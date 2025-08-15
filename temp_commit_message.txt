@@ -1,5 +1,0 @@
-Docs: KitKat Break - Document current status and plan
-
-- Documented the current status of the MiniZinc FFI project, including learnings from C ABI and Rust FFI linking issues, and MiniZinc GC/memory management problems.
-- Outlined the plan for addressing these issues after the KitKat break, focusing on Rust linking, global `MiniZinc::Env` management in Rust tests, and cleaning up unused imports.
-- This commit marks a strategic pause in development as per the KitKat Meta-Program SOP.
