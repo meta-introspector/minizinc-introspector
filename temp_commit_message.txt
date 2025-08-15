@@ -1,3 +1,4 @@
-Fix: Correct test_ffi_parser.cpp for consistent MiniZincEnvWrapper usage
+Fix: Add #[repr(C)] to FFI-bound structs in Rust
 
-- Updated `test_ffi_parser.cpp` to pass `MiniZincEnvWrapper*` directly to `minizinc_env_free()`, removing the incorrect `reinterpret_cast`.
+- Added `#[repr(C)]` to all structs in `tools/minizinc_ffi/src/types/mod.rs` that are passed across the FFI boundary.
+- This addresses the `improper_ctypes` warnings and ensures correct memory layout when interacting with the C ABI.
