@@ -1,0 +1,1 @@
+MiniZincModel* minizinc_model_get_parent(MiniZincModel* model_ptr);

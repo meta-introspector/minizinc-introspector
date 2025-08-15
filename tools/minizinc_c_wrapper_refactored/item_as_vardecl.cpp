@@ -3,7 +3,7 @@
 
 extern "C" {
 
-MiniZinc::VarDeclI* item_as_vardecl(Item* item_ptr) {
+MiniZinc::VarDeclI* item_as_vardecl(MiniZincItem* item_ptr) {
     MiniZinc::Item* item = reinterpret_cast<MiniZinc::Item*>(item_ptr);
     return item->cast<MiniZinc::VarDeclI>();
 }

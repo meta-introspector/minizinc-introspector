@@ -1,44 +1,58 @@
-#include <iostream>
-#include <string>
 #include "minizinc_ffi_declarations_v2.h"
+#include <iostream>
+#include <cassert>
 
 int main() {
-    std::cout << "[C++ Test] Starting FFI parser test." << std::endl;
+    // Test minizinc_env_new and minizinc_env_free
+    MiniZincEnvWrapper* env_wrapper = minizinc_env_new();
+    assert(env_wrapper != nullptr);
+    assert(env_wrapper->solver != nullptr);
+    assert(env_wrapper->timer != nullptr);
 
-    // 1. Create MiniZinc environment
-    MiniZinc::MznSolver* env = minizinc_env_new();
-    if (env == nullptr) {
-        std::cerr << "[C++ Test] ERROR: Failed to create MiniZinc environment." << std::endl;
-        return 1;
-    }
-    std::cout << "[C++ Test] MiniZinc environment created successfully." << std::endl;
+    std::cout << "minizinc_env_new and minizinc_env_free test passed." << std::endl;
 
-    // 2. Define a simple MiniZinc model string
+    // Test minizinc_parse_string_only
     const char* model_str = "var int: x; solve satisfy;";
-    std::cout << "[C++ Test] Attempting to parse model: \"" << model_str << "\"" << std::endl;
+    MiniZincModel* model = minizinc_parse_string_only(env_wrapper, model_str);
+    assert(model != nullptr);
+    std::cout << "minizinc_parse_string_only test passed." << std::endl;
 
-    // 3. Call minizinc_parse_string_only()
-    MiniZincModel* model = minizinc_parse_string_only(env, model_str);
+    // Test model_get_filename
+    const char* filename = model_get_filename(model);
+    std::cout << "Model filename: " << filename << std::endl;
+    assert(std::string(filename) == "<string>");
 
-    // 4. Check if the returned MiniZincModel* is null
-    if (model == nullptr) {
-        std::cerr << "[C++ Test] ERROR: minizinc_parse_string_only returned nullptr." << std::endl;
-        minizinc_env_free(env);
-        return 1;
-    } else {
-        std::cout << "[C++ Test] minizinc_parse_string_only returned non-null model pointer: " << model << std::endl;
-    }
+    // Test model_get_filepath
+    char* filepath = model_get_filepath(model);
+    std::cout << "Model filepath: " << filepath << std::endl;
+    assert(std::string(filepath) == "");
+    minizinc_string_free(filepath);
 
-    // 5. Call minizinc_model_free() to deallocate the model
-    std::cout << "[C++ Test] Attempting to free model..." << std::endl;
+    // Test model_get_num_items
+    uint32_t num_items = model_get_num_items(model);
+    std::cout << "Model num_items: " << num_items << std::endl;
+    assert(num_items > 0);
+
+    // Test minizinc_model_free
     minizinc_model_free(model);
-    std::cout << "[C++ Test] Model freed successfully." << std::endl;
+    std::cout << "minizinc_model_free test passed." << std::endl;
 
-    // 6. Free the MiniZinc environment
-    std::cout << "[C++ Test] Freeing MiniZinc environment..." << std::endl;
-    minizinc_env_free(env);
-    std::cout << "[C++ Test] MiniZinc environment freed successfully." << std::endl;
+    // Test minizinc_get_version_string
+    const char* version_string = minizinc_get_version_string();
+    std::cout << "MiniZinc Version: " << version_string << std::endl;
+    assert(version_string != nullptr);
 
-    std::cout << "[C++ Test] FFI parser test completed successfully." << std::endl;
+    // Test minizinc_solver_get_solver_instance (after a run)
+    // Note: MznSolver::run needs a model to be loaded into the flattener
+    // This test is more complex and requires a full solve cycle.
+    // For now, we just ensure we can get the solver instance.
+    MiniZinc::SolverInstanceBase* solver_instance_ptr = minizinc_solver_get_solver_instance(env_wrapper);
+    assert(solver_instance_ptr != nullptr);
+    std::cout << "minizinc_solver_get_solver_instance test passed." << std::endl;
+
+    // Test minizinc_env_free
+    minizinc_env_free(env_wrapper);
+    std::cout << "All tests passed successfully!" << std::endl;
+
     return 0;
 }

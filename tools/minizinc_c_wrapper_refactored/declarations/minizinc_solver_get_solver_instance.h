@@ -1,0 +1,1 @@
+MiniZinc::SolverInstanceBase* minizinc_solver_get_solver_instance(MiniZincEnvWrapper* wrapper_ptr);

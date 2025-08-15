@@ -1,0 +1,1 @@
+bool vardecl_is_introduced(MiniZinc::VarDeclI* vardecl_ptr);

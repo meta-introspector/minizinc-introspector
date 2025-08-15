@@ -14,7 +14,7 @@ impl Drop for MiniZincString {
         // SAFETY: We are assuming that `self.0` is a valid, non-null pointer to a C-string
         // allocated by the MiniZinc C++ library, and that `minizinc_string_free` is the
         // correct function to deallocate it. This is a critical assumption for FFI safety.
-        unsafe { minizinc_string_free(self.0.as_ptr() as *mut i8) };
+        unsafe { minizinc_string_free((*self.0).as_ptr() as *mut std::os::raw::c_char) };
     }
 }
 
@@ -62,7 +62,7 @@ impl MiniZincModel {
         if item_ptr.is_null() {
             None
         } else {
-            Some(MiniZincItem(item_ptr))
+            Some(MiniZincItem(item_ptr as *mut std::os::raw::c_void))
         }
     }
 

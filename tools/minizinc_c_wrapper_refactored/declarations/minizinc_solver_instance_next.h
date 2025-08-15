@@ -1,0 +1,1 @@
+int minizinc_solver_instance_next(MiniZinc::SolverInstanceBase* solver_instance_ptr);

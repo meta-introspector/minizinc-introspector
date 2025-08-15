@@ -1,0 +1,1 @@
+const char* minizinc_get_executable_path();

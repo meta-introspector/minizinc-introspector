@@ -3,8 +3,8 @@
 
 extern "C" {
 
-void minizinc_solver_instance_print_solution(MiniZinc::SolverInstanceBase* si_ptr) {
-    MiniZinc::SolverInstanceBase* si = reinterpret_cast<MiniZinc::SolverInstanceBase*>(si_ptr);
+void minizinc_solver_instance_print_solution(MiniZinc::SolverInstanceBase* solver_instance_ptr) {
+    MiniZinc::SolverInstanceBase* si = reinterpret_cast<MiniZinc::SolverInstanceBase*>(solver_instance_ptr);
     si->printSolution();
 }
 

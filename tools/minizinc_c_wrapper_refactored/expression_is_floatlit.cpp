@@ -8,7 +8,7 @@ bool expression_is_floatlit(MiniZinc::Expression* expr_ptr) {
     if (!expr) {
         return false;
     }
-    return expr->isa<MiniZinc::FloatLit>();
+    return expr->isa<MiniZinc::FloatLit>(expr);
 }
 
 } // extern "C"

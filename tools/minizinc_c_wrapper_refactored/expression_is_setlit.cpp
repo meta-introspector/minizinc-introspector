@@ -8,7 +8,7 @@ bool expression_is_setlit(MiniZinc::Expression* expr_ptr) {
     if (!expr) {
         return false;
     }
-    return expr->isa<MiniZinc::SetLit>();
+    return expr->isa<MiniZinc::SetLit>(expr);
 }
 
 } // extern "C"

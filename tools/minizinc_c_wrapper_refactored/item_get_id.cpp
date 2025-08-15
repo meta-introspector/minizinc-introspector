@@ -3,7 +3,7 @@
 
 extern "C" {
 
-int item_get_id(Item* item_ptr) {
+int item_get_id(MiniZincItem* item_ptr) {
     MiniZinc::Item* item = reinterpret_cast<MiniZinc::Item*>(item_ptr);
     return static_cast<int>(item->iid());
 }

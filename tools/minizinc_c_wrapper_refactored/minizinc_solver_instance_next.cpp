@@ -3,8 +3,8 @@
 
 extern "C" {
 
-int minizinc_solver_instance_next(MiniZinc::SolverInstanceBase* si_ptr) {
-    MiniZinc::SolverInstanceBase* si = reinterpret_cast<MiniZinc::SolverInstanceBase*>(si_ptr);
+int minizinc_solver_instance_next(MiniZinc::SolverInstanceBase* solver_instance_ptr) {
+    MiniZinc::SolverInstanceBase* si = reinterpret_cast<MiniZinc::SolverInstanceBase*>(solver_instance_ptr);
     return static_cast<int>(si->next());
 }
 

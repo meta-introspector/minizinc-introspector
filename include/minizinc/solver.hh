@@ -190,7 +190,7 @@ public:
   bool getFlagVerbose() const { return flagVerbose; /*getFlt()->getFlagVerbose();*/ }
   void printUsage(std::ostream& os);
 
-private:
+public:
   void printHelp(std::ostream& os, const std::string& selectedSolver = std::string());
   /// Flatten model
   void flatten(const std::string& modelString = std::string(),

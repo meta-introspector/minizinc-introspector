@@ -1,0 +1,1 @@
+MiniZincEnvWrapper* minizinc_env_new();

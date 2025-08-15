@@ -1,0 +1,1 @@
+void minizinc_model_free(MiniZincModel* model);

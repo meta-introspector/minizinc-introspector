@@ -1,0 +1,1 @@
+bool item_is_assign(MiniZincItem* item_ptr);

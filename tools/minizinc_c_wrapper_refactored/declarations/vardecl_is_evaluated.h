@@ -1,0 +1,1 @@
+bool vardecl_is_evaluated(MiniZinc::VarDeclI* vardecl_ptr);

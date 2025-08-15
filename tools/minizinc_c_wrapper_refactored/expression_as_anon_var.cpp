@@ -5,10 +5,10 @@ extern "C" {
 
 MiniZinc::AnonVar* expression_as_anon_var(MiniZinc::Expression* expr_ptr) {
     MiniZinc::Expression* expr = reinterpret_cast<MiniZinc::Expression*>(expr_ptr);
-    if (!expr || !expr->isa<MiniZinc::AnonVar>()) {
+    if (!expr || !expr->isa<MiniZinc::AnonVar>(expr)) {
         return nullptr;
     }
-    return expr->cast<MiniZinc::AnonVar>();
+    return expr->cast<MiniZinc::AnonVar>(expr);
 }
 
 } // extern "C"

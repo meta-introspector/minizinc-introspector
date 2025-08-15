@@ -8,7 +8,7 @@ bool expression_is_id(MiniZinc::Expression* expr_ptr) {
     if (!expr) {
         return false;
     }
-    return expr->isa<MiniZinc::Id>();
+    return expr->isa<MiniZinc::Id>(expr);
 }
 
 } // extern "C"

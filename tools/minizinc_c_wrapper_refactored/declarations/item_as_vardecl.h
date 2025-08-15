@@ -1,0 +1,1 @@
+MiniZinc::VarDeclI* item_as_vardecl(MiniZincItem* item_ptr);

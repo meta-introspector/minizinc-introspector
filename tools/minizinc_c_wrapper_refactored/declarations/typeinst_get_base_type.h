@@ -1,0 +1,1 @@
+int typeinst_get_base_type(MiniZinc::TypeInst* typeinst_ptr);

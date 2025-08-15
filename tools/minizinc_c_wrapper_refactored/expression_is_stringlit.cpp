@@ -8,7 +8,7 @@ bool expression_is_stringlit(MiniZinc::Expression* expr_ptr) {
     if (!expr) {
         return false;
     }
-    return expr->isa<MiniZinc::StringLit>();
+    return expr->isa<MiniZinc::StringLit>(expr);
 }
 
 } // extern "C"

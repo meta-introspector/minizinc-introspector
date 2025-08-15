@@ -3,10 +3,11 @@
 
 extern "C" {
 
-Item* model_get_item_at_index(MiniZincModel* model_ptr, uint32_t index) {
+MiniZincItem* model_get_item_at_index(MiniZincModel* model_ptr, uint32_t index) {
     MiniZinc::Model* model = reinterpret_cast<MiniZinc::Model*>(model_ptr);
     if (index < model->size()) {
-        return model->operator[](index);
+        MiniZinc::Item* item_ptr = model->operator[](index);
+        return reinterpret_cast<MiniZincItem*>(item_ptr);
     }
     return nullptr;
 }

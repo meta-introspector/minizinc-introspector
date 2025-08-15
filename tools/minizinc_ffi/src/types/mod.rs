@@ -1,5 +1,6 @@
 pub struct MiniZincModel(pub *mut std::os::raw::c_void);
 pub struct MiniZincItem(pub *mut std::os::raw::c_void);
+pub struct MiniZincEnvWrapper(pub *mut std::os::raw::c_void);
 pub struct MiniZincSolveItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincOutputItem(pub *mut std::os::raw::c_void);
 pub struct MiniZincAssignItem(pub *mut std::os::raw::c_void);

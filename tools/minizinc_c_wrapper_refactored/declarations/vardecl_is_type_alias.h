@@ -1,0 +1,1 @@
+bool vardecl_is_type_alias(MiniZinc::VarDeclI* vardecl_ptr);

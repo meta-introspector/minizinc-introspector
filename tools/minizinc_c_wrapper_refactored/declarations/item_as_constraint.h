@@ -1,0 +1,1 @@
+MiniZinc::ConstraintI* item_as_constraint(MiniZincItem* item_ptr);

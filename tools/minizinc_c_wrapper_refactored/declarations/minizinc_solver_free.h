@@ -1,0 +1,1 @@
+void minizinc_solver_free(MiniZinc::MznSolver* solver_ptr);

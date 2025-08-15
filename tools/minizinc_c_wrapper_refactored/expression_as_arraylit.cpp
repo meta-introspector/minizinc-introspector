@@ -5,10 +5,10 @@ extern "C" {
 
 MiniZinc::ArrayLit* expression_as_arraylit(MiniZinc::Expression* expr_ptr) {
     MiniZinc::Expression* expr = reinterpret_cast<MiniZinc::Expression*>(expr_ptr);
-    if (!expr || !expr->isa<MiniZinc::ArrayLit>()) {
+    if (!expr || !expr->isa<MiniZinc::ArrayLit>(expr)) {
         return nullptr;
     }
-    return expr->cast<MiniZinc::ArrayLit>();
+    return expr->cast<MiniZinc::ArrayLit>(expr);
 }
 
 } // extern "C"

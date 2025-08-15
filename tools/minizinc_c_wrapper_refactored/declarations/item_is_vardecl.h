@@ -1,0 +1,1 @@
+bool item_is_vardecl(MiniZincItem* item_ptr);

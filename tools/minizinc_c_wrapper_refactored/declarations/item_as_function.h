@@ -1,0 +1,1 @@
+MiniZinc::FunctionI* item_as_function(MiniZincItem* item_ptr);

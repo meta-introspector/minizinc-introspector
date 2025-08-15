@@ -6,19 +6,24 @@
 
 extern "C" {
 
-// Change return type to MznSolver*
-MiniZinc::MznSolver* minizinc_env_new() {
-    // Create a dummy Timer for MznSolver constructor
-    MiniZinc::Timer dummy_timer; // MznSolver expects a Timer object
+// Change return type to MiniZincEnvWrapper*
+MiniZincEnvWrapper* minizinc_env_new() {
+    // Allocate Timer on the heap
+    MiniZinc::Timer* timer = new MiniZinc::Timer();
 
-    // Create an MznSolver object
-    MiniZinc::MznSolver* solver = new MiniZinc::MznSolver(std::cout, std::cerr, dummy_timer);
+    // Allocate MznSolver on the heap, passing the Timer reference
+    MiniZinc::MznSolver* solver = new MiniZinc::MznSolver(std::cout, std::cerr, *timer);
     std::cerr << "DEBUG: minizinc_env_new - Created MznSolver at: " << solver << std::endl; std::cerr.flush();
 
     // Set verbose flag if needed (MznSolver has its own flagVerbose)
     solver->flagVerbose = true;
 
-    return solver;
+    // Create and return MiniZincEnvWrapper
+    MiniZincEnvWrapper* wrapper = new MiniZincEnvWrapper();
+    wrapper->solver = solver;
+    wrapper->timer = timer;
+
+    return wrapper;
 }
 
 } // extern "C"

@@ -1,0 +1,1 @@
+MiniZinc::OutputI* minizinc_model_get_output_item(MiniZincModel* model_ptr);

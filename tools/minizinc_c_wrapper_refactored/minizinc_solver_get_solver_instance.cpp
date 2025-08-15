@@ -5,7 +5,7 @@
 extern "C" {
 
 MiniZinc::SolverInstanceBase* minizinc_solver_get_solver_instance(MiniZinc::MznSolver* solver_ptr) {
-    MiniZinc::MznSolver* solver = reinterpret_cast<MiniZinc::MznSolver*>(solver_ptr);
+    MiniZinc::MznSolver* solver = solver_ptr;
     return solver->getSI();
 }
 

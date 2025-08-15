@@ -1,0 +1,1 @@
+bool item_is_constraint(MiniZincItem* item_ptr);

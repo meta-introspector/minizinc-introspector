@@ -1,4 +1,4 @@
-use crate::types::MiniZincEnvironment;
+use crate::environment::MiniZincEnvironment;
 use crate::ffi_bindings::minizinc_solver_get_solver_instance;
 
 impl MiniZincEnvironment {

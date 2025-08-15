@@ -3,7 +3,7 @@
 
 extern "C" {
 
-OutputI* minizinc_model_get_output_item(MiniZincModel* model_ptr) {
+MiniZinc::OutputI* minizinc_model_get_output_item(MiniZincModel* model_ptr) {
     MiniZinc::Model* model = reinterpret_cast<MiniZinc::Model*>(model_ptr);
     if (!model) {
         return nullptr; // Or handle error appropriately

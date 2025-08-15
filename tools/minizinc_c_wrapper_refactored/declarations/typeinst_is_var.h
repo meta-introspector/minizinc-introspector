@@ -1,0 +1,1 @@
+bool typeinst_is_var(MiniZinc::TypeInst* typeinst_ptr);

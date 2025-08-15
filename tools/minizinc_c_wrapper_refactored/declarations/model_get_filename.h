@@ -1,0 +1,1 @@
+const char* model_get_filename(MiniZincModel* model_ptr);

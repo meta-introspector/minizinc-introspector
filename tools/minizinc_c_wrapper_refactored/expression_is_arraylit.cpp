@@ -8,7 +8,7 @@ bool expression_is_arraylit(MiniZinc::Expression* expr_ptr) {
     if (!expr) {
         return false;
     }
-    return expr->isa<MiniZinc::ArrayLit>();
+    return expr->isa<MiniZinc::ArrayLit>(expr);
 }
 
 } // extern "C"

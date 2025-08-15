@@ -1,0 +1,1 @@
+MiniZinc::SolveI* minizinc_model_get_solve_item(MiniZincModel* model_ptr);

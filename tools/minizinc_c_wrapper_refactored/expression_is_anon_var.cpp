@@ -8,7 +8,7 @@ bool expression_is_anon_var(MiniZinc::Expression* expr_ptr) {
     if (!expr) {
         return false;
     }
-    return expr->isa<MiniZinc::AnonVar>();
+    return expr->isa<MiniZinc::AnonVar>(expr);
 }
 
 } // extern "C"

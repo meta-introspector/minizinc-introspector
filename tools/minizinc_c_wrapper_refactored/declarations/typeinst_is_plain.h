@@ -1,0 +1,1 @@
+bool typeinst_is_plain(MiniZinc::TypeInst* typeinst_ptr);

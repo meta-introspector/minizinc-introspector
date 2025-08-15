@@ -1,0 +1,1 @@
+bool typeinst_is_par(MiniZinc::TypeInst* typeinst_ptr);

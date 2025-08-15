@@ -1,33 +1,30 @@
 use std::os::raw::c_char;
-use crate::types::MznSolver;
+use crate::types::{MznSolver, MiniZincItem};
 
+#[link(name = "minizinc_c_wrapper")]
 unsafe extern "C" {
+    // Function to create a new MiniZinc environment
     pub fn minizinc_env_new() -> *mut MznSolver;
+
+    // Function to free a MiniZinc environment
     pub fn minizinc_env_free(env: *mut MznSolver);
-    // pub fn minizinc_parse_model(
-    //     env: *mut MznSolver,
-    //     model_str: *const c_char,
-    //     filename: *const c_char,
-    // ) -> *mut std::os::raw::c_void;
 
-    pub fn minizinc_parse_model_with_flags(
-        env: *mut MznSolver,
-        model_str: *const c_char,
-        filename: *const c_char,
-        is_model_string: bool,
-    ) -> *mut std::os::raw::c_void;
+    // Function to parse a MiniZinc model from a string
+    pub fn minizinc_parse_model(env: *mut MznSolver, model_str: *const c_char, filename: *const c_char) -> *mut std::os::raw::c_void;
 
-    pub fn minizinc_parse_string_only(
-        env: *mut MznSolver,
-        model_str: *const c_char,
-    ) -> *mut std::os::raw::c_void;
-    pub fn minizinc_parse_data_from_string(
-        env: *mut MznSolver,
-        model: *mut std::os::raw::c_void,
-        data_str: *const c_char,
-        filename: *const c_char,
-    ) -> std::os::raw::c_int;
+    // New function to parse a MiniZinc model from a string with flags
+    pub fn minizinc_parse_model_with_flags(env: *mut MznSolver, model_str: *const c_char, filename: *const c_char, is_model_string: bool) -> *mut std::os::raw::c_void;
+
+    // New function to parse a MiniZinc model from a string only (no file handling)
+    pub fn minizinc_parse_string_only(env: *mut MznSolver, model_str: *const c_char) -> *mut std::os::raw::c_void;
+
+    // Function to parse DZN data into a MiniZinc model
+    pub fn minizinc_parse_data_from_string(env: *mut MznSolver, model: *mut std::os::raw::c_void, data_str: *const c_char, filename: *const c_char) -> std::os::raw::c_int;
+
+    // Function to free a MiniZinc model
     pub fn minizinc_model_free(model: *mut std::os::raw::c_void);
+
+    // Function to get version string (for testing FFI)
     pub fn minizinc_get_version_string() -> *const c_char;
 
     // New functions for MiniZincModel inspection
@@ -35,28 +32,40 @@ unsafe extern "C" {
     pub fn model_get_filepath(model_ptr: *mut std::os::raw::c_void) -> *mut c_char;
     pub fn minizinc_string_free(s: *mut c_char);
     pub fn model_get_num_items(model_ptr: *mut std::os::raw::c_void) -> u32;
-    pub fn model_get_item_at_index(model_ptr: *mut std::os::raw::c_void, index: u32) -> *mut std::os::raw::c_void;
+    pub fn model_get_item_at_index(model_ptr: *mut std::os::raw::c_void, index: u32) -> *mut MiniZincItem;
+
+    // New function for MiniZincModel documentation comment
+    pub fn minizinc_model_get_doc_comment(model_ptr: *mut std::os::raw::c_void) -> *const c_char;
+
+    // New function for MiniZincModel parent
+    pub fn minizinc_model_get_parent(model_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+
+    // New function for MiniZincModel solve item
+    pub fn minizinc_model_get_solve_item(model_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+
+    // New function for MiniZincModel output item
+    pub fn minizinc_model_get_output_item(model_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
 
     // New functions for MiniZincItem inspection
-    pub fn item_get_id(item_ptr: *mut std::os::raw::c_void) -> i32;
-    pub fn item_is_vardecl(item_ptr: *mut std::os::raw::c_void) -> bool;
-    pub fn item_as_vardecl(item_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+    pub fn item_get_id(item_ptr: *mut MiniZincItem) -> i32;
+    pub fn item_is_vardecl(item_ptr: *mut MiniZincItem) -> bool;
+    pub fn item_as_vardecl(item_ptr: *mut MiniZincItem) -> *mut std::os::raw::c_void;
 
     // New functions for MiniZincItem assignment
-    pub fn item_is_assign(item_ptr: *mut std::os::raw::c_void) -> bool;
-    pub fn item_as_assign(item_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+    pub fn item_is_assign(item_ptr: *mut MiniZincItem) -> bool;
+    pub fn item_as_assign(item_ptr: *mut MiniZincItem) -> *mut std::os::raw::c_void;
 
     // New functions for MiniZincItem constraint
-    pub fn item_is_constraint(item_ptr: *mut std::os::raw::c_void) -> bool;
-    pub fn item_as_constraint(item_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+    pub fn item_is_constraint(item_ptr: *mut MiniZincItem) -> bool;
+    pub fn item_as_constraint(item_ptr: *mut MiniZincItem) -> *mut std::os::raw::c_void;
 
     // New functions for MiniZincItem include
-    pub fn item_is_include(item_ptr: *mut std::os::raw::c_void) -> bool;
-    pub fn item_as_include(item_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+    pub fn item_is_include(item_ptr: *mut MiniZincItem) -> bool;
+    pub fn item_as_include(item_ptr: *mut MiniZincItem) -> *mut std::os::raw::c_void;
 
     // New functions for MiniZincItem function
-    pub fn item_is_function(item_ptr: *mut std::os::raw::c_void) -> bool;
-    pub fn item_as_function(item_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+    pub fn item_is_function(item_ptr: *mut MiniZincItem) -> bool;
+    pub fn item_as_function(item_ptr: *mut MiniZincItem) -> *mut std::os::raw::c_void;
 
     // New functions for VarDeclI inspection
     pub fn vardecl_get_id(vardecl_ptr: *mut std::os::raw::c_void) -> *const c_char;
@@ -165,26 +174,25 @@ unsafe extern "C" {
     pub fn minizinc_get_executable_path() -> *const c_char;
 
     // New functions for solving
-    pub fn minizinc_solver_run(solver_ptr: *mut MznSolver, model_str: *const c_char, args: *const *const c_char, num_args: i32) -> i32;
     pub fn minizinc_solver_free(solver_ptr: *mut MznSolver);
     pub fn minizinc_solver_get_solver_instance(solver_ptr: *mut MznSolver) -> *mut std::os::raw::c_void;
 
     // New functions for SolverInstanceBase
-    pub fn minizinc_solver_instance_next(si_ptr: *mut std::os::raw::c_void) -> i32;
-    pub fn minizinc_solver_instance_print_solution(si_ptr: *mut std::os::raw::c_void);
+    pub fn minizinc_solver_instance_next(solver_instance_ptr: *mut std::os::raw::c_void) -> i32;
+    pub fn minizinc_solver_instance_print_solution(solver_instance_ptr: *mut std::os::raw::c_void);
 
     // New functions for solution value extraction
-    pub fn minizinc_solver_instance_get_solution_value_int(si_ptr: *mut std::os::raw::c_void, var_name: *const c_char) -> i32;
+    pub fn minizinc_solver_get_solution_value_int(solver_ptr: *mut MznSolver, var_name: *const c_char) -> i32;
 
     // New function for MiniZincModel documentation comment
-    pub fn minizinc_model_get_doc_comment(model_ptr: *mut std::os::raw::c_void) -> *const c_char;
+    //pub fn minizinc_model_get_doc_comment(model_ptr: *mut std::os::raw::c_void) -> *const c_char;
 
     // New function for MiniZincModel parent
-    pub fn minizinc_model_get_parent(model_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+    //pub fn minizinc_model_get_parent(model_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
 
     // New function for MiniZincModel solve item
-    pub fn minizinc_model_get_solve_item(model_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+    //pub fn minizinc_model_get_solve_item(model_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
 
     // New function for MiniZincModel output item
-    pub fn minizinc_model_get_output_item(model_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
+    //pub fn minizinc_model_get_output_item(model_ptr: *mut std::os::raw::c_void) -> *mut std::os::raw::c_void;
 }

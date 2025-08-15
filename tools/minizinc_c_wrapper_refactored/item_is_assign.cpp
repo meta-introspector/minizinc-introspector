@@ -3,7 +3,7 @@
 
 extern "C" {
 
-bool item_is_assign(Item* item_ptr) {
+bool item_is_assign(MiniZincItem* item_ptr) {
     MiniZinc::Item* item = reinterpret_cast<MiniZinc::Item*>(item_ptr);
     if (!item) {
         return false;

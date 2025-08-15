@@ -14,7 +14,13 @@
 
 extern "C" {
 
-MiniZincModel* minizinc_parse_model_with_flags(MiniZinc::MznSolver* solver_ptr, const char* model_str, const char* filename, bool is_model_string_flag) {
+MiniZincModel* minizinc_parse_model_with_flags(MiniZincEnvWrapper* wrapper_ptr, const char* model_str, const char* filename, bool is_model_string_flag) {
+    // MiniZinc::MznSolver* solver = reinterpret_cast<MiniZinc::MznSolver*>(solver_ptr);
+    // We don't need the MznSolver here, as parsing is done via MiniZinc::parse
+    // and the Env is created locally.
+    // If we need to pass the MznSolver's Env, we would need to access it from the wrapper.
+    // For now, we create a local Env for parsing.
+
     std::cerr << "[minizinc_parse_model_with_flags] Starting parse process." << std::endl; std::cerr.flush();
     std::cerr << "[minizinc_parse_model_with_flags] model_str: " << (model_str ? model_str : "(null)") << std::endl; std::cerr.flush();
     std::cerr << "[minizinc_parse_model_with_flags] filename (initial const char*): " << (filename ? filename : "(null)") << std::endl; std::cerr.flush();

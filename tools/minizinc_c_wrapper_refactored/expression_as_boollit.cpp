@@ -5,10 +5,10 @@ extern "C" {
 
 MiniZinc::BoolLit* expression_as_boollit(MiniZinc::Expression* expr_ptr) {
     MiniZinc::Expression* expr = reinterpret_cast<MiniZinc::Expression*>(expr_ptr);
-    if (!expr || !expr->isa<MiniZinc::BoolLit>()) {
+    if (!expr || !expr->isa<MiniZinc::BoolLit>(expr)) {
         return nullptr;
     }
-    return expr->cast<MiniZinc::BoolLit>();
+    return expr->cast<MiniZinc::BoolLit>(expr);
 }
 
 } // extern "C"

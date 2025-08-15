@@ -1,0 +1,1 @@
+void minizinc_string_free(char* s);

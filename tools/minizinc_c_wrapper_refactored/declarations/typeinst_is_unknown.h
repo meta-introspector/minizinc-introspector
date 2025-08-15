@@ -1,0 +1,1 @@
+bool typeinst_is_unknown(MiniZinc::TypeInst* typeinst_ptr);
