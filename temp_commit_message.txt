@@ -1,18 +1,17 @@
-feat: Refactor C++ FFI wrapper and expose MiniZinc model inspection in Rust
+feat: Debugging infrastructure and FFI introspection
 
-This commit refactors the C++ FFI wrapper for MiniZinc, addressing persistent linking and compilation issues, and introduces initial capabilities for inspecting MiniZinc models directly from Rust.
+This commit introduces significant debugging infrastructure and enhances the MiniZinc FFI with introspection capabilities, laying the groundwork for resolving persistent runtime issues.
 
 Key changes include:
 
-- **C++ FFI Wrapper Refactoring:**
-    - Split `minizinc_c_wrapper.cpp` into smaller, single-purpose files in `tools/minizinc_c_wrapper_refactored/` for improved modularity and maintainability.
-    - Introduced `MiniZincEnvWrapper` to encapsulate `MiniZinc::Flattener` and `MiniZinc::SolverInitialiser`, ensuring proper object lifecycle management and isolated MiniZinc contexts for FFI calls.
-    - Resolved complex linking issues by correctly configuring CMake to build the refactored C++ code and updating `build.rs` in the Rust FFI crate to link against the newly built shared library.
-    - Eliminated `SIGSEGV` crashes and transitioned from generic "type errors" to more specific MiniZinc parsing diagnostics.
+- **Debugging SOP:** Added `docs/debugging_sop.md` to provide a structured guide for debugging MiniZinc FFI issues on Android/Termux, empowering new contributors.
+- **Minimal Reproduction Script:** Created `reproduce_minizinc_ffi_bug.sh` to provide a consistent and minimal way to reproduce the current `SIGABRT` and MiniZinc parsing errors.
+- **FFI Introspection:**
+    - Implemented C++ FFI functions (`minizinc_get_executable_path`, `minizinc_get_mznlib_dir`) to expose MiniZinc's executable path and standard library directory to Rust.
+    - Integrated these functions into the Rust FFI (`MiniZincEnvironment::get_executable_path`, `MiniZincEnvironment::get_mznlib_dir`) and added print statements in tests to provide crucial environmental context during runtime.
+    - Added a minimal MiniZinc model (`test_minimal.mzn`) for focused testing.
+- **C++ FFI Refinements:**
+    - Modified `minizinc_env_wrapper.h` and `minizinc_env_wrapper.cpp` to support a verbose flag, enabling more detailed MiniZinc internal logging.
+    - Updated CMake configuration to include new C++ source files for introspection.
 
-- **Rust FFI Enhancements:**
-    - Defined Rust newtype wrappers (`MiniZincModel`, `MiniZincItem`) for opaque MiniZinc C++ types, adhering to Rust's FFI best practices.
-    - Exposed FFI functions to retrieve basic `MiniZincModel` properties: `filename`, `filepath`, and `num_items`.
-    - Updated Rust tests to demonstrate the new model inspection capabilities.
-
-This refactoring provides a stable foundation for further integration with the MiniZinc library from Rust, enabling more detailed analysis and manipulation of MiniZinc models.
+This commit marks a critical step in understanding and resolving the underlying MiniZinc library issues, moving us closer to a stable and fully functional FFI.
