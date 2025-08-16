@@ -30,8 +30,8 @@ This section guides you through setting up the specialized `libminizinc` environ
     ./scripts/run_embedding_model_v7.sh v6 v1 v1 v1 v1 v1
     ```
     For more details on running tests and understanding the new framework, refer to [MiniZinc Model Performance Analysis and Debugging Report](docs/performance_analysis_report.md).
-*   **New to the Project? Start Here!**: If you're new to this project, we highly recommend starting with our "N00b's Guide" for a simplified introduction to running the models and understanding the basics:
-    *   [Getting Started: A N00b's Guide to libminizinc](n00b_guide.md)
+*   **New to the Project? Start Here!**: If you're new to this project, we highly recommend starting with our comprehensive N00b's Guide:
+    *   [N00b's Guide Index](n00b_guide_index.md)
 
 ## 3. Tutorials
 
