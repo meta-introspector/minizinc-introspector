@@ -14,22 +14,22 @@ This document outlines open questions and areas for further clarification regard
 
 ## 3. "AI-Driven Evolution via LLM Agents"
 
-*   What are the defined "profiles" for LLM agents, and how do they influence agent behavior and task execution?
+*   [What are the defined "profiles" for LLM agents, and how do they influence agent behavior and task execution?](faq/llm_agent_profiles.md)
 *   [What are the specific criteria and methodologies for "onboarding and training" LLM agents on the codebase and documentation?](faq/llm_onboarding_training.md)
-*   How will "semantic resonance mapping" be performed, evaluated, and refined?
-*   What is the detailed process for LLMs to "refine MiniZinc models," and what metrics are used for correctness, expressiveness, and solver efficiency?
-*   What are the technical challenges and proposed solutions for LLMs to generate Rust code for "LLVM Intermediate Representation (IR) to MiniZinc transformation rules" and FFI interactions?
-*   Describe the key components and feedback mechanisms of the "robust continuous integration (CI) pipeline" for LLM-generated code.
-*   How will "structured feedback" (e.g., test failures, linter warnings, human reviews) be provided to LLM agents to enable iterative rewriting?
-*   What specific tools and methodologies will LLMs employ for "performance profiling" and suggesting optimizations?
-*   How will the "semantic memory layout" be implemented, and what are the practical implications of moving away from traditional linear addressing?
-*   What are the strategies for LLMs to enhance "error handling" and propose "code deduplication and refactoring" opportunities?
-*   How will the system "continuously learn from its own development cycles" and adapt its strategies? What types of "formal proofs" will be generated for code or MiniZinc model properties?
+*   [How will "semantic resonance mapping" be performed, evaluated, and refined?](faq/semantic_resonance_mapping.md)
+*   [What is the detailed process for LLMs to "refine MiniZinc models," and what metrics are used for correctness, expressiveness, and solver efficiency?](faq/llm_minizinc_refinement.md)
+*   [What are the technical challenges and proposed solutions for LLMs to generate Rust code for "LLVM Intermediate Representation (IR) to MiniZinc transformation rules" and FFI interactions?](faq/llm_rust_llvm_ir_minizinc_ffi.md)
+*   [Describe the key components and feedback mechanisms of the "robust continuous integration (CI) pipeline" for LLM-generated code.](faq/llm_ci_pipeline.md)
+*   [How will "structured feedback" (e.g., test failures, linter warnings, human reviews) be provided to LLM agents to enable iterative rewriting?](faq/llm_structured_feedback.md)
+*   [What specific tools and methodologies will LLMs employ for "performance profiling" and suggesting optimizations?](faq/llm_performance_profiling.md)
+*   [How will the "semantic memory layout" be implemented, and what are the practical implications of moving away from traditional linear addressing?](faq/semantic_memory_layout.md)
+*   [What are the strategies for LLMs to enhance "error handling" and propose "code deduplication and refactoring" opportunities?](faq/llm_error_handling_deduplication.md)
+*   [How will the system "continuously learn from its own development cycles" and adapt its strategies? What types of "formal proofs" will be generated for code or MiniZinc model properties?](faq/llm_continuous_learning_formal_proofs.md)
 
 ## 4. "Quasi-Meta Computational Self-Awareness"
 
-*   What constitutes "computational self-awareness" in this context, and how will its presence or level be measured and demonstrated?
-*   How will the system "reason about its own logical structures and meaning"?
-*   What are the mechanisms for LLMs to "dynamically update MiniZinc models" based on evolving knowledge?
-*   What are the mathematical and computational details of embedding lambda calculus expressions onto a "unitary Riemannian manifold in 8D"?
-*   How will the "geometrically meaningful representations" practically enhance AI reasoning over symbolic logic, code understanding, and theorem proving?
+*   [What constitutes "computational self-awareness" in this context, and how will its presence or level be measured and demonstrated?](faq/computational_self_awareness.md)
+*   [How will the system "reason about its own logical structures and meaning"?](faq/reasoning_logical_structures.md)
+*   [What are the mechanisms for LLMs to "dynamically update MiniZinc models" based on evolving knowledge?](faq/llm_dynamic_minizinc_updates.md)
+*   [What are the mathematical and computational details of embedding lambda calculus expressions onto a "unitary Riemannian manifold in 8D"?](faq/lambda_calculus_embedding.md)
+*   [How will the "geometrically meaningful representations" practically enhance AI reasoning over symbolic logic, code understanding, and theorem proving?](faq/geometrically_meaningful_representations.md)
