@@ -15,7 +15,7 @@ This document outlines open questions and areas for further clarification regard
 ## 3. "AI-Driven Evolution via LLM Agents"
 
 *   What are the defined "profiles" for LLM agents, and how do they influence agent behavior and task execution?
-*   What are the specific criteria and methodologies for "onboarding and training" LLM agents on the codebase and documentation?
+*   [What are the specific criteria and methodologies for "onboarding and training" LLM agents on the codebase and documentation?](faq/llm_onboarding_training.md)
 *   How will "semantic resonance mapping" be performed, evaluated, and refined?
 *   What is the detailed process for LLMs to "refine MiniZinc models," and what metrics are used for correctness, expressiveness, and solver efficiency?
 *   What are the technical challenges and proposed solutions for LLMs to generate Rust code for "LLVM Intermediate Representation (IR) to MiniZinc transformation rules" and FFI interactions?
