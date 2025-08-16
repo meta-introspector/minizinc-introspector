@@ -1,0 +1,25 @@
+% Sample Data for LLM Layer Stripping Model
+
+num_total_layers = 5;
+
+% Layer properties (hypothetical)
+layer_is_input = [true, false, false, false, false];
+layer_is_output = [false, false, false, false, true];
+layer_is_hidden = [false, true, true, true, false];
+
+layer_complexity = [10, 50, 70, 60, 20]; % Example: input/output layers are simpler
+layer_semantic_fidelity = [0.9, 0.8, 0.7, 0.6, 0.95]; % Example: input/output layers have high fidelity
+
+num_semantic_terms = 3;
+
+% Original mapping: layer_maps_term[l, t]
+% Layer 1: maps term 1
+% Layer 2: maps term 1, 2
+% Layer 3: maps term 2, 3
+% Layer 4: maps term 3
+% Layer 5: maps term 1, 3
+original_layer_maps_term = [| true, false, false
+                            | true, true, false
+                            | false, true, true
+                            | false, false, true
+                            | true, false, true |];
