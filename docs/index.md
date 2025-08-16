@@ -67,6 +67,7 @@ This project adheres to a strict set of Standard Operating Procedures (SOPs) to 
 *   [QA DZN Generation Verification SOP](sops/qa_dzn_generation_verification.md)
 *   [Tutorial Livestream Mode SOP](sops/tutorial_livestream_mode.md)
 *   [MiniZinc Model Performance Analysis and Debugging Report](performance_analysis_report.md)
+*   [Profile-Driven Semantic Test Generation for C++ Oxidation SOP](sops/profile_driven_semantic_test_generation_sop.md)
 
 ## 6. Architecture
 
