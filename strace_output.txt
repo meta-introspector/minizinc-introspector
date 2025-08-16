@@ -1,0 +1,539 @@
+26721 execve("/system/bin/linker64", ["bash", "/data/data/com.termux/files/usr/"..., "-c", "LD_LIBRARY_PATH=/data/data/com.t"...], 0xb400006fb76bf320 /* 64 vars */) = 0
+26721 faccessat(AT_FDCWD, "/dev/urandom", R_OK) = 0
+26721 newfstatat(AT_FDCWD, "/dev/__properties__", {st_mode=S_IFDIR|0711, st_size=11460, ...}, 0) = 0
+26721 faccessat(AT_FDCWD, "/dev/__properties__/property_info", R_OK) = 0
+26721 openat(AT_FDCWD, "/dev/__properties__/property_info", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/properties_serial", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:debug_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/bin/bash", O_RDONLY|O_CLOEXEC) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/data/data/com.termux/files/usr/"..., 4096) = 40
+26721 openat(AT_FDCWD, "/sys/kernel/mm/pgsize_migration/enabled", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 4
+26721 openat(AT_FDCWD, "/sys/kernel/mm/transparent_hugepage/enabled", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 4
+26721 newfstatat(AT_FDCWD, "/system/etc/ld.config.arm64.txt", 0x7ff096fbc0, 0) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/linkerconfig/ld.config.txt", {st_mode=S_IFREG|0644, st_size=224451, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/linkerconfig/ld.config.txt", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 faccessat(AT_FDCWD, "/system/bin", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/system/xbin", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/system_ext/bin", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/product/bin", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/odm/bin", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/vendor/bin", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/data/nativetest/odm", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/nativetest64/odm", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/benchmarktest/odm", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/benchmarktest64/odm", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/nativetest/vendor", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/nativetest64/vendor", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/benchmarktest/vendor", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/benchmarktest64/vendor", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/nativetest/unrestricted", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/nativetest64/unrestricted", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/local/tmp/isolated", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/local/tests/product", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/data/local/tests/system", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/data/local/tests/unrestricted", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/data/local/tests/vendor", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/data/local/tmp", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/postinstall", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/data", R_OK) = -1 EACCES (Permission denied)
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:vndk_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/odm/lib64/vndk-sp", O_RDONLY|O_CLOEXEC|O_PATH) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/odm/lib64/vndk-sp", 0x7ff096d750, 0) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/vendor/lib64/vndk-sp", O_RDONLY|O_CLOEXEC|O_PATH) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/vendor/lib64/vndk-sp", 0x7ff096d750, 0) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/apex/com.android.vndk.v34/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.vndk.v34/lib64", 4095) = 32
+26721 newfstatat(AT_FDCWD, "/apex/com.android.vndk.v34/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.vndk.v34/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/odm/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/odm/lib64", 0x7ff096d750, 0) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/vendor/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/vendor/lib64", 4095) = 13
+26721 newfstatat(AT_FDCWD, "/vendor/lib64", {st_mode=S_IFDIR|0755, st_size=49862, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/vendor/lib64", {st_mode=S_IFDIR|0755, st_size=49862, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/product/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/product/lib64", 4095) = 14
+26721 newfstatat(AT_FDCWD, "/product/lib64", {st_mode=S_IFDIR|0755, st_size=1021, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/product/lib64", {st_mode=S_IFDIR|0755, st_size=1021, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.tethering/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.tethering/lib6"..., 4095) = 33
+26721 newfstatat(AT_FDCWD, "/apex/com.android.tethering/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.tethering/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.runtime/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.runtime/lib64", 4095) = 31
+26721 newfstatat(AT_FDCWD, "/apex/com.android.runtime/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.runtime/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.os.statsd/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.os.statsd/lib6"..., 4095) = 33
+26721 newfstatat(AT_FDCWD, "/apex/com.android.os.statsd/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.os.statsd/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.uwb/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.uwb/lib64", 4095) = 27
+26721 newfstatat(AT_FDCWD, "/apex/com.android.uwb/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.uwb/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.ondevicepersonalization/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.ondeviceperson"..., 4095) = 47
+26721 newfstatat(AT_FDCWD, "/apex/com.android.ondevicepersonalization/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.ondevicepersonalization/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.mediaprovider/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.mediaprovider/"..., 4095) = 37
+26721 newfstatat(AT_FDCWD, "/apex/com.android.mediaprovider/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.mediaprovider/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.conscrypt/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.conscrypt/lib6"..., 4095) = 33
+26721 newfstatat(AT_FDCWD, "/apex/com.android.conscrypt/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.conscrypt/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.media/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.media/lib64", 4095) = 29
+26721 newfstatat(AT_FDCWD, "/apex/com.android.media/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.media/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.virt/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.virt/lib64", 4095) = 28
+26721 newfstatat(AT_FDCWD, "/apex/com.android.virt/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.virt/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.btservices/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.btservices/lib"..., 4095) = 34
+26721 newfstatat(AT_FDCWD, "/apex/com.android.btservices/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.btservices/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/vendor/lib64/egl", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/vendor/lib64/egl", 4095) = 17
+26721 newfstatat(AT_FDCWD, "/vendor/lib64/egl", {st_mode=S_IFDIR|0755, st_size=259, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/vendor/lib64/egl", {st_mode=S_IFDIR|0755, st_size=259, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/vendor/lib64/hw", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/vendor/lib64/hw", 4095) = 16
+26721 newfstatat(AT_FDCWD, "/vendor/lib64/hw", {st_mode=S_IFDIR|0755, st_size=2496, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/vendor/lib64/hw", {st_mode=S_IFDIR|0755, st_size=2496, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.neuralnetworks/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.neuralnetworks"..., 4095) = 38
+26721 newfstatat(AT_FDCWD, "/apex/com.android.neuralnetworks/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.neuralnetworks/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.i18n/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.i18n/lib64", 4095) = 28
+26721 newfstatat(AT_FDCWD, "/apex/com.android.i18n/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.i18n/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.resolv/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.resolv/lib64", 4095) = 30
+26721 newfstatat(AT_FDCWD, "/apex/com.android.resolv/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.resolv/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.art/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.art/lib64", 4095) = 27
+26721 newfstatat(AT_FDCWD, "/apex/com.android.art/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.art/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.appsearch/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.appsearch/lib6"..., 4095) = 33
+26721 newfstatat(AT_FDCWD, "/apex/com.android.appsearch/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.appsearch/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.adservices/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.adservices/lib"..., 4095) = 34
+26721 newfstatat(AT_FDCWD, "/apex/com.android.adservices/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.adservices/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.adbd/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.adbd/lib64", 4095) = 28
+26721 newfstatat(AT_FDCWD, "/apex/com.android.adbd/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.adbd/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/system/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/system/lib64", 4095) = 13
+26721 newfstatat(AT_FDCWD, "/system/lib64", {st_mode=S_IFDIR|0755, st_size=48425, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/system/lib64", {st_mode=S_IFDIR|0755, st_size=48425, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/system_ext/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/system_ext/lib64", 4095) = 17
+26721 newfstatat(AT_FDCWD, "/system_ext/lib64", {st_mode=S_IFDIR|0755, st_size=10467, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/system_ext/lib64", {st_mode=S_IFDIR|0755, st_size=10467, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib/libtermux-exec.so", O_RDONLY|O_CLOEXEC) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/data/data/com.termux/files/usr/"..., 4096) = 53
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 4
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/4", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib/libreadline.so.8", O_RDONLY|O_CLOEXEC) = 4
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/4", "/data/data/com.termux/files/usr/"..., 4096) = 54
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 5
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/5", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 5
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/5", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib/libiconv.so", O_RDONLY|O_CLOEXEC) = 5
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/5", "/data/data/com.termux/files/usr/"..., 4096) = 47
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 6
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/6", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib/libdl.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/system/lib64/libdl.so", O_RDONLY|O_CLOEXEC) = 6
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/6", "/apex/com.android.runtime/lib64/"..., 4096) = 47
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib/libc.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/system/lib64/libc.so", O_RDONLY|O_CLOEXEC) = 7
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/7", "/apex/com.android.runtime/lib64/"..., 4096) = 46
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib/libncursesw.so.6", O_RDONLY|O_CLOEXEC) = 8
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/8", "/data/data/com.termux/files/usr/"..., 4096) = 54
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 9
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/9", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 9
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/9", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 9
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/9", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 9
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/9", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 9
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/9", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 9
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/9", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:arm64_memtag_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:device_config_memory_safety_native_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 faccessat(AT_FDCWD, "/dev/urandom", R_OK) = 0
+26721 newfstatat(AT_FDCWD, "/dev/__properties__", {st_mode=S_IFDIR|0711, st_size=11460, ...}, 0) = 0
+26721 faccessat(AT_FDCWD, "/dev/__properties__/property_info", R_OK) = 0
+26721 openat(AT_FDCWD, "/dev/__properties__/property_info", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/properties_serial", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:debug_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:exported_system_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:gwp_asan_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:libc_debug_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:heapprofd_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/system/lib64/libnetd_client.so", O_RDONLY|O_CLOEXEC) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/system/lib64/libnetd_client.so", 4096) = 31
+26721 openat(AT_FDCWD, "/system/lib64/libc++.so", O_RDONLY|O_CLOEXEC) = 4
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/4", "/system/lib64/libc++.so", 4096) = 23
+26721 openat(AT_FDCWD, "/system/lib64/libm.so", O_RDONLY|O_CLOEXEC) = 5
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/5", "/apex/com.android.runtime/lib64/"..., 4096) = 46
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:build_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:vendor_socket_hook_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/tty", O_RDWR|O_NONBLOCK) = -1 ENXIO (No such device or address)
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, ".", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data", {st_mode=S_IFDIR|0771, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data", {st_mode=S_IFDIR|0751, st_size=80, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files", {st_mode=S_IFDIR|0771, st_size=3452, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/tools", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 getcwd("/data/data/com.termux/files/home/storage/github/libminizinc", 4096) = 60
+26721 faccessat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/minizinc_ffi-a5414b098a0a6cc6", X_OK) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/minizinc_ffi-a5414b098a0a6cc6", O_RDONLY) = 3
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/minizinc_ffi-a5414b098a0a6cc6", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/data/data/com.termux/files/home"..., 4095) = 107
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/minizinc_ffi-a5414b098a0a6cc6", {st_mode=S_IFREG|0700, st_size=1466528, ...}, 0) = 0
+26721 execve("/system/bin/linker64", ["/data/data/com.termux/files/home"..., "/data/data/com.termux/files/home"...], 0xb40000771764d070 /* 65 vars */) = 0
+26721 faccessat(AT_FDCWD, "/dev/urandom", R_OK) = 0
+26721 newfstatat(AT_FDCWD, "/dev/__properties__", {st_mode=S_IFDIR|0711, st_size=11460, ...}, 0) = 0
+26721 faccessat(AT_FDCWD, "/dev/__properties__/property_info", R_OK) = 0
+26721 openat(AT_FDCWD, "/dev/__properties__/property_info", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/properties_serial", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:debug_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/minizinc_ffi-a5414b098a0a6cc6", O_RDONLY|O_CLOEXEC) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/data/data/com.termux/files/home"..., 4096) = 107
+26721 openat(AT_FDCWD, "/sys/kernel/mm/pgsize_migration/enabled", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 4
+26721 openat(AT_FDCWD, "/sys/kernel/mm/transparent_hugepage/enabled", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 4
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/data/data/com.termux/files/home"..., 4095) = 74
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/system/etc/ld.config.arm64.txt", 0x7fd3f2e890, 0) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/linkerconfig/ld.config.txt", {st_mode=S_IFREG|0644, st_size=224451, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/linkerconfig/ld.config.txt", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 faccessat(AT_FDCWD, "/system/bin", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/system/xbin", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/system_ext/bin", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/product/bin", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/odm/bin", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/vendor/bin", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/data/nativetest/odm", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/nativetest64/odm", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/benchmarktest/odm", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/benchmarktest64/odm", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/nativetest/vendor", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/nativetest64/vendor", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/benchmarktest/vendor", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/benchmarktest64/vendor", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/nativetest/unrestricted", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/nativetest64/unrestricted", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/local/tmp/isolated", R_OK) = -1 ENOENT (No such file or directory)
+26721 faccessat(AT_FDCWD, "/data/local/tests/product", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/data/local/tests/system", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/data/local/tests/unrestricted", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/data/local/tests/vendor", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/data/local/tmp", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/postinstall", R_OK) = -1 EACCES (Permission denied)
+26721 faccessat(AT_FDCWD, "/data", R_OK) = -1 EACCES (Permission denied)
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:vndk_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/odm/lib64/vndk-sp", O_RDONLY|O_CLOEXEC|O_PATH) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/odm/lib64/vndk-sp", 0x7fd3f2c420, 0) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/vendor/lib64/vndk-sp", O_RDONLY|O_CLOEXEC|O_PATH) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/vendor/lib64/vndk-sp", 0x7fd3f2c420, 0) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/apex/com.android.vndk.v34/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.vndk.v34/lib64", 4095) = 32
+26721 newfstatat(AT_FDCWD, "/apex/com.android.vndk.v34/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.vndk.v34/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/odm/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/odm/lib64", 0x7fd3f2c420, 0) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/vendor/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/vendor/lib64", 4095) = 13
+26721 newfstatat(AT_FDCWD, "/vendor/lib64", {st_mode=S_IFDIR|0755, st_size=49862, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/vendor/lib64", {st_mode=S_IFDIR|0755, st_size=49862, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/product/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/product/lib64", 4095) = 14
+26721 newfstatat(AT_FDCWD, "/product/lib64", {st_mode=S_IFDIR|0755, st_size=1021, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/product/lib64", {st_mode=S_IFDIR|0755, st_size=1021, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.tethering/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.tethering/lib6"..., 4095) = 33
+26721 newfstatat(AT_FDCWD, "/apex/com.android.tethering/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.tethering/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.runtime/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.runtime/lib64", 4095) = 31
+26721 newfstatat(AT_FDCWD, "/apex/com.android.runtime/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.runtime/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.os.statsd/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.os.statsd/lib6"..., 4095) = 33
+26721 newfstatat(AT_FDCWD, "/apex/com.android.os.statsd/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.os.statsd/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.uwb/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.uwb/lib64", 4095) = 27
+26721 newfstatat(AT_FDCWD, "/apex/com.android.uwb/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.uwb/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.ondevicepersonalization/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.ondeviceperson"..., 4095) = 47
+26721 newfstatat(AT_FDCWD, "/apex/com.android.ondevicepersonalization/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.ondevicepersonalization/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.mediaprovider/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.mediaprovider/"..., 4095) = 37
+26721 newfstatat(AT_FDCWD, "/apex/com.android.mediaprovider/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.mediaprovider/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.conscrypt/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.conscrypt/lib6"..., 4095) = 33
+26721 newfstatat(AT_FDCWD, "/apex/com.android.conscrypt/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.conscrypt/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.media/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.media/lib64", 4095) = 29
+26721 newfstatat(AT_FDCWD, "/apex/com.android.media/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.media/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.virt/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.virt/lib64", 4095) = 28
+26721 newfstatat(AT_FDCWD, "/apex/com.android.virt/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.virt/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.btservices/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.btservices/lib"..., 4095) = 34
+26721 newfstatat(AT_FDCWD, "/apex/com.android.btservices/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.btservices/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/vendor/lib64/egl", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/vendor/lib64/egl", 4095) = 17
+26721 newfstatat(AT_FDCWD, "/vendor/lib64/egl", {st_mode=S_IFDIR|0755, st_size=259, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/vendor/lib64/egl", {st_mode=S_IFDIR|0755, st_size=259, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/vendor/lib64/hw", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/vendor/lib64/hw", 4095) = 16
+26721 newfstatat(AT_FDCWD, "/vendor/lib64/hw", {st_mode=S_IFDIR|0755, st_size=2496, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/vendor/lib64/hw", {st_mode=S_IFDIR|0755, st_size=2496, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.neuralnetworks/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.neuralnetworks"..., 4095) = 38
+26721 newfstatat(AT_FDCWD, "/apex/com.android.neuralnetworks/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.neuralnetworks/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.i18n/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.i18n/lib64", 4095) = 28
+26721 newfstatat(AT_FDCWD, "/apex/com.android.i18n/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.i18n/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.resolv/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.resolv/lib64", 4095) = 30
+26721 newfstatat(AT_FDCWD, "/apex/com.android.resolv/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.resolv/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.art/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.art/lib64", 4095) = 27
+26721 newfstatat(AT_FDCWD, "/apex/com.android.art/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.art/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.appsearch/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.appsearch/lib6"..., 4095) = 33
+26721 newfstatat(AT_FDCWD, "/apex/com.android.appsearch/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.appsearch/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.adservices/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.adservices/lib"..., 4095) = 34
+26721 newfstatat(AT_FDCWD, "/apex/com.android.adservices/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.adservices/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/apex/com.android.adbd/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/apex/com.android.adbd/lib64", 4095) = 28
+26721 newfstatat(AT_FDCWD, "/apex/com.android.adbd/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/apex/com.android.adbd/lib64", {st_mode=S_IFDIR|0755, st_size=4096, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/system/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/system/lib64", 4095) = 13
+26721 newfstatat(AT_FDCWD, "/system/lib64", {st_mode=S_IFDIR|0755, st_size=48425, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/system/lib64", {st_mode=S_IFDIR|0755, st_size=48425, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/system_ext/lib64", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/system_ext/lib64", 4095) = 17
+26721 newfstatat(AT_FDCWD, "/system_ext/lib64", {st_mode=S_IFDIR|0755, st_size=10467, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/system_ext/lib64", {st_mode=S_IFDIR|0755, st_size=10467, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib/libtermux-exec.so", O_RDONLY|O_CLOEXEC) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/data/data/com.termux/files/usr/"..., 4096) = 53
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 4
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/4", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage/libminizinc_c_wrapper.so", O_RDONLY|O_CLOEXEC) = 4
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/4", "/data/data/com.termux/files/home"..., 4096) = 99
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 5
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/5", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage/../lib", O_RDONLY|O_CLOEXEC|O_PATH) = 5
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/5", "/data/data/com.termux/files/home"..., 4095) = 63
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/lib", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/lib", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/usr/local/lib", O_RDONLY|O_CLOEXEC|O_PATH) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/usr/local/lib", 0x7fd3f2dfa0, 0) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage", O_RDONLY|O_CLOEXEC|O_PATH) = 5
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/5", "/data/data/com.termux/files/home"..., 4095) = 74
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage/libdl.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib/libdl.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/system/lib64/libdl.so", O_RDONLY|O_CLOEXEC) = 5
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/5", "/apex/com.android.runtime/lib64/"..., 4096) = 47
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage/libc.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib/libc.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/system/lib64/libc.so", O_RDONLY|O_CLOEXEC) = 6
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/6", "/apex/com.android.runtime/lib64/"..., 4096) = 46
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage/libmzn.so", O_RDONLY|O_CLOEXEC) = 7
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/7", "/data/data/com.termux/files/home"..., 4096) = 84
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 8
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/8", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage/libc++_shared.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib/libc++_shared.so", O_RDONLY|O_CLOEXEC) = 8
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/8", "/data/data/com.termux/files/usr/"..., 4096) = 52
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage/libm.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib/libm.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/lib/libm.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage/libm.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/system/lib64/libm.so", O_RDONLY|O_CLOEXEC) = 9
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/9", "/apex/com.android.runtime/lib64/"..., 4096) = 46
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 10
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/10", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 10
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/10", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage/../lib", O_RDONLY|O_CLOEXEC|O_PATH) = 10
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/10", "/data/data/com.termux/files/home"..., 4095) = 63
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/lib", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/lib", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/usr/local/lib", O_RDONLY|O_CLOEXEC|O_PATH) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/usr/local/lib", 0x7fd3f2e3d0, 0) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage", O_RDONLY|O_CLOEXEC|O_PATH) = 10
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/10", "/data/data/com.termux/files/home"..., 4095) = 74
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", O_RDONLY|O_CLOEXEC|O_PATH) = 10
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/10", "/data/data/com.termux/files/usr/"..., 4095) = 35
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/usr/lib", {st_mode=S_IFDIR|0700, st_size=24576, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:arm64_memtag_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:device_config_memory_safety_native_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 faccessat(AT_FDCWD, "/dev/urandom", R_OK) = 0
+26721 newfstatat(AT_FDCWD, "/dev/__properties__", {st_mode=S_IFDIR|0711, st_size=11460, ...}, 0) = 0
+26721 faccessat(AT_FDCWD, "/dev/__properties__/property_info", R_OK) = 0
+26721 openat(AT_FDCWD, "/dev/__properties__/property_info", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/properties_serial", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:debug_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:exported_system_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:gwp_asan_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:libc_debug_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:heapprofd_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage/libnetd_client.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/system/lib64/libnetd_client.so", O_RDONLY|O_CLOEXEC) = 3
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/system/lib64/libnetd_client.so", 4096) = 31
+26721 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage/libc++.so", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/system/lib64/libc++.so", O_RDONLY|O_CLOEXEC) = 4
+26721 readlinkat(AT_FDCWD, "/proc/self/fd/4", "/system/lib64/libc++.so", 4096) = 23
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:build_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "/dev/__properties__/u:object_r:vendor_socket_hook_prop:s0", O_RDONLY|O_NOFOLLOW|O_CLOEXEC) = 3
+26721 openat(AT_FDCWD, "default.profraw", O_WRONLY|O_CREAT|O_TRUNC, 0666) = 3
+26721 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/.terminfo", 0x7fd3f30160, 0) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/etc/terminfo", 0x7fd3f30160, 0) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/lib/terminfo", 0x7fd3f30160, 0) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/usr/share/terminfo", 0x7fd3f30160, 0) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/boot/system/data/terminfo", 0x7fd3f30160, 0) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/proc/self/cgroup", O_RDONLY|O_CLOEXEC) = 3
+26721 newfstatat(AT_FDCWD, "/sys/fs/cgroup/cpu/top-app", 0x7fd3f30130, 0) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/sys/fs/cgroup/cpu,cpuacct/top-app", 0x7fd3f30130, 0) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/proc/self/mountinfo", O_RDONLY|O_CLOEXEC) = 3
+26721 newfstatat(AT_FDCWD, "/dev/cpuctl/top-app", {st_mode=S_IFDIR|0755, st_size=0, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/dev/cpuctl/top-app/cpu.cfs_quota_us", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/dev/cpuctl/top-app/cpu.cfs_period_us", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/dev/cpuctl/cpu.cfs_quota_us", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/dev/cpuctl/cpu.cfs_period_us", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/proc/self/cgroup", O_RDONLY|O_CLOEXEC) = 3
+26721 newfstatat(AT_FDCWD, "/sys/fs/cgroup/cpu/top-app", 0x7fd3f2f910, 0) = -1 ENOENT (No such file or directory)
+26721 newfstatat(AT_FDCWD, "/sys/fs/cgroup/cpu,cpuacct/top-app", 0x7fd3f2f910, 0) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/proc/self/mountinfo", O_RDONLY|O_CLOEXEC) = 3
+26721 newfstatat(AT_FDCWD, "/dev/cpuctl/top-app", {st_mode=S_IFDIR|0755, st_size=0, ...}, 0) = 0
+26721 openat(AT_FDCWD, "/dev/cpuctl/top-app/cpu.cfs_quota_us", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/dev/cpuctl/top-app/cpu.cfs_period_us", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/dev/cpuctl/cpu.cfs_quota_us", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 openat(AT_FDCWD, "/dev/cpuctl/cpu.cfs_period_us", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+26721 clone(child_stack=0x7c6f0aeca0, flags=CLONE_VM|CLONE_FS|CLONE_FILES|CLONE_SIGHAND|CLONE_THREAD|CLONE_SYSVSEM|CLONE_SETTLS|CLONE_PARENT_SETTID|CLONE_CHILD_CLEARTID, parent_tid=[26722], tls=0x7c6f0af000, child_tidptr=0x7c6f0aecc0) = 26722
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/.minizinc/solvers", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26722 newfstatat(AT_FDCWD, "/std/stdlib.mzn", 0x7c6f0ad418, 0) = -1 ENOENT (No such file or directory)
+26722 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/minizinc_ffi-a5414b098a0a6cc6", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26722 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/data/data/com.termux/files/home"..., 4095) = 107
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/minizinc_ffi-a5414b098a0a6cc6", {st_mode=S_IFREG|0700, st_size=1466528, ...}, 0) = 0
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/share/minizinc/std/stdlib.mzn", 0x7c6f0ad418, 0) = -1 ENOENT (No such file or directory)
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/../share/minizinc/std/stdlib.mzn", 0x7c6f0ad418, 0) = -1 ENOENT (No such file or directory)
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/../../share/minizinc/std/stdlib.mzn", 0x7c6f0ad418, 0) = -1 ENOENT (No such file or directory)
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/../../../share/minizinc/std/stdlib.mzn", {st_mode=S_IFREG|0600, st_size=2173, ...}, 0) = 0
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/../../../share/minizinc/Preferences.json", {st_mode=S_IFREG|0600, st_size=556, ...}, 0) = 0
+26722 openat(AT_FDCWD, "/dev/urandom", O_RDONLY) = 3
+26722 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/../../../share/minizinc/Preferences.json", O_RDONLY|O_CLOEXEC) = 3
+26722 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/../../../share/minizinc/Preferences.json", O_RDONLY|O_CLOEXEC) = 3
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/.minizinc/Preferences.json", 0x7c6f0ad538, 0) = -1 ENOENT (No such file or directory)
+26722 newfstatat(AT_FDCWD, "/std/stdlib.mzn", 0x7c6f0ad468, 0) = -1 ENOENT (No such file or directory)
+26722 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/minizinc_ffi-a5414b098a0a6cc6", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26722 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/data/data/com.termux/files/home"..., 4095) = 107
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/minizinc_ffi-a5414b098a0a6cc6", {st_mode=S_IFREG|0700, st_size=1466528, ...}, 0) = 0
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/share/minizinc/std/stdlib.mzn", 0x7c6f0ad468, 0) = -1 ENOENT (No such file or directory)
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/../share/minizinc/std/stdlib.mzn", 0x7c6f0ad468, 0) = -1 ENOENT (No such file or directory)
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/../../share/minizinc/std/stdlib.mzn", 0x7c6f0ad468, 0) = -1 ENOENT (No such file or directory)
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/../../../share/minizinc/std/stdlib.mzn", {st_mode=S_IFREG|0600, st_size=2173, ...}, 0) = 0
+26722 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/../../../share/minizinc", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26722 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/data/data/com.termux/files/home"..., 4095) = 74
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/share/minizinc", {st_mode=S_IFDIR|0700, st_size=3452, ...}, 0) = 0
+26722 newfstatat(AT_FDCWD, "/usr/local/share", 0x7c6f0ad538, 0) = -1 ENOENT (No such file or directory)
+26722 newfstatat(AT_FDCWD, "/usr/share", 0x7c6f0ad538, 0) = -1 ENOENT (No such file or directory)
+26722 newfstatat(AT_FDCWD, "/home/linuxbrew/.linuxbrew/share", 0x7c6f0ad538, 0) = -1 ENOENT (No such file or directory)
+26722 newfstatat(AT_FDCWD, "/opt/homebrew/share", 0x7c6f0ad538, 0) = -1 ENOENT (No such file or directory)
+26722 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/minizinc_ffi-a5414b098a0a6cc6", O_RDONLY|O_CLOEXEC|O_PATH) = 3
+26722 readlinkat(AT_FDCWD, "/proc/self/fd/3", "/data/data/com.termux/files/home"..., 4095) = 107
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/minizinc_ffi-a5414b098a0a6cc6", {st_mode=S_IFREG|0700, st_size=1466528, ...}, 0) = 0
+26722 openat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/share/minizinc", O_RDONLY|O_CLOEXEC|O_PATH) = -1 ENOENT (No such file or directory)
+26722 newfstatat(AT_FDCWD, "/data/data/com.termux/files/home/storage/github/libminizinc/target/debug/deps/share/minizinc", 0x7c6f0ad538, 0) = -1 ENOENT (No such file or directory)
+26722 openat(AT_FDCWD, "/dev/urandom", O_RDONLY) = 3
+26722 exit(0)                           = ?
+26722 +++ exited with 0 +++
+26721 openat(AT_FDCWD, "default.profraw", O_WRONLY|O_CREAT|O_APPEND, 0666) = 3
+26721 openat(AT_FDCWD, "default.profraw", O_WRONLY|O_CREAT|O_APPEND, 0666) = 3
+26721 exit_group(0)                     = ?
+26721 +++ exited with 0 +++
