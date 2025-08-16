@@ -107,6 +107,7 @@ add_library(minizinc_parser OBJECT
 set_target_properties(minizinc_parser PROPERTIES
   CXX_CLANG_TIDY ""
 )
+target_compile_options(minizinc_parser PRIVATE -fprofile-arcs -ftest-coverage)
 
 if(GECODE_FOUND)
   target_include_directories(minizinc_parser PRIVATE "${GECODE_INCLUDE_DIRS}")

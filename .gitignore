@@ -60,3 +60,4 @@ tramp
 /html_llvm_coverage_report/
 /html_llvm_coverage_report_per_test/
 /strace_output.log
+merged.profdata
