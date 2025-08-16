@@ -66,4 +66,10 @@ mod tests {
 
     //     // env.solver_instance_print_solution(solver_instance_ptr);
     // }
+
+    mod test_01_init_global_env;
+    mod test_02_parse_minimal_model;
+    mod test_03_unwrap_model;
+    mod test_04_get_model_filename;
+    mod test_05_full_lifecycle_no_filepath;
 }

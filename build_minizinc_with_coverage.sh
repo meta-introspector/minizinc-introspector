@@ -16,8 +16,7 @@ echo "Configuring CMake with coverage flags..."
 cmake -S "${SOURCE_DIR}" -B "${BUILD_DIR}" \
   -DCMAKE_BUILD_TYPE=Debug \
   -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage" \
-  -DCMAKE_C_FLAGS="-fprofile-arcs -ftest-coverage" \
-  -DBUILD_WITH_COVERAGE=ON
+  -DCMAKE_C_FLAGS="-fprofile-arcs -ftest-coverage"
 
 echo "Building libminizinc with coverage instrumentation..."
 cmake --build "${BUILD_DIR}" -j$(nproc)

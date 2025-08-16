@@ -14,6 +14,9 @@ MiniZinc::MznSolver* get_mzn_solver(MiniZincEnvWrapper* env_wrapper);
 // Helper function to create a MiniZincEnvWrapper from an MznSolver
 MiniZincEnvWrapper* create_env_wrapper(MiniZinc::MznSolver* solver);
 
+// Global environment wrapper pointer for singleton management
+extern MiniZincEnvWrapper* global_env_wrapper;
+
 #ifdef __cplusplus
 } // extern "C"
 #endif

@@ -5,17 +5,21 @@
 #include <string>
 #include <chrono> // For Timer
 #include <stdexcept> // For std::runtime_error
+#include <cassert> // For assert
+
+// Static variable to track if the environment has been initialized
+MiniZincEnvWrapper* global_env_wrapper = nullptr;
 
 extern "C" {
 
-// Removed: static bool is_initialized = false; // No longer needed
-
-// Change return type to MiniZincEnvWrapper*
 MiniZincEnvWrapper* minizinc_env_new() {
-    // Removed: if (is_initialized) { ... }
-    // Removed: throw std::runtime_error("minizinc_env_new() was called. This is for debugging purposes.");
-
     MiniZinc::GCLock lock; // Acquire GC lock for this function
+
+    if (global_env_wrapper != nullptr) {
+        std::cerr << "ERROR: minizinc_env_new() called more than once. This is not allowed." << std::endl; std::cerr.flush();
+        assert(false); // Crash if called more than once
+    }
+    
     // Use a static Timer to ensure it's allocated once and lives for the program's duration.
     // This prevents a memory leak as MznSolver expects a Timer reference.
     static MiniZinc::Timer timer; 
@@ -27,12 +31,12 @@ MiniZincEnvWrapper* minizinc_env_new() {
     // Set verbose flag if needed (MznSolver has its own flagVerbose)
     solver->flagVerbose = true;
 
-    // Removed: is_initialized = true; // No longer needed
-
     // Return the MznSolver directly
     MiniZincEnvWrapper* env_wrapper = new MiniZincEnvWrapper();
     env_wrapper->solver = solver;
-    // env_wrapper->env is default constructed, no need to explicitly set it unless needed
+    
+    global_env_wrapper = env_wrapper; // Store the newly created environment globally
+
     return env_wrapper;
 }
 
