@@ -10,10 +10,7 @@ This document outlines open questions and areas for further clarification regard
 
 ## 2. "Knowledge Compression: The Codec"
 
-*   What are the technical specifications of the "codec" and how does it achieve "semantically rich numerical representations"?
-*   Detail the practical implementation of the "Backpack Filling Protocol" for embedding content using prime numbers.
-*   What is the target format or structure of the "highly compressed and semantically resonant representations"?
-*   How will the codec specifically contribute to "self-generating and self-evolving documentation"?
+*   [What are the technical specifications and practical implementation of the "codec"?](faq/codec.md)
 
 ## 3. "AI-Driven Evolution via LLM Agents"
 
