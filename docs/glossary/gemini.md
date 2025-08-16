@@ -1,3 +1,3 @@
-# Glossary Summary
+# Gemini
 
-This directory contains definitions of key terms, concepts, and acronyms used throughout the project's documentation and codebase. It aims to provide a consistent understanding of terminology.
+**Gemini** refers to the large language model developed by Google, acting as an interactive CLI agent for software engineering tasks within this project. It adheres to strict protocols for code modification, documentation, and project management, including the "Monotonic Epic Idea" and various SOPs.
