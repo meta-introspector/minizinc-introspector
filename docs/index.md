@@ -105,19 +105,23 @@ This section documents recent findings and debugging efforts related to the Mini
 
 *   [Poems Index](poems/index.md)
 
-## 11. Contributing
+## 11. Project Insights
+
+*   [LLM FAQ: Open Questions on the Project Vision](llm_faq.md)
+
+## 12. Contributing
 
 Contributions that align with the project's vision and adhere to its unique development philosophy are welcome. Please familiarize yourself with the SOPs in the `docs/sops/` directory before contributing.
 
-## 12. License
+## 13. License
 
 Distributed under the Mozilla Public License Version 2.0. See `LICENSE` for more information.
 
-## 13. Acknowledgements
+## 14. Acknowledgements
 
 This research was partially funded by the Australian Government through the Australian Research Council Industrial Transformation Training Centre in Optimization Technologies, Integrated Methodologies, and Applications ([OPTIMA](https://optima.org.au)), Project ID IC200100009.
 
-## 14. Contact
+## 15. Contact
 
 🏛 **MiniZinc Community**
 
