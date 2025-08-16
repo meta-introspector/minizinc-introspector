@@ -1,0 +1,19 @@
+% Sample Data for Code Coverage Mapping
+% Reflects hypothetical low coverage (e.g., ~2.35% if we had many more files)
+
+num_cpp_files = 5;
+cpp_file_names = ["lib/parser.cpp", "lib/model.cpp", "lib/gc.cpp", "lib/flattener.cpp", "lib/solver.cpp"];
+
+num_rust_tests = 3;
+rust_test_names = ["test_parser_basic", "test_model_creation", "test_solver_init"];
+
+% Assume only lib/parser.cpp is partially covered by test_parser_basic
+% For file-level coverage, we'll say it's covered if any part is covered.
+cpp_file_covered = [true, false, false, false, false];
+
+% test_covers_file[k, i]
+% k=1 (test_parser_basic), k=2 (test_model_creation), k=3 (test_solver_init)
+% i=1 (parser.cpp), i=2 (model.cpp), i=3 (gc.cpp), i=4 (flattener.cpp), i=5 (solver.cpp)
+test_covers_file = [| true, false, false, false, false
+                   | false, true, false, false, false
+                   | false, false, false, false, true |];
