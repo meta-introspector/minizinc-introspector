@@ -69,6 +69,7 @@ This project adheres to a strict set of Standard Operating Procedures (SOPs) to 
 *   [MiniZinc Model Performance Analysis and Debugging Report](performance_analysis_report.md)
 *   [Profile-Driven Semantic Test Generation for C++ Oxidation SOP](sops/profile_driven_semantic_test_generation_sop.md)
 *   [Gemini Batch Interface for Multi-Turn Conversations SOP](sops/gemini_batch_interface_sop.md)
+*   [LLM-Driven Rust Interface Expansion SOP](sops/llm_driven_rust_interface_expansion_sop.md)
 
 ## 6. Architecture
 
