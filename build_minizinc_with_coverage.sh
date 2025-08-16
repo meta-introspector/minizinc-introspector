@@ -20,7 +20,7 @@ cmake -S "${SOURCE_DIR}" -B "${BUILD_DIR}" \
   -DBUILD_WITH_COVERAGE=ON
 
 echo "Building libminizinc with coverage instrumentation..."
-cmake --build "${BUILD_DIR}" -j$(nproc)
+cmake --build "${BUILD_DIR}" -j15
 
 echo "Build complete. Coverage data will be generated when tests are run."
 echo "You can find the build artifacts in: ${BUILD_DIR}"
