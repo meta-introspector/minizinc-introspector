@@ -1,0 +1,18 @@
+% Sample Data for Cybernetic Control Loop Model
+
+max_batch_tasks = 2; % Example: A batch of 2 tasks
+llm_input_task_types = [LLM_REFINE_MODEL, QUERY_COVERAGE];
+llm_input_task_active = [true, true];
+
+llm_output_task_completed = [true, true];
+llm_output_value = [0.5, 0.0]; % LLM proposes a 0.5 refinement, and 0.0 for query
+
+max_embedding_dimensions = 2;
+embedding_matrix_row_1 = [10, 20]; % Initial state
+embedding_matrix_row_2 = [30, 40];
+
+sat_solver_outcome = UNSAT; % Example: SAT solver found no solution
+sat_solver_solution_quality = 0;
+
+human_override_active = false;
+human_corrected_embedding_matrix_row_1 = [0, 0]; % Placeholder, not used if override is false
