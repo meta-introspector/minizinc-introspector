@@ -49,6 +49,7 @@ proof_tapes/
 
 # Custom additions
 temp_commit_message.txt
+*.profraw
 
 # Emacs
 *#
