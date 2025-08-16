@@ -13,6 +13,9 @@ PROFDATA_FILE="${PROJECT_ROOT}/default.profdata"
 echo "Merging raw profile data..."
 llvm-profdata merge -sparse "${PROFRAW_FILE}" -o "${PROFDATA_FILE}"
 
+echo "Extracting coverage data to MiniZinc model..."
+cargo run --package coverage_extractor
+
 echo "Generating text coverage summary..."
 llvm-cov report \
   -ignore-filename-regex='.*(test|thirdparty).*' \

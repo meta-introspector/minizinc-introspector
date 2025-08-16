@@ -14,6 +14,9 @@ HTML_REPORT_DIR="${PROJECT_ROOT}/html_llvm_coverage_report"
 echo "Merging raw profile data..."
 llvm-profdata merge -sparse "${PROFRAW_FILE}" -o "${PROFDATA_FILE}"
 
+echo "Extracting coverage data to MiniZinc model..."
+cargo run --package coverage_extractor
+
 echo "Generating HTML coverage report in ${HTML_REPORT_DIR}..."
 mkdir -p "${HTML_REPORT_DIR}"
 llvm-cov show -format=html -output-dir="${HTML_REPORT_DIR}" \
