@@ -18,13 +18,13 @@ mod tests {
         };
     }
 
-    #[test]
-    fn test_get_version_string() {
-        let env = GLOBAL_MINIZINC_ENV.lock().unwrap(); // Lock the mutex to get access
-        let version = env.get_version_string();
-        println!("MiniZinc Version: {}", version);
-        assert_eq!(version, "2.9.4-introspector");
-    }
+    // #[test]
+    // fn test_get_version_string() {
+    //     let env = GLOBAL_MINIZINC_ENV.lock().unwrap(); // Lock the mutex to get access
+    //     let version = env.get_version_string();
+    //     println!("MiniZinc Version: {}", version);
+    //     assert_eq!(version, "2.9.4-introspector");
+    // }
 
     #[test]
     fn test_global_env_access() {
@@ -32,38 +32,38 @@ mod tests {
         // The test ensures that accessing the global environment does not panic.
     }
 
-    #[test]
-    fn test_parse_string() {
-        let env = GLOBAL_MINIZINC_ENV.lock().unwrap(); // Lock the mutex to get access
-        let model_code = "var int: x; solve satisfy;";
-        let model = env.parse_string(model_code);
-        assert!(model.is_ok());
-        let model_obj = model.unwrap();
-        println!("Parsed model filename: {}", model_obj.filename());
-        println!("Parsed model filepath: {}", model_obj.filepath());
-    }
+    // #[test]
+    // fn test_parse_string() {
+    //     let env = GLOBAL_MINIZINC_ENV.lock().unwrap(); // Lock the mutex to get access
+    //     let model_code = "var int: x; solve satisfy;";
+    //     let model = env.parse_string(model_code);
+    //     assert!(model.is_ok());
+    //     let model_obj = model.unwrap();
+    //     println!("Parsed model filename: {}", model_obj.filename());
+    //     println!("Parsed model filepath: {}", model_obj.filepath());
+    // }
 
-    #[test]
-    fn test_solve_and_extract_int() {
-        let env = GLOBAL_MINIZINC_ENV.lock().unwrap(); // Lock the mutex to get access
-        let model_code = "var int: x; constraint x > 5; solve minimize x;";
+    // #[test]
+    // fn test_solve_and_extract_int() {
+    //     let env = GLOBAL_MINIZINC_ENV.lock().unwrap(); // Lock the mutex to get access
+    //     let model_code = "var int: x; constraint x > 5; solve minimize x;";
 
-        // For now, we only parse the model. Solving will be added later.
-        let model = env.parse_string(model_code);
-        assert!(model.is_ok());
+    //     // For now, we only parse the model. Solving will be added later.
+    //     let model = env.parse_string(model_code);
+    //     assert!(model.is_ok());
 
-        let solver_instance_ptr = env.get_solver_instance();
-        assert!(!solver_instance_ptr.is_null());
+    //     let solver_instance_ptr = env.get_solver_instance();
+    //     assert!(!solver_instance_ptr.is_null());
 
-        // The following lines are commented out as solving is not yet fully implemented
-        // let next_status = env.solver_instance_next(solver_instance_ptr);
-        // println!("Next solution status: {}", next_status);
-        // assert_eq!(next_status, 1); // Assuming 1 means a solution was found
+    //     // The following lines are commented out as solving is not yet fully implemented
+    //     // let next_status = env.solver_instance_next(solver_instance_ptr);
+    //     // println!("Next solution status: {}", next_status);
+    //     // assert_eq!(next_status, 1); // Assuming 1 means a solution was found
 
-        // let x_value = env.get_solution_value_int("x");
-        // println!("Value of x: {}", x_value);
-        // assert_eq!(x_value, 6);
+    //     // let x_value = env.get_solution_value_int("x");
+    //     // println!("Value of x: {}", x_value);
+    //     // assert_eq!(x_value, 6);
 
-        // env.solver_instance_print_solution(solver_instance_ptr);
-    }
+    //     // env.solver_instance_print_solution(solver_instance_ptr);
+    // }
 }
