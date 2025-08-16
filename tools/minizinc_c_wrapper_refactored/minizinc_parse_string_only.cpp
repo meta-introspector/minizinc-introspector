@@ -51,12 +51,14 @@ MiniZincModel* minizinc_parse_string_only(MiniZincEnvWrapper* solver_ptr, const 
 
         MiniZinc::ParserState pp(dummy_filename, model_s, std::cerr, includePaths_vec, files_vec, seenModels_map, model, false, false, false, false);
 
+        std::cerr << "[minizinc_parse_string_only] Calling mzn_yylex_init." << std::endl; std::cerr.flush();
         mzn_yylex_init(&pp.yyscanner);
         mzn_yyset_extra(&pp, pp.yyscanner);
         mzn_yyparse(&pp);
 
         if (pp.yyscanner != nullptr) {
             mzn_yylex_destroy(pp.yyscanner);
+            std::cerr << "[minizinc_parse_string_only] mzn_yylex_destroy called." << std::endl; std::cerr.flush();
         }
         if (pp.hadError) {
             std::cerr << "[minizinc_parse_string_only] Parser had errors (pp.hadError is true)." << std::endl; std::cerr.flush();

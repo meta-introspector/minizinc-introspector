@@ -643,7 +643,8 @@ constraint_item :
 
 solve_item :
       MZN_SOLVE annotations MZN_SATISFY
-      { $$ = SolveI::sat(@$);
+      { std::cerr << "DEBUG: [parser.yxx] solve_item: MZN_SOLVE MZN_SATISFY rule hit." << std::endl; std::cerr.flush();
+        $$ = SolveI::sat(@$);
         if ($$ && $2) $$->cast<SolveI>()->ann().add(*$2);
         delete $2;
       }

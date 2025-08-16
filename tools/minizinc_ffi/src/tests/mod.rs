@@ -72,4 +72,5 @@ mod tests {
     mod test_03_unwrap_model;
     mod test_04_get_model_filename;
     mod test_05_full_lifecycle_no_filepath;
+    mod test_06_new_feature;
 }

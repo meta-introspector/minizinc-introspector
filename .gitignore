@@ -61,3 +61,15 @@ tramp
 /html_llvm_coverage_report_per_test/
 /strace_output.log
 merged.profdata
+/html_parser_coverage/
+/coverage_reports_new_content/
+/merged.profdata.old
+/new_coverage_report.txt
+/new_minizinc_parse_string_only_instantiations.txt
+/new_minizinc_parse_string_only_line_counts.txt
+/new_parser_cpp_line_counts.txt
+/old_coverage.json
+/old_coverage_report.txt
+/old_minizinc_parse_string_only_coverage.txt
+/old_minizinc_parse_string_only_line_counts.txt
+/old_parser_cpp_line_counts.txt

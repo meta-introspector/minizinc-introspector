@@ -215,6 +215,7 @@ void parse(Env& env, Model*& model, const vector<string>& filenames,
   //   include_file("flatzincbuiltins.mzn", true);
   // }
 
+  std::cerr << "DEBUG: [parser.cpp] Entering file processing loop." << std::endl;
   while (!files.empty()) {
     GCLock lock;
     ParseWorkItem& np = files.back();
@@ -304,9 +305,11 @@ void parse(Env& env, Model*& model, const vector<string>& filenames,
     }
     ParserState pp(fullname, s, err, includePaths, files, seenModels, m, false, isFzn, isSTDLib,
                    parseDocComments);
+    std::cerr << "DEBUG: [parser.cpp] Calling mzn_yyparse." << std::endl;
     mzn_yylex_init(&pp.yyscanner);
     mzn_yyset_extra(&pp, pp.yyscanner);
     mzn_yyparse(&pp);
+    std::cerr << "DEBUG: [parser.cpp] mzn_yyparse returned." << std::endl;
     if (pp.yyscanner != nullptr) {
       mzn_yylex_destroy(pp.yyscanner);
     }
