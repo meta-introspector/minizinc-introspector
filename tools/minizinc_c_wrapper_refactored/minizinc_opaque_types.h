@@ -44,10 +44,9 @@ typedef struct FloatLit FloatLit;
 // Opaque type for MiniZinc::SetLit
 typedef struct SetLit SetLit;
 
-// Wrapper struct for MiniZinc::MznSolver and its associated Timer
+// Wrapper struct for MiniZinc::MznSolver
 typedef struct MiniZincEnvWrapper {
     MiniZinc::MznSolver* solver;
-    MiniZinc::Env env; // Assuming it also needs an Env object
 } MiniZincEnvWrapper;
 
 

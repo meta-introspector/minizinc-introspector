@@ -7,7 +7,6 @@ int main() {
     MiniZincEnvWrapper* env_wrapper = minizinc_env_new();
     assert(env_wrapper != nullptr);
     assert(env_wrapper->solver != nullptr);
-    assert(env_wrapper->timer != nullptr);
 
     std::cout << "minizinc_env_new and minizinc_env_free test passed." << std::endl;
 
