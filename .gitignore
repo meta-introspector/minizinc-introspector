@@ -57,3 +57,6 @@ temp_commit_message.txt
 *.elc
 auto-save-list/
 tramp
+/html_llvm_coverage_report/
+/html_llvm_coverage_report_per_test/
+/strace_output.log

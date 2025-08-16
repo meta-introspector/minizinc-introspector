@@ -41,3 +41,11 @@ We're also exploring some really exciting ideas:
 *   We're building a shared brain for all our knowledge!
 
 Ready to dive deeper? Ask away!
+
+## Diving Deeper: Development and Debugging
+
+For those ready to get their hands dirty with development and debugging, here are some essential guides:
+
+*   [Debugging C++ FFI with Code Coverage](n00b_guide_debugging_coverage.md)
+*   [Reproducing the Current `libminizinc` FFI Test State](n00b_guide_current_state.md)
+*   [Generating and Analyzing C++ Code Coverage Reports](n00b_guide_coverage_generation.md)
