@@ -73,3 +73,8 @@ merged.profdata
 /old_minizinc_parse_string_only_coverage.txt
 /old_minizinc_parse_string_only_line_counts.txt
 /old_parser_cpp_line_counts.txt
+# Generated build files
+include/minizinc/config.hh
+libminizincConfig.cmake
+libminizincConfigVersion.cmake
+libminizincTargets.cmake

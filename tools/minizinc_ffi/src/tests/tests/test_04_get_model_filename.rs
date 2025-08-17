@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod test_04_get_model_filename {
-    use crate::tests::tests::GLOBAL_MINIZINC_ENV;
+    
 
     // #[test]
     // fn test_04_get_model_filename() {

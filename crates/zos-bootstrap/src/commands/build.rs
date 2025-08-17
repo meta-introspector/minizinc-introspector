@@ -147,7 +147,7 @@ fn build_ffi_wrapper(strace_enabled: bool) -> Result<()> {
 
 fn build_rust_ffi_crate() -> Result<()> {
     println!("Building Rust FFI crate...");
-    let minizinc_ffi_crate_dir = paths::get_minizinc_ffi_crate_dir()?;
+    let _minizinc_ffi_crate_dir = paths::get_minizinc_ffi_crate_dir()?;
     subprocess::run_command("cargo", &["build", "--release"])?;
     println!("Rust FFI crate built successfully.");
     Ok(())

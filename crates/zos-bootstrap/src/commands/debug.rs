@@ -1,5 +1,5 @@
 use clap::{Args, Subcommand};
-use crate::utils::error::{Result, ZosError};
+use crate::utils::error::Result;
 use crate::utils::subprocess;
 use crate::utils::paths;
 

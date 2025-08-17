@@ -2,11 +2,10 @@
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use crate::environment::MiniZincEnvironment;
-    use crate::ffi_bindings::{minizinc_gc_lock, minizinc_gc_unlock};
-    use crate::coverage_report;
+    use crate::ffi_bindings::minizinc_gc_lock;
     use std::sync::Mutex;
+use lazy_static::lazy_static;
 
     lazy_static! {
         pub static ref GLOBAL_MINIZINC_ENV: Mutex<MiniZincEnvironment> = {
