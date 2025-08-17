@@ -1,16 +1,18 @@
 use std::{
     collections::HashMap,
-    path::{Path, PathBuf},
+    path::{//Path,
+	PathBuf},
 };
 use syn::{
-    visit::{self, Visit},
-    File,
+    //visit::{self, Visit},
+    //File,
     Ident,
     ItemConst,
     ItemStatic,
 };
 use walkdir::WalkDir;
 
+const CONST_Constant_Declared_in : String = "FIXME";
 /// Struct to hold information about a constant declaration and its usage.
 #[derive(Debug, Clone)]
 struct ConstantInfo {
@@ -142,8 +144,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Writing report to: {:?}", output_file_path);
 
     let mut report_content = String::new();
-    report_content.push_str("---" Constant Analysis Report ---
-");
+    report_content.push_str("--- Constant Analysis Report ---");
 
     // Sort constants by name for consistent reporting
     let mut sorted_constants: Vec<(&String, &ConstantInfo)> = 
@@ -151,9 +152,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     sorted_constants.sort_by_key(|(name, _)| *name);
 
     for (name, info) in sorted_constants {
-        report_content.push_str(&format!(
-            "Constant: '{}'\n  Declared in: {:?}\n  Usage Count: {}\n",
-            name, info.declaration_path, info.usage_count
+        report_content.push_str(&format!("{}",
+            //"Constant: {}  Declared in: {:?}  Usage Count: {}
+					 generate_string(CONST_Constant_Declared_in,      name, info.declaration_path, info.usage_count)
         ));
 
         // Flag constants used more than once.

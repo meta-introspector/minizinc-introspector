@@ -70,6 +70,7 @@ This project adheres to a strict set of Standard Operating Procedures (SOPs) to 
 *   [Profile-Driven Semantic Test Generation for C++ Oxidation SOP](sops/profile_driven_semantic_test_generation_sop.md)
 *   [Gemini Batch Interface for Multi-Turn Conversations SOP](sops/gemini_batch_interface_sop.md)
 *   [LLM-Driven Rust Interface Expansion SOP](sops/llm_driven_rust_interface_expansion_sop.md)
+*   [Constant Management and `syn` Usage Contrast SOP](sops/constant_analysis_and_syn_contrast_sop.md)
 *   [Generating `constants.rs` with MiniZinc Proof](sops/generate_constants_sop.md)
 
 ## 6. Architecture

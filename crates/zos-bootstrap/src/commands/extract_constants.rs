@@ -142,26 +142,35 @@ fn to_upper_snake_case(s: &str) -> String {
 }
 
 fn escape_for_sed(s: &str) -> String {
-    s.replace("\\", "\\\\")
-     .replace("/", "\\/")
-     .replace("&", "\\&")
-     .replace("[", "\\[")
-     .replace("]", "\\]")
-     .replace("(", "\\(")
-     .replace(")", "\\)")
-     .replace("{{", "\\{{")
-     .replace("}}", "\\}}")
-     .replace("<", "\\<")
-     .replace(">", "\\>")
-     .replace("|", "\\|")
-     .replace("$", "\\$")
-     .replace("^", "\\^")
-     .replace(".", "\\.")
-     .replace("*", "\\*")
-     .replace("+", "\\+")
-     .replace("?", "\\?")
-     .replace("\n", "\\n")
-     .replace("\r", "\\r")
-     .replace("\t", "\\t")
+    let mut escaped_string = String::with_capacity(s.len() * 2); // Pre-allocate for efficiency
+    for c in s.chars() {
+        match c {
+            BACKSLASH => escaped_string.push_str("\\\\"),
+            '/' => escaped_string.push_str("\\/"),
+            '&' => escaped_string.push_str("\\&"),
+            '[' => escaped_string.push_str("\\\["),
+            ']' => escaped_string.push_str("\\\]"),
+            '(' => escaped_string.push_str("\\("),
+            ')' => escaped_string.push_str("\\)"),
+            '{' => escaped_string.push_str("\\{{"), // Handle single brace
+            '}' => escaped_string.push_str("\\}}"), // Handle single brace
+            '<' => escaped_string.push_str("\\<"),
+            '>' => escaped_string.push_str("\\>"),
+            '|' => escaped_string.push_str("\\|"),
+            '
+
+ => escaped_string.push_str("\\"),
+            '^' => escaped_string.push_str("\\^"),
+            '.' => escaped_string.push_str("\\."),
+            '*' => escaped_string.push_str("\\*"),
+            '+' => escaped_string.push_str("\\+"),
+            '?' => escaped_string.push_str("\\?"),
+            '\n' => escaped_string.push_str("\\n"),
+            '\r' => escaped_string.push_str("\\r"),
+            '\t' => escaped_string.push_str("\\t"),
+            _ => escaped_string.push(c),
+        }
+    }
+    escaped_string
 }
 
