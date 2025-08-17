@@ -37,7 +37,13 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
         if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") {
             println!("Processing file: {}", path.display());
             let code = std::fs::read_to_string(path)?;
-            let syntax = syn::parse_file(&code)?;
+            let syntax = match syn::parse_file(&code) {
+                Ok(s) => s,
+                Err(e) => {
+                    eprintln!("Warning: Failed to parse Rust file {}: {}", path.display(), e);
+                    continue; // Skip this file
+                }
+            };
 
             // TODO: Get actual crate name for each file
             let crate_name = path
