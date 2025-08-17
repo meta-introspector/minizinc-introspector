@@ -95,6 +95,49 @@ output [
         });
     }
 
+    // Phase 6: Parse MiniZinc Output
+    let parsed_results = parse_minizinc_output(&String::from_utf8_lossy(&output.stdout))?;
+    println!("\n--- MiniZinc Analysis Results ---");
+    println!("Number of elements: {}", parsed_results.num_elements);
+    println!("Sum of elements: {}", parsed_results.sum_elements);
+    println!("Min element: {}", parsed_results.min_element);
+    println!("Max element: {}", parsed_results.max_element);
+    println!("-----------------------------------");
+
     println!("AST to MiniZinc process completed.");
     Ok(())
+}
+
+#[derive(Debug)]
+struct MiniZincAnalysisResults {
+    num_elements: i32,
+    sum_elements: i32,
+    min_element: i32,
+    max_element: i32,
+}
+
+fn parse_minizinc_output(output_str: &str) -> Result<MiniZincAnalysisResults> {
+    let mut num_elements = 0;
+    let mut sum_elements = 0;
+    let mut min_element = 0;
+    let mut max_element = 0;
+
+    for line in output_str.lines() {
+        if line.starts_with("num_elements =") {
+            num_elements = line.split("=").nth(1).and_then(|s| s.trim().parse().ok()).unwrap_or(0);
+        } else if line.starts_with("sum_elements =") {
+            sum_elements = line.split("=").nth(1).and_then(|s| s.trim().parse().ok()).unwrap_or(0);
+        } else if line.starts_with("min_element =") {
+            min_element = line.split("=").nth(1).and_then(|s| s.trim().parse().ok()).unwrap_or(0);
+        } else if line.starts_with("max_element =") {
+            max_element = line.split("=").nth(1).and_then(|s| s.trim().parse().ok()).unwrap_or(0);
+        }
+    }
+
+    Ok(MiniZincAnalysisResults {
+        num_elements,
+        sum_elements,
+        min_element,
+        max_element,
+    })
 }
