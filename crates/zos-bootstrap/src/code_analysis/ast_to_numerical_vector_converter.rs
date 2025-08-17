@@ -1,4 +1,5 @@
-use syn::{visit::{self, Visit}, File, Item, Ident, Lit, Expr, FnArg, PatType};
+use syn::{visit::{self, Visit}, File, Item, Ident, Lit, Expr, FnArg, Pat, PatType};
+use quote::ToTokens;
 
 use crate::code_analysis::numerical_vector_generator::{get_prime_for_vocabulary, compose_numerical_vector};
 
