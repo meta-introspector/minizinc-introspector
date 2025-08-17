@@ -18,15 +18,17 @@ pub struct AstToMiniZincArgs {
 }
 
 pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
-    println!("Analyzing AST and generating MiniZinc files for project: {}", args.project_root);
+    println!("\n--- Starting AST to MiniZinc Process ---");
+    println!("Analyzing project: {}", args.project_root);
 
     let project_root_path = PathBuf::from(&args.project_root);
     let output_dir = PathBuf::from(&args.output_dir);
     std::fs::create_dir_all(&output_dir)?;
 
     let mut all_ast_numerical_vectors = Vec::new();
+    let mut processed_files_count = 0;
 
-    // Phase 1 & 2: Parse Rust code to AST and extract numerical vectors for the entire project
+    println!("\nPhase 1 & 2: Parsing Rust code to AST and extracting numerical vectors...");
     for entry in WalkDir::new(&project_root_path)
         .into_iter()
         .filter_map(|e| e.ok()) // Filter out errors
@@ -35,7 +37,8 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
 
         // Process only Rust files.
         if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") {
-            println!("Processing file: {}", path.display());
+            processed_files_count += 1;
+            println!("  Processing file ({}): {}", processed_files_count, path.display());
             let code = std::fs::read_to_string(path)?;
             let syntax = match syn::parse_file(&code) {
                 Ok(s) => s,
@@ -59,9 +62,10 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
         }
     }
 
+    println!("Phase 1 & 2 Complete: Processed {} files.", processed_files_count);
     println!("Extracted {} total AST elements and converted to numerical vectors from the project.", all_ast_numerical_vectors.len());
 
-    // Phase 3: Generate MiniZinc Data (.dzn)
+    println!("\nPhase 3: Generating MiniZinc Data (.dzn)...");
     let data_file_path = output_dir.join("ast_data.dzn");
     let mut dzn_content = String::new();
     dzn_content.push_str("ast_elements_numerical = [
@@ -77,9 +81,9 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
     dzn_content.push_str("];\n");
 
     std::fs::write(&data_file_path, dzn_content)?;
-    println!("Generated MiniZinc data file: {}", data_file_path.display());
+    println!("Phase 3 Complete: Generated MiniZinc data file: {}", data_file_path.display());
 
-    // Phase 4: Generate MiniZinc Model (.mzn)
+    println!("\nPhase 4: Generating MiniZinc Model (.mzn)...");
     let model_file_path = output_dir.join("ast_model.mzn");
     // This will contain the MiniZinc model for AST analysis/transformation
     std::fs::write(&model_file_path, r###"array[int] of int: ast_elements_numerical;
@@ -105,9 +109,9 @@ output [
     "suggested_numerical_vector = ", show(suggested_numerical_vector), "\n"
 ];
 "###)?;
-    println!("Generated MiniZinc model file: {}", model_file_path.display());
+    println!("Phase 4 Complete: Generated MiniZinc model file: {}", model_file_path.display());
 
-    // Phase 5: Execute MiniZinc
+    println!("\nPhase 5: Executing MiniZinc...");
     let libminizinc_build_dir = paths::get_build_dir()?;
     let minizinc_exe = libminizinc_build_dir.join("minizinc");
 
@@ -118,7 +122,6 @@ output [
 
     let args_str: Vec<&str> = args_mzn.iter().map(|s| s.as_ref()).collect();
 
-    println!("Running MiniZinc for AST analysis...");
     let output = subprocess::run_command(&minizinc_exe.to_string_lossy(), &args_str)?;
 
     println!("MiniZinc Output:\n{}", String::from_utf8_lossy(&output.stdout));
@@ -133,20 +136,22 @@ output [
         });
     }
 
-    // Phase 6: Parse MiniZinc Output
+    println!("Phase 5 Complete: MiniZinc execution finished.");
+
+    println!("\nPhase 6: Parsing MiniZinc Output...");
     let parsed_results = parse_minizinc_output(&String::from_utf8_lossy(&output.stdout))?;
-    println!("\n--- MiniZinc Analysis Results ---");
+    println!("Phase 6 Complete: MiniZinc Analysis Results ---");
     println!("Suggested Numerical Vector: {}", parsed_results.suggested_numerical_vector);
     println!("-----------------------------------");
 
-    // Phase 7: Interpret Solver Output and Generate LLM Instructions
+    println!("\nPhase 7: Interpreting Solver Output and Generating LLM Instructions...");
     let interpreted_concepts = numerical_vector_to_llm_instructions::interpret_numerical_vector(parsed_results.suggested_numerical_vector);
     let llm_instructions = numerical_vector_to_llm_instructions::generate_llm_instructions(interpreted_concepts);
-    println!("\n--- LLM Instructions ---");
+    println!("Phase 7 Complete: LLM Instructions ---");
     println!("{}", llm_instructions);
     println!("------------------------");
 
-    println!("AST to MiniZinc process completed.");
+    println!("\n--- AST to MiniZinc Process Completed Successfully ---");
     Ok(())
 }
 
