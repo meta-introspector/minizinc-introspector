@@ -94,26 +94,27 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
     std::fs::write(&model_file_path, r###"array[int] of int: ast_elements_numerical;
 int: num_elements = length(ast_elements_numerical);
 
-% Define the prime for "security" (from numerical_vector_generator.rs)
-int: security_prime = 2;
+% Define the prime for \"modularity\"
+int: modularity_prime = 3;
 
-% Decision variable for the suggested numerical vector
+% Target the first element for transformation (MiniZinc arrays are 1-indexed)
+int: target_index = 1;
+int: original_target_value = ast_elements_numerical[target_index];
+
+% Decision variable for the suggested numerical vector of the target element
 var int: suggested_numerical_vector;
 
-% Constraint: suggested_numerical_vector must be a multiple of security_prime
-constraint suggested_numerical_vector mod security_prime = 0;
+% Constraint: suggested_numerical_vector must be a multiple of modularity_prime
+constraint suggested_numerical_vector mod modularity_prime = 0;
 
-% Objective: Minimize the absolute difference between the sum of original elements
-% and the suggested numerical vector, while satisfying constraints.
-% This is a placeholder objective. A more complex objective would involve
-% semantic distance or other criteria.
-var int: sum_original_elements = sum(ast_elements_numerical);
-solve minimize abs(sum_original_elements - suggested_numerical_vector);
+% Objective: Minimize the absolute difference between the original target value
+% and the suggested numerical vector.
+solve minimize abs(original_target_value - suggested_numerical_vector);
 
 output [
-    "suggested_numerical_vector = ", show(suggested_numerical_vector), "\n"
+    \"suggested_numerical_vector = \", show(suggested_numerical_vector), \"\n"
 ];
-"###)?;
+"###)?
     println!("Phase 4 Complete: Generated MiniZinc model file: {}", model_file_path.display());
 
     println!("\nPhase 5: Executing MiniZinc...");
