@@ -39,3 +39,15 @@ impl From<std::path::StripPrefixError> for ZosError {
         ZosError::Unknown(format!("Path strip prefix error: {}", err))
     }
 }
+
+impl From<std::str::Utf8Error> for ZosError {
+    fn from(err: std::str::Utf8Error) -> Self {
+        ZosError::Unknown(format!("UTF-8 error: {}", err))
+    }
+}
+
+impl From<syn::Error> for ZosError {
+    fn from(err: syn::Error) -> Self {
+        ZosError::Unknown(format!("Syn parsing error: {}", err))
+    }
+}

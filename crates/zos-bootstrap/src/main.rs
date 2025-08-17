@@ -10,6 +10,8 @@ use commands::run::{RunArgs, handle_run_command};
 use commands::debug::{DebugArgs, handle_debug_command};
 use commands::clean::{CleanArgs, handle_clean_command};
 use commands::extract_constants::handle_extract_constants_command;
+use commands::generate_minizinc_params::{GenerateParamsArgs, handle_generate_params_command};
+use commands::generate_constants_file::{GenerateConstantsFileArgs, handle_generate_constants_file_command};
 
 mod code_analysis;
 mod constants;
@@ -35,6 +37,10 @@ enum Commands {
     Clean(CleanArgs),
     /// Extracts constant strings from the codebase using MiniZinc
     ExtractConstants(ExtractConstantsArgs),
+    /// Generates MiniZinc parameters from extracted constants
+    GenerateParams(GenerateParamsArgs),
+    /// Generates constants.rs file based on MiniZinc proof
+    GenerateConstantsFile(GenerateConstantsFileArgs),
     /// Bootstraps the entire ZOS system
     Bootstrap {
         /// The specific bootstrap target (e.g., "zos")
@@ -53,6 +59,9 @@ pub struct ExtractConstantsArgs {
     #[arg(long)]
     pub prove_constants_usage: bool,
 }
+
+
+
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
@@ -75,6 +84,12 @@ fn main() -> Result<()> {
         }
         Some(Commands::ExtractConstants(args)) => {
             handle_extract_constants_command(args.clone())?;
+        }
+        Some(Commands::GenerateParams(args)) => {
+            handle_generate_params_command(args.clone())?;
+        }
+        Some(Commands::GenerateConstantsFile(args)) => {
+            handle_generate_constants_file_command(args.clone())?;
         }
         Some(Commands::Bootstrap { target }) => {
             if target == "zos" {

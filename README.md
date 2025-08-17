@@ -162,6 +162,7 @@ This project adheres to a strict set of Standard Operating Procedures (SOPs) to 
 *   [QA DZN Generation Verification SOP](docs/sops/qa_dzn_generation_verification.md)
 *   [Tutorial Livestream Mode SOP](docs/sops/tutorial_livestream_mode.md)
 *   [MiniZinc Model Performance Analysis and Debugging Report](docs/performance_analysis_report.md)
+*   [Generating `constants.rs` with MiniZinc Proof](docs/sops/generate_constants_sop.md)
 
 ## Contributing
 

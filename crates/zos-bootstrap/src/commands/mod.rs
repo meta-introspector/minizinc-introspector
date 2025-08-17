@@ -4,4 +4,6 @@ pub mod run;
 pub mod debug;
 pub mod clean;
 pub mod extract_constants;
+pub mod generate_minizinc_params;
+pub mod generate_constants_file;
 pub mod build_constants;
