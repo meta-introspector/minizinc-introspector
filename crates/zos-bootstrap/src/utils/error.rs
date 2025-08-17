@@ -27,3 +27,15 @@ pub enum ZosError {
     #[error("Unknown error: {0}")]
     Unknown(String),
 }
+
+impl From<glob::PatternError> for ZosError {
+    fn from(err: glob::PatternError) -> Self {
+        ZosError::Unknown(format!("Glob pattern error: {}", err))
+    }
+}
+
+impl From<std::path::StripPrefixError> for ZosError {
+    fn from(err: std::path::StripPrefixError) -> Self {
+        ZosError::Unknown(format!("Path strip prefix error: {}", err))
+    }
+}

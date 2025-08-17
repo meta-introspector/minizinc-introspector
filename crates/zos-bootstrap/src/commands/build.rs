@@ -3,6 +3,7 @@ use crate::utils::error::Result;
 use crate::utils::subprocess;
 use crate::utils::paths;
 use crate::constants;
+use crate::commands::build_constants;
 
 #[derive(Args, Clone)]
 pub struct BuildArgs {
@@ -80,19 +81,19 @@ fn build_gecode() -> Result<()> {
     let mut args_mkdir: Vec<String> = Vec::new();
     args_mkdir.push(constants::ARG_MKDIR_P.to_string());
     args_mkdir.push(gecode_build_dir.to_string_lossy().to_string());
-    subprocess::run_command("mkdir", &args_mkdir.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
+    subprocess::run_command(build_constants::MKDIR, &args_mkdir.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
 
     let mut args_cmake: Vec<String> = Vec::new();
-    args_cmake.push("-B".to_string());
+    args_cmake.push(build_constants::B_FLAG.to_string());
     args_cmake.push(gecode_build_dir.to_string_lossy().to_string());
-    args_cmake.push(".".to_string()); // Source directory is current directory (gecode_vendor_dir)
+    args_cmake.push(build_constants::DOT.to_string()); // Source directory is current directory (gecode_vendor_dir)
     args_cmake.push(constants::ARG_CMAKE_POLICY_MINIMUM.to_string());
-    subprocess::run_command_in_dir("cmake", &args_cmake.iter().map(|s| s.as_str()).collect::<Vec<&str>>(), &gecode_vendor_dir)?;
+    subprocess::run_command_in_dir(build_constants::CMAKE, &args_cmake.iter().map(|s| s.as_str()).collect::<Vec<&str>>(), &gecode_vendor_dir)?;
 
     let mut args_make: Vec<String> = Vec::new();
     args_make.push(constants::ARG_MAKE_C.to_string());
     args_make.push(gecode_build_dir.to_string_lossy().to_string());
-    subprocess::run_command_in_dir("make", &args_make.iter().map(|s| s.as_str()).collect::<Vec<&str>>(), &gecode_build_dir)?;
+    subprocess::run_command_in_dir(build_constants::MAKE, &args_make.iter().map(|s| s.as_str()).collect::<Vec<&str>>(), &gecode_build_dir)?;
 
     println!("{}", constants::MSG_GECODE_BUILT_SUCCESSFULLY);
     Ok(())
@@ -107,17 +108,17 @@ fn build_libminizinc() -> Result<()> {
     let mut args_mkdir: Vec<String> = Vec::new();
     args_mkdir.push(constants::ARG_MKDIR_P.to_string());
     args_mkdir.push(libminizinc_build_dir.to_string_lossy().to_string());
-    subprocess::run_command("mkdir", &args_mkdir.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
+    subprocess::run_command(build_constants::MKDIR, &args_mkdir.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
 
     let mut args_cmake: Vec<String> = Vec::new();
     args_cmake.push(_project_root.to_string_lossy().to_string());
     args_cmake.push(format!("{}{}", constants::ARG_GECODE_ROOT.replace("{}", ""), gecode_build_dir.to_string_lossy()));
-    subprocess::run_command("cmake", &args_cmake.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
+    subprocess::run_command(build_constants::CMAKE, &args_cmake.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
 
     let mut args_make: Vec<String> = Vec::new();
     args_make.push(constants::ARG_MAKE_C.to_string());
     args_make.push(libminizinc_build_dir.to_string_lossy().to_string());
-    subprocess::run_command("make", &args_make.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
+    subprocess::run_command(build_constants::MAKE, &args_make.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
 
     println!("{}", constants::MSG_LIBMINIZINC_BUILT_SUCCESSFULLY);
     Ok(())
@@ -185,12 +186,12 @@ fn build_coverage() -> Result<()> {
     args_cmake.push(constants::ARG_CMAKE_BUILD_TYPE_DEBUG.to_string());
     args_cmake.push(constants::ARG_CMAKE_CXX_FLAGS_COVERAGE.to_string());
     args_cmake.push(constants::ARG_CMAKE_C_FLAGS_COVERAGE.to_string());
-    subprocess::run_command("cmake", &args_cmake.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
+    subprocess::run_command(build_constants::CMAKE, &args_cmake.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
 
     let mut args_make: Vec<String> = Vec::new();
     args_make.push(constants::ARG_MAKE_C.to_string());
     args_make.push(build_dir.to_string_lossy().to_string());
-    subprocess::run_command("make", &args_make.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
+    subprocess::run_command(build_constants::MAKE, &args_make.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
 
     println!("{}", constants::MSG_LIBMINIZINC_BUILT_WITH_COVERAGE);
     Ok(())

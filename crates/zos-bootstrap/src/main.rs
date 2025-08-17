@@ -1,4 +1,4 @@
-use clap::{Parser, Subcommand};
+use clap::{Parser, Subcommand, Args};
 
 mod utils;
 use crate::utils::error::{Result, ZosError};
@@ -34,12 +34,22 @@ enum Commands {
     /// Cleans build artifacts
     Clean(CleanArgs),
     /// Extracts constant strings from the codebase using MiniZinc
-    ExtractConstants {},
+    ExtractConstants(ExtractConstantsArgs),
     /// Bootstraps the entire ZOS system
     Bootstrap {
         /// The specific bootstrap target (e.g., "zos")
         target: String,
     },
+}
+
+#[derive(Args, Clone)]
+pub struct ExtractConstantsArgs {
+    #[arg(long)]
+    pub rust_only: bool,
+    #[arg(long)]
+    pub file_path: Option<String>,
+    #[arg(long)]
+    pub generate_sed_script: bool,
 }
 
 fn main() -> Result<()> {
@@ -61,20 +71,23 @@ fn main() -> Result<()> {
         Some(Commands::Clean(args)) => {
             handle_clean_command(args.clone())?;
         }
-        Some(Commands::ExtractConstants {}) => {
-            handle_extract_constants_command()?;
+        Some(Commands::ExtractConstants(args)) => {
+            handle_extract_constants_command(args.clone())?;
         }
         Some(Commands::Bootstrap { target }) => {
             if target == "zos" {
                 println!("Commencing ZOS Bootstrap: Building all core components...");
                 handle_build_command(BuildArgs { command: Some(commands::build::BuildCommands::All {}), strace: false })?;
+                println!("ZOS Bootstrap: Core components built successfully.");
                 println!("Commencing ZOS Bootstrap: Running all tests...");
                 handle_test_command(TestArgs { command: Some(commands::test::TestCommands::All {}) })?;
+                println!("ZOS Bootstrap: All tests completed successfully.");
                 println!("Commencing ZOS Bootstrap: Running initial embedding model...");
                 // This is a placeholder for running an initial embedding model.
                 // It would require specific arguments for the 'run embedding' command.
                 // For now, we'll just print a message.
                 println!("(Initial embedding model run placeholder)");
+                println!("ZOS Bootstrap: Initial embedding model run placeholder completed.");
                 println!("ZOS Bootstrap Complete.");
             } else {
                 return Err(ZosError::InvalidArgument(format!("Unknown bootstrap target: {}. Only 'zos' is supported currently.", target)));

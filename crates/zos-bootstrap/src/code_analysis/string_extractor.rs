@@ -1,6 +1,7 @@
 use syn::{Lit, visit::{self, Visit}, Item, ImplItem, FnArg, Pat, PatType};
 use std::fs;
 use std::path::Path;
+use crate::commands::build_constants;
 
 #[derive(Debug, Clone)]
 pub struct ExtractedString {
@@ -103,7 +104,7 @@ impl<'ast> Visit<'ast> for StringExtractor {
                 // This is a heuristic and might need refinement
                 if let syn::Type::Reference(type_ref) = ty.as_ref() {
                     if let syn::Type::Path(type_path) = type_ref.elem.as_ref() {
-                        if type_path.path.segments.last().map_or(false, |s| s.ident == "str" || s.ident == "String") {
+                        if type_path.path.segments.last().map_or(false, |s| s.ident == build_constants::STR_TYPE || s.ident == build_constants::STRING_TYPE) {
                             // We found a string argument, but we need its value.
                             // This requires more advanced analysis (e.g., data flow)
                             // For now, we'll just note its presence.

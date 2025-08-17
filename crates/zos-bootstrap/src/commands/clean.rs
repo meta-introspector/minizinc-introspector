@@ -2,6 +2,7 @@ use clap::{Args, Subcommand};
 use crate::utils::error::Result;
 use crate::utils::paths;
 use std::fs;
+use crate::commands::build_constants;
 
 #[derive(Args, Clone)]
 pub struct CleanArgs {
@@ -58,7 +59,7 @@ fn clean_build_dir() -> Result<()> {
 
 fn clean_coverage_dir() -> Result<()> {
     println!("Cleaning coverage build directory...");
-    let build_coverage_dir = paths::get_build_dir()?.join("_coverage");
+    let build_coverage_dir = paths::get_build_dir()?.join(build_constants::COVERAGE_DIR_SUFFIX);
     if build_coverage_dir.exists() {
         fs::remove_dir_all(&build_coverage_dir)?;
         println!("Removed: {}", build_coverage_dir.to_string_lossy());

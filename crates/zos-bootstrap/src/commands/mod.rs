@@ -4,3 +4,4 @@ pub mod run;
 pub mod debug;
 pub mod clean;
 pub mod extract_constants;
+pub mod build_constants;
