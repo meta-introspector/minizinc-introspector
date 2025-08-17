@@ -12,8 +12,8 @@ use walkdir::WalkDir;
 
 
 mod constants;
+#[macro_use]
 mod messages;
-use ::message;
 
 
 /// Struct to hold information about a constant declaration and its usage.
@@ -22,15 +22,26 @@ struct ConstantInfo {
     name: String,
     declaration_path: PathBuf,
     usage_count: usize,
+    value: String,
+}
+
+fn extract_literal_value(lit: &syn::Lit) -> String {
+    match lit {
+        syn::Lit::Str(lit_str) => format!("{}", lit_str.value()),
+        syn::Lit::ByteStr(lit_byte_str) => format!("b\"{}\"", String::from_utf8_lossy(&lit_byte_str.value())),
+        syn::Lit::Byte(lit_byte) => format!("b'{}'", lit_byte.value()),
+        syn::Lit::Char(lit_char) => format!("'{}'", lit_char.value()),
+        syn::Lit::Int(lit_int) => lit_int.to_string(),
+        syn::Lit::Float(lit_float) => lit_float.to_string(),
+        syn::Lit::Bool(lit_bool) => lit_bool.value.to_string(),
+        _ => String::from("[Unsupported literal type]"),
+    }
 }
 
 /// A `syn` visitor to find constant declarations and collect all identifiers.
 struct ConstantVisitor {
-    /// Stores declared constants found in the current file being visited.
-    declared_constants_in_file: HashMap<String, PathBuf>,
-    /// Collects all identifiers encountered in the current file.
+    declared_constants_in_file: HashMap<String, (PathBuf, String)>,
     all_identifiers_in_file: Vec<String>,
-    /// The path of the file currently being processed by this visitor.
     current_file_path: PathBuf,
 }
 
@@ -49,8 +60,13 @@ impl<'ast> Visit<'ast> for ConstantVisitor {
     /// Visit `const` item declarations.
     fn visit_item_const(&mut self, i: &'ast ItemConst) {
         let name = i.ident.to_string();
+        let value = if let syn::Expr::Lit(expr_lit) = &*i.expr {
+            extract_literal_value(&expr_lit.lit)
+        } else {
+            String::from("[Non-literal constant value]")
+        };
         self.declared_constants_in_file
-            .insert(name, self.current_file_path.clone());
+            .insert(name, (self.current_file_path.clone(), value));
         // Continue visiting children nodes of the const declaration
         visit::visit_item_const(self, i);
     }
@@ -58,8 +74,13 @@ impl<'ast> Visit<'ast> for ConstantVisitor {
     /// Visit `static` item declarations.
     fn visit_item_static(&mut self, i: &'ast ItemStatic) {
         let name = i.ident.to_string();
+        let value = if let syn::Expr::Lit(expr_lit) = &*i.expr {
+            extract_literal_value(&expr_lit.lit)
+        } else {
+            String::from("[Non-literal static value]")
+        };
         self.declared_constants_in_file
-            .insert(name, self.current_file_path.clone());
+            .insert(name, (self.current_file_path.clone(), value));
         // Continue visiting children nodes of the static declaration
         visit::visit_item_static(self, i);
     }
@@ -97,7 +118,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Stores all identifiers encountered across the entire project.
     let mut all_identifiers_across_project: Vec<String> = Vec::new();
 
-    message!(Phase1, &project_root);
+    crate::message!(Phase1, &project_root);
 
     // Walk through the directory to find all Rust files.
     for entry in WalkDir::new(&project_root)
@@ -108,7 +129,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // Process only Rust files.
         if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") {
-            message!(ProcessingFile, &path);
+            crate::message!(ProcessingFile, &path);
             let content = std::fs::read_to_string(path)?;
             let ast = syn::parse_file(&content)?;
 
@@ -116,13 +137,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             visitor.visit_file(&ast); // Traverse the AST with our visitor.
 
             // Merge constant declarations found in this file into the global map.
-            for (name, decl_path) in visitor.declared_constants_in_file {
+            for (name, (decl_path, value)) in visitor.declared_constants_in_file {
                 all_constant_declarations
                     .entry(name.clone())
                     .or_insert_with(|| ConstantInfo {
                         name,
                         declaration_path: decl_path,
                         usage_count: 0, // Usage count will be updated in Phase 2
+                        value,
                     });
             }
             // Collect all identifiers from this file into the global list.
@@ -131,47 +153,49 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // --- Phase 2: Constant Usage Analysis ---
-    message!(Phase2);
+    crate::message!(Phase2);
 
-    // Iterate through all declared constants and count their occurrences in the global list of identifiers.
-    for (const_name, const_info) in all_constant_declarations.iter_mut() {
-        let count = all_identifiers_across_project
-            .iter()
-            .filter(|id| *id == const_name) // Filter for identifiers that match the constant's name
-            .count();
-        const_info.usage_count = count;
+    // Stores unique literal values and their declaration info.
+    // Key: Literal value (String), Value: Vector of (constant name, declaration path)
+    let mut unique_literal_values: HashMap<String, Vec<(String, PathBuf)>> = HashMap::new();
+
+    for (const_name, const_info) in all_constant_declarations.into_iter() { // Use into_iter to consume
+        unique_literal_values
+            .entry(const_info.value.clone())
+            .or_insert_with(Vec::new)
+            .push((const_name, const_info.declaration_path));
     }
 
     // --- Phase 3: Constant Location and Refactoring Planning (Output to file) ---
-    message!(Phase3);
-    message!(WritingReport, &output_file_path);
+    crate::message!(Phase3);
+    crate::message!(WritingReport, &output_file_path);
 
     let mut report_content = String::new();
-    report_content.push_str(message!(ReportHeader));
+    report_content.push_str(crate::message!(ReportHeader));
 
-    // Sort constants by name for consistent reporting
-    let mut sorted_constants: Vec<(&String, &ConstantInfo)> = 
-        all_constant_declarations.iter().collect();
-    sorted_constants.sort_by_key(|(name, _)| *name);
+    // Sort unique literal values for consistent reporting
+    let mut sorted_literal_values: Vec<(&String, &Vec<(String, PathBuf)>)> = 
+        unique_literal_values.iter().collect();
+    sorted_literal_values.sort_by_key(|(value, _)| *value);
 
-    for (name, info) in sorted_constants {
-        report_content.push_str(&message!(ConstantDetail, name, &info.declaration_path, info.usage_count));
+    for (value, declarations) in sorted_literal_values {
+        // Report for each unique literal value
+        report_content.push_str(&crate::message!(ConstantDetail, value, &declarations[0].1, declarations.len())); // Use value as name, first decl path, and count of declarations
 
-        // Flag constants used more than once.
-        if info.usage_count > 1 {
-            report_content.push_str(message!(StatusFlagged));
+        // Flag if the literal value is declared more than once
+        if declarations.len() > 1 {
+            report_content.push_str(crate::message!(StatusFlagged));
+            report_content.push_str(&format!("  PLAN: This literal value is declared {} times. Consider centralizing its definition.\n", declarations.len()));
         } else {
-            report_content.push_str(message!(StatusOK));
+            report_content.push_str(crate::message!(StatusOK));
         }
 
         // Determine if the constant is in a dedicated constants file.
-        let file_name = info
-            .declaration_path
+        let file_name = declarations[0].1
             .file_name()
             .and_then(|s| s.to_str())
             .unwrap_or("");
-        let parent_dir_name = info
-            .declaration_path
+        let parent_dir_name = declarations[0].1
             .parent()
             .and_then(|p| p.file_name())
             .and_then(|s| s.to_str())
@@ -184,19 +208,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             || parent_dir_name.contains("config")
             || parent_dir_name.contains("types");
 
-        if info.usage_count > 1 && !is_dedicated_constants_file {
-            report_content.push_str(message!(PlanMoveConstant));
-        } else if info.usage_count <= 1 && !is_dedicated_constants_file {
-            report_content.push_str(message!(NoteSingleUseNotDedicated));
+        if declarations.len() > 1 && !is_dedicated_constants_file {
+            report_content.push_str(crate::message!(PlanMoveConstant));
+        } else if declarations.len() <= 1 && !is_dedicated_constants_file {
+            report_content.push_str(crate::message!(NoteSingleUseNotDedicated));
         } else if is_dedicated_constants_file {
-            report_content.push_str(message!(NoteAlreadyDedicated));
+            report_content.push_str(crate::message!(NoteAlreadyDedicated));
         }
-        report_content.push_str(message!(ReportSeparator));
+        report_content.push_str(crate::message!(ReportSeparator));
     }
 
     // Write the generated report content to the specified output file.
     std::fs::write(&output_file_path, report_content)?;
-    message!(AnalysisComplete, &output_file_path);
+    crate::message!(AnalysisComplete, &output_file_path);
 
     Ok(())
 }
