@@ -1,18 +1,21 @@
 use std::{
     collections::HashMap,
-    path::{//Path,
-	PathBuf},
+    path::{PathBuf},
 };
 use syn::{
-    //visit::{self, Visit},
-    //File,
+    visit::{self, Visit},
     Ident,
     ItemConst,
     ItemStatic,
 };
 use walkdir::WalkDir;
 
-const CONST_Constant_Declared_in : String = "FIXME";
+
+mod constants;
+mod messages;
+use ::message;
+
+
 /// Struct to hold information about a constant declaration and its usage.
 #[derive(Debug, Clone)]
 struct ConstantInfo {
@@ -94,7 +97,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Stores all identifiers encountered across the entire project.
     let mut all_identifiers_across_project: Vec<String> = Vec::new();
 
-    println!("Phase 1: Ingesting and parsing Rust files from {:?}", project_root);
+    message!(Phase1, &project_root);
 
     // Walk through the directory to find all Rust files.
     for entry in WalkDir::new(&project_root)
@@ -105,7 +108,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // Process only Rust files.
         if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") {
-            println!("  Processing file: {:?}", path);
+            message!(ProcessingFile, &path);
             let content = std::fs::read_to_string(path)?;
             let ast = syn::parse_file(&content)?;
 
@@ -128,7 +131,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // --- Phase 2: Constant Usage Analysis ---
-    println!("\nPhase 2: Analyzing constant usages...");
+    message!(Phase2);
 
     // Iterate through all declared constants and count their occurrences in the global list of identifiers.
     for (const_name, const_info) in all_constant_declarations.iter_mut() {
@@ -140,11 +143,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     // --- Phase 3: Constant Location and Refactoring Planning (Output to file) ---
-    println!("\nPhase 3: Generating Constant Analysis Report and Refactoring Plan...");
-    println!("Writing report to: {:?}", output_file_path);
+    message!(Phase3);
+    message!(WritingReport, &output_file_path);
 
     let mut report_content = String::new();
-    report_content.push_str("--- Constant Analysis Report ---");
+    report_content.push_str(message!(ReportHeader));
 
     // Sort constants by name for consistent reporting
     let mut sorted_constants: Vec<(&String, &ConstantInfo)> = 
@@ -152,16 +155,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     sorted_constants.sort_by_key(|(name, _)| *name);
 
     for (name, info) in sorted_constants {
-        report_content.push_str(&format!("{}",
-            //"Constant: {}  Declared in: {:?}  Usage Count: {}
-					 generate_string(CONST_Constant_Declared_in,      name, info.declaration_path, info.usage_count)
-        ));
+        report_content.push_str(&message!(ConstantDetail, name, &info.declaration_path, info.usage_count));
 
         // Flag constants used more than once.
         if info.usage_count > 1 {
-            report_content.push_str("  STATUS: FLAGGED (Used more than once)\n");
+            report_content.push_str(message!(StatusFlagged));
         } else {
-            report_content.push_str("  STATUS: OK (Used once or not at all)\n");
+            report_content.push_str(message!(StatusOK));
         }
 
         // Determine if the constant is in a dedicated constants file.
@@ -185,18 +185,18 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             || parent_dir_name.contains("types");
 
         if info.usage_count > 1 && !is_dedicated_constants_file {
-            report_content.push_str("  PLAN: Consider moving this constant to a dedicated constants module (e.g., `constants.rs`, `config.rs`, or `types.rs`) to centralize its definition.\n");
+            report_content.push_str(message!(PlanMoveConstant));
         } else if info.usage_count <= 1 && !is_dedicated_constants_file {
-            report_content.push_str("  NOTE: This constant is not in a dedicated constants file, but is only used once. Consider if it should be inlined or moved for future clarity.\n");
+            report_content.push_str(message!(NoteSingleUseNotDedicated));
         } else if is_dedicated_constants_file {
-            report_content.push_str("  NOTE: This constant is already in a dedicated constants file/directory.\n");
+            report_content.push_str(message!(NoteAlreadyDedicated));
         }
-        report_content.push_str("--------------------------------------------------\n");
+        report_content.push_str(message!(ReportSeparator));
     }
 
     // Write the generated report content to the specified output file.
     std::fs::write(&output_file_path, report_content)?;
-    println!("\nAnalysis complete. Report saved to {:?}", output_file_path);
+    message!(AnalysisComplete, &output_file_path);
 
     Ok(())
 }

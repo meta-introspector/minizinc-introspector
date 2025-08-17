@@ -4,5 +4,5 @@ members = [
     "tools/minizinc_ffi",
     "tools/coverage_extractor",
     "crates/zos-bootstrap",
-    "crates/constant_analyzer",
+    "crates/constant_analyzer", "crates/constant_analyzer_macros",
 ]

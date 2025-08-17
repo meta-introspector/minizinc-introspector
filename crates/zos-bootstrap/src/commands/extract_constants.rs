@@ -148,8 +148,8 @@ fn escape_for_sed(s: &str) -> String {
             BACKSLASH => escaped_string.push_str("\\\\"),
             '/' => escaped_string.push_str("\\/"),
             '&' => escaped_string.push_str("\\&"),
-            '[' => escaped_string.push_str("\\\["),
-            ']' => escaped_string.push_str("\\\]"),
+            '[' => escaped_string.push_str("\\["),
+            ']' => escaped_string.push_str("\\]"),
             '(' => escaped_string.push_str("\\("),
             ')' => escaped_string.push_str("\\)"),
             '{' => escaped_string.push_str("\\{{"), // Handle single brace
@@ -157,9 +157,7 @@ fn escape_for_sed(s: &str) -> String {
             '<' => escaped_string.push_str("\\<"),
             '>' => escaped_string.push_str("\\>"),
             '|' => escaped_string.push_str("\\|"),
-            '
-
- => escaped_string.push_str("\\"),
+            '\\' => escaped_string.push_str("\\"),
             '^' => escaped_string.push_str("\\^"),
             '.' => escaped_string.push_str("\\."),
             '*' => escaped_string.push_str("\\*"),
