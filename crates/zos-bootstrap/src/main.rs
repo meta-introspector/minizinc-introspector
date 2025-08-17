@@ -58,7 +58,7 @@ fn main() -> Result<()> {
         Some(Commands::Bootstrap { target }) => {
             if target == "zos" {
                 println!("Commencing ZOS Bootstrap: Building all core components...");
-                handle_build_command(BuildArgs { command: Some(commands::build::BuildCommands::All {}) })?;
+                handle_build_command(BuildArgs { command: Some(commands::build::BuildCommands::All {}), strace: false })?;
                 println!("Commencing ZOS Bootstrap: Running all tests...");
                 handle_test_command(TestArgs { command: Some(commands::test::TestCommands::All {}) })?;
                 println!("Commencing ZOS Bootstrap: Running initial embedding model...");

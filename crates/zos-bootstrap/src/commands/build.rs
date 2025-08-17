@@ -1,4 +1,4 @@
-use clap::{Args, Subcommand, Clone};
+use clap::{Args, Subcommand};
 use crate::utils::error::Result;
 use crate::utils::subprocess;
 use crate::utils::paths;
@@ -7,6 +7,8 @@ use crate::utils::paths;
 pub struct BuildArgs {
     #[command(subcommand)]
     pub command: Option<BuildCommands>,
+    #[arg(long)]
+    pub strace: bool,
 }
 
 #[derive(Subcommand, Clone)]
@@ -36,7 +38,7 @@ pub fn handle_build_command(args: BuildArgs) -> Result<()> {
             build_gecode()?;
             build_libminizinc()?;
             build_ffi_declarations()?;
-            build_ffi_wrapper()?;
+            build_ffi_wrapper(args.strace)?;
             build_rust_ffi_crate()?;
             build_solvers()?;
             println!("All core components built successfully.");
@@ -48,7 +50,7 @@ pub fn handle_build_command(args: BuildArgs) -> Result<()> {
             build_libminizinc()?;
         }
         Some(BuildCommands::Ffi {}) => {
-            build_ffi_wrapper()?;
+            build_ffi_wrapper(args.strace)?;
         }
         Some(BuildCommands::RustFfi {}) => {
             build_rust_ffi_crate()?;
@@ -105,7 +107,7 @@ fn build_libminizinc() -> Result<()> {
     subprocess::run_command("mkdir", &args_mkdir.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
 
     let mut args_cmake: Vec<String> = Vec::new();
-    args_cmake.push(project_root.to_string_lossy().to_string());
+    args_cmake.push(_project_root.to_string_lossy().to_string());
     args_cmake.push(format!("-DGecode_ROOT={}", gecode_build_dir.to_string_lossy()));
     subprocess::run_command("cmake", &args_cmake.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
 
@@ -118,23 +120,28 @@ fn build_libminizinc() -> Result<()> {
     Ok(())
 }
 
-fn build_ffi_wrapper() -> Result<()> {
+pub mod ensure_build_directory_exists;
+pub mod run_cmake_for_ffi;
+pub mod run_make_for_ffi;
+pub mod verify_ffi_library_exists;
+
+fn build_ffi_wrapper(strace_enabled: bool) -> Result<()> {
+    println!("--- Starting build_ffi_wrapper ---");
     println!("Building C++ FFI wrapper...");
+
     let build_dir = paths::get_build_dir()?;
     let project_root = paths::resolve_project_root()?;
 
-    let mut args_cmake: Vec<String> = Vec::new();
-    args_cmake.push(project_root.to_string_lossy().to_string());
-    args_cmake.push("-DBUILD_C_WRAPPER=ON".to_string());
-    subprocess::run_command("cmake", &args_cmake.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
+    println!("Project Root: {}", project_root.display());
+    println!("Build Dir: {}", build_dir.display());
 
-    let mut args_make: Vec<String> = Vec::new();
-    args_make.push("-C".to_string());
-    args_make.push(build_dir.to_string_lossy().to_string());
-    args_make.push("minizinc_c_wrapper".to_string());
-    subprocess::run_command("make", &args_make.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
+    ensure_build_directory_exists::ensure_build_directory_exists(&build_dir)?;
+    run_cmake_for_ffi::run_cmake_for_ffi(&project_root, &build_dir)?;
+    run_make_for_ffi::run_make_for_ffi(&build_dir, strace_enabled)?;
+    verify_ffi_library_exists::verify_ffi_library_exists(&build_dir)?;
 
     println!("C++ FFI wrapper built successfully.");
+    println!("--- Finished build_ffi_wrapper ---");
     Ok(())
 }
 

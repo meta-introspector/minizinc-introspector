@@ -1,4 +1,4 @@
-use clap::{Args, Subcommand, Clone};
+use clap::{Args, Subcommand};
 use crate::utils::error::Result;
 use crate::utils::paths;
 use std::fs;

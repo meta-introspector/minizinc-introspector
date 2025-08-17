@@ -1,5 +1,6 @@
 use std::process::{Command, Output};
 use crate::{Result, ZosError};
+use std::path::Path;
 
 pub fn run_command(cmd: &str, args: &[&str]) -> Result<Output> {
     let output = Command::new(cmd)
@@ -25,6 +26,24 @@ pub fn run_command_with_env(cmd: &str, args: &[&str], env_vars: &[(&str, &str)])
         command.env(key, value);
     }
     let output = command.output()?;
+
+    if output.status.success() {
+        Ok(output)
+    } else {
+        Err(ZosError::CommandFailed {
+            command: format!("{} {}", cmd, args.join(" ")),
+            exit_code: output.status.code(),
+            stdout: String::from_utf8_lossy(&output.stdout).to_string(),
+            stderr: String::from_utf8_lossy(&output.stderr).to_string(),
+        })
+    }
+}
+
+pub fn run_command_in_dir(cmd: &str, args: &[&str], dir: &Path) -> Result<Output> {
+    let output = Command::new(cmd)
+        .args(args)
+        .current_dir(dir) // Set the working directory
+        .output()?;
 
     if output.status.success() {
         Ok(output)

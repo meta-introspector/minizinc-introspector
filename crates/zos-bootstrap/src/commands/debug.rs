@@ -1,5 +1,5 @@
-use clap::{Args, Subcommand, Clone};
-use crate::utils::error::Result;
+use clap::{Args, Subcommand};
+use crate::utils::error::{Result, ZosError};
 use crate::utils::subprocess;
 use crate::utils::paths;
 
@@ -40,12 +40,13 @@ pub fn handle_debug_command(args: DebugArgs) -> Result<()> {
 fn reproduce_crash() -> Result<()> {
     println!("Attempting to reproduce MiniZinc FFI crash...");
     let project_root = paths::resolve_project_root()?;
-    let build_dir = paths::get_build_dir()?;
+    let _build_dir = paths::get_build_dir()?;
 
     let mut env_vars: Vec<(String, String)> = Vec::new();
     env_vars.push(("LD_LIBRARY_PATH".to_string(), format!("{}/tools/minizinc_c_wrapper/:{}/install/lib/", project_root.to_string_lossy(), project_root.to_string_lossy())));
 
     let output = subprocess::run_command_with_env("cargo", &["test", "--package", "minizinc_ffi"], &env_vars.iter().map(|(k, v)| (k.as_str(), v.as_str())).collect::<Vec<(&str, &str)>>())?;
+
 
     if output.status.success() {
         println!("Tests passed. Crash not reproduced.");

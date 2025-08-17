@@ -4,23 +4,16 @@ use crate::utils::subprocess;
 use crate::utils::paths;
 use std::path::PathBuf;
 use std::fs;
-use chrono; // For timestamp generation
+use chrono::Local; // Use Local for chrono::Local::now()
+use std::clone::Clone;
 
 // Declare new modules
 pub mod run_embedding_model;
 pub mod vector_params_source;
 pub mod run_minimal_mzn;
-pub mod run_test_driver; // Declare the new module
-
-// Import the merged function and the new enum
-use clap::{Args, Subcommand, Clone};
-use crate::utils::error::{Result, ZosError};
-
-pub mod run_embedding_model;
-pub mod vector_params_source;
-pub mod run_minimal_mzn;
 pub mod run_test_driver;
 
+// Import functions and enums from the new modules
 use crate::commands::run::run_embedding_model::run_embedding_model;
 use crate::commands::run::vector_params_source::VectorParamsSource;
 use crate::commands::run::run_minimal_mzn::run_minimal_mzn;

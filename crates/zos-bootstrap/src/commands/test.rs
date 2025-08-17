@@ -4,7 +4,7 @@ use crate::commands::test::test_dzn_generation::test_dzn_generation;
 use crate::commands::test::test_dzn_gen_rust::test_dzn_gen_rust;
 use crate::commands::test::test_coverage::test_coverage;
 
-use clap::{Args, Subcommand, Clone};
+use clap::{Args, Subcommand};
 use crate::utils::error::Result;
 use crate::utils::subprocess;
 use crate::utils::paths;
