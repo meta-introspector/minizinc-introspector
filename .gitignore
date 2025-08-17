@@ -79,3 +79,5 @@ libminizincConfig.cmake
 libminizincConfigVersion.cmake
 libminizincTargets.cmake
 reports/
+temp_minizinc_output/
+test_code.rs
