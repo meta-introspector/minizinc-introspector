@@ -3,6 +3,7 @@
 
 pub const DEFAULT_REPORTS_DIR: &str = "./reports";
 pub const DEFAULT_REPORT_FILENAME: &str = "constant_analysis_report.txt";
+pub const NAMING_SOLVER_MODEL_PATH: &str = "naming_solver.mzn";
 use std::path::PathBuf;
 use std::env;
 

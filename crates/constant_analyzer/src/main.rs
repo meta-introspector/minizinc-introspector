@@ -1,6 +1,8 @@
 use std::{
     collections::HashMap,
     path::{PathBuf},
+    hash::{Hash, Hasher},
+    collections::hash_map::DefaultHasher,
 };
 use syn::{
     visit::{self, Visit},
@@ -9,6 +11,7 @@ use syn::{
     ItemStatic,
 };
 use walkdir::WalkDir;
+use minizinc_ffi::MiniZincEnvironment;
 
 
 mod constants;
@@ -28,13 +31,55 @@ struct ConstantInfo {
 fn extract_literal_value(lit: &syn::Lit) -> String {
     match lit {
         syn::Lit::Str(lit_str) => format!("{}", lit_str.value()),
-        syn::Lit::ByteStr(lit_byte_str) => format!("b\"{}\"", String::from_utf8_lossy(&lit_byte_str.value())),
-        syn::Lit::Byte(lit_byte) => format!("b'{}'", lit_byte.value()),
-        syn::Lit::Char(lit_char) => format!("'{}'", lit_char.value()),
+        syn::Lit::ByteStr(lit_byte_str) => format!(b"{{}}", String::from_utf8_lossy(&lit_byte_str.value())),
+        syn::Lit::Byte(lit_byte) => format!(b'{{}}', lit_byte.value()),
+        syn::Lit::Char(lit_char) => format!("'{{}}'", lit_char.value()),
         syn::Lit::Int(lit_int) => lit_int.to_string(),
         syn::Lit::Float(lit_float) => lit_float.to_string(),
         syn::Lit::Bool(lit_bool) => lit_bool.value.to_string(),
         _ => String::from("[Unsupported literal type]"),
+    }
+}
+
+fn clean_name(s: &str) -> String {
+    let mut cleaned = String::new();
+    for c in s.chars() {
+        if c.is_alphanumeric() {
+            cleaned.push(c.to_ascii_lowercase());
+        } else {
+            cleaned.push('_');
+        }
+    }
+    // Remove leading/trailing underscores and replace multiple underscores with a single one
+    let cleaned = cleaned.trim_matches('_').to_string();
+    let cleaned = cleaned.replace("__", "_");
+
+    // Ensure it starts with a letter or underscore
+    if cleaned.is_empty() || cleaned.chars().next().unwrap().is_numeric() {
+        format!("_{}", cleaned)
+    } else {
+        cleaned
+    }
+}
+
+fn clean_name(s: &str) -> String {
+    let mut cleaned = String::new();
+    for c in s.chars() {
+        if c.is_alphanumeric() {
+            cleaned.push(c.to_ascii_lowercase());
+        } else {
+            cleaned.push('_');
+        }
+    }
+    // Remove leading/trailing underscores and replace multiple underscores with a single one
+    let cleaned = cleaned.trim_matches('_').to_string();
+    let cleaned = cleaned.replace("__", "_");
+
+    // Ensure it starts with a letter or underscore
+    if cleaned.is_empty() || cleaned.chars().next().unwrap().is_numeric() {
+        format!("_{}", cleaned)
+    } else {
+        cleaned
     }
 }
 
@@ -110,6 +155,36 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         default_path.push("constant_analysis_report.txt");
         default_path
     };
+
+    let mut output_constants_dir: Option<PathBuf> = None;
+    // Basic argument parsing for --output-constants-dir
+    let mut args_iter = args.iter().skip(1).peekable(); // Skip program name
+    while let Some(arg) = args_iter.next() {
+        if arg == "--output-constants-dir" {
+            if let Some(dir_path) = args_iter.next() {
+                output_constants_dir = Some(PathBuf::from(dir_path));
+            } else {
+                return Err("Missing path for --output-constants-dir".into());
+            }
+        }
+    }
+
+    if let Some(ref path) = output_constants_dir {
+        std::fs::create_dir_all(path)?;
+    }
+
+    let mut naming_request_file_path: Option<PathBuf> = None;
+    // Basic argument parsing for --naming-request-file
+    let mut args_iter = args.iter().skip(1).peekable(); // Skip program name
+    while let Some(arg) = args_iter.next() {
+        if arg == "--naming-request-file" {
+            if let Some(file_path) = args_iter.next() {
+                naming_request_file_path = Some(PathBuf::from(file_path));
+            } else {
+                return Err("Missing path for --naming-request-file".into());
+            }
+        }
+    }
 
     // --- Phase 1: Code Ingestion and AST Parsing ---
     // Stores all unique constant declarations found across the entire project.
@@ -188,6 +263,27 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             report_content.push_str(&format!("  PLAN: This literal value is declared {} times. Consider centralizing its definition.\n", declarations.len()));
         } else {
             report_content.push_str(crate::message!(StatusOK));
+        }
+
+        // Generate individual constant files if output_constants_dir is provided
+        if let Some(ref output_dir) = output_constants_dir {
+            let mut hasher = DefaultHasher::new();
+            value.hash(&mut hasher);
+            let file_name_hash = format!("constant_{:x}", hasher.finish());
+
+            let cleaned_name = clean_name(value);
+            let const_name = if cleaned_name.is_empty() {
+                file_name_hash.to_uppercase() // Fallback to hash if cleaned name is empty
+            } else {
+                cleaned_name.to_uppercase()
+            };
+
+            let file_name = format!("{}.rs", cleaned_name);
+            let file_path = output_dir.join(&file_name);
+
+            let const_content = format!("pub const {}: &str = {};", const_name, value);
+
+            std::fs::write(&file_path, const_content)?;
         }
 
         // Determine if the constant is in a dedicated constants file.

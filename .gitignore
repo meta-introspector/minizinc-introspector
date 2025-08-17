@@ -78,3 +78,4 @@ include/minizinc/config.hh
 libminizincConfig.cmake
 libminizincConfigVersion.cmake
 libminizincTargets.cmake
+reports/
