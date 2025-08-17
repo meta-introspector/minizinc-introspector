@@ -51,7 +51,22 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
     // Phase 4: Generate MiniZinc Model (.mzn)
     let model_file_path = output_dir.join("ast_model.mzn");
     // This will contain the MiniZinc model for AST analysis/transformation
-    std::fs::write(&model_file_path, "array[int] of int: ast_elements_numerical;\nvar int: x; solve satisfy; output [\"x = \", show(x), \"\n\"];\n")?;
+    std::fs::write(&model_file_path, r###"array[int] of int: ast_elements_numerical;
+int: num_elements = length(ast_elements_numerical);
+
+var int: sum_elements = sum(ast_elements_numerical);
+var int: min_element = min(ast_elements_numerical);
+var int: max_element = max(ast_elements_numerical);
+
+solve satisfy;
+
+output [
+    "num_elements = ", show(num_elements), "\n",
+    "sum_elements = ", show(sum_elements), "\n",
+    "min_element = ", show(min_element), "\n",
+    "max_element = ", show(max_element), "\n"
+];
+"###)?;
     println!("Generated MiniZinc model file: {}", model_file_path.display());
 
     // Phase 5: Execute MiniZinc
