@@ -1,0 +1,1 @@
+Just conquered a tricky MiniZinc FFI build issue with `zos-bootstrap`! 🚀 Debugging with instrumentation revealed `cmake` was writing build files to the wrong place. Modularizing the build process made it so much clearer. #Rust #FFI #Debugging #MiniZinc #SoftwareEngineering
