@@ -54,17 +54,24 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
     std::fs::write(&model_file_path, r###"array[int] of int: ast_elements_numerical;
 int: num_elements = length(ast_elements_numerical);
 
-var int: sum_elements = sum(ast_elements_numerical);
-var int: min_element = min(ast_elements_numerical);
-var int: max_element = max(ast_elements_numerical);
+% Define the prime for "security" (from numerical_vector_generator.rs)
+int: security_prime = 2;
 
-solve satisfy;
+% Decision variable for the suggested numerical vector
+var int: suggested_numerical_vector;
+
+% Constraint: suggested_numerical_vector must be a multiple of security_prime
+constraint suggested_numerical_vector mod security_prime = 0;
+
+% Objective: Minimize the absolute difference between the sum of original elements
+% and the suggested numerical vector, while satisfying constraints.
+% This is a placeholder objective. A more complex objective would involve
+% semantic distance or other criteria.
+var int: sum_original_elements = sum(ast_elements_numerical);
+solve minimize abs(sum_original_elements - suggested_numerical_vector);
 
 output [
-    "num_elements = ", show(num_elements), "\n",
-    "sum_elements = ", show(sum_elements), "\n",
-    "min_element = ", show(min_element), "\n",
-    "max_element = ", show(max_element), "\n"
+    "suggested_numerical_vector = ", show(suggested_numerical_vector), "\n"
 ];
 "###)?;
     println!("Generated MiniZinc model file: {}", model_file_path.display());
@@ -98,10 +105,7 @@ output [
     // Phase 6: Parse MiniZinc Output
     let parsed_results = parse_minizinc_output(&String::from_utf8_lossy(&output.stdout))?;
     println!("\n--- MiniZinc Analysis Results ---");
-    println!("Number of elements: {}", parsed_results.num_elements);
-    println!("Sum of elements: {}", parsed_results.sum_elements);
-    println!("Min element: {}", parsed_results.min_element);
-    println!("Max element: {}", parsed_results.max_element);
+    println!("Suggested Numerical Vector: {}", parsed_results.suggested_numerical_vector);
     println!("-----------------------------------");
 
     println!("AST to MiniZinc process completed.");
@@ -110,34 +114,19 @@ output [
 
 #[derive(Debug)]
 struct MiniZincAnalysisResults {
-    num_elements: i32,
-    sum_elements: i32,
-    min_element: i32,
-    max_element: i32,
+    suggested_numerical_vector: i32,
 }
 
 fn parse_minizinc_output(output_str: &str) -> Result<MiniZincAnalysisResults> {
-    let mut num_elements = 0;
-    let mut sum_elements = 0;
-    let mut min_element = 0;
-    let mut max_element = 0;
+    let mut suggested_numerical_vector = 0;
 
     for line in output_str.lines() {
-        if line.starts_with("num_elements =") {
-            num_elements = line.split("=").nth(1).and_then(|s| s.trim().parse().ok()).unwrap_or(0);
-        } else if line.starts_with("sum_elements =") {
-            sum_elements = line.split("=").nth(1).and_then(|s| s.trim().parse().ok()).unwrap_or(0);
-        } else if line.starts_with("min_element =") {
-            min_element = line.split("=").nth(1).and_then(|s| s.trim().parse().ok()).unwrap_or(0);
-        } else if line.starts_with("max_element =") {
-            max_element = line.split("=").nth(1).and_then(|s| s.trim().parse().ok()).unwrap_or(0);
+        if line.starts_with("suggested_numerical_vector =") {
+            suggested_numerical_vector = line.split("=").nth(1).and_then(|s| s.trim().parse().ok()).unwrap_or(0);
         }
     }
 
     Ok(MiniZincAnalysisResults {
-        num_elements,
-        sum_elements,
-        min_element,
-        max_element,
+        suggested_numerical_vector,
     })
 }
