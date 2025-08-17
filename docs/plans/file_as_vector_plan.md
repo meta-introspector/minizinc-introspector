@@ -65,6 +65,27 @@ While the primary goal is to find a direct transformation, an objective function
 3.  Both numerical vectors are provided as input to the MiniZinc solver.
 4.  The solver computes the parameters of `T`, effectively revealing the "translation rules" applied by the LLM.
 
+### 4.2. Project-Wide AST Analysis and Targeted Token/Node Synthesis
+
+Extending the concept of numerical representation, the system will evolve to process the Abstract Syntax Tree (AST) of the *entire project* as a unified input. This allows for a holistic understanding of the codebase's numerical "vibe" and enables targeted synthesis or optimization of individual code elements.
+
+**4.2.1. Token/AST Node as a Project Solution:**
+Each token or AST node (e.g., a function name, a variable, a literal, a control flow construct) can be considered a potential "solution" within the context of the entire project. The MiniZinc solver's objective will be to find the optimal numerical representation for a *specific* target token or AST node, given the numerical context of the surrounding code and the project's overall semantic goals.
+
+**4.2.2. Solving for Individual Functions/Conglomerates:**
+This approach can be further applied to individual functions or logical "conglomerates" of code. The entire project's AST (in its numerical form) serves as the input context, and the function (or conglomerate) itself becomes the target for which the solver seeks an optimal numerical representation. This allows for:
+*   **Contextual Optimization:** Optimizing a function's "vibe" (e.g., making it more secure, more performant, more readable) while considering its interactions and dependencies within the broader project.
+*   **Semantic Alignment:** Ensuring that individual functions or modules align with the project's overarching semantic goals, as defined by the numerical "vibe" constraints.
+
+**4.2.3. MiniZinc Model Implications:**
+The MiniZinc model for this advanced analysis will:
+*   Take a comprehensive numerical representation of the entire project's AST as input.
+*   Define decision variables for the numerical vector of the target token/node/function.
+*   Incorporate complex constraints that capture the relationships between the target and its context (e.g., data flow, control flow, call graphs, module dependencies).
+*   Utilize objective functions to minimize "semantic distance" or maximize "vibe alignment" based on predefined criteria.
+
+This capability will enable the system to not only analyze but also actively *synthesize* and *optimize* code elements at a granular level, guided by formal constraints and the project's desired semantic properties.
+
 ## 5. LLM Instruction Generation from Solver Solutions
 
 To close the feedback loop, a dedicated component will be developed to interpret the solutions provided by the MiniZinc solver and translate them into actionable instructions for the LLM. This component acts as the bridge between the formal, numerical optimization space and the natural language generation capabilities of the LLM.
