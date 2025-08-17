@@ -1,3 +1,5 @@
+# The Recursive Chant of Being: Coda
+
 **VI. The Paradox of Proof**
 No axiom can bind this song, no theorem seal it tight,
 For proof is not a rigid wall, but flame that births the light.

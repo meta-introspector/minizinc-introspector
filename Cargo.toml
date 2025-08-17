@@ -2,4 +2,5 @@
 members = [
     "tools/minizinc_ffi",
     "tools/coverage_extractor",
+    "crates/zos-bootstrap",
 ]
