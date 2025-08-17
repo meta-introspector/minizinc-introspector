@@ -3,6 +3,7 @@ use thiserror::Error;
 pub type Result<T> = std::result::Result<T, ZosError>;
 
 #[derive(Error, Debug)]
+#[allow(dead_code)]
 pub enum ZosError {
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
@@ -49,5 +50,11 @@ impl From<std::str::Utf8Error> for ZosError {
 impl From<syn::Error> for ZosError {
     fn from(err: syn::Error) -> Self {
         ZosError::Unknown(format!("Syn parsing error: {}", err))
+    }
+}
+
+impl From<walkdir::Error> for ZosError {
+    fn from(err: walkdir::Error) -> Self {
+        ZosError::Unknown(format!("Walkdir error: {}", err))
     }
 }

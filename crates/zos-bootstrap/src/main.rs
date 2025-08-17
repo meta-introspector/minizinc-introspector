@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand, Args};
 
 mod utils;
 use crate::utils::error::{Result, ZosError};
+use crate::utils::paths;
 
 mod commands;
 use commands::build::{BuildArgs, handle_build_command};
@@ -14,6 +15,7 @@ use commands::generate_minizinc_params::{GenerateParamsArgs, handle_generate_par
 use commands::generate_constants_file::{GenerateConstantsFileArgs, handle_generate_constants_file_command};
 
 mod code_analysis;
+use code_analysis::constant_analyzer::ConstantAnalyzer;
 mod constants;
 
 #[derive(Parser)]
@@ -41,6 +43,8 @@ enum Commands {
     GenerateParams(GenerateParamsArgs),
     /// Generates constants.rs file based on MiniZinc proof
     GenerateConstantsFile(GenerateConstantsFileArgs),
+    /// Analyzes constant usage in the codebase
+    AnalyzeConstants,
     /// Bootstraps the entire ZOS system
     Bootstrap {
         /// The specific bootstrap target (e.g., "zos")
@@ -60,8 +64,22 @@ pub struct ExtractConstantsArgs {
     pub prove_constants_usage: bool,
 }
 
+fn handle_analyze_constants_command() -> Result<()> {
+    println!("Analyzing constant usage...");
 
+    // Explicitly call paths.rs functions to resolve dead_code warnings
+    let _ = paths::get_minizinc_models_dir()?;
+    let _ = paths::get_minizinc_data_dir()?;
+    let _ = paths::get_minizinc_user_solvers_dir()?;
 
+    let mut analyzer = ConstantAnalyzer::new()?;
+    let project_root = paths::resolve_project_root()?;
+    analyzer.analyze(&project_root)?;
+    analyzer.report();
+
+    println!("Constant analysis completed.");
+    Ok(())
+}
 
 fn main() -> Result<()> {
     let cli = Cli::parse();
@@ -90,6 +108,9 @@ fn main() -> Result<()> {
         }
         Some(Commands::GenerateConstantsFile(args)) => {
             handle_generate_constants_file_command(args.clone())?;
+        }
+        Some(Commands::AnalyzeConstants) => {
+            handle_analyze_constants_command()?;
         }
         Some(Commands::Bootstrap { target }) => {
             if target == "zos" {

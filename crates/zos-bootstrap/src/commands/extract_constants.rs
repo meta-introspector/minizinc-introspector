@@ -67,6 +67,8 @@ pub fn handle_extract_constants_command(args: ExtractConstantsArgs) -> Result<()
         let minizinc_models_dir = project_root.join("minizinc_models");
         let minizinc_data_dir = project_root.join("minizinc_data");
         let libminizinc_build_dir = paths::get_build_dir()?;
+        let _user_solvers_dir = paths::get_minizinc_user_solvers_dir()?;
+        println!("MiniZinc user solvers directory: {:?}", _user_solvers_dir);
 
         let model_file = minizinc_models_dir.join("extract_constants.mzn");
         let data_file = minizinc_data_dir.join("raw_strings_data.dzn");

@@ -6,6 +6,7 @@ use serde_json::Value;
 //use walkdir::WalkDir;
 
 // Define structs to match the JSON output of llvm-cov export
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct LlvmCovFile {
     _filename: String,
@@ -13,6 +14,7 @@ struct LlvmCovFile {
     // Add other fields as needed
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 struct LlvmCovSegment {
     line: u32,
