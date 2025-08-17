@@ -50,6 +50,8 @@ pub struct ExtractConstantsArgs {
     pub file_path: Option<String>,
     #[arg(long)]
     pub generate_sed_script: bool,
+    #[arg(long)]
+    pub prove_constants_usage: bool,
 }
 
 fn main() -> Result<()> {

@@ -2,11 +2,17 @@ use crate::utils::error::Result;
 use crate::utils::subprocess;
 use crate::utils::paths;
 use crate::code_analysis::string_extractor::{self, ExtractedString};
+use crate::code_analysis::constant_usage_proof;
 use crate::ExtractConstantsArgs;
-use std::fs;
+//use std::fs;
 
 pub fn handle_extract_constants_command(args: ExtractConstantsArgs) -> Result<()> {
-    if args.rust_only {
+    if args.prove_constants_usage {
+        println!("Proving constant usage...");
+        let project_root = paths::resolve_project_root()?;
+        constant_usage_proof::prove_constants_usage_command(&project_root)?;
+        println!("Constant usage proof completed.");
+    } else if args.rust_only {
         println!("Extracting constant strings using Rust's syn parser...");
         let project_root = paths::resolve_project_root()?;
         let mut all_extracted_strings: Vec<ExtractedString> = Vec::new();
@@ -156,3 +162,4 @@ fn escape_for_sed(s: &str) -> String {
      .replace("\r", "\\r")
      .replace("\t", "\\t")
 }
+
