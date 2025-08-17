@@ -1,4 +1,4 @@
-use syn::{File, Lit, visit::{self, Visit}, Item, ImplItem, FnArg, Pat, PatType, Ident};
+use syn::{Lit, visit::{self, Visit}, Item, ImplItem, FnArg, Pat, PatType};
 use std::fs;
 use std::path::Path;
 
@@ -45,7 +45,8 @@ impl<'ast> Visit<'ast> for StringExtractor {
             }
             Item::Const(item_const) => {
                 // Handle const items
-                if let Lit::Str(lit_str) = &item_const.expr.as_ref() {
+                if let syn::Expr::Lit(expr_lit) = &*item_const.expr {
+                    if let Lit::Str(lit_str) = &expr_lit.lit {
                     self.extracted_strings.push(ExtractedString {
                         crate_name: self.current_crate.clone(),
                         module_path: self.current_module_path.clone(),
@@ -54,11 +55,13 @@ impl<'ast> Visit<'ast> for StringExtractor {
                         string_value: lit_str.value(),
                     });
                 }
-                visit::visit_item_const(self, item_const);
+            }
+            visit::visit_item_const(self, item_const);
             }
             Item::Static(item_static) => {
                 // Handle static items
-                if let Lit::Str(lit_str) = &item_static.expr.as_ref() {
+                if let syn::Expr::Lit(expr_lit) = &*item_static.expr {
+                    if let Lit::Str(lit_str) = &expr_lit.lit {
                     self.extracted_strings.push(ExtractedString {
                         crate_name: self.current_crate.clone(),
                         module_path: self.current_module_path.clone(),
@@ -67,7 +70,8 @@ impl<'ast> Visit<'ast> for StringExtractor {
                         string_value: lit_str.value(),
                     });
                 }
-                visit::visit_item_static(self, item_static);
+            }
+            visit::visit_item_static(self, item_static);
             }
             _ => visit::visit_item(self, i),
         }
@@ -94,7 +98,7 @@ impl<'ast> Visit<'ast> for StringExtractor {
     // Handle string literals in function arguments (e.g., println!, format!)
     fn visit_fn_arg(&mut self, i: &'ast FnArg) {
         if let FnArg::Typed(PatType { pat, ty, .. }) = i {
-            if let Pat::Ident(pat_ident) = pat.as_ref() {
+            if let Pat::Ident(_pat_ident) = pat.as_ref() {
                 // Check if the type is a string literal or a reference to one
                 // This is a heuristic and might need refinement
                 if let syn::Type::Reference(type_ref) = ty.as_ref() {

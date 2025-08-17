@@ -9,8 +9,10 @@ use commands::test::{TestArgs, handle_test_command};
 use commands::run::{RunArgs, handle_run_command};
 use commands::debug::{DebugArgs, handle_debug_command};
 use commands::clean::{CleanArgs, handle_clean_command};
+use commands::extract_constants::handle_extract_constants_command;
 
 mod code_analysis;
+mod constants;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]

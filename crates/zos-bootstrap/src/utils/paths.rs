@@ -20,6 +20,11 @@ pub fn get_gecode_build_dir() -> Result<PathBuf> {
     Ok(root.join("vendor").join("gecode").join("build"))
 }
 
+pub fn get_gecode_vendor_dir() -> Result<PathBuf> {
+    let root = resolve_project_root()?;
+    Ok(root.join("vendor").join("gecode"))
+}
+
 pub fn get_minizinc_models_dir() -> Result<PathBuf> {
     let root = resolve_project_root()?;
     Ok(root.join("minizinc_models"))

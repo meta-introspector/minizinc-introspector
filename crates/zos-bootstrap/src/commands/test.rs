@@ -51,7 +51,7 @@ pub fn handle_test_command(args: TestArgs) -> Result<()> {
  => {
             println!("Running all tests...");
             test_c_abi()?;
-            // test_rust_ffi()?;
+            test_rust_ffi()?;
             test_minizinc_models()?;
             println!("All tests completed successfully.");
         }
@@ -61,7 +61,7 @@ pub fn handle_test_command(args: TestArgs) -> Result<()> {
         }
         Some(TestCommands::RustFfi {})
  => {
-            // test_rust_ffi()?;
+            test_rust_ffi()?;
         }
         Some(TestCommands::MinizincModels {})
  => {

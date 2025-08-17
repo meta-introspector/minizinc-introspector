@@ -73,51 +73,53 @@ pub fn handle_build_command(args: BuildArgs) -> Result<()> {
 }
 
 fn build_gecode() -> Result<()> {
-    println!("Building Gecode...");
+    println!("{}", constants::MSG_BUILDING_GECODE);
     let gecode_build_dir = paths::get_gecode_build_dir()?;
-    let _project_root = paths::resolve_project_root()?;
+    let gecode_vendor_dir = paths::get_gecode_vendor_dir()?;
 
     let mut args_mkdir: Vec<String> = Vec::new();
-    args_mkdir.push("-p".to_string());
+    args_mkdir.push(constants::ARG_MKDIR_P.to_string());
     args_mkdir.push(gecode_build_dir.to_string_lossy().to_string());
     subprocess::run_command("mkdir", &args_mkdir.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
 
     let mut args_cmake: Vec<String> = Vec::new();
-    args_cmake.push(format!("{}", gecode_build_dir.to_string_lossy()));
-    args_cmake.push("-DCMAKE_POLICY_VERSION_MINIMUM=3.5".to_string());
-    subprocess::run_command("cmake", &args_cmake.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
+    args_cmake.push("-B".to_string());
+    args_cmake.push(gecode_build_dir.to_string_lossy().to_string());
+    args_cmake.push(".".to_string()); // Source directory is current directory (gecode_vendor_dir)
+    args_cmake.push(constants::ARG_CMAKE_POLICY_MINIMUM.to_string());
+    subprocess::run_command_in_dir("cmake", &args_cmake.iter().map(|s| s.as_str()).collect::<Vec<&str>>(), &gecode_vendor_dir)?;
 
     let mut args_make: Vec<String> = Vec::new();
-    args_make.push("-C".to_string());
+    args_make.push(constants::ARG_MAKE_C.to_string());
     args_make.push(gecode_build_dir.to_string_lossy().to_string());
-    subprocess::run_command("make", &args_make.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
+    subprocess::run_command_in_dir("make", &args_make.iter().map(|s| s.as_str()).collect::<Vec<&str>>(), &gecode_build_dir)?;
 
-    println!("Gecode built successfully.");
+    println!("{}", constants::MSG_GECODE_BUILT_SUCCESSFULLY);
     Ok(())
 }
 
 fn build_libminizinc() -> Result<()> {
-    println!("Building libminizinc...");
+    println!("{}", constants::MSG_BUILDING_LIBMINIZINC);
     let libminizinc_build_dir = paths::get_build_dir()?;
     let _project_root = paths::resolve_project_root()?;
     let gecode_build_dir = paths::get_gecode_build_dir()?;
 
     let mut args_mkdir: Vec<String> = Vec::new();
-    args_mkdir.push("-p".to_string());
+    args_mkdir.push(constants::ARG_MKDIR_P.to_string());
     args_mkdir.push(libminizinc_build_dir.to_string_lossy().to_string());
     subprocess::run_command("mkdir", &args_mkdir.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
 
     let mut args_cmake: Vec<String> = Vec::new();
     args_cmake.push(_project_root.to_string_lossy().to_string());
-    args_cmake.push(format!("-DGecode_ROOT={}", gecode_build_dir.to_string_lossy()));
+    args_cmake.push(format!("{}{}", constants::ARG_GECODE_ROOT.replace("{}", ""), gecode_build_dir.to_string_lossy()));
     subprocess::run_command("cmake", &args_cmake.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
 
     let mut args_make: Vec<String> = Vec::new();
-    args_make.push("-C".to_string());
+    args_make.push(constants::ARG_MAKE_C.to_string());
     args_make.push(libminizinc_build_dir.to_string_lossy().to_string());
     subprocess::run_command("make", &args_make.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
 
-    println!("libminizinc built successfully.");
+    println!("{}", constants::MSG_LIBMINIZINC_BUILT_SUCCESSFULLY);
     Ok(())
 }
 
@@ -127,29 +129,29 @@ pub mod run_make_for_ffi;
 pub mod verify_ffi_library_exists;
 
 fn build_ffi_wrapper(strace_enabled: bool) -> Result<()> {
-    println!("--- Starting build_ffi_wrapper ---");
-    println!("Building C++ FFI wrapper...");
+    println!("{}", constants::MSG_STARTING_BUILD_FFI_WRAPPER);
+    println!("{}", constants::MSG_BUILDING_FFI_WRAPPER);
 
     let build_dir = paths::get_build_dir()?;
     let project_root = paths::resolve_project_root()?;
 
-    println!("Project Root: {}", project_root.display());
-    println!("Build Dir: {}", build_dir.display());
+    println!("{}{}", constants::MSG_PROJECT_ROOT.replace("{}", ""), project_root.display());
+    println!("{}{}", constants::MSG_BUILD_DIR.replace("{}", ""), build_dir.display());
 
     ensure_build_directory_exists::ensure_build_directory_exists(&build_dir)?;
     run_cmake_for_ffi::run_cmake_for_ffi(&project_root, &build_dir)?;
     run_make_for_ffi::run_make_for_ffi(&build_dir, strace_enabled)?;
     verify_ffi_library_exists::verify_ffi_library_exists(&build_dir)?;
 
-    println!("C++ FFI wrapper built successfully.");
-    println!("--- Finished build_ffi_wrapper ---");
+    println!("{}", constants::MSG_FFI_WRAPPER_BUILT_SUCCESSFULLY);
+    println!("{}", constants::MSG_FINISHED_BUILD_FFI_WRAPPER);
     Ok(())
 }
 
 fn build_rust_ffi_crate() -> Result<()> {
     println!("{}", constants::MSG_BUILDING_RUST_FFI_CRATE);
     let minizinc_ffi_crate_dir = paths::get_minizinc_ffi_crate_dir()?;
-    println!("{}", format!(constants::MSG_MINIZINC_FFI_CRATE_DIR, minizinc_ffi_crate_dir.display()));
+    println!("{}{}", constants::MSG_MINIZINC_FFI_CRATE_DIR.replace("{}", ""), minizinc_ffi_crate_dir.display());
     subprocess::run_command(constants::CMD_CARGO, &[constants::ARG_BUILD, constants::ARG_RELEASE])?;
     println!("{}", constants::MSG_RUST_FFI_CRATE_BUILT_SUCCESSFULLY);
     Ok(())

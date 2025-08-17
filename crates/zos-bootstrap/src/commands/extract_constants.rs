@@ -1,7 +1,6 @@
-use crate::utils::Result;
+use crate::utils::error::Result;
 use crate::utils::subprocess;
 use crate::utils::paths;
-use std::fs;
 
 pub fn handle_extract_constants_command() -> Result<()> {
     println!("Extracting constant strings using MiniZinc...");
