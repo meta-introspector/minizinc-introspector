@@ -2,10 +2,13 @@ use clap::{Parser, Subcommand};
 
 mod utils;
 use crate::utils::error::{Result, ZosError};
-use crate::utils::paths;
-use crate::utils::subprocess;
 
 mod commands;
+use commands::build::{BuildArgs, handle_build_command};
+use commands::test::{TestArgs, handle_test_command};
+use commands::run::{RunArgs, handle_run_command};
+use commands::debug::{DebugArgs, handle_debug_command};
+use commands::clean::{CleanArgs, handle_clean_command};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -17,15 +20,15 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     /// Builds project components
-    Build {},
+    Build(BuildArgs),
     /// Runs project tests
-    Test {},
+    Test(TestArgs),
     /// Executes MiniZinc models
-    Run {},
+    Run(RunArgs),
     /// Provides debugging utilities
-    Debug {},
+    Debug(DebugArgs),
     /// Cleans build artifacts
-    Clean {},
+    Clean(CleanArgs),
     /// Bootstraps the entire ZOS system
     Bootstrap {
         /// The specific bootstrap target (e.g., "zos")
@@ -37,34 +40,32 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
 
     match &cli.command {
-        Some(Commands::Build {}) => {
-            println!("Build command received");
-            // TODO: Implement build logic
+        Some(Commands::Build(args)) => {
+            handle_build_command(args.clone())?;
         }
-        Some(Commands::Test {}) => {
-            println!("Test command received");
-            // TODO: Implement test logic
+        Some(Commands::Test(args)) => {
+            handle_test_command(args.clone())?;
         }
-        Some(Commands::Run {}) => {
-            println!("Run command received");
-            // TODO: Implement run logic
+        Some(Commands::Run(args)) => {
+            handle_run_command(args.clone())?;
         }
-        Some(Commands::Debug {}) => {
-            println!("Debug command received");
-            // TODO: Implement debug logic
+        Some(Commands::Debug(args)) => {
+            handle_debug_command(args.clone())?;
         }
-        Some(Commands::Clean {}) => {
-            println!("Clean command received");
-            // TODO: Implement clean logic
+        Some(Commands::Clean(args)) => {
+            handle_clean_command(args.clone())?;
         }
         Some(Commands::Bootstrap { target }) => {
             if target == "zos" {
                 println!("Commencing ZOS Bootstrap: Building all core components...");
-                // TODO: Call build all logic
+                handle_build_command(BuildArgs { command: Some(commands::build::BuildCommands::All {}) })?;
                 println!("Commencing ZOS Bootstrap: Running all tests...");
-                // TODO: Call test all logic
+                handle_test_command(TestArgs { command: Some(commands::test::TestCommands::All {}) })?;
                 println!("Commencing ZOS Bootstrap: Running initial embedding model...");
-                // TODO: Call run initial embedding model logic
+                // This is a placeholder for running an initial embedding model.
+                // It would require specific arguments for the 'run embedding' command.
+                // For now, we'll just print a message.
+                println!("(Initial embedding model run placeholder)");
                 println!("ZOS Bootstrap Complete.");
             } else {
                 return Err(ZosError::InvalidArgument(format!("Unknown bootstrap target: {}. Only 'zos' is supported currently.", target)));

@@ -1,13 +1,14 @@
-use std::path::{Path, PathBuf};
+//use std::path::{Path, PathBuf};
+use std::path::{ PathBuf};
 use std::process::Command;
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize};
 use serde_json::Value;
-use walkdir::WalkDir;
+//use walkdir::WalkDir;
 
 // Define structs to match the JSON output of llvm-cov export
 #[derive(Debug, Deserialize)]
 struct LlvmCovFile {
-    filename: String,
+    _filename: String,
     segments: Vec<LlvmCovSegment>,
     // Add other fields as needed
 }

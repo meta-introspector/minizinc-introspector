@@ -7,7 +7,7 @@ pub enum ZosError {
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
 
-    #[error("Command execution failed: {command} (exit code: {exit_code})")]
+    #[error("Command execution failed: {command} (exit code: {exit_code:?})")]
     CommandFailed {
         command: String,
         exit_code: Option<i32>,

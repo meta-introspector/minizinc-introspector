@@ -1,4 +1,4 @@
-#[macro_use]
+//#[macro_use]
 extern crate lazy_static;
 
 pub mod ffi_bindings;

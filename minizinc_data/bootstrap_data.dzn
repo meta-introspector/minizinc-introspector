@@ -1,0 +1,14 @@
+% bootstrap_data.dzn
+
+duration = [
+    5, % BUILD_GECODE
+    10, % BUILD_LIBMINIZINC
+    1, % GENERATE_FFI_DECLARATIONS
+    2, % BUILD_CPP_FFI_WRAPPER
+    3, % BUILD_RUST_FFI_CRATE
+    1, % SETUP_SOLVERS
+    2, % TEST_C_ABI
+    5, % TEST_RUST_FFI
+    8, % TEST_MINIZINC_MODELS
+    15 % RUN_INITIAL_EMBEDDING
+];
