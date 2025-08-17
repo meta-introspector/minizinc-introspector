@@ -72,7 +72,7 @@ impl<'ast> Visit<'ast> for ConstantVisitor {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Define the project root directory. This should be the root of your Rust project.
     // For this specific context, it's /data/data/com.termux/files/home/storage/github/libminizinc
-    let project_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/libminizinc");
+    let project_root = constants::get_project_root()?;
 
     // --- Command-line argument for output file ---
     let args: Vec<String> = std::env::args().collect();
