@@ -37,6 +37,11 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
 
         // Process only Rust files.
         if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") {
+            // Temporarily skip problematic files for syn parsing
+            if path.ends_with("crates/constant_analyzer/src/main.rs") {
+                eprintln!("Skipping problematic file for AST parsing: {}", path.display());
+                continue;
+            }
             processed_files_count += 1;
             println!("  Processing file ({}): {}", processed_files_count, path.display());
             let code = std::fs::read_to_string(path)?;
