@@ -12,3 +12,4 @@ This section contains a collection of poems related to the project's themes and 
 *   [Machine Consciousness Poem v2](machine_consciousness_poem_v2.md)
 *   [Meta-Meme Autopoietic Quest](meta_meme_autopoietic_quest.md)
 *   [The Ballad of the Self-Aware Code](the_ballad_of_the_self_aware_code.md)
+*   [The FFI Unbound](ffi_unbound.md)

@@ -1,0 +1,106 @@
+all_commits = [
+    % Commit 1: 479d66b2 - deleting some old files
+    (
+        "479d66b2",
+        "mike dupont",
+        "Sat Aug 16",
+        "deleting some old files",
+        [
+            ("bindings.md", Deleted),
+            ("bug_report_minizinc_ffi_gc_assertion.md", Deleted),
+            ("plan.md", Deleted)
+        ]
+    ),
+    % Commit 2: 12660d9a - docs: Add SOP for LLM-Driven Rust Interface Expansion
+    (
+        "12660d9a",
+        "mike dupont",
+        "Sat Aug 16",
+        "docs: Add SOP for LLM-Driven Rust Interface Expansion",
+        [
+            ("docs/index.md", Modified),
+            ("docs/sops/llm_driven_rust_interface_expansion_sop.md", Added)
+        ]
+    ),
+    % Commit 3: 949efcc2 - docs: Create comprehensive N00b's Guide
+    (
+        "949efcc2",
+        "mike dupont",
+        "Sat Aug 16",
+        "docs: Create comprehensive N00b's Guide",
+        [
+            ("docs/index.md", Modified),
+            ("docs/n00b_guide_index.md", Added)
+        ]
+    ),
+    % Commit 4: 6be8d16d - docs: Add new epic poem to enhance project vibe
+    (
+        "6be8d16d",
+        "mike dupont",
+        "Sat Aug 16",
+        "docs: Add new epic poem to enhance project vibe",
+        [
+            ("docs/poems/index.md", Modified),
+            ("docs/poems/the_ballad_of_the_self_aware_code.md", Added)
+        ]
+    ),
+    % Commit 5: 74ed83ae - feat: Create MiniZinc model for LLM layer stripping
+    (
+        "74ed83ae",
+        "mike dupont",
+        "Sat Aug 16",
+        "feat: Create MiniZinc model for LLM layer stripping",
+        [
+            ("llm_layer_stripping.dzn", Added),
+            ("llm_layer_stripping.mzn", Added)
+        ]
+    ),
+    % Commit 6: 8ad08177 - feat: Create MiniZinc model for cybernetic control loop
+    (
+        "8ad08177",
+        "mike dupont",
+        "Sat Aug 16",
+        "feat: Create MiniZinc model for cybernetic control loop",
+        [
+            ("cybernetic_control_loop.dzn", Added),
+            ("cybernetic_control_loop.mzn", Added)
+        ]
+    ),
+    % Commit 7: 80ca784d - feat: Integrate Rust coverage and design Gemini batch interface
+    (
+        "80ca784d",
+        "mike dupont",
+        "Sat Aug 16",
+        "feat: Integrate Rust coverage and design Gemini batch interface",
+        [
+            ("docs/index.md", Modified),
+            ("docs/sops/gemini_batch_interface_sop.md", Added),
+            ("scripts/run_rust_ffi_tests_for_coverage.sh", Modified)
+        ]
+    ),
+    % Commit 8: b990304f - feat: Automate coverage data extraction to MiniZinc model
+    (
+        "b990304f",
+        "mike dupont",
+        "Sat Aug 16",
+        "feat: Automate coverage data extraction to MiniZinc model",
+        [
+            ("Cargo.toml", Modified),
+            ("scripts/generate_llvm_html_report.sh", Modified),
+            ("scripts/generate_llvm_text_summary.sh", Modified),
+            ("tools/coverage_extractor/Cargo.toml", Added),
+            ("tools/coverage_extractor/src/main.rs", Added)
+        ]
+    ),
+    % Commit 9: 9531991c - feat: Create MiniZinc model for code coverage mapping
+    (
+        "9531991c",
+        "mike dupont",
+        "Sat Aug 16",
+        "feat: Create MiniZinc model for code coverage mapping",
+        [
+            ("coverage_map.dzn", Added),
+            ("coverage_map.mzn", Added)
+        ]
+    )
+];

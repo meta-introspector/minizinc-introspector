@@ -1,0 +1,72 @@
+gemini_thoughts = [
+    (
+        timestamp: "2025-08-16T19:45:00",
+        type: Observation,
+        content: "User requested a MiniZinc model of git contents, including commits in the model itself.",
+        related_project_concept: "Git History Analysis",
+        godel_number: 105
+    ),
+    (
+        timestamp: "2025-08-16T19:46:00",
+        type: Plan,
+        content: "Decided to represent commits as records with hash, author, date, subject, and simplified file changes.",
+        related_project_concept: "MiniZinc Model",
+        godel_number: 103
+    ),
+    (
+        timestamp: "2025-08-16T19:47:00",
+        type: Action,
+        content: "Created git_history_model.mzn with hardcoded commit data.",
+        related_project_concept: "MiniZinc Model",
+        godel_number: 103
+    ),
+    (
+        timestamp: "2025-08-16T19:48:00",
+        type: Reflection,
+        content: "Realized hardcoding data is not ideal; better to separate data into a .dzn file.",
+        related_project_concept: "Monotonic Epic Idea",
+        godel_number: 108
+    ),
+    (
+        timestamp: "2025-08-16T19:49:00",
+        type: Action,
+        content: "Extracted commit data into git_history_data.dzn and modified git_history_model.mzn to include it.",
+        related_project_concept: "MiniZinc Model",
+        godel_number: 103
+    ),
+    (
+        timestamp: "2025-08-16T19:50:00",
+        type: Observation,
+        content: "User now requests a self-model, including my thoughts and relating them to project concepts via Gödel numbers.",
+        related_project_concept: "Self-Modeling",
+        godel_number: 106
+    ),
+    (
+        timestamp: "2025-08-16T19:51:00",
+        type: Plan,
+        content: "Will define GeminiAgent and Thought records. Simulate Gödel numbers for project concepts. Log current thoughts.",
+        related_project_concept: "Self-Modeling",
+        godel_number: 106
+    ),
+    (
+        timestamp: "2025-08-16T19:52:00",
+        type: Reflection,
+        content: "This self-modeling process aligns with the project's vision of introspection and self-awareness, and LLM-driven development.",
+        related_project_concept: "LLM-Driven Development",
+        godel_number: 109
+    ),
+    (
+        timestamp: "2025-08-16T19:53:00",
+        type: Observation,
+        content: "MiniZinc executable is failing to parse even simple models, indicating an environment issue.",
+        related_project_concept: "Error",
+        godel_number: 0
+    ),
+    (
+        timestamp: "2025-08-16T19:54:00",
+        type: Plan,
+        content: "Will generate the MiniZinc model and data file, but cannot verify execution.",
+        related_project_concept: "Self-Modeling",
+        godel_number: 106
+    )
+];
