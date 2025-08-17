@@ -4,40 +4,65 @@ use crate::utils::subprocess;
 use std::path::PathBuf;
 use clap::Args;
 use crate::code_analysis::ast_to_numerical_vector_converter::{self};
+use crate::code_analysis::numerical_vector_to_llm_instructions;
+use walkdir::WalkDir;
 
 #[derive(Args, Clone)]
 pub struct AstToMiniZincArgs {
-    /// Path to the Rust file to analyze.
+    /// Path to the Rust project root directory to analyze.
     #[arg(long)]
-    pub file_path: String,
+    pub project_root: String,
     /// Directory to output the generated MiniZinc model and data files.
     #[arg(long)]
     pub output_dir: String,
 }
 
 pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
-    println!("Analyzing AST and generating MiniZinc files for: {}", args.file_path);
+    println!("Analyzing AST and generating MiniZinc files for project: {}", args.project_root);
 
-    let input_file_path = PathBuf::from(&args.file_path);
+    let project_root_path = PathBuf::from(&args.project_root);
     let output_dir = PathBuf::from(&args.output_dir);
     std::fs::create_dir_all(&output_dir)?;
 
-    // Phase 1: Parse Rust code to AST
-    let code = std::fs::read_to_string(&input_file_path)?;
-    let syntax = syn::parse_file(&code)?;
+    let mut all_ast_numerical_vectors = Vec::new();
 
-    // Phase 2: Extract relevant AST data and convert to numerical vectors
-    let ast_numerical_vectors = ast_to_numerical_vector_converter::convert_ast_to_numerical_vectors(&syntax, "my_crate".to_string()); // TODO: Get actual crate name
-    println!("Extracted {} AST elements and converted to numerical vectors.", ast_numerical_vectors.len());
+    // Phase 1 & 2: Parse Rust code to AST and extract numerical vectors for the entire project
+    for entry in WalkDir::new(&project_root_path)
+        .into_iter()
+        .filter_map(|e| e.ok()) // Filter out errors
+    {
+        let path = entry.path();
+
+        // Process only Rust files.
+        if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") {
+            println!("Processing file: {}", path.display());
+            let code = std::fs::read_to_string(path)?;
+            let syntax = syn::parse_file(&code)?;
+
+            // TODO: Get actual crate name for each file
+            let crate_name = path
+                .strip_prefix(&project_root_path)?
+                .components()
+                .nth(1)
+                .and_then(|c| c.as_os_str().to_str())
+                .unwrap_or("unknown_crate")
+                .to_string();
+
+            let ast_numerical_vectors_for_file = ast_to_numerical_vector_converter::convert_ast_to_numerical_vectors(&syntax, crate_name);
+            all_ast_numerical_vectors.extend(ast_numerical_vectors_for_file);
+        }
+    }
+
+    println!("Extracted {} total AST elements and converted to numerical vectors from the project.", all_ast_numerical_vectors.len());
 
     // Phase 3: Generate MiniZinc Data (.dzn)
     let data_file_path = output_dir.join("ast_data.dzn");
     let mut dzn_content = String::new();
     dzn_content.push_str("ast_elements_numerical = [
 ");
-    for (i, vec) in ast_numerical_vectors.iter().enumerate() {
+    for (i, vec) in all_ast_numerical_vectors.iter().enumerate() {
         dzn_content.push_str(&vec.numerical_vector.to_string());
-        if i < ast_numerical_vectors.len() - 1 {
+        if i < all_ast_numerical_vectors.len() - 1 {
             dzn_content.push_str(",\n");
         } else {
             dzn_content.push_str("\n");
@@ -107,6 +132,13 @@ output [
     println!("\n--- MiniZinc Analysis Results ---");
     println!("Suggested Numerical Vector: {}", parsed_results.suggested_numerical_vector);
     println!("-----------------------------------");
+
+    // Phase 7: Interpret Solver Output and Generate LLM Instructions
+    let interpreted_concepts = numerical_vector_to_llm_instructions::interpret_numerical_vector(parsed_results.suggested_numerical_vector);
+    let llm_instructions = numerical_vector_to_llm_instructions::generate_llm_instructions(interpreted_concepts);
+    println!("\n--- LLM Instructions ---");
+    println!("{}", llm_instructions);
+    println!("------------------------");
 
     println!("AST to MiniZinc process completed.");
     Ok(())
