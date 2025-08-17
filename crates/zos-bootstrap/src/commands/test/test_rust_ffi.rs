@@ -1,37 +1,42 @@
 use crate::utils::error::Result;
-use crate::utils::subprocess;
 use crate::utils::paths;
-use std::env;
+use crate::commands::build::{ensure_build_directory_exists, run_cmake_for_ffi, run_make_for_ffi, verify_ffi_library_exists};
 
-// This function is temporarily removed due to persistent linking issues on Android.
-// It will be re-introduced when a more robust testing environment for the FFI is established.
-// pub fn test_rust_ffi() -> Result<()> {
-//     println!("Running Rust FFI tests in project root: {}", project_root.display());
+pub fn test_rust_ffi() -> Result<()> {
+    println!("--- Starting test_rust_ffi ---");
+    println!("Running Rust FFI tests by calling modular build functions...");
 
-//     let project_root = paths::resolve_project_root()?;
-//     let build_dir = paths::get_build_dir()?; // This is usually where libminizinc_c_wrapper.so is built
+    let build_dir = paths::get_build_dir()?;
+    let project_root = paths::resolve_project_root()?;
 
-//     let lib_path = build_dir.join("libminizinc_c_wrapper.so"); // Assuming this is the correct name and location
+    println!("Project Root: {}", project_root.display());
+    println!("Build Dir: {}", build_dir.display());
 
-//     // Set RUSTFLAGS to include the rpath
-//     // let rpath_arg = format!("-C link-arg=-Wl,-rpath,{}", lib_path.parent().unwrap().to_string_lossy());
-//     // env::set_var("RUSTFLAGS", rpath_arg);
+    // Test ensure_build_directory_exists
+    println!("\n--- Testing ensure_build_directory_exists ---");
+    ensure_build_directory_exists::ensure_build_directory_exists(&build_dir)?;
+    println!("ensure_build_directory_exists test passed.");
 
-//     // Run cargo test for the minizinc_ffi package
-//     let output = subprocess::run_command("cargo", &["test", "--package", "minizinc_ffi"])?;
+    // Test run_cmake_for_ffi
+    println!("\n--- Testing run_cmake_for_ffi ---");
+    run_cmake_for_ffi::run_cmake_for_ffi(&project_root, &build_dir)?;
+    println!("run_cmake_for_ffi test passed.");
 
-//     println!("Stdout: {}", String::from_utf8_lossy(&output.stdout));
-//     println!("Stderr: {}", String::from_utf8_lossy(&output.stderr));
+    // Test run_make_for_ffi (without strace)
+    println!("\n--- Testing run_make_for_ffi (without strace) ---");
+    run_make_for_ffi::run_make_for_ffi(&build_dir, false)?;
+    println!("run_make_for_ffi (without strace) test passed.");
 
-//     if !output.status.success() {
-//         return Err(crate::utils::error::ZosError::CommandFailed {
-//             command: "cargo test --package minizinc_ffi".to_string(),
-//             exit_code: output.status.code(),
-//             stdout: String::from_utf8_lossy(&output.stdout).to_string(),
-//             stderr: String::from_utf8_lossy(&output.stderr).to_string(),
-//         });
-//     }
+    // Test verify_ffi_library_exists
+    println!("\n--- Testing verify_ffi_library_exists ---");
+    verify_ffi_library_exists::verify_ffi_library_exists(&build_dir)?;
+    println!("verify_ffi_library_exists test passed.");
 
-//     println!("Rust FFI tests completed successfully.");
-//     Ok(())
-// }
+    // Test run_make_for_ffi (with strace)
+    println!("\n--- Testing run_make_for_ffi (with strace) ---");
+    run_make_for_ffi::run_make_for_ffi(&build_dir, true)?;
+    println!("run_make_for_ffi (with strace) test passed. Check make_strace.log in build dir.");
+
+    println!("\n--- All Rust FFI modular tests completed successfully. ---");
+    Ok(())
+}

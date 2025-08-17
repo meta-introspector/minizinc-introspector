@@ -1,0 +1,9 @@
+raw_strings = [
+    "MSG_BUILDING_ALL_COMPONENTS",
+    "MSG_ALL_COMPONENTS_BUILT_SUCCESSFULLY",
+    "MSG_NO_BUILD_COMMAND_PROVIDED",
+    "Building Gecode...",
+    "-p",
+    "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
+    "Gecode built successfully."
+];

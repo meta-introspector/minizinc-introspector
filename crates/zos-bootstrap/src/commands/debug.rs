@@ -40,7 +40,8 @@ pub fn handle_debug_command(args: DebugArgs) -> Result<()> {
 fn reproduce_crash() -> Result<()> {
     println!("Attempting to reproduce MiniZinc FFI crash...");
     let project_root = paths::resolve_project_root()?;
-    let _build_dir = paths::get_build_dir()?;
+    let build_dir = paths::get_build_dir()?; // Removed _ prefix
+    println!("build_dir: {}", build_dir.display()); // Added println!
 
     let mut env_vars: Vec<(String, String)> = Vec::new();
     env_vars.push(("LD_LIBRARY_PATH".to_string(), format!("{}/tools/minizinc_c_wrapper/:{}/install/lib/", project_root.to_string_lossy(), project_root.to_string_lossy())));
@@ -60,7 +61,8 @@ fn reproduce_crash() -> Result<()> {
 fn reproduce_ffi_bug() -> Result<()> {
     println!("Attempting to reproduce specific FFI bug...");
     let project_root = paths::resolve_project_root()?;
-    let build_dir = paths::get_build_dir()?;
+    let build_dir = paths::get_build_dir()?; // Removed _ prefix
+    println!("build_dir: {}", build_dir.display()); // Added println!
 
     let mut env_vars: Vec<(String, String)> = Vec::new();
     env_vars.push(("LD_LIBRARY_PATH".to_string(), format!("{}/tools/minizinc_c_wrapper/:{}/install/lib/", project_root.to_string_lossy(), project_root.to_string_lossy())));

@@ -2,6 +2,7 @@ use clap::{Args, Subcommand};
 use crate::utils::error::Result;
 use crate::utils::subprocess;
 use crate::utils::paths;
+use crate::constants;
 
 #[derive(Args, Clone)]
 pub struct BuildArgs {
@@ -34,14 +35,14 @@ pub enum BuildCommands {
 pub fn handle_build_command(args: BuildArgs) -> Result<()> {
     match args.command {
         Some(BuildCommands::All {}) => {
-            println!("Building all core components...");
+            println!("{}", constants::MSG_BUILDING_ALL_COMPONENTS);
             build_gecode()?;
             build_libminizinc()?;
             build_ffi_declarations()?;
             build_ffi_wrapper(args.strace)?;
             build_rust_ffi_crate()?;
             build_solvers()?;
-            println!("All core components built successfully.");
+            println!("{}", constants::MSG_ALL_COMPONENTS_BUILT_SUCCESSFULLY);
         }
         Some(BuildCommands::Gecode {}) => {
             build_gecode()?;
@@ -65,7 +66,7 @@ pub fn handle_build_command(args: BuildArgs) -> Result<()> {
             build_coverage()?;
         }
         None => {
-            println!("No build command provided. Use --help for more information.");
+            println!("{}", constants::MSG_NO_BUILD_COMMAND_PROVIDED);
         }
     }
     Ok(())
@@ -146,49 +147,50 @@ fn build_ffi_wrapper(strace_enabled: bool) -> Result<()> {
 }
 
 fn build_rust_ffi_crate() -> Result<()> {
-    println!("Building Rust FFI crate...");
-    let _minizinc_ffi_crate_dir = paths::get_minizinc_ffi_crate_dir()?;
-    subprocess::run_command("cargo", &["build", "--release"])?;
-    println!("Rust FFI crate built successfully.");
+    println!("{}", constants::MSG_BUILDING_RUST_FFI_CRATE);
+    let minizinc_ffi_crate_dir = paths::get_minizinc_ffi_crate_dir()?;
+    println!("{}", format!(constants::MSG_MINIZINC_FFI_CRATE_DIR, minizinc_ffi_crate_dir.display()));
+    subprocess::run_command(constants::CMD_CARGO, &[constants::ARG_BUILD, constants::ARG_RELEASE])?;
+    println!("{}", constants::MSG_RUST_FFI_CRATE_BUILT_SUCCESSFULLY);
     Ok(())
 }
 
 fn build_ffi_declarations() -> Result<()> {
-    println!("Generating FFI header declarations...");
+    println!("{}", constants::MSG_GENERATING_FFI_HEADERS);
     let project_root = paths::resolve_project_root()?;
-    let script_path = project_root.join("generate_ffi_declarations.sh");
+    let script_path = project_root.join(constants::SCRIPT_GENERATE_FFI_DECLARATIONS);
     subprocess::run_command(&script_path.to_string_lossy(), &[]).map(|_| ())?;
-    println!("FFI header declarations generated successfully.");
+    println!("{}", constants::MSG_FFI_HEADERS_GENERATED_SUCCESSFULLY);
     Ok(())
 }
 
 fn build_solvers() -> Result<()> {
-    println!("Setting up MiniZinc solver configurations...");
+    println!("{}", constants::MSG_SETTING_UP_SOLVER_CONFIGS);
     let project_root = paths::resolve_project_root()?;
-    let script_path = project_root.join("setup_minizinc_solvers.sh");
+    let script_path = project_root.join(constants::SCRIPT_SETUP_MINIZINC_SOLVERS);
     subprocess::run_command(&script_path.to_string_lossy(), &[]).map(|_| ())?;
-    println!("MiniZinc solver configurations set up successfully.");
+    println!("{}", constants::MSG_SOLVER_CONFIGS_SET_UP_SUCCESSFULLY);
     Ok(())
 }
 
 fn build_coverage() -> Result<()> {
-    println!("Building libminizinc with coverage instrumentation...");
+    println!("{}", constants::MSG_BUILDING_COVERAGE_INSTRUMENTATION);
     let build_dir = paths::get_build_dir()?;
     let project_root = paths::resolve_project_root()?;
 
     let mut args_cmake: Vec<String> = Vec::new();
     args_cmake.push(project_root.to_string_lossy().to_string());
-    args_cmake.push("-DCMAKE_BUILD_TYPE=Debug".to_string());
-    args_cmake.push("-DCMAKE_CXX_FLAGS=\"--coverage\"".to_string());
-    args_cmake.push("-DCMAKE_C_FLAGS=\"--coverage\"".to_string());
+    args_cmake.push(constants::ARG_CMAKE_BUILD_TYPE_DEBUG.to_string());
+    args_cmake.push(constants::ARG_CMAKE_CXX_FLAGS_COVERAGE.to_string());
+    args_cmake.push(constants::ARG_CMAKE_C_FLAGS_COVERAGE.to_string());
     subprocess::run_command("cmake", &args_cmake.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
 
     let mut args_make: Vec<String> = Vec::new();
-    args_make.push("-C".to_string());
+    args_make.push(constants::ARG_MAKE_C.to_string());
     args_make.push(build_dir.to_string_lossy().to_string());
     subprocess::run_command("make", &args_make.iter().map(|s| s.as_str()).collect::<Vec<&str>>())?;
 
-    println!("libminizinc built with coverage instrumentation successfully.");
+    println!("{}", constants::MSG_LIBMINIZINC_BUILT_WITH_COVERAGE);
     Ok(())
 }
 

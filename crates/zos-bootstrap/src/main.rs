@@ -29,6 +29,8 @@ enum Commands {
     Debug(DebugArgs),
     /// Cleans build artifacts
     Clean(CleanArgs),
+    /// Extracts constant strings from the codebase using MiniZinc
+    ExtractConstants {},
     /// Bootstraps the entire ZOS system
     Bootstrap {
         /// The specific bootstrap target (e.g., "zos")
@@ -54,6 +56,9 @@ fn main() -> Result<()> {
         }
         Some(Commands::Clean(args)) => {
             handle_clean_command(args.clone())?;
+        }
+        Some(Commands::ExtractConstants {}) => {
+            handle_extract_constants_command()?;
         }
         Some(Commands::Bootstrap { target }) => {
             if target == "zos" {

@@ -9,7 +9,7 @@ mod test_05_full_lifecycle_no_filepath {
         let model = env.parse_string(model_code);
         assert!(model.is_ok());
         let model_obj = model.unwrap();
-        // println!("Parsed model filename: {}", model_obj.filename()); // Removed filepath usage
+        println!("model_obj filename: {}", model_obj.filename());
         println!("Test 05: Full lifecycle (no filepath) completed.");
         // Model and Env will be dropped here
     }

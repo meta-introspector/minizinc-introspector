@@ -1,0 +1,53 @@
+pub const MSG_MKDIR_STDOUT: &str = "mkdir stdout: {}";
+pub const MSG_MKDIR_STDERR: &str = "mkdir stderr: {}";
+pub const ARG_BUILD: &str = "build";                                                                                                    │
+    pub const ARG_BUILD_C_WRAPPER_ON: &str = "-DBUILD_C_WRAPPER=ON";                                                                        │
+    pub const ARG_CMAKE_BUILD_TYPE_DEBUG: &str = "-DCMAKE_BUILD_TYPE=Debug";                                                                │
+    pub const ARG_CMAKE_CXX_FLAGS_COVERAGE: &str = "-DCMAKE_CXX_FLAGS=\"--coverage\"";                                                      │
+    pub const ARG_CMAKE_C_FLAGS_COVERAGE: &str = "-DCMAKE_C_FLAGS=\"--coverage\"";                                                          │
+    pub const ARG_CMAKE_POLICY_MINIMUM: &str = "-DCMAKE_POLICY_VERSION_MINIMUM=3.5";                                                        │
+    pub const ARG_GECODE_ROOT: &str = "-DGecode_ROOT={}";                                                                                   │
+    pub const ARG_MAKE_C: &str = "-C";                                                                                                      │
+    pub const ARG_MKDIR_P: &str = "-p";                                                                                                     │
+    pub const ARG_RELEASE: &str = "--release";                                                                                              │
+    pub const ASSERT_BUILD_DIR_EXISTS_FAILED: &str = "Pre-condition failed: build_dir does not exist after mkdir.";                         │
+    pub const ASSERT_LIB_NOT_FOUND: &str = "Post-condition failed: libminizinc_c_wrapper.so not found after build.";                        │
+    pub const CMD_CARGO: &str = "cargo";                                                                                                    │
+    pub const LIB_MINIZINC_C_WRAPPER_SO: &str = "libminizinc_c_wrapper.so";                                                                 │
+    pub const MSG_ALL_COMPONENTS_BUILT_SUCCESSFULLY: &str = "All core components built successfully.";                                      │
+    pub const MSG_BUILDING_COVERAGE_INSTRUMENTATION: &str = "Building libminizinc with coverage instrumentation...";                        │
+    pub const MSG_BUILDING_FFI_WRAPPER: &str = "Building C++ FFI wrapper...";                                                               │
+    pub const MSG_BUILDING_GECODE: &str = "Building Gecode...";                                                                             │
+    pub const MSG_BUILDING_LIBMINIZINC: &str = "Building libminizinc...";                                                                   │
+    pub const MSG_BUILDING_RUST_FFI_CRATE: &str = "Building Rust FFI crate...";                                                             │
+    pub const MSG_BUILD_DIR: &str = "Build Dir: {}";                                                                                        │
+    pub const MSG_CHECKING_LIBRARY_AT: &str = "Checking for library at: {}";                                                                │
+    pub const MSG_CMAKE_COMMAND: &str = "cmake command: cmake {} in dir {}";                                                                │
+    pub const MSG_CMAKE_COMMAND_EXECUTED: &str = "cmake command executed.";                                                                 │
+    pub const MSG_ENSURING_BUILD_DIR_EXISTS: &str = "Ensuring build_dir exists...";                                                         │
+    pub const MSG_FFI_HEADERS_GENERATED_SUCCESSFULLY: &str = "FFI header declarations generated successfully.";                             │
+    pub const MSG_FFI_WRAPPER_BUILT_SUCCESSFULLY: &str = "C++ FFI wrapper built successfully.";                                             │
+    pub const MSG_FINISHED_BUILD_FFI_WRAPPER: &str = "--- Finished build_ffi_wrapper ---";                                                  │
+    pub const MSG_GECODE_BUILT_SUCCESSFULLY: &str = "Gecode built successfully.";                                                           │
+    pub const MSG_GENERATING_FFI_HEADERS: &str = "Generating FFI header declarations...";                                                   │
+    pub const MSG_LIBMINIZINC_BUILT_SUCCESSFULLY: &str = "libminizinc built successfully.";                                                 │
+    pub const MSG_LIBMINIZINC_BUILT_WITH_COVERAGE: &str = "libminizinc built with coverage instrumentation successfully.";                  │
+    pub const MSG_MAKE_COMMAND: &str = "make command: make {} in dir {}";                                                                   │
+    pub const MSG_MAKE_COMMAND_EXECUTED: &str = "make command executed.";                                                                   │
+    pub const MSG_MINIZINC_FFI_CRATE_DIR: &str = "minizinc_ffi_crate_dir: {}";                                                              │
+    pub const MSG_MKDIR_COMMAND_EXECUTED: &str = "mkdir command executed.";                                                                 │
+    pub const MSG_NO_BUILD_COMMAND_PROVIDED: &str = "No build command provided. Use --help for more information.";                          │
+    pub const MSG_POST_CONDITION_MET_LIB_FOUND: &str = "Post-condition met: libminizinc_c_wrapper.so found.";                               │
+    pub const MSG_PRE_CONDITION_MET_BUILD_DIR_EXISTS: &str = "Pre-condition met: build_dir exists.";                                        │
+    pub const MSG_PROJECT_ROOT: &str = "Project Root: {}";                                                                                  │
+    pub const MSG_RUNNING_CMAKE: &str = "Running cmake...";                                                                                 │
+    pub const MSG_RUNNING_MAKE: &str = "Running make command...";                                                                           │
+    pub const MSG_RUST_FFI_CRATE_BUILT_SUCCESSFULLY: &str = "Rust FFI crate built successfully.";                                           │
+    pub const MSG_SETTING_UP_SOLVER_CONFIGS: &str = "Setting up MiniZinc solver configurations...";                                         │
+    pub const MSG_SOLVER_CONFIGS_SET_UP_SUCCESSFULLY: &str = "MiniZinc solver configurations set up successfully.";                         │
+    pub const MSG_STARTING_BUILD_FFI_WRAPPER: &str = "--- Starting build_ffi_wrapper ---";                                                  │
+    pub const SCRIPT_GENERATE_FFI_DECLARATIONS: &str = "generate_ffi_declarations.sh";                                                      │
+    pub const SCRIPT_SETUP_MINIZINC_SOLVERS: &str = "setup_minizinc_solvers.sh";                                                            │
+    pub const TARGET_MINIZINC_C_WRAPPER: &str = "minizinc_c_wrapper";                                                                       │
+
+pub const MSG_BUILDING_ALL_COMPONENTS: &str = "Building all core components...";                                                        │
