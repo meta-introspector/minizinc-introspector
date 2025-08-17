@@ -918,6 +918,7 @@ dependencies = [
  "glob",
  "once_cell",
  "proc-macro2",
+ "quote",
  "syn",
  "thiserror",
  "walkdir",
