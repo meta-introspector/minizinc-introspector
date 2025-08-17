@@ -1,68 +1,18 @@
-use clap::{Parser, Subcommand, Args};
-
-mod utils;
-use crate::utils::error::{Result, ZosError};
-use crate::utils::paths;
-
-mod commands;
-use commands::build::{BuildArgs, handle_build_command};
-use commands::test::{TestArgs, handle_test_command};
-use commands::run::{RunArgs, handle_run_command};
-use commands::debug::{DebugArgs, handle_debug_command};
-use commands::clean::{CleanArgs, handle_clean_command};
-use commands::extract_constants::handle_extract_constants_command;
-use commands::generate_minizinc_params::{GenerateParamsArgs, handle_generate_params_command};
-use commands::generate_constants_file::{GenerateConstantsFileArgs, handle_generate_constants_file_command};
-
-mod code_analysis;
-use code_analysis::constant_analyzer::ConstantAnalyzer;
-mod constants;
-
-#[derive(Parser)]
-#[command(author, version, about, long_about = None)]
-struct Cli {
-    #[command(subcommand)]
-    command: Option<Commands>,
-}
-
-#[derive(Subcommand)]
-enum Commands {
-    /// Builds project components
-    Build(BuildArgs),
-    /// Runs project tests
-    Test(TestArgs),
-    /// Executes MiniZinc models
-    Run(RunArgs),
-    /// Provides debugging utilities
-    Debug(DebugArgs),
-    /// Cleans build artifacts
-    Clean(CleanArgs),
-    /// Extracts constant strings from the codebase using MiniZinc
-    ExtractConstants(ExtractConstantsArgs),
-    /// Generates MiniZinc parameters from extracted constants
-    GenerateParams(GenerateParamsArgs),
-    /// Generates constants.rs file based on MiniZinc proof
-    GenerateConstantsFile(GenerateConstantsFileArgs),
-    /// Analyzes constant usage in the codebase
-    AnalyzeConstants,
-    /// Bootstraps the entire ZOS system
-    Bootstrap {
-        /// The specific bootstrap target (e.g., "zos")
-        target: String,
-    },
-}
-
-#[derive(Args, Clone)]
-pub struct ExtractConstantsArgs {
-    #[arg(long)]
-    pub rust_only: bool,
-    #[arg(long)]
-    pub file_path: Option<String>,
-    #[arg(long)]
-    pub generate_sed_script: bool,
-    #[arg(long)]
-    pub prove_constants_usage: bool,
-}
+use zos_bootstrap::{
+    Cli, Commands,
+    utils::{error::{Result, ZosError}, paths},
+    commands::{build::handle_build_command,
+               test::handle_test_command,
+               run::handle_run_command,
+               debug::handle_debug_command,
+               clean::handle_clean_command,
+               extract_constants::handle_extract_constants_command,
+               generate_minizinc_params::handle_generate_params_command,
+               generate_constants_file::handle_generate_constants_file_command,
+               ast_to_minizinc::handle_ast_to_minizinc_command},
+    code_analysis::constant_analyzer::ConstantAnalyzer,
+};
+use clap::Parser;
 
 fn handle_analyze_constants_command() -> Result<()> {
     println!("Analyzing constant usage...");
@@ -112,13 +62,16 @@ fn main() -> Result<()> {
         Some(Commands::AnalyzeConstants) => {
             handle_analyze_constants_command()?;
         }
+        Some(Commands::AstToMiniZinc(args)) => {
+            handle_ast_to_minizinc_command(args.clone())?;
+        }
         Some(Commands::Bootstrap { target }) => {
             if target == "zos" {
                 println!("Commencing ZOS Bootstrap: Building all core components...");
-                handle_build_command(BuildArgs { command: Some(commands::build::BuildCommands::All {}), strace: false })?;
+                handle_build_command(zos_bootstrap::commands::build::BuildArgs { command: Some(zos_bootstrap::commands::build::BuildCommands::All {}), strace: false })?;
                 println!("ZOS Bootstrap: Core components built successfully.");
                 println!("Commencing ZOS Bootstrap: Running all tests...");
-                handle_test_command(TestArgs { command: Some(commands::test::TestCommands::All {}) })?;
+                handle_test_command(zos_bootstrap::commands::test::TestArgs { command: Some(zos_bootstrap::commands::test::TestCommands::All {}) })?;
                 println!("ZOS Bootstrap: All tests completed successfully.");
                 println!("Commencing ZOS Bootstrap: Running initial embedding model...");
                 // This is a placeholder for running an initial embedding model.

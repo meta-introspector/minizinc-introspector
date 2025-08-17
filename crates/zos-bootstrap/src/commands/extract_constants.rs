@@ -3,10 +3,24 @@ use crate::utils::subprocess;
 use crate::utils::paths;
 use crate::code_analysis::string_extractor::{self, ExtractedString};
 use crate::code_analysis::constant_usage_proof;
-use crate::ExtractConstantsArgs;
-//use std::fs;
+use clap::Args;
+
+#[derive(Args, Clone)]
+pub struct ExtractConstantsArgs {
+    #[arg(long)]
+    pub rust_only: bool,
+    #[arg(long)]
+    pub file_path: Option<String>,
+    #[arg(long)]
+    pub generate_sed_script: bool,
+    #[arg(long)]
+    pub prove_constants_usage: bool,
+}
+
+const BACKSLASH: char = '\\';
 
 pub fn handle_extract_constants_command(args: ExtractConstantsArgs) -> Result<()> {
+
     if args.prove_constants_usage {
         println!("Proving constant usage...");
         let project_root = paths::resolve_project_root()?;
@@ -155,17 +169,16 @@ fn escape_for_sed(s: &str) -> String {
             '{' => escaped_string.push_str("\\{{"), // Handle single brace
             '}' => escaped_string.push_str("\\}}"), // Handle single brace
             '<' => escaped_string.push_str("\\<"),
-            '>' => escaped_string.push_str("\\>"),
-            '|' => escaped_string.push_str("\\|"),
-            '\\' => escaped_string.push_str("\\"),
-            '^' => escaped_string.push_str("\\^"),
-            '.' => escaped_string.push_str("\\."),
-            '*' => escaped_string.push_str("\\*"),
-            '+' => escaped_string.push_str("\\+"),
-            '?' => escaped_string.push_str("\\?"),
-            '\n' => escaped_string.push_str("\\n"),
-            '\r' => escaped_string.push_str("\\r"),
-            '\t' => escaped_string.push_str("\\t"),
+            '>' => escaped_string.push_str(">"),
+            '|' => escaped_string.push_str("|"),
+            '^' => escaped_string.push_str("^"),
+            '.' => escaped_string.push_str("."),
+            '*' => escaped_string.push_str("*"),
+            '+' => escaped_string.push_str("+"),
+            '?' => escaped_string.push_str("?"),
+            '\n' => escaped_string.push_str("\n"),
+            '\r' => escaped_string.push_str("\r"),
+            '\t' => escaped_string.push_str("\t"),
             _ => escaped_string.push(c),
         }
     }

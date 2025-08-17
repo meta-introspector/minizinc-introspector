@@ -1,6 +1,5 @@
 use std::path::PathBuf;
-use crate::ZosError;
-use crate::Result;
+use crate::utils::error::{Result, ZosError};
 
 pub fn resolve_project_root() -> Result<PathBuf> {
     let current_dir = std::env::current_dir()?;

@@ -1,17 +1,15 @@
 use std::{fs, path::Path};
 use syn::{Item, Expr, Stmt};
 use std::collections::HashMap;
-use crate::Result;
+use crate::utils::error::Result;
 use crate::utils::paths;
 
 pub struct ConstantAnalyzer {
-    constant_names: Vec<String>,
     constant_counts: HashMap<String, usize>,
 }
 
 impl ConstantAnalyzer {
     pub fn new() -> Result<Self> {
-        let mut constant_names = Vec::new();
         let mut constant_counts = HashMap::new();
 
         let project_root = paths::resolve_project_root()?;
@@ -19,14 +17,15 @@ impl ConstantAnalyzer {
         let build_constants_path = project_root.join("crates/zos-bootstrap/src/commands/build_constants.rs");
         let constants_path = project_root.join("crates/zos-bootstrap/src/constants.rs");
 
-        Self::extract_constant_names(&build_constants_path, &mut constant_names)?;
-        Self::extract_constant_names(&constants_path, &mut constant_names)?;
+        let mut extracted_names = Vec::new();
+        Self::extract_constant_names(&build_constants_path, &mut extracted_names)?;
+        Self::extract_constant_names(&constants_path, &mut extracted_names)?;
 
-        for name in &constant_names {
+        for name in &extracted_names {
             constant_counts.insert(name.clone(), 0);
         }
 
-        Ok(ConstantAnalyzer { constant_names, constant_counts })
+        Ok(ConstantAnalyzer { constant_counts })
     }
 
     fn extract_constant_names(file_path: &Path, constants: &mut Vec<String>) -> Result<()> {

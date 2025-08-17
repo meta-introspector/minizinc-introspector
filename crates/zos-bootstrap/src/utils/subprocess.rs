@@ -1,5 +1,5 @@
 use std::process::{Command, Output};
-use crate::{Result, ZosError};
+use crate::utils::error::{Result, ZosError};
 use std::path::Path;
 
 pub fn run_command(cmd: &str, args: &[&str]) -> Result<Output> {

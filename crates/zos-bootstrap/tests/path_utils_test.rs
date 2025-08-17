@@ -1,6 +1,6 @@
 
 use zos_bootstrap::utils::paths;
-use zos_bootstrap::ZosError; // Import ZosError if needed for error handling
+use zos_bootstrap::utils::error::ZosError; // Import ZosError if needed for error handling
 
 #[test]
 fn test_get_minizinc_models_dir() -> Result<(), ZosError> {
