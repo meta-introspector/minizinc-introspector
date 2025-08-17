@@ -10,6 +10,8 @@ use commands::run::{RunArgs, handle_run_command};
 use commands::debug::{DebugArgs, handle_debug_command};
 use commands::clean::{CleanArgs, handle_clean_command};
 
+mod code_analysis;
+
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
 struct Cli {

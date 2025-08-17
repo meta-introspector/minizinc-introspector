@@ -890,5 +890,6 @@ dependencies = [
  "chrono",
  "clap",
  "dirs",
+ "proc-macro2",
  "thiserror",
 ]
