@@ -82,3 +82,4 @@ reports/
 temp_minizinc_output/
 test_code.rs
 run1.txt
+*.patch.txt
