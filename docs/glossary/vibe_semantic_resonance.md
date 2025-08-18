@@ -1,0 +1,5 @@
+# Vibe / Semantic Resonance
+
+In this project, "Vibe" and "Semantic Resonance" refer to the intuitive, qualitative aspects of meaning and connection within the codebase and its underlying mathematical structures. These are conceptualized as vectors, vibes, or memes that provide intuitive glyphs for complex mathematical and code structures, bridging formal and intuitive understanding.
+
+In the context of **token/AST regeneration**, the concept of "vibe" or "semantic resonance" can be encoded as constraints within MiniZinc models. For example, a model might be constrained to generate code that has a specific "vibe" (e.g., is concise, elegant, or adheres to a particular design pattern). The MiniZinc solver then finds solutions (regenerated tokens/ASTs) that resonate with these semantic properties, allowing for the generation of code that is not just syntactically correct but also semantically aligned with the project's aesthetic and functional goals.
