@@ -49,7 +49,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Iterate through sorted_words in chunks
     for (chunk_index, chunk) in sorted_words.chunks(chunk_size).enumerate() {
-        let output_dzn_path = PathBuf::from(format!("/data/data/com.termux/files/home/storage/github/libminizinc/word_embeddings_chunk_{}.dzn", chunk_index));
+        let output_dzn_path = PathBuf::from(format!("/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/word_embeddings_chunks/word_embeddings_chunk_{}.dzn", chunk_index));
 
         let mut dzn_content = String::new();
 

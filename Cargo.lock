@@ -261,6 +261,7 @@ dependencies = [
 name = "doc_to_minizinc_data"
 version = "0.1.0"
 dependencies = [
+ "clap",
  "rand",
  "walkdir",
 ]
