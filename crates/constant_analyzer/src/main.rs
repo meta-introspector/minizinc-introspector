@@ -62,26 +62,26 @@ fn clean_name(s: &str) -> String {
     }
 }
 
-fn clean_name2(s: &str) -> String {
-    let mut cleaned = String::new();
-    for c in s.chars() {
-        if c.is_alphanumeric() {
-            cleaned.push(c.to_ascii_lowercase());
-        } else {
-            cleaned.push('_');
-        }
-    }
-    // Remove leading/trailing underscores and replace multiple underscores with a single one
-    let cleaned = cleaned.trim_matches('_').to_string();
-    let cleaned = cleaned.replace("__", "_");
+// fn clean_name2(s: &str) -> String {
+//     let mut cleaned = String::new();
+//     for c in s.chars() {
+//         if c.is_alphanumeric() {
+//             cleaned.push(c.to_ascii_lowercase());
+//         } else {
+//             cleaned.push('_');
+//         }
+//     }
+//     // Remove leading/trailing underscores and replace multiple underscores with a single one
+//     let cleaned = cleaned.trim_matches('_').to_string();
+//     let cleaned = cleaned.replace("__", "_");
 
-    // Ensure it starts with a letter or underscore
-    if cleaned.is_empty() || cleaned.chars().next().unwrap().is_numeric() {
-        format!("_{}", cleaned)
-    } else {
-        cleaned
-    }
-}
+//     // Ensure it starts with a letter or underscore
+//     if cleaned.is_empty() || cleaned.chars().next().unwrap().is_numeric() {
+//         format!("_{}", cleaned)
+//     } else {
+//         cleaned
+//     }
+// }
 
 /// A `syn` visitor to find constant declarations and collect all identifiers.
 struct ConstantVisitor {

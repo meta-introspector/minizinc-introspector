@@ -1,6 +1,8 @@
-use std::{collections::HashMap, fs, io::{//self,
+use std::{collections::HashMap, fs,
+	  //io::{//self,
 					 //BufReader,
-					 BufRead}, path::PathBuf};
+    //BufRead},
+    path::PathBuf};
 use crate::optimized_embeddings::OptimizedEmbeddings;
 
 pub fn parse_optimized_embeddings(path: &PathBuf) -> Result<OptimizedEmbeddings, Box<dyn std::error::Error>> {

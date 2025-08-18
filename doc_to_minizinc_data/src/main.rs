@@ -3,6 +3,8 @@ use walkdir::WalkDir;
 use rand::Rng;
 use clap::Parser;
 
+const WINDOW_SIZE: usize = 5;
+
 fn generate_wordnet_constraints(wordnet_path: &PathBuf) -> Result<String, Box<dyn std::error::Error>> {
     let file = fs::File::open(wordnet_path)?;
     let reader = BufReader::new(file);
@@ -61,6 +63,14 @@ struct Args {
     chunk_size: usize,
 }
 
+fn format_pair(w1:&String, w2:&String) -> String {
+    return format!("\"{}\" \"{}\"", w1, w2)
+}
+
+fn format_triple(w1:&String, w2:&String, w3:&String) -> String {
+    return format!("\"{}\" \"{}\" \"{}\"", w1, w2, w3)
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
     let chunk_size = args.chunk_size;
@@ -75,6 +85,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Generated logical relationships from WordNet: {:?}", logical_relationships_dzn_path);
 
     let mut word_to_embedding: HashMap<String, Vec<f64>> = HashMap::new();
+    let mut bigram_counts: HashMap<(String, String), usize> = HashMap::new();
+    let mut trigram_counts: HashMap<(String, String, String), usize> = HashMap::new();
     let mut rng = rand::thread_rng();
 
     for entry in WalkDir::new(&docs_categorized_dir)
@@ -86,15 +98,35 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             let content = fs::read_to_string(&path)?;
             
             // Simple word extraction: lowercase, filter non-alphabetic, split by whitespace
-            for word in content.to_lowercase().split_whitespace() {
-                let cleaned_word: String = word.chars()
-                    .filter(|c| c.is_alphabetic())
-                    .collect();
-                
-                if !cleaned_word.is_empty() && !word_to_embedding.contains_key(&cleaned_word) {
-                    // Assign a random 8-dimensional vector (simulated embedding)
+            let cleaned_words: Vec<String> = content.to_lowercase().split_whitespace()
+                .filter_map(|word| {
+                    let cleaned_word: String = word.chars()
+                        .filter(|c| c.is_alphabetic())
+                        .collect();
+                    if cleaned_word.is_empty() { None } else { Some(cleaned_word) }
+                })
+                .collect();
+
+            for i in 0..cleaned_words.len() {
+                let word1 = &cleaned_words[i];
+                if !word_to_embedding.contains_key(word1) {
                     let embedding: Vec<f64> = (0..8).map(|_| rng.gen_range(-1.0..1.0)).collect();
-                    word_to_embedding.insert(cleaned_word, embedding);
+                    word_to_embedding.insert(word1.clone(), embedding);
+                }
+
+                // Bigram counting
+                for j in (i + 1)..std::cmp::min(i + WINDOW_SIZE, cleaned_words.len()) {
+                    let word2 = &cleaned_words[j];
+                    *bigram_counts.entry((word1.clone(), word2.clone())).or_insert(0) += 1;
+                }
+
+                // Trigram counting
+                for j in (i + 1)..std::cmp::min(i + WINDOW_SIZE, cleaned_words.len()) {
+                    for k in (j + 1)..std::cmp::min(i + WINDOW_SIZE, cleaned_words.len()) {
+                        let word2 = &cleaned_words[j];
+                        let word3 = &cleaned_words[k];
+                        *trigram_counts.entry((word1.clone(), word2.clone(), word3.clone())).or_insert(0) += 1;
+                    }
                 }
             }
         }
@@ -142,6 +174,49 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         println!("------------------------------------------");
     }
+
+    // Output co-occurrence data
+    let co_occurrence_dzn_path = PathBuf::from("/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/co_occurrence_data.dzn");
+    let mut co_occurrence_dzn_content = String::new();
+
+    // Bigrams
+    co_occurrence_dzn_content.push_str(&format!("num_bigrams = {};\n", bigram_counts.len()));
+    co_occurrence_dzn_content.push_str("bigram_pairs = [|");
+    let bigram_pairs_str = bigram_counts.keys()
+        .map(|(w1, w2)| format_pair( w1, w2))
+        .collect::<Vec<String>>()
+        .join("|, |");
+    co_occurrence_dzn_content.push_str(&bigram_pairs_str);
+    co_occurrence_dzn_content.push_str("|];\n");
+
+    co_occurrence_dzn_content.push_str("bigram_counts = [");
+    let bigram_counts_str = bigram_counts.values()
+        .map(|c| c.to_string())
+        .collect::<Vec<String>>()
+        .join(", ");
+    co_occurrence_dzn_content.push_str(&bigram_counts_str);
+    co_occurrence_dzn_content.push_str("];\n");
+
+    // Trigrams
+    co_occurrence_dzn_content.push_str(&format!("num_trigrams = {};\n", trigram_counts.len()));
+    co_occurrence_dzn_content.push_str("trigram_triples = [|");
+    let trigram_triples_str = trigram_counts.keys()
+        .map(|(w1, w2, w3)| format_triple( w1, w2, w3))
+        .collect::<Vec<String>>()
+        .join("|, |");
+    co_occurrence_dzn_content.push_str(&trigram_triples_str);
+    co_occurrence_dzn_content.push_str("|];\n");
+
+    co_occurrence_dzn_content.push_str("trigram_counts = [");
+    let trigram_counts_str = trigram_counts.values()
+        .map(|c| c.to_string())
+        .collect::<Vec<String>>()
+        .join(", ");
+    co_occurrence_dzn_content.push_str(&trigram_counts_str);
+    co_occurrence_dzn_content.push_str("];\n");
+
+    fs::write(&co_occurrence_dzn_path, co_occurrence_dzn_content)?;
+    println!("Generated co-occurrence data: {:?}", co_occurrence_dzn_path);
 
     Ok(())
 }
