@@ -12,22 +12,33 @@ fn main() {
     let index = Index::new(&clang, false, true);
 
     // Common include paths for MiniZinc
-    let include_paths = [
+    let all_args = [
+        // MiniZinc specific includes
         "-I/data/data/com.termux/files/home/storage/github/libminizinc/include",
-        "-I/data/data/com.termux/files/home/storage/github/libminizinc/lib", // Might contain some headers
+        "-I/data/data/com.termux/files/home/storage/github/libminizinc/lib",
+
+        // System includes from clang++ -E -v
         "-I/data/data/com.termux/files/usr/include/c++/v1",
+        "-I/data/data/com.termux/files/usr/lib/clang/20/include",
+        "-I/data/data/com.termux/files/usr/include/aarch64-linux-android",
         "-I/data/data/com.termux/files/usr/include",
-    ];
+        // Ignoring nonexistent: "-I/data/data/com.termux/files/usr/local/include",
+        // Ignoring nonexistent: "-I/data/data/com.termux/files/include",
 
-    // Common C++ standard and other flags
-    let compiler_args = [
-        "-std=c++17", // Or c++11, c++14, c++20 depending on MiniZinc's codebase
-        "-x", "c++", // Treat input as C++
+        // Compiler arguments from clang++ -E -v
+        "-std=c++17", // Keep this, as it's a common standard
+        "-x", "c++",
+        "-fdeprecated-macro",
+        "-ferror-limit", "19", // Note: this might stop parsing early if too many errors
+        "-fno-signed-char",
+        "-fgnuc-version=4.2.1",
+        "-fskip-odr-check-in-gmf",
+        "-fcxx-exceptions",
+        "-fexceptions",
+        "-target-feature", "+outline-atomics",
+        "-D__GCC_HAVE_DWARF2_CFI_ASM=1",
+        "-Xclang", "-fno-pch-reuse",
     ];
-
-    let mut all_args: Vec<&str> = Vec::new();
-    all_args.extend_from_slice(&include_paths);
-    all_args.extend_from_slice(&compiler_args);
 
     let mut parser = index.parser(cpp_file_path);
     parser.arguments(&all_args);
