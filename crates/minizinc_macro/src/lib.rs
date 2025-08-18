@@ -1,76 +1,104 @@
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
-use syn::{parse_macro_input, ItemFn, Lit, Meta, Ident};
+use syn::{parse_macro_input, ItemFn, Lit, Meta, Ident, parse::{Parse, ParseStream}, Token};
+
+// Define a struct to parse the macro attributes
+struct MiniZincSolveArgs {
+    model_path: String,
+    data_path: String,
+    output_type: String,
+}
+
+impl Parse for MiniZincSolveArgs {
+    fn parse(input: ParseStream) -> syn::Result<Self> {
+        let mut model_path = None;
+        let mut data_path = None;
+        let mut output_type = None;
+
+        // Parse arguments separated by commas
+        while !input.is_empty() {
+            let ident: Ident = input.parse()?;
+            let _eq_token: Token![=] = input.parse()?;
+            let lit: Lit = input.parse()?;
+
+            if ident == "model" {
+                if let Lit::Str(s) = lit {
+                    model_path = Some(s.value());
+                } else {
+                    return Err(input.error("Expected string literal for 'model'"));
+                }
+            } else if ident == "data" {
+                if let Lit::Str(s) = lit {
+                    data_path = Some(s.value());
+                } else {
+                    return Err(input.error("Expected string literal for 'data'"));
+                }
+            } else if ident == "output_type" {
+                if let Lit::Str(s) = lit {
+                    output_type = Some(s.value());
+                } else {
+                    return Err(input.error("Expected string literal for 'output_type'"));
+                }
+            } else {
+                return Err(input.error(format!("Unknown attribute: {}", ident)));
+            }
+
+            if !input.is_empty() {
+                let _comma: Token![,] = input.parse()?;
+            }
+        }
+
+        Ok(MiniZincSolveArgs {
+            model_path: model_path.ok_or_else(|| input.error("Missing 'model' attribute"))?,
+            data_path: data_path.ok_or_else(|| input.error("Missing 'data' attribute"))?,
+            output_type: output_type.ok_or_else(|| input.error("Missing 'output_type' attribute"))?,
+        })
+    }
+}
+
 
 #[proc_macro_attribute]
 pub fn minizinc_solve(attr: TokenStream, item: TokenStream) -> TokenStream {
+    let args = parse_macro_input!(attr as MiniZincSolveArgs);
     let input_fn = parse_macro_input!(item as ItemFn);
 
-    let mut model_path = None;
-    let mut data_path = None;
-    let mut output_type = None;
-
-    // Parse the attribute TokenStream into a Meta
-    let attr_meta = parse_macro_input!(attr as Meta);
-
-    if let Meta::List(meta_list) = attr_meta {
-        // Iterate over the nested attributes
-        for nested_meta in meta_list.nested.into_iter() {
-            if let syn::NestedMeta::Meta(meta) = nested_meta {
-                if let Meta::NameValue(nv) = meta {
-                    if nv.path.is_ident("model") {
-                        // Parse the value TokenStream into a Lit
-                        let lit_str: Lit = parse_macro_input!(nv.value.to_token_stream() as Lit);
-                        if let Lit::Str(lit) = lit_str {
-                            model_path = Some(lit.value());
-                        }
-                    } else if nv.path.is_ident("data") {
-                        let lit_str: Lit = parse_macro_input!(nv.value.to_token_stream() as Lit);
-                        if let Lit::Str(lit) = lit_str {
-                            data_path = Some(lit.value());
-                        }
-                    } else if nv.path.is_ident("output_type") {
-                        let lit_str: Lit = parse_macro_input!(nv.value.to_token_stream() as Lit);
-                        if let Lit::Str(lit) = lit_str {
-                            output_type = Some(lit.value());
-                        }
-                    }
-                }
-            }
-        }
-    } else {
-        panic!("minizinc_solve: Expected a list of attributes (e.g., #[minizinc_solve(model = \"...\")])");
-    }
-
-
-    let model_path = model_path.expect("minizinc_solve: 'model' attribute is required");
-    let data_path = data_path.expect("minizinc_solve: 'data' attribute is required");
-    let output_type_ident = Ident::new(&output_type.expect("minizinc_solve: 'output_type' attribute is required"), proc_macro2::Span::call_site());
+    let model_path = args.model_path;
+    let data_path = args.data_path;
+    let output_type_ident = Ident::new(&args.output_type, proc_macro2::Span::call_site());
 
     let fn_name = &input_fn.sig.ident;
     let fn_vis = &input_fn.vis;
     let fn_args = &input_fn.sig.inputs;
     let fn_output = &input_fn.sig.output;
-    let fn_block = &input_fn.block;
+    // Removed fn_block from here, as we will replace the function body
 
     let expanded = quote! {
         #fn_vis fn #fn_name(#fn_args) #fn_output {
-            // Original function body (if any)
-            #fn_block
+            use std::fs; // Import std::fs in the generated code
 
             // MiniZinc solving logic generated by the macro
-            let mut env = minizinc_ffi::MiniZincEnvironment::new();
-            let model = env.load_model(#model_path).expect("Failed to load MiniZinc model");
-            let data = env.load_data(#data_path).expect("Failed to load MiniZinc data");
+            let mut env = minizinc_ffi::environment::MiniZincEnvironment::new().expect("Failed to create MiniZinc environment");
 
-            let solution = env.solve(&model, &data).expect("Failed to solve MiniZinc model");
+            let model_code = fs::read_to_string(#model_path).expect(&format!("Failed to read model file: {}", #model_path));
+            let model = env.parse_model(&model_code, #model_path).expect("Failed to parse MiniZinc model");
 
-            // Placeholder for parsing the solution
-            // In a real scenario, you would parse 'solution' into #output_type_ident
-            println!("MiniZinc solution: {}", solution);
+            let data_code = fs::read_to_string(#data_path).expect(&format!("Failed to read data file: {}", #data_path));
+            env.parse_data(&model, &data_code, #data_path).expect("Failed to parse MiniZinc data");
 
-            // For now, let's assume output_type_ident is a struct that can be default constructed
-            // or we return a dummy value. This needs proper parsing logic.
+            let solver_instance = env.get_solver_instance();
+
+            // Loop through solutions
+            let mut solution_found = false;
+            while env.solver_instance_next(solver_instance) != 0 {
+                env.solver_instance_print_solution(solver_instance);
+                solution_found = true;
+            }
+
+            if !solution_found {
+                println!("No MiniZinc solution found.");
+            }
+
+            // Return the default instance of the specified output type
             #output_type_ident::default() // This will require output_type_ident to implement Default
         }
     };

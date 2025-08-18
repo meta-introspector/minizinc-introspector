@@ -35,7 +35,7 @@ const char* minizinc_get_version_string();
 const char* model_get_filename(MiniZincModel* model_ptr);
 const char* model_get_filepath(MiniZincModel* model_ptr);
 uint32_t model_get_num_items(MiniZincModel* model_ptr);
-Item* model_get_item_at_index(MiniZincModel* model_ptr, uint32_t index);
+MiniZinc::Item* model_get_item_at_index(MiniZincModel* model_ptr, uint32_t index);
 
 // New function for MiniZincModel documentation comment
 const char* minizinc_model_get_doc_comment(MiniZincModel* model_ptr);
@@ -50,25 +50,25 @@ MiniZinc::SolveI* minizinc_model_get_solve_item(MiniZincModel* model_ptr);
 MiniZinc::OutputI* minizinc_model_get_output_item(MiniZincModel* model_ptr);
 
 // New functions for MiniZincItem inspection
-int item_get_id(Item* item_ptr);
-bool item_is_vardecl(Item* item_ptr);
-MiniZinc::VarDeclI* item_as_vardecl(Item* item_ptr);
+int item_get_id(MiniZinc::Item* item_ptr);
+bool item_is_vardecl(MiniZinc::Item* item_ptr);
+MiniZinc::VarDeclI* item_as_vardecl(MiniZinc::Item* item_ptr);
 
 // New functions for MiniZincItem assignment
-bool item_is_assign(Item* item_ptr);
-MiniZinc::AssignI* item_as_assign(Item* item_ptr);
+bool item_is_assign(MiniZinc::Item* item_ptr);
+MiniZinc::AssignI* item_as_assign(MiniZinc::Item* item_ptr);
 
 // New functions for MiniZincItem constraint
-bool item_is_constraint(Item* item_ptr);
-MiniZinc::ConstraintI* item_as_constraint(Item* item_ptr);
+bool item_is_constraint(MiniZinc::Item* item_ptr);
+MiniZinc::ConstraintI* item_as_constraint(MiniZinc::Item* item_ptr);
 
 // New functions for MiniZincItem include
-bool item_is_include(Item* item_ptr);
-MiniZinc::IncludeI* item_as_include(Item* item_ptr);
+bool item_is_include(MiniZinc::Item* item_ptr);
+MiniZinc::IncludeI* item_as_include(MiniZinc::Item* item_ptr);
 
 // New functions for MiniZincItem function
-bool item_is_function(Item* item_ptr);
-MiniZinc::FunctionI* item_as_function(Item* item_ptr);
+bool item_is_function(MiniZinc::Item* item_ptr);
+MiniZinc::FunctionI* item_as_function(MiniZinc::Item* item_ptr);
 
 // New functions for VarDeclI inspection
 const char* vardecl_get_id(MiniZinc::VarDeclI* vardecl_ptr);
