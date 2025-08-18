@@ -57,7 +57,7 @@ pub fn handle_code_search_command(args: CodeSearchArgs) -> Result<()> {
                 if regex.is_match(line) {
                     // Append to DZN string
                     dzn_output.push_str(&format!(
-                        "  {{ file_path: \"{}\", line_number: {}, line_content: \"{}\" }},
+                        "  (file_path: '{}', line_number: {}, line_content: '{}'),
 ",
                         file_path.display(),
                         line_num + 1,

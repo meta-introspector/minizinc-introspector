@@ -1,0 +1,342 @@
+DEBUG: MiniZinc::Env constructor called.
+DEBUG: MiniZinc::Env constructor called.
+DEBUG: MiniZinc::Env constructor called.
+Entering parse function...
+  Arguments:
+    filenames: ["minizinc_models/search_results_model.mzn", ]
+    datafiles: ["search_results.dzn", ]
+    modelString: ""
+    modelStringName: "stdin"
+    ip (includePaths): ["/data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std", ]
+    globalInc: ["writes.mzn", "write.mzn", "value_precede_chain.mzn", "tree.mzn", "table.mzn", "symmetric_all_different.mzn", "subcircuit.mzn", "strict_lex2.mzn", "subgraph.mzn", "strictly_increasing.mzn", "strictly_decreasing.mzn", "steiner.mzn", "all_equal.mzn", "sliding_sum.mzn", "roots_fn.mzn", "neural_net.mzn", "regular_nfa.mzn", "sum_set.mzn", "range.mzn", "sort_fn.mzn", "var_perm_sym.mzn", "nvalue.mzn", "network_flow.mzn", "maximum.mzn", "link_set_to_booleans.mzn", "lex2_strict.mzn", "span.mzn", "arg_sort.mzn", "lex_chain_greater.mzn", "lex_chain_greatereq_orbitope.mzn", "seq_precede_chain.mzn", "member.mzn", "lex_chain_lesseq_orbitope.mzn", "global_cardinality_closed_fn.mzn", "lex_chain_greatereq.mzn", "alternative.mzn", "disjoint.mzn", "lex_chain_lesseq.mzn", "lex_less.mzn", "lex_lesseq.mzn", "knapsack.mzn", "weighted_spanning_tree.mzn", "inverse_set.mzn", "at_least.mzn", "inverse_fn.mzn", "increasing.mzn", "cost_regular.mzn", "global_cardinality_low_up_closed.mzn", "mdd_nondet.mzn", "element.mzn", "minimum.mzn", "global_cardinality.mzn", "cumulative_opt.mzn", "disjunctive_opt.mzn", "disjunctive.mzn", "lex_chain_less.mzn", "exactly.mzn", "inverse_in_range.mzn", "global_cardinality_fn.mzn", "connected.mzn", "all_different.mzn", "decreasing.mzn", "disjunctive_strict_opt.mzn", "partition_set.mzn", "global_cardinality_closed.mzn", "diffn_k.mzn", "diffn_nonstrict.mzn", "piecewise_linear.mzn", "regular_regexp.mzn", "lex_greater.mzn", "diffn.mzn", "cumulatives.mzn", "lex_greatereq.mzn", "cumulative.mzn", "diffn_nonstrict_k.mzn", "count.mzn", "range_fn.mzn", "bounded_path.mzn", "all_disjoint.mzn", "circuit_opt.mzn", "reachable.mzn", "nvalue_fn.mzn", "inverse.mzn", "dag.mzn", "geost.mzn", "arg_max.mzn", "circuit.mzn", "bin_packing_load_fn.mzn", "mdd.mzn", "all_different_except_0.mzn", "distribute.mzn", "bin_packing_load.mzn", "lex2.mzn", "at_most.mzn", "sort.mzn", "value_precede.mzn", "among_fn.mzn", "cost_mdd.mzn", "sum_pred.mzn", "arg_val.mzn", "disjunctive_strict.mzn", "piecewise_linear_non_continuous.mzn", "bin_packing.mzn", "distribute_fn.mzn", "regular.mzn", "global_cardinality_low_up.mzn", "arg_min.mzn", "bin_packing_capa.mzn", "writes_seq.mzn", "var_sqr_sym.mzn", "count_fn.mzn", "all_different_except.mzn", "roots.mzn", "int_set_channel.mzn", "among.mzn", "at_most1.mzn", ]
+    isFlatZinc: false
+    ignoreStdlib: false
+    parseDocComments: false
+    verbose: false
+DEBUG: [parser.cpp] Entering file processing loop.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_internal.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/output.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/output/array2d_bool.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/output/gantt.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_random.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_debug.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_reflect.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_ite.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_language.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_sort.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_opt.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_ann.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_enum.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_string.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_set.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_logic.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_array.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_coercion.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_math.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/stdlib/stdlib_compare.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/flatzinc_builtins.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/solver_redefinitions.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/table.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_table_int_opt.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_table_int_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_table_int.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_table_bool_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_table_bool.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_array_set_intersect.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_array_set_union.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_array_opt_int_union.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_array_int_union.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/lex_lesseq.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_lesseq_set_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_lesseq_set.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_lesseq_int_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_lesseq_int.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_lesseq_float_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_lesseq_float.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_lesseq_bool_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_lesseq_bool.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/lex_less.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_less_set_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_less_set.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_less_int_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_less_int.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_less_float_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_less_float.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_less_bool_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_lex_less_bool.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_partiality.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_var_set.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_set.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_var_opt_float.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_var_float.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_opt_float.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_float.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_var_opt_bool.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_var_bool.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_opt_bool.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_bool.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_var_opt_int.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_var_int.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_opt_int.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_if_then_else_int.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/count_fn.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/count_lt.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_lt_par_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_lt_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_lt_par.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_lt.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/count_gt.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_gt_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_gt_par_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_gt.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_gt_par.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/count_neq.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_neq_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_neq_par_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_neq.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_neq_par.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/count_leq.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_leq_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_leq_par_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_leq.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_leq_par.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/count_geq.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_geq_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_geq_par_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_geq.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_geq_par.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/count_eq.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_eq_par_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_eq_reif.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_eq_par.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/fzn_count_eq.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/redefinitions-2.7.1.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/redefinitions-2.5.2.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/redefinitions-2.3.3.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/redefinitions-2.2.1.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/redefinitions-2.1.1.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/redefinitions-2.1.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/redefinitions-2.0.2.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/redefinitions-2.0.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/install/share/minizinc/std/redefinitions.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Processing file: /data/data/com.termux/files/home/storage/github/libminizinc/minizinc_models/search_results_model.mzn
+DEBUG: [parser.cpp] Calling mzn_yyparse.
+DEBUG: [parser.cpp] mzn_yyparse returned.
+Caught parsing exception: multiple errors
+search_results.dzn:2.14:
+  { file_path: "/data/data/com.termux/files/home/storage/github/libminizinc/test_code.rs", line_number: 1, line_content: "fn my_example_function(input_param: i32, another_param: &str) -> bool {" }
+             ^
+Error: syntax error, unexpected ':', expecting '}'

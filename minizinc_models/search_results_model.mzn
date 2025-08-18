@@ -1,8 +1,12 @@
 % Define a MiniZinc record for a single search result
+type FilePath = string;
+type LineNumber = int;
+type LineContent = string;
+
 type search_result_t = record (
-    file_path: string,
-  line_number: int,
-  line_content: string
+    file_path: FilePath,
+  line_number: LineNumber,
+  line_content: LineContent
 );
 
 % Declare an array of search_result_t to hold all results

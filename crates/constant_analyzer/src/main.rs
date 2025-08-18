@@ -31,9 +31,9 @@ struct ConstantInfo {
 fn extract_literal_value(lit: &syn::Lit) -> String {
     match lit {
         syn::Lit::Str(lit_str) => format!("{}", lit_str.value()),
-        syn::Lit::ByteStr(lit_byte_str) => format!(b"{{}}", String::from_utf8_lossy(&lit_byte_str.value())),
-        syn::Lit::Byte(lit_byte) => format!(b'{{}}', lit_byte.value()),
-        syn::Lit::Char(lit_char) => format!("'{{}}'", lit_char.value()),
+        syn::Lit::ByteStr(lit_byte_str) => format!("{}", String::from_utf8_lossy(&lit_byte_str.value())),
+        syn::Lit::Byte(lit_byte) => format!("{}", lit_byte.value()),
+        syn::Lit::Char(lit_char) => format!("'{}'", lit_char.value()),
         syn::Lit::Int(lit_int) => lit_int.to_string(),
         syn::Lit::Float(lit_float) => lit_float.to_string(),
         syn::Lit::Bool(lit_bool) => lit_bool.value.to_string(),
@@ -62,7 +62,7 @@ fn clean_name(s: &str) -> String {
     }
 }
 
-fn clean_name(s: &str) -> String {
+fn clean_name2(s: &str) -> String {
     let mut cleaned = String::new();
     for c in s.chars() {
         if c.is_alphanumeric() {
