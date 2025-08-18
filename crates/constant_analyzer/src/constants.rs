@@ -1,8 +1,11 @@
 // crates/constant_analyzer/src/constants.rs
 
 
+#[allow(dead_code)]
 pub const DEFAULT_REPORTS_DIR: &str = "./reports";
+#[allow(dead_code)]
 pub const DEFAULT_REPORT_FILENAME: &str = "constant_analysis_report.txt";
+#[allow(dead_code)]
 pub const NAMING_SOLVER_MODEL_PATH: &str = "naming_solver.mzn";
 use std::path::PathBuf;
 use std::env;

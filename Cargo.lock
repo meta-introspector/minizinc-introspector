@@ -460,6 +460,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "minizinc_macro"
+version = "0.1.0"
+dependencies = [
+ "minizinc_ffi",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "minizinc_macro_test"
+version = "0.1.0"
+dependencies = [
+ "minizinc_ffi",
+ "minizinc_macro",
+]
+
+[[package]]
 name = "num-traits"
 version = "0.2.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"

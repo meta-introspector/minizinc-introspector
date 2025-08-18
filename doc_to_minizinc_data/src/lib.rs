@@ -2,3 +2,8 @@ pub mod cli;
 pub mod word_processing;
 pub mod wordnet_processing;
 pub mod data_generation;
+pub mod logger;
+pub mod word_data;
+pub mod minizinc_writer;
+pub mod minizinc_runner;
+pub mod file_processing;

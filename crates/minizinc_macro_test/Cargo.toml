@@ -1,0 +1,8 @@
+[package]
+name = "minizinc_macro_test"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+minizinc_macro = { path = "../minizinc_macro" }
+minizinc_ffi = { path = "../../tools/minizinc_ffi" }

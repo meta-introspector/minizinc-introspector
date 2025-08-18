@@ -9,6 +9,7 @@ use std::{
 
 #[derive(Debug)]
 pub struct LogicalRelationships {
+    #[allow(dead_code)]
     pub num_relations: usize,
     pub relation_pairs: Vec<(String, String)>,
     pub desired_distances: Vec<f64>,
@@ -41,6 +42,7 @@ pub fn parse_logical_relationships(path: &PathBuf) -> Result<LogicalRelationship
         }
     }
 
+    println!("DEBUG: Parsed LogicalRelationships: num_relations={}", num_relations);
     Ok(LogicalRelationships {
         num_relations,
         relation_pairs,

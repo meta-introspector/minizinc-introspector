@@ -1,5 +1,5 @@
 use clap::Parser;
-use std::{collections::HashMap, fs, io::{self, BufReader, BufRead}, path::PathBuf};
+use std::{collections::HashMap, fs, path::PathBuf};
 use walkdir::WalkDir;
 
 mod optimized_embeddings;
@@ -8,7 +8,7 @@ mod logical_relationships;
 
 use optimized_embeddings::OptimizedEmbeddings;
 use parse_optimized_embeddings::parse_optimized_embeddings;
-use logical_relationships::{LogicalRelationships, parse_logical_relationships};
+use logical_relationships::parse_logical_relationships;
 
 #[derive(Debug)]
 struct CoOccurrenceData {
@@ -119,6 +119,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("  Parsing log file: {:?}", path);
             let path_buf = path.to_path_buf();
             let optimized_embeddings = parse_optimized_embeddings(&path_buf)?;
+            println!("DEBUG: Parsed OptimizedEmbeddings: num_words={}, word_map_len={}, embeddings_len={}", 
+                optimized_embeddings.num_words, 
+                optimized_embeddings.word_map.len(), 
+                optimized_embeddings.embeddings.len()
+            );
             all_optimized_embeddings.insert(path.file_stem().unwrap().to_string_lossy().to_string(), optimized_embeddings);
 
             // Extract loss from the log file

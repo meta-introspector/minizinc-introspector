@@ -21,6 +21,7 @@ mod messages;
 
 /// Struct to hold information about a constant declaration and its usage.
 #[derive(Debug, Clone)]
+#[allow(dead_code)]
 struct ConstantInfo {
     name: String,
     declaration_path: PathBuf,
@@ -173,18 +174,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         std::fs::create_dir_all(path)?;
     }
 
-    let mut naming_request_file_path: Option<PathBuf> = None;
-    // Basic argument parsing for --naming-request-file
-    let mut args_iter = args.iter().skip(1).peekable(); // Skip program name
-    while let Some(arg) = args_iter.next() {
-        if arg == "--naming-request-file" {
-            if let Some(file_path) = args_iter.next() {
-                naming_request_file_path = Some(PathBuf::from(file_path));
-            } else {
-                return Err("Missing path for --naming-request-file".into());
-            }
-        }
-    }
+    // let mut naming_request_file_path: Option<PathBuf> = None;
+    // // Basic argument parsing for --naming-request-file
+    // let mut args_iter = args.iter().skip(1).peekable(); // Skip program name
+    // while let Some(arg) = args_iter.next() {
+    //     if arg == "--naming-request-file" {
+    //         if let Some(file_path) = args_iter.next() {
+    //             naming_request_file_path = Some(PathBuf::from(file_path));
+    //             println!("DEBUG: naming_request_file_path set to: {:?}", naming_request_file_path);
+    //         } else {
+    //             return Err("Missing path for --naming-request-file".into());
+    //         }
+    //     }
+    // }
 
     // --- Phase 1: Code Ingestion and AST Parsing ---
     // Stores all unique constant declarations found across the entire project.
