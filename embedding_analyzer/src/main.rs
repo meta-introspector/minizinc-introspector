@@ -1,5 +1,5 @@
 use clap::Parser;
-use std::{collections::HashMap, fs, path::PathBuf};
+use std::{collections::HashMap, fs, io::{self, BufReader, BufRead}, path::PathBuf};
 use walkdir::WalkDir;
 
 mod optimized_embeddings;
@@ -8,9 +8,73 @@ mod logical_relationships;
 
 use optimized_embeddings::OptimizedEmbeddings;
 use parse_optimized_embeddings::parse_optimized_embeddings;
-use logical_relationships::{
-    //LogicalRelationships,
-    parse_logical_relationships};
+use logical_relationships::{LogicalRelationships, parse_logical_relationships};
+
+#[derive(Debug)]
+struct CoOccurrenceData {
+    num_bigrams: usize,
+    bigram_pairs: Vec<(String, String)>,
+    bigram_counts: Vec<usize>,
+    num_trigrams: usize,
+    trigram_triples: Vec<(String, String, String)>,
+    trigram_counts: Vec<usize>,
+}
+
+fn parse_co_occurrence_data(path: &PathBuf) -> Result<CoOccurrenceData, Box<dyn std::error::Error>> {
+    let content = fs::read_to_string(path)?;
+
+    let mut num_bigrams = 0;
+    let mut bigram_pairs = Vec::new();
+    let mut bigram_counts = Vec::new();
+    let mut num_trigrams = 0;
+    let mut trigram_triples = Vec::new();
+    let mut trigram_counts = Vec::new();
+
+    for line in content.lines() {
+        if line.starts_with("num_bigrams =") {
+            num_bigrams = line.strip_prefix("num_bigrams =").unwrap().trim_end_matches(";").trim().parse()?;
+        } else if line.starts_with("bigram_pairs =") {
+            let pairs_str = line.strip_prefix("bigram_pairs = [").unwrap().trim_end_matches("];").trim();
+            for pair_block in pairs_str.split("|, |") {
+                let cleaned_block = pair_block.trim_start_matches("|").trim_end_matches("|").trim();
+                let parts: Vec<&str> = cleaned_block.split(", ").collect();
+                if parts.len() == 2 {
+                    bigram_pairs.push((parts[0].trim_matches('"').to_string(), parts[1].trim_matches('"').to_string()));
+                }
+            }
+        } else if line.starts_with("bigram_counts =") {
+            let counts_str = line.strip_prefix("bigram_counts = [").unwrap().trim_end_matches("];").trim();
+            for count_str in counts_str.split(", ") {
+                bigram_counts.push(count_str.parse()?);
+            }
+        } else if line.starts_with("num_trigrams =") {
+            num_trigrams = line.strip_prefix("num_trigrams =").unwrap().trim_end_matches(";").trim().parse()?;
+        } else if line.starts_with("trigram_triples =") {
+            let triples_str = line.strip_prefix("trigram_triples = [").unwrap().trim_end_matches("];").trim();
+            for triple_block in triples_str.split("|, |") {
+                let cleaned_block = triple_block.trim_start_matches("|").trim_end_matches("|").trim();
+                let parts: Vec<&str> = cleaned_block.split(", ").collect();
+                if parts.len() == 3 {
+                    trigram_triples.push((parts[0].trim_matches('"').to_string(), parts[1].trim_matches('"').to_string(), parts[2].trim_matches('"').to_string()));
+                }
+            }
+        } else if line.starts_with("trigram_counts =") {
+            let counts_str = line.strip_prefix("trigram_counts = [").unwrap().trim_end_matches("];").trim();
+            for count_str in counts_str.split(", ") {
+                trigram_counts.push(count_str.parse()?);
+            }
+        }
+    }
+
+    Ok(CoOccurrenceData {
+        num_bigrams,
+        bigram_pairs,
+        bigram_counts,
+        num_trigrams,
+        trigram_triples,
+        trigram_counts,
+    })
+}
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -21,6 +85,10 @@ struct Args {
     /// Directory containing the MiniZinc log files with optimized embeddings
     #[arg(long)]
     minizinc_logs_dir: PathBuf,
+
+    /// Path to the co-occurrence data DZN file
+    #[arg(long)]
+    co_occurrence_dzn: PathBuf,
 }
 
 fn euclidean_distance(vec1: &[f64], vec2: &[f64]) -> f64 {
@@ -33,6 +101,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Loading logical relationships from: {:?}", args.logical_relationships_dzn);
     let logical_relationships = parse_logical_relationships(&args.logical_relationships_dzn)?;
     println!("Loaded logical relationships: {:?}", logical_relationships);
+
+    println!("Loading co-occurrence data from: {:?}", args.co_occurrence_dzn);
+    let co_occurrence_data = parse_co_occurrence_data(&args.co_occurrence_dzn)?;
+    println!("Loaded co-occurrence data: Bigrams={}, Trigrams={}", co_occurrence_data.num_bigrams, co_occurrence_data.num_trigrams);
 
     println!("Loading optimized embeddings from logs in: {:?}", args.minizinc_logs_dir);
     let mut all_optimized_embeddings: HashMap<String, OptimizedEmbeddings> = HashMap::new();
@@ -61,6 +133,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     println!("Loaded {} optimized embedding chunks.", all_optimized_embeddings.len());
+
+    // Co-occurrence Report
+    println!("\n--- Co-occurrence Report ---");
+    println!("Top 10 Bigrams:");
+    let mut bigram_indexed_counts: Vec<(usize, &(String, String))> = co_occurrence_data.bigram_counts.iter().zip(co_occurrence_data.bigram_pairs.iter()).map(|(count, pair)| (*count, pair)).collect();
+    bigram_indexed_counts.sort_by(|a, b| b.0.cmp(&a.0));
+    for i in 0..std::cmp::min(10, bigram_indexed_counts.len()) {
+        println!("  \"{}\" \"{}\" (Count: {})", bigram_indexed_counts[i].1.0, bigram_indexed_counts[i].1.1, bigram_indexed_counts[i].0);
+    }
+
+    println!("\nTop 10 Trigrams:");
+    let mut trigram_indexed_counts: Vec<(usize, &(String, String, String))> = co_occurrence_data.trigram_counts.iter().zip(co_occurrence_data.trigram_triples.iter()).map(|(count, triple)| (*count, triple)).collect();
+    trigram_indexed_counts.sort_by(|a, b| b.0.cmp(&a.0));
+    for i in 0..std::cmp::min(10, trigram_indexed_counts.len()) {
+        println!("  \"{}\" \"{}\" \"{}\" (Count: {})", trigram_indexed_counts[i].1.0, trigram_indexed_counts[i].1.1, trigram_indexed_counts[i].1.2, trigram_indexed_counts[i].0);
+    }
+    println!("--------------------------");
 
     // Loss Report
     println!("\n--- Loss Report ---");

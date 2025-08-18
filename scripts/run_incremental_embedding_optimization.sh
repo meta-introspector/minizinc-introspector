@@ -5,6 +5,7 @@ DOC_TO_MINIZINC_DATA_BIN="/data/data/com.termux/files/home/storage/github/libmin
 MINIZINC_BIN="/data/data/com.termux/files/home/storage/github/libminizinc/build/minizinc"
 MINIZINC_MODEL="/data/data/com.termux/files/home/storage/github/libminizinc/word_embedding_inference.mzn"
 LOGICAL_RELATIONSHIPS_DZN="/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/logical_relationships.dzn"
+CO_OCCURRENCE_DZN="/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/co_occurrence_data.dzn"
 OUTPUT_DIR="/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/word_embeddings_chunks"
 TEMP_FIXED_DZN="/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/temp_fixed_embeddings.dzn"
 LOG_DIR="/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/logs"
@@ -30,9 +31,9 @@ do
 
         # Run MiniZinc with the current chunk and fixed embeddings (if any)
         if [ -n "$FIXED_EMBEDDINGS_DZN_PARAM" ]; then
-            "$MINIZINC_BIN" "$MINIZINC_MODEL" "$chunk_file" "$FIXED_EMBEDDINGS_DZN_PARAM" "$LOGICAL_RELATIONSHIPS_DZN" > "$CHUNK_LOG_FILE"
+            "$MINIZINC_BIN" "$MINIZINC_MODEL" "$chunk_file" "$FIXED_EMBEDDINGS_DZN_PARAM" "$LOGICAL_RELATIONSHIPS_DZN" "$CO_OCCURRENCE_DZN" > "$CHUNK_LOG_FILE"
         else
-            "$MINIZINC_BIN" "$MINIZINC_MODEL" "$chunk_file" "$LOGICAL_RELATIONSHIPS_DZN" > "$CHUNK_LOG_FILE"
+            "$MINIZINC_BIN" "$MINIZINC_MODEL" "$chunk_file" "$LOGICAL_RELATIONSHIPS_DZN" "$CO_OCCURRENCE_DZN" > "$CHUNK_LOG_FILE"
         fi
 
         # Extract loss from the log file
