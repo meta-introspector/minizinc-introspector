@@ -14,14 +14,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Define categories based on ZOS primes and project themes
     let categories = vec![
-        DocCategory { prime: 2, theme_name: "Core_Code".to_string(), keywords: vec!["code".to_string(), "coding".to_string(), "rust".to_string(), "binary".to_string(), "computer".to_string(), "logic".to_string()] },
-        DocCategory { prime: 3, theme_name: "Structure_Build".to_string(), keywords: vec!["build".to_string(), "architecture".to_string(), "structure".to_string(), "design".to_string(), "foundation".to_string()] },
-        DocCategory { prime: 5, theme_name: "Organization_Process".to_string(), keywords: vec!["sop".to_string(), "process".to_string(), "methodology".to_string(), "organization".to_string(), "workflow".to_string(), "system".to_string()] },
-        DocCategory { prime: 7, theme_name: "Completion_Goals".to_string(), keywords: vec!["goal".to_string(), "fixed_point".to_string(), "vision".to_string(), "completion".to_string(), "purpose".to_string(), "perfection".to_string()] },
-        DocCategory { prime: 11, theme_name: "Modularity_Design".to_string(), keywords: vec!["module".to_string(), "design".to_string(), "pattern".to_string(), "modularity".to_string(), "component".to_string(), "parts".to_string()] },
-        DocCategory { prime: 13, theme_name: "Integration_Bridging".to_string(), keywords: vec!["ffi".to_string(), "integration".to_string(), "bridge".to_string(), "connection".to_string(), "link".to_string(), "collaboration".to_string()] },
-        DocCategory { prime: 17, theme_name: "Abstraction_Ontology".to_string(), keywords: vec!["ontology".to_string(), "abstract".to_string(), "schema".to_string(), "interface".to_string(), "concept".to_string(), "model".to_string()] },
-        DocCategory { prime: 19, theme_name: "Iteration_Evolution".to_string(), keywords: vec!["iterative".to_string(), "evolution".to_string(), "cycle".to_string(), "refactoring".to_string(), "progress".to_string(), "transform".to_string()] },
+        DocCategory { prime: 1, theme_name: "General_Documentation".to_string(), keywords: vec!["doc".to_string(), "documentation".to_string(), "guide".to_string(), "overview".to_string(), "readme".to_string(), "tutorial".to_string(), "faq".to_string()] },
+        DocCategory { prime: 2, theme_name: "Core_Code".to_string(), keywords: vec!["code".to_string(), "rust".to_string(), "ffi".to_string(), "compiler".to_string(), "llvm".to_string(), "syntax".to_string(), "binary".to_string(), "logic".to_string(), "algorithm".to_string(), "data_structure".to_string()] },
+        DocCategory { prime: 3, theme_name: "Structure_Build".to_string(), keywords: vec!["build".to_string(), "architecture".to_string(), "structure".to_string(), "design".to_string(), "foundation".to_string(), "cmake".to_string(), "cargo".to_string(), "project".to_string()] },
+        DocCategory { prime: 5, theme_name: "Organization_Process".to_string(), keywords: vec!["sop".to_string(), "process".to_string(), "methodology".to_string(), "organization".to_string(), "workflow".to_string(), "system".to_string(), "management".to_string(), "qa".to_string(), "testing".to_string(), "plan".to_string()] },
+        DocCategory { prime: 7, theme_name: "Completion_Goals".to_string(), keywords: vec!["goal".to_string(), "fixed_point".to_string(), "vision".to_string(), "completion".to_string(), "purpose".to_string(), "perfection".to_string(), "roadmap".to_string(), "future".to_string()] },
+        DocCategory { prime: 11, theme_name: "Modularity_Design".to_string(), keywords: vec!["module".to_string(), "design".to_string(), "pattern".to_string(), "modularity".to_string(), "component".to_string(), "parts".to_string(), "crate".to_string(), "library".to_string()] },
+        DocCategory { prime: 13, theme_name: "Integration_Bridging".to_string(), keywords: vec!["ffi".to_string(), "integration".to_string(), "bridge".to_string(), "connection".to_string(), "link".to_string(), "collaboration".to_string(), "api".to_string(), "interface".to_string()] },
+        DocCategory { prime: 17, theme_name: "Abstraction_Ontology".to_string(), keywords: vec!["ontology".to_string(), "abstract".to_string(), "schema".to_string(), "interface".to_string(), "concept".to_string(), "model".to_string(), "theory".to_string(), "philosophy".to_string(), "semantic".to_string()] },
+        DocCategory { prime: 19, theme_name: "Iteration_Evolution".to_string(), keywords: vec!["iterative".to_string(), "evolution".to_string(), "cycle".to_string(), "refactoring".to_string(), "progress".to_string(), "transform".to_string(), "debug".to_string(), "optimize".to_string(), "version".to_string()] },
     ];
 
     fs::create_dir_all(&new_base_dir)?;
