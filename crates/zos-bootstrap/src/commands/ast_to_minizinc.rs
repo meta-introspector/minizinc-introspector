@@ -28,6 +28,11 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
     let output_dir = PathBuf::from(&args.output_dir);
     std::fs::create_dir_all(&output_dir)?;
 
+    let target_index = args.target_index.unwrap_or(1);
+    if target_index == 0 {
+        return Err(crate::utils::error::ZosError::InvalidArgument("target_index must be 1-indexed (i.e., >= 1).".to_string()));
+    }
+
     let mut all_ast_numerical_vectors = Vec::new();
     let mut processed_files_count = 0;
 
@@ -86,7 +91,7 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
             dzn_content.push_str("\n");
         }
     }
-    dzn_content.push_str("];\n");
+    dzn_content.push_str(&format!("];\n\ntarget_index = {};\n", target_index));
 
     std::fs::write(&data_file_path, dzn_content)?;
     println!("Phase 3 Complete: Generated MiniZinc data file: {}", data_file_path.display());
@@ -96,12 +101,12 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
     // This will contain the MiniZinc model for AST analysis/transformation
     std::fs::write(&model_file_path, r###"array[int] of int: ast_elements_numerical;
 int: num_elements = length(ast_elements_numerical);
+int: target_index;
 
 % Define the prime for "modularity"
 int: modularity_prime = 3;
 
-% Target the first element for transformation (MiniZinc arrays are 1-indexed)
-int: target_index = 1;
+% Original target value
 int: original_target_value = ast_elements_numerical[target_index];
 
 % Decision variable for the suggested numerical vector of the target element
@@ -117,7 +122,7 @@ solve minimize abs(original_target_value - suggested_numerical_vector);
 output [
     "suggested_numerical_vector = ", show(suggested_numerical_vector), "\n"
 ];
-"###);
+"###)?;
     println!("Phase 4 Complete: Generated MiniZinc model file: {}", model_file_path.display());
 
     println!("\nPhase 5: Executing MiniZinc...");
