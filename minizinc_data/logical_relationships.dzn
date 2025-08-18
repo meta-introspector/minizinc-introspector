@@ -1,0 +1,5 @@
+num_relations = 3;
+relation_pairs = [|"code", "rust"|
+                  |"documentation", "guide"|
+                  |"build", "design"|];
+desired_distances = [0.1, 0.2, 0.3];

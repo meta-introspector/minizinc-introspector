@@ -11,7 +11,7 @@ use syn::{
     ItemStatic,
 };
 use walkdir::WalkDir;
-use minizinc_ffi::MiniZincEnvironment;
+//use minizinc_ffi::MiniZincEnvironment;
 
 
 mod constants;

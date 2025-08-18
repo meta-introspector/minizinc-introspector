@@ -1,0 +1,19 @@
+word: code
+synonyms: program, software, script
+antonyms: decode, uncode
+
+word: rust
+synonyms: oxidation, corrosion
+antonyms: polish, shine
+
+word: documentation
+synonyms: manual, guide, instructions
+antonyms: obfuscation, mystery
+
+word: build
+synonyms: construct, assemble, create
+antonyms: dismantle, destroy
+
+word: design
+synonyms: plan, blueprint, pattern
+antonyms: chaos, disorder

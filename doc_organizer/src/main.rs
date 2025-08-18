@@ -90,7 +90,7 @@ fn generate_unique_filename(original_path: &PathBuf, new_subdir: &PathBuf, docs_
     let stem = original_path.file_stem().unwrap().to_string_lossy().to_string();
 
     let relative_path = original_path.strip_prefix(docs_dir)?;
-    let mut components: Vec<String> = relative_path.parent().map_or(vec![], |p| {
+    let components: Vec<String> = relative_path.parent().map_or(vec![], |p| {
         p.iter().map(|comp| comp.to_string_lossy().to_string()).collect()
     });
 
