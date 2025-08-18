@@ -22,8 +22,11 @@ pub enum ZosError {
     #[error("Configuration error: {0}")]
     ConfigError(String),
 
-    #[error("MiniZinc FFI error: {0}")]
+        #[error("MiniZinc Ffi error: {0}")]
     MiniZincFfiError(String),
+
+    #[error("Regex error: {0}")]
+    Regex(#[from] regex::Error),
 
     #[error("Unknown error: {0}")]
     Unknown(String),
@@ -58,3 +61,4 @@ impl From<walkdir::Error> for ZosError {
         ZosError::Unknown(format!("Walkdir error: {}", err))
     }
 }
+

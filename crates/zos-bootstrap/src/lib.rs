@@ -34,6 +34,8 @@ pub enum Commands {
     AnalyzeConstants,
     /// Converts Rust AST to MiniZinc model and data
     AstToMiniZinc(commands::ast_to_minizinc::AstToMiniZincArgs),
+    /// Performs systematic code search
+    CodeSearch(commands::code_search::CodeSearchArgs),
     /// Bootstraps the entire ZOS system
     Bootstrap {
         /// The specific bootstrap target (e.g., "zos")
