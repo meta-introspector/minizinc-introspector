@@ -6,5 +6,5 @@ members = [
     "crates/zos-bootstrap",
     "crates/constant_analyzer",
     "crates/constant_analyzer_macros",
-    "crates/minizinc_introspector",
+    "crates/minizinc_introspector", "doc_organizer",
 ]
