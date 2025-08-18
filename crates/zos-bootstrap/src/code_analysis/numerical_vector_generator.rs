@@ -124,8 +124,82 @@ mod tests {
         assert_eq!(compose_numerical_vector(&[13]), 13);
     }
 
+    #[cfg(test)]
+mod tests {
+    use super::*;
+    use std::time::Instant;
+
+    // Helper to reset the PRIME_MAP for isolated test runs
+    fn reset_prime_map() {
+        let mut map = PRIME_MAP.lock().unwrap();
+        map.clear();
+        map.insert("security".to_string(), 2);
+        map.insert("modularity".to_string(), 3);
+        map.insert("authentication".to_string(), 5);
+        map.insert("legacy".to_string(), 7);
+    }
+
+    // --- Step 1: Basic Prime Assignment Tests ---
     #[test]
-    fn test_compose_numerical_vector_overflow() {
+    fn step1_test_01_get_prime_for_vocabulary_initial_map() {
+        let start = Instant::now();
+        reset_prime_map();
+        assert_eq!(get_prime_for_vocabulary("security"), 2);
+        assert_eq!(get_prime_for_vocabulary("modularity"), 3);
+        assert_eq!(get_prime_for_vocabulary("authentication"), 5);
+        assert_eq!(get_prime_for_vocabulary("legacy"), 7);
+        println!("step1_test_01_get_prime_for_vocabulary_initial_map took: {:?}", start.elapsed());
+    }
+
+    #[test]
+    fn step1_test_02_get_prime_for_vocabulary_new_terms() {
+        let start = Instant::now();
+        reset_prime_map();
+        // After 2,3,5,7, the next primes are 11, 13, 17, 19...
+        assert_eq!(get_prime_for_vocabulary("new_term_1"), 11);
+        assert_eq!(get_prime_for_vocabulary("new_term_2"), 13);
+        assert_eq!(get_prime_for_vocabulary("another_term"), 17);
+        println!("step1_test_02_get_prime_for_vocabulary_new_terms took: {:?}", start.elapsed());
+    }
+
+    #[test]
+    fn step1_test_03_get_prime_for_vocabulary_consistency() {
+        let start = Instant::now();
+        reset_prime_map();
+        let p1 = get_prime_for_vocabulary("consistent_term");
+        let p2 = get_prime_for_vocabulary("consistent_term");
+        assert_eq!(p1, p2);
+        assert_eq!(p1, 11); // Should be the first new prime after initial map
+        println!("step1_test_03_get_prime_for_vocabulary_consistency took: {:?}", start.elapsed());
+    }
+
+    // --- Step 2: Basic Vector Composition Tests ---
+    #[test]
+    fn step2_test_01_compose_numerical_vector_basic() {
+        let start = Instant::now();
+        assert_eq!(compose_numerical_vector(&[2, 3, 5]), 30);
+        assert_eq!(compose_numerical_vector(&[7, 11]), 77);
+        println!("step2_test_01_compose_numerical_vector_basic took: {:?}", start.elapsed());
+    }
+
+    #[test]
+    fn step2_test_02_compose_numerical_vector_empty() {
+        let start = Instant::now();
+        assert_eq!(compose_numerical_vector(&[]), 1);
+        println!("step2_test_02_compose_numerical_vector_empty took: {:?}", start.elapsed());
+    }
+
+    #[test]
+    fn step2_test_03_compose_numerical_vector_single_prime() {
+        let start = Instant::now();
+        assert_eq!(compose_numerical_vector(&[13]), 13);
+        println!("step2_test_03_compose_numerical_vector_single_prime took: {:?}", start.elapsed());
+    }
+
+    // --- Step 3: Overflow Handling in Vector Composition Tests ---
+    #[test]
+    fn step3_test_01_compose_numerical_vector_overflow() {
+        let start = Instant::now();
         // This test aims to verify the overflow handling, where u128::MAX is returned.
         // We need a set of primes whose product exceeds u128::MAX.
 
@@ -145,36 +219,15 @@ mod tests {
 
         // This product (2^65 - 2) is much smaller than u128::MAX (2^128 - 1).
         // So, the previous test was failing because it wasn't actually overflowing u128.
-
         // To truly test u128 overflow, we need a product that exceeds u128::MAX.
-        // We can simulate this by creating a vector where the first element is
-        // u128::MAX / 2 + 1 (as u64, if possible) and the second is 2.
-        // However, u128::MAX / 2 + 1 is too large for u64.
-
-        // The simplest way to test the `checked_mul` returning `None` is to provide
-        // a product that *would* overflow. Since `compose_numerical_vector` returns
-        // `u128::MAX` on overflow, we need to ensure that condition is met.
-
-        // Let's create a scenario where the product will definitely overflow u128.
-        // We can use a very large number and multiply it by a prime.
-        // This requires modifying the test to directly pass values that cause overflow.
-        // Since we cannot directly create a u128 literal that overflows, we simulate it.
-        // The `u64::MAX as u128 * 2` was not enough.
-
-        // Let's use a prime that is roughly u128::MAX / 2. This is still too large for u64.
-
         // The most reliable way to test the overflow is to ensure that the `checked_mul`
         // inside `compose_numerical_vector` returns `None`.
         // We can achieve this by providing a list of primes that, when multiplied,
         // will result in a value greater than `u128::MAX`.
 
-        // Let's use a known large prime and multiply it by itself until it overflows.
-        // This will require a loop within the test.
         let mut primes_to_test: Vec<u64> = Vec::new();
         let mut current_val: u128 = 1;
 
-        // Add primes until current_val is close to u128::MAX / 2
-        // This is still a bit heuristic, but better than fixed literals.
         reset_prime_map();
         let mut last_prime = 7; // Start from the last initial prime
         loop {
@@ -184,22 +237,49 @@ mod tests {
                 primes_to_test.push(next_prime);
                 last_prime = next_prime;
             } else {
-                // This means adding next_prime would overflow. We have enough primes.
                 break;
             }
-            // Stop if we have too many primes or current_val is very large
             if primes_to_test.len() > 100 || current_val > u128::MAX / 2 {
                 break;
             }
         }
 
-        // Now, add one more prime that will cause the overflow
         let final_overflow_prime = get_next_prime(last_prime);
         primes_to_test.push(final_overflow_prime);
 
-        // The product of primes_to_test should now overflow u128
         assert_eq!(compose_numerical_vector(&primes_to_test), u128::MAX);
+        println!("step3_test_01_compose_numerical_vector_overflow took: {:?}", start.elapsed());
     }
+
+    // --- Step 4: Prime Generation Performance (for time tracking) ---
+    #[test]
+    fn step4_test_01_prime_generation_sequence() {
+        let start = Instant::now();
+        reset_prime_map();
+        assert_eq!(get_next_prime(7), 11);
+        assert_eq!(get_next_prime(11), 13);
+        assert_eq!(get_next_prime(13), 17);
+        assert_eq!(get_next_prime(17), 19);
+        println!("step4_test_01_prime_generation_sequence took: {:?}", start.elapsed());
+    }
+
+    #[test]
+    fn step4_test_02_prime_generation_from_zero() {
+        let start = Instant::now();
+        assert_eq!(get_next_prime(0), 2);
+        assert_eq!(get_next_prime(1), 2);
+        println!("step4_test_02_prime_generation_from_zero took: {:?}", start.elapsed());
+    }
+
+    #[test]
+    fn step4_test_03_prime_generation_large_number() {
+        let start = Instant::now();
+        // Test that it can find a prime after a relatively large number
+        assert_eq!(get_next_prime(97), 101);
+        assert_eq!(get_next_prime(101), 103);
+        println!("step4_test_03_prime_generation_large_number took: {:?}", start.elapsed());
+    }
+}
 
     #[test]
     fn test_prime_generation_sequence() {

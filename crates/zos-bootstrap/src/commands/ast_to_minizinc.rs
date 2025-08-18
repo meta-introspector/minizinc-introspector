@@ -94,7 +94,7 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
     std::fs::write(&model_file_path, r###"array[int] of int: ast_elements_numerical;
 int: num_elements = length(ast_elements_numerical);
 
-% Define the prime for \"modularity\"
+% Define the prime for "modularity"
 int: modularity_prime = 3;
 
 % Target the first element for transformation (MiniZinc arrays are 1-indexed)
@@ -112,9 +112,9 @@ constraint suggested_numerical_vector mod modularity_prime = 0;
 solve minimize abs(original_target_value - suggested_numerical_vector);
 
 output [
-    \"suggested_numerical_vector = \", show(suggested_numerical_vector), \"\n"
+    "suggested_numerical_vector = ", show(suggested_numerical_vector), "\n"
 ];
-"###)?
+"###);
     println!("Phase 4 Complete: Generated MiniZinc model file: {}", model_file_path.display());
 
     println!("\nPhase 5: Executing MiniZinc...");
