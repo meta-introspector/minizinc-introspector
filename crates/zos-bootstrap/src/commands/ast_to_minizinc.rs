@@ -15,6 +15,9 @@ pub struct AstToMiniZincArgs {
     /// Directory to output the generated MiniZinc model and data files.
     #[arg(long)]
     pub output_dir: String,
+    /// Optional: Index of the AST element to target for transformation (1-indexed).
+    #[arg(long)]
+    pub target_index: Option<usize>,
 }
 
 pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> Result<()> {
