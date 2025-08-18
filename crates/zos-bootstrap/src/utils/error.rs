@@ -56,6 +56,12 @@ impl From<syn::Error> for ZosError {
     }
 }
 
+impl From<Box<dyn std::error::Error>> for ZosError {
+    fn from(err: Box<dyn std::error::Error>) -> Self {
+        ZosError::Unknown(format!("External error: {}", err))
+    }
+}
+
 impl From<walkdir::Error> for ZosError {
     fn from(err: walkdir::Error) -> Self {
         ZosError::Unknown(format!("Walkdir error: {}", err))

@@ -1174,6 +1174,7 @@ dependencies = [
  "chrono",
  "clap",
  "dirs",
+ "doc_to_minizinc_data",
  "glob",
  "once_cell",
  "proc-macro2",

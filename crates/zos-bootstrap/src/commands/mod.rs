@@ -9,3 +9,4 @@ pub mod generate_constants_file;
 pub mod build_constants;
 pub mod ast_to_minizinc;
 pub mod code_search;
+pub mod self_optimize;
