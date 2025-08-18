@@ -31,9 +31,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for entry in WalkDir::new(&docs_dir).into_iter().filter_map(|e| e.ok()) {
         let path = entry.path();
         if path.is_file() && path.extension().map_or(false, |ext| ext == "md") {
-            if !path.starts_with(&new_base_dir) {
-                files_to_process.push(path.to_path_buf());
-            }
+            files_to_process.push(path.to_path_buf());
         }
     }
 
@@ -73,7 +71,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .join(&final_category.theme_name);
         
         fs::create_dir_all(&new_subdir)?;
-        let new_path = new_subdir.join(path.file_name().unwrap());
+        let new_path = generate_unique_filename(&path, &new_subdir, &docs_dir)?;
 
         if path != new_path {
             fs::rename(&path, &new_path)?;
@@ -84,4 +82,43 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     Ok(())
+}
+
+fn generate_unique_filename(original_path: &PathBuf, new_subdir: &PathBuf, docs_dir: &PathBuf) -> Result<PathBuf, Box<dyn std::error::Error>> {
+    let original_filename = original_path.file_name().unwrap().to_string_lossy().to_string();
+    let extension = original_path.extension().map_or("".to_string(), |ext| format!(".{}", ext.to_string_lossy()));
+    let stem = original_path.file_stem().unwrap().to_string_lossy().to_string();
+
+    let relative_path = original_path.strip_prefix(docs_dir)?;
+    let mut components: Vec<String> = relative_path.parent().map_or(vec![], |p| {
+        p.iter().map(|comp| comp.to_string_lossy().to_string()).collect()
+    });
+
+    // Start with the original filename
+    let mut current_filename = original_filename.clone();
+    let mut new_full_path = new_subdir.join(&current_filename);
+
+    // If the file already exists at the target, try to make it unique
+    let mut i = 0;
+    while new_full_path.exists() && original_path != &new_full_path {
+        if i < components.len() {
+            // Prepend parent directory components
+            current_filename = format!("{}_{}", components[components.len() - 1 - i], stem);
+            if !extension.is_empty() {
+                current_filename = format!("{}.{}", current_filename, extension.trim_start_matches('.'));
+            }
+            new_full_path = new_subdir.join(&current_filename);
+            i += 1;
+        } else {
+            // If all parent components are used, append a counter
+            current_filename = format!("{}_{}", stem, i);
+            if !extension.is_empty() {
+                current_filename = format!("{}.{}", current_filename, extension.trim_start_matches('.'));
+            }
+            new_full_path = new_subdir.join(&current_filename);
+            i += 1;
+        }
+    }
+
+    Ok(new_full_path)
 }
