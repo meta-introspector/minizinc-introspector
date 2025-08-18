@@ -251,6 +251,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "doc_organizer"
+version = "0.1.0"
+dependencies = [
+ "walkdir",
+]
+
+[[package]]
 name = "duct"
 version = "0.13.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"

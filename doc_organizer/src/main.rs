@@ -1,8 +1,7 @@
-use std::{fs, path::{Path, PathBuf}};
+use std::{fs, path::PathBuf};
 use walkdir::WalkDir;
-use std::collections::HashMap;
 
-// Define a struct to hold our category mappings
+#[derive(Debug, Clone)] // Added Debug and Clone
 struct DocCategory {
     prime: u32,
     theme_name: String, // Human-readable theme name for directory
@@ -23,18 +22,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         DocCategory { prime: 13, theme_name: "Integration_Bridging".to_string(), keywords: vec!["ffi".to_string(), "integration".to_string(), "bridge".to_string(), "connection".to_string(), "link".to_string(), "collaboration".to_string()] },
         DocCategory { prime: 17, theme_name: "Abstraction_Ontology".to_string(), keywords: vec!["ontology".to_string(), "abstract".to_string(), "schema".to_string(), "interface".to_string(), "concept".to_string(), "model".to_string()] },
         DocCategory { prime: 19, theme_name: "Iteration_Evolution".to_string(), keywords: vec!["iterative".to_string(), "evolution".to_string(), "cycle".to_string(), "refactoring".to_string(), "progress".to_string(), "transform".to_string()] },
-        // Add more categories as needed, or a default one
     ];
 
-    // Create the new base directory if it doesn't exist
     fs::create_dir_all(&new_base_dir)?;
 
-    // Collect all files to process first to avoid issues with modifying directory during iteration
     let mut files_to_process = Vec::new();
     for entry in WalkDir::new(&docs_dir).into_iter().filter_map(|e| e.ok()) {
         let path = entry.path();
         if path.is_file() && path.extension().map_or(false, |ext| ext == "md") {
-            // Exclude files already in the target categorized directory
             if !path.starts_with(&new_base_dir) {
                 files_to_process.push(path.to_path_buf());
             }
@@ -47,7 +42,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let mut assigned_category: Option<&DocCategory> = None;
 
-        // Try to match by filename first
         for category in &categories {
             if category.keywords.iter().any(|k| filename.contains(k)) {
                 assigned_category = Some(category);
@@ -55,7 +49,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
 
-        // If not matched by filename, try to match by content
         if assigned_category.is_none() {
             for category in &categories {
                 if category.keywords.iter().any(|k| file_content.contains(k)) {
@@ -65,11 +58,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
 
-        // Default category if no match found
-        let final_category = assigned_category.unwrap_or(&DocCategory {
-            prime: 0,
-            theme_name: "Uncategorized".to_string(),
-            keywords: vec![], // No keywords for default
+        // Use unwrap_or_else with a closure to create the default category
+        let final_category = assigned_category.cloned().unwrap_or_else(|| {
+            DocCategory {
+                prime: 0,
+                theme_name: "Uncategorized".to_string(),
+                keywords: vec![],
+            }
         });
 
         let new_subdir = new_base_dir
@@ -79,7 +74,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         fs::create_dir_all(&new_subdir)?;
         let new_path = new_subdir.join(path.file_name().unwrap());
 
-        // Only move if the file is not already in the correct new location
         if path != new_path {
             fs::rename(&path, &new_path)?;
             println!("Moved: {:?} to {:?}", path, new_path);
