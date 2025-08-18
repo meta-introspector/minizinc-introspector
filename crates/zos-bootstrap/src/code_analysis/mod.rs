@@ -5,3 +5,5 @@ pub mod constant_analyzer;
 pub mod numerical_vector_generator;
 pub mod ast_to_numerical_vector_converter;
 pub mod numerical_vector_to_llm_instructions;
+pub mod minizinc_model_generator;
+pub mod dzn_data_generator;

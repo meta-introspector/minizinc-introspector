@@ -1,0 +1,18 @@
+--- Step: Parse Rust AST and Generate MiniZinc ---
+  Processing file for AST and Assembly generation: temp_project/src/test_self_optimize.rs
+
+--- Starting AST to MiniZinc Process ---
+Analyzing project: temp_project
+
+Phase 1 & 2: Parsing Rust code to AST and extracting numerical vectors...
+  Processing file (1): temp_project/src/test_self_optimize.rs
+Phase 1 & 2 Complete: Processed 1 files.
+Extracted 10 total AST elements and converted to numerical vectors from the project.
+
+Phase 3: Generating MiniZinc Data (.dzn)...
+Phase 3 Complete: Generated MiniZinc data file: temp_project/minizinc_output/ast_data.dzn
+
+Phase 4: Generating MiniZinc Model (.mzn)...
+Phase 4 Complete: Generated MiniZinc model file: temp_project/minizinc_output/ast_model.mzn
+
+Phase 5: Executing MiniZinc...

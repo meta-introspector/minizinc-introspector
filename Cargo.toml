@@ -12,4 +12,5 @@ members = [
     "doc_organizer",
     "doc_to_minizinc_data",
     "embedding_analyzer",
+    "temp_zos_test",
 ]

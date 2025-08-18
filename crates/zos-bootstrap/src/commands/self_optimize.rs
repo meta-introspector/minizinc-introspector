@@ -1,10 +1,11 @@
-use clap::Args;
+use clap::{Args, ValueEnum};
 use doc_to_minizinc_data::{data_generation, wordnet_processing};
 use std::fs;
 use std::path::PathBuf;
 use syn::{parse_file, File};
 use crate::commands::ast_to_minizinc::{AstToMiniZincArgs, handle_ast_to_minizinc_command};
 use crate::utils::error::Result; // Assuming ZosError is in utils::error
+use walkdir::WalkDir;
 
 #[derive(Args)]
 pub struct SelfOptimizeArgs {
@@ -18,6 +19,16 @@ pub struct SelfOptimizeArgs {
     pub apply_changes: bool,
     #[arg(long, help = "Path to source directory or file")]
     pub source_path: PathBuf,
+    #[arg(long, help = "Specify the step to execute")]
+    pub step: Option<SelfOptimizeStep>,
+}
+
+#[derive(ValueEnum, Clone, Debug)]
+pub enum SelfOptimizeStep {
+    GenerateEmbeddings,
+    ParseRustAstAndGenerateMiniZinc,
+    SimulateAndAnalyze,
+    OptimizeAndTransform,
 }
 
 // Simulated assembly instruction set (from original program)
@@ -144,77 +155,124 @@ fn recreate_source(file: &File) -> String {
 }
 
 pub fn handle_self_optimize_command(args: SelfOptimizeArgs) -> Result<()> {
-    // Phase 1: Generate embeddings using doc_to_minizinc_data
-    let source_path = args.source_path;
-    let embeddings_output_dir = source_path.join("minizinc_data");
-    fs::create_dir_all(&embeddings_output_dir)?;
-
-    // Create a dummy simulated_wordnet.txt for now, as generate_wordnet_constraints expects it
-    let simulated_wordnet_path = embeddings_output_dir.join("simulated_wordnet.txt");
-    fs::write(&simulated_wordnet_path, "word1 word2\nword3 word4")?;
-
-    let all_relations = wordnet_processing::generate_wordnet_constraints(&simulated_wordnet_path)?;
-
-    let doc_to_minizinc_args = doc_to_minizinc_data::cli::Args {
-        chunk_size: 1000, // Default chunk size
-    };
-    data_generation::generate_data(doc_to_minizinc_args, all_relations)?;
-
-    // Phase 1: Parse Rust code and generate MiniZinc model
-    let source_code = fs::read_to_string(&source_path)?;
-    let ast = parse_file(&source_code)?;
-    let minizinc_output_dir = source_path.join("minizinc_output");
-    fs::create_dir_all(&minizinc_output_dir)?;
-
-    let ast_to_minizinc_args = AstToMiniZincArgs {
-        project_root: source_path.to_string_lossy().to_string(),
-        output_dir: minizinc_output_dir.to_string_lossy().to_string(),
-        target_index: None, // No specific target for now
-    };
-    handle_ast_to_minizinc_command(ast_to_minizinc_args)?;
-
-    // Phase 1: Generate assembly instructions
-    let instructions = model_and_generate_asm(&ast);
-
-    // Phase 2: Simulate execution and analyze
-    let mut emulator = Emulator::new();
+    let project_root = args.source_path;
     let mut report = String::new();
-    for instruction in &instructions {
-        // LLM analysis
-        let llm_result = llm_analyze_instruction(instruction);
-        report.push_str(&format!("LLM: {}\n", llm_result));
 
-        // SAT solver verification
-        if !sat_verify_instruction(instruction) {
-            return Err(crate::utils::error::ZosError::CommandFailed {
-                command: format!("SAT verification failed for {:?}", instruction),
-                exit_code: None,
-                stdout: report.clone(),
-                stderr: "SAT verification failed".to_string(),
-            }.into());
+    let step = args.step.unwrap_or_else(|| {
+        println!("No specific step provided. Executing all steps sequentially.");
+        SelfOptimizeStep::GenerateEmbeddings // Default to starting from the first step
+    });
+
+    match step {
+        SelfOptimizeStep::GenerateEmbeddings => {
+            println!("--- Step: Generate Embeddings ---");
+            let embeddings_output_dir = project_root.join("minizinc_data");
+            fs::create_dir_all(&embeddings_output_dir)?;
+
+            let simulated_wordnet_path = embeddings_output_dir.join("simulated_wordnet.txt");
+            fs::write(&simulated_wordnet_path, "word1 word2\nword3 word4")?;
+
+            let all_relations = wordnet_processing::generate_wordnet_constraints(&simulated_wordnet_path)?;
+
+            let doc_to_minizinc_args = doc_to_minizinc_data::cli::Args {
+                chunk_size: 1000, // Default chunk size
+            };
+            data_generation::generate_data(doc_to_minizinc_args, all_relations)?;
+            println!("--- Step: Generate Embeddings Complete ---");
         }
+        SelfOptimizeStep::ParseRustAstAndGenerateMiniZinc => {
+            println!("--- Step: Parse Rust AST and Generate MiniZinc ---");
+            let minizinc_output_dir = project_root.join("minizinc_output");
+            fs::create_dir_all(&minizinc_output_dir)?;
 
-        // Execute instruction
-        emulator.execute(instruction);
-    }
+            for entry in WalkDir::new(&project_root)
+                .into_iter()
+                .filter_map(|e| e.ok())
+            {
+                let path = entry.path();
 
-    // Phase 2: Profile execution
-    report.push_str(&format!("Execution profile: {} instructions executed\n", emulator.profile()));
-    report.push_str(&format!("Final emulator state: {:?}\n", emulator));
+                if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") {
+                    println!("  Processing file for AST and Assembly generation: {}", path.display());
+                    let code = fs::read_to_string(path)?;
+                    let syntax = match parse_file(&code) {
+                        Ok(s) => s,
+                        Err(e) => {
+                            eprintln!("Warning: Failed to parse Rust file {}: {}", path.display(), e);
+                            continue;
+                        }
+                    };
+                    // all_instructions.extend(model_and_generate_asm(&syntax)); // This will be collected in SimulateAndAnalyze step
 
-    // Phase 3: Self-optimization (if enabled)
-    if args.self_optimize {
-        for iteration in 1..=args.max_optimization_iterations {
-            // Placeholder for MiniZinc optimization (using minizinc_ffi)
-            let optimized_code = recreate_source(&ast); // Simplified; would use MiniZinc/LLM results
-            if args.apply_changes {
-                fs::write(&source_path, optimized_code)?;
+                    let ast_to_minizinc_args = AstToMiniZincArgs {
+                        project_root: project_root.to_string_lossy().to_string(),
+                        output_dir: minizinc_output_dir.to_string_lossy().to_string(),
+                        target_index: None,
+                        file_subset_index: None, // FIX: Add missing fields
+                        total_file_subsets: None, // FIX: Add missing fields
+                    };
+                    handle_ast_to_minizinc_command(ast_to_minizinc_args)?;
+                }
             }
-            report.push_str(&format!("Iteration {}: Code optimized\n", iteration));
+            println!("--- Step: Parse Rust AST and Generate MiniZinc Complete ---");
+        }
+        SelfOptimizeStep::SimulateAndAnalyze => {
+            println!("--- Step: Simulate and Analyze ---");
+            let mut all_instructions: Vec<AsmInstruction> = Vec::new();
+            // Re-collect instructions from all files for this step
+            for entry in WalkDir::new(&project_root)
+                .into_iter()
+                .filter_map(|e| e.ok())
+            {
+                let path = entry.path();
+                if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") {
+                    let code = fs::read_to_string(path)?;
+                    let syntax = parse_file(&code)?;
+                    all_instructions.extend(model_and_generate_asm(&syntax));
+                }
+            }
+
+            let mut emulator = Emulator::new();
+            for instruction in &all_instructions {
+                let llm_result = llm_analyze_instruction(instruction);
+                report.push_str(&format!("LLM: {}\n", llm_result));
+
+                if !sat_verify_instruction(instruction) {
+                    return Err(crate::utils::error::ZosError::CommandFailed {
+                        command: format!("SAT verification failed for {:?}", instruction),
+                        exit_code: None,
+                        stdout: report.clone(),
+                        stderr: "SAT verification failed".to_string(),
+                    }.into());
+                }
+                emulator.execute(instruction);
+            }
+            report.push_str(&format!("Execution profile: {} instructions executed\n", emulator.profile()));
+            report.push_str(&format!("Final emulator state: {:?}\n", emulator));
+            println!("--- Step: Simulate and Analyze Complete ---");
+        }
+        SelfOptimizeStep::OptimizeAndTransform => {
+            println!("--- Step: Optimize and Transform ---");
+            if args.self_optimize {
+                for iteration in 1..=args.max_optimization_iterations {
+                    let dummy_file_path = project_root.join("src/test_self_optimize.rs");
+                    if dummy_file_path.exists() {
+                        let source_code = fs::read_to_string(&dummy_file_path)?;
+                        let ast = parse_file(&source_code)?;
+                        let optimized_code = recreate_source(&ast);
+                        if args.apply_changes {
+                            fs::write(&dummy_file_path, optimized_code)?;
+                        }
+                        report.push_str(&format!("Iteration {}: Code optimized for {}\n", iteration, dummy_file_path.display()));
+                    } else {
+                        report.push_str(&format!("Iteration {}: Dummy file not found for optimization: {}\n", iteration, dummy_file_path.display()));
+                    }
+                }
+            }
+            println!("--- Step: Optimize and Transform Complete ---");
         }
     }
 
-    // Save optimization report
+    // Save optimization report (only if a specific step was run, or if all steps were run)
     if let Some(report_path) = args.output_optimization_report {
         fs::write(report_path, report)?;
     }

@@ -1,0 +1,8 @@
+[package]
+name = "temp_zos_test"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+zos-bootstrap = { path = "/data/data/com.termux/files/home/storage/github/libminizinc/crates/zos-bootstrap" }
+clap = { version = "4.0", features = ["derive"] }

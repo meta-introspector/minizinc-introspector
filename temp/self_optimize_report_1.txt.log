@@ -1,0 +1,4 @@
+error: invalid value '1' for '--step <STEP>'
+  [possible values: generate-embeddings, parse-rust-ast-and-generate-mini-zinc, simulate-and-analyze, optimize-and-transform]
+
+For more information, try '--help'.
