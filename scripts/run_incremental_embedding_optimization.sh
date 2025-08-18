@@ -16,7 +16,7 @@ mkdir -p "$LOG_DIR"
 
 echo "Generating word embedding chunks..."
 # Call doc_to_minizinc_data to generate chunks
-"$DOC_TO_MINIZINC_DATA_BIN" --output-dir "$OUTPUT_DIR"
+"$DOC_TO_MINIZINC_DATA_BIN"
 
 # Initialize fixed embeddings (empty for the first iteration)
 FIXED_EMBEDDINGS_DZN_PARAM=""
