@@ -592,20 +592,21 @@ fn run_generate_stopword_report_mode() -> Result<()> {
     let mut stopword_candidates: Vec<(String, f64)> = Vec::new();
     for (word, count) in word_file_counts {
         let percentage = (count as f64 / total_files as f64) * 100.0;
-        if percentage >= 99.0 {
-            stopword_candidates.push((word, percentage));
-        }
+        stopword_candidates.push((word, percentage));
     }
 
     stopword_candidates.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
 
-    println!("\n--- Stopword Candidates (appearing in >= 99% of files) ---");
+    println!("\n--- Stopword Candidates (by percentage of files appeared in) ---");
     if stopword_candidates.is_empty() {
         println!("No stopword candidates found.");
     } else {
-        for (word, percentage) in stopword_candidates {
+        for (word, percentage) in stopword_candidates.iter().take(100) { // Print top 100
             println!("Word: '{}', Appears in: {:.2}% of files", word, percentage);
         }
+        eprintln!("Full stopword report saved to full_stopword_report.json");
+        let serialized_report = serde_json::to_string_pretty(&stopword_candidates)?;
+        fs::write("full_stopword_report.json", serialized_report)?;
     }
 
     Ok(())
