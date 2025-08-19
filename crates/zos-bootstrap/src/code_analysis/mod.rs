@@ -1,8 +1,19 @@
+pub mod ast_to_numerical_vector_converter;
+pub mod constant_analyzer;
+pub mod constant_usage_proof;
+pub mod dzn_data_generator;
+pub mod minizinc_model_generator;
+pub mod minizinc_param_generator;
+pub mod numerical_vector_generator;
+pub mod numerical_vector_to_llm_instructions;
+pub mod string_extractor;
+//pub mod minizinc_model_generator_helpers; // This is a directory
+
 use std::path::{PathBuf, Path};
 use std::fs;
 use std::collections::{HashSet, HashMap};
-use syn::{parse_file, Item};
-use quote::quote; // Often used with syn
+//use syn::{parse_file, Item};
+//use quote::quote; // Often used with syn
 use regex::Regex; // For keyword extraction
 
 pub struct CodeMatch {

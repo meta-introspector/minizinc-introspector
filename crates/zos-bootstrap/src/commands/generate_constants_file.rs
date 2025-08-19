@@ -1,6 +1,8 @@
 use crate::utils::error::Result;
-use crate::code_analysis::string_extractor;
-use crate::code_analysis::minizinc_param_generator;
+//use crate::code_analysis::string_extractor;
+//use crate::code_analysis::minizinc_param_generator;
+use crate::code_analysis::string_extractor::extract_strings_from_file;
+use crate::code_analysis::minizinc_param_generator::generate_minizinc_data_file;
 use crate::utils::paths;
 use crate::utils::subprocess;
 use std::path::PathBuf;
@@ -33,7 +35,7 @@ pub fn handle_generate_constants_file_command(args: GenerateConstantsFileArgs) -
             .unwrap_or("unknown_crate")
             .to_string();
 
-        match string_extractor::extract_strings_from_file(file_path, crate_name) {
+        match extract_strings_from_file(file_path, crate_name) {
             Ok(extracted) => {
                 all_extracted_strings.extend(extracted);
             }
@@ -48,7 +50,7 @@ pub fn handle_generate_constants_file_command(args: GenerateConstantsFileArgs) -
     let output_dir = PathBuf::from(args.output_file.clone()).parent().unwrap().to_path_buf();
     std::fs::create_dir_all(&output_dir)?;
     let data_file = output_dir.join("all_extracted_strings.dzn");
-    minizinc_param_generator::generate_minizinc_data_file(all_extracted_strings, &data_file)?;
+    generate_minizinc_data_file(all_extracted_strings, &data_file)?;
 
     // Execute MiniZinc to select needed constants
     let libminizinc_build_dir = paths::get_build_dir()?;

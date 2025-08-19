@@ -1,8 +1,8 @@
 use crate::utils::error::Result;
 use crate::utils::subprocess;
 use crate::utils::paths;
-use crate::code_analysis::string_extractor::{self, ExtractedString};
-use crate::code_analysis::constant_usage_proof;
+use crate::code_analysis::string_extractor::{self, ExtractedString}; // Corrected import
+use crate::code_analysis::constant_usage_proof; // Corrected import
 use clap::Args;
 
 #[derive(Args, Clone)]
@@ -24,7 +24,7 @@ pub fn handle_extract_constants_command(args: ExtractConstantsArgs) -> Result<()
     if args.prove_constants_usage {
         println!("Proving constant usage...");
         let project_root = paths::resolve_project_root()?;
-        constant_usage_proof::prove_constants_usage_command(&project_root)?;
+        constant_usage_proof::prove_constants_usage_command(&project_root)?; // Corrected function call
         println!("Constant usage proof completed.");
     } else if args.rust_only {
         println!("Extracting constant strings using Rust's syn parser...");
@@ -45,7 +45,7 @@ pub fn handle_extract_constants_command(args: ExtractConstantsArgs) -> Result<()
                 .unwrap_or("unknown_crate")
                 .to_string();
 
-            match string_extractor::extract_strings_from_file(file_path, crate_name) {
+            match string_extractor::extract_strings_from_file(file_path, crate_name) { // Corrected function call
                 Ok(extracted) => {
                     all_extracted_strings.extend(extracted);
                 }
@@ -136,22 +136,26 @@ fn to_upper_snake_case(s: &str) -> String {
                 result.push(c.to_ascii_uppercase());
                 last_char_was_uppercase = false;
                 last_char_was_digit = false;
-            } else if c.is_ascii_digit() {
+            }
+        } else if c.is_ascii_digit() {
                 if !result.is_empty() && !last_char_was_digit {
                     result.push('_');
                 }
                 result.push(c);
                 last_char_was_uppercase = false;
                 last_char_was_digit = true;
-            }
-        } else {
-            if !result.is_empty() && result.chars().last() != Some('_') {
+        }	
+	else {
+	    if !result.is_empty() && result.chars().last() != Some('_') {
                 result.push('_');
             }
             last_char_was_uppercase = false;
             last_char_was_digit = false;
-        }
+	}
     }
+
+
+        
     result.trim_matches('_').to_string()
 }
 
@@ -184,4 +188,3 @@ fn escape_for_sed(s: &str) -> String {
     }
     escaped_string
 }
-

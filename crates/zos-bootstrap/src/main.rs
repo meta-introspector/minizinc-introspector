@@ -78,6 +78,7 @@ fn main() -> Result<()> {
 	&Some(Commands::SelfOptimize(_)) => {
 	    todo!("FIXME")
 	}
+	&Some(Commands::AnalyzeDuplicates(_)) => { todo!() }
         Some(Commands::Bootstrap { target }) => {
             if target == "zos" {
                 println!("Commencing ZOS Bootstrap: Building all core components...");
@@ -97,6 +98,7 @@ fn main() -> Result<()> {
                 return Err(ZosError::InvalidArgument(format!("Unknown bootstrap target: {}. Only 'zos' is supported currently.", target)));
             }
         }
+
         None => {
             println!("No command provided. Use --help for more information.");
         }

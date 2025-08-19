@@ -1,6 +1,11 @@
 use crate::utils::error::Result;
-use crate::code_analysis::string_extractor;
-use crate::code_analysis::minizinc_param_generator;
+//use crate::code_analysis::string_extractor;
+//use crate::code_analysis::minizinc_param_generator;
+use crate::code_analysis::string_extractor::ExtractedString;
+use crate::code_analysis::string_extractor::extract_strings_from_file;
+use crate::code_analysis::minizinc_param_generator::generate_minizinc_data_file;
+use crate::code_analysis::minizinc_param_generator::generate_minizinc_selection_model;
+
 use crate::utils::paths;
 use crate::utils::subprocess;
 use std::path::PathBuf;
@@ -31,7 +36,7 @@ pub fn handle_generate_params_command(args: GenerateParamsArgs) -> Result<()> {
         let content = std::fs::read_to_string(&input_file_path)?;
         for line in content.lines() {
             if !line.trim().is_empty() {
-                all_extracted_strings.push(string_extractor::ExtractedString {
+                all_extracted_strings.push(ExtractedString {
                     crate_name: "manual_input".to_string(),
                     module_path: Vec::new(),
                     function_name: None,
@@ -55,7 +60,7 @@ pub fn handle_generate_params_command(args: GenerateParamsArgs) -> Result<()> {
                 .unwrap_or("unknown_crate")
                 .to_string();
 
-            match string_extractor::extract_strings_from_file(file_path, crate_name) {
+            match extract_strings_from_file(file_path, crate_name) {
                 Ok(extracted) => {
                     all_extracted_strings.extend(extracted);
                 }
@@ -72,11 +77,11 @@ pub fn handle_generate_params_command(args: GenerateParamsArgs) -> Result<()> {
 
     // Generate MiniZinc data file
     let data_file = output_dir.join("extracted_strings.dzn");
-    minizinc_param_generator::generate_minizinc_data_file(all_extracted_strings, &data_file)?;
+    generate_minizinc_data_file(all_extracted_strings, &data_file)?;
 
     // Generate MiniZinc model file
     let model_file = output_dir.join("select_string.mzn");
-    minizinc_param_generator::generate_minizinc_selection_model(&model_file)?;
+    generate_minizinc_selection_model(&model_file)?;
 
     // Execute MiniZinc
     let libminizinc_build_dir = paths::get_build_dir()?;

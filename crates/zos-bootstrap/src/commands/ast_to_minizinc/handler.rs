@@ -3,14 +3,19 @@ use crate::utils::subprocess;
 use std::path::PathBuf;
 use std::time::Instant;
 use clap::Args;
+use crate::code_analysis::ast_to_numerical_vector_converter::convert_ast_to_numerical_vectors;
 use minizinc_ffi::environment::MiniZincEnvironment;
-use crate::code_analysis::ast_to_numerical_vector_converter::{self};
-use crate::code_analysis::numerical_vector_to_llm_instructions;
+use crate::code_analysis::dzn_data_generator;
+use crate::code_analysis::minizinc_model_generator::generate_ast_minizinc_model_string;
+use crate::code_analysis::numerical_vector_to_llm_instructions::interpret_numerical_vector;
+//use crate::code_analysis::ast_to_numerical_vector_converter::{self};
+//use crate::code_analysis::numerical_vector_to_llm_instructions;
+use crate::code_analysis::numerical_vector_to_llm_instructions::generate_llm_instructions;
 use walkdir::WalkDir;
 
 // Import the new generator modules
-use crate::code_analysis::minizinc_model_generator;
-use crate::code_analysis::dzn_data_generator;
+//use crate::code_analysis::minizinc_model_generator;
+//use crate::code_analysis::dzn_data_generator;
 
 // Re-declare AstToMiniZincArgs here, as it will be moved
 #[derive(Args, Clone)]
@@ -120,7 +125,7 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::utils::
             .unwrap_or("unknown_crate")
             .to_string();
 
-        let ast_numerical_vectors_for_file = ast_to_numerical_vector_converter::convert_ast_to_numerical_vectors(&syntax, crate_name);
+        let ast_numerical_vectors_for_file = convert_ast_to_numerical_vectors(&syntax, crate_name);
         all_ast_numerical_vectors.extend(ast_numerical_vectors_for_file);
     }
 
@@ -168,7 +173,7 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::utils::
     let phase4_start_time = Instant::now();
     let model_file_path = output_dir.join("ast_model.mzn");
     // Use the new minizinc_model_generator
-    let model_content = minizinc_model_generator::generate_ast_minizinc_model_string(
+    let model_content = generate_ast_minizinc_model_string(
         &mut env, // Pass the environment
         &all_ast_numerical_vectors,
         target_index,
@@ -234,8 +239,8 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::utils::
         println!("-----------------------------------");
 
         println!("\nPhase 7: Interpreting Solver Output and Generating LLM Instructions...");
-        let interpreted_concepts = numerical_vector_to_llm_instructions::interpret_numerical_vector(parsed_results.suggested_numerical_vector);
-        let llm_instructions = numerical_vector_to_llm_instructions::generate_llm_instructions(interpreted_concepts);
+        let interpreted_concepts = interpret_numerical_vector(parsed_results.suggested_numerical_vector);
+        let llm_instructions = generate_llm_instructions(interpreted_concepts);
         println!("Phase 7 Complete: LLM Instructions ---");
         println!("{}", llm_instructions);
         println!("------------------------");
