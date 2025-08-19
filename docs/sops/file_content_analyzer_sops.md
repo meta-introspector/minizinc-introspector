@@ -12,7 +12,7 @@ The `file_content_analyzer` is a powerful Rust program designed to:
 *   **Generate Code Metrics**: For each Rust file, it calculates word counts and creates a "bag of words" (a frequency map of all words).
 *   **Smart Caching**: It intelligently caches analysis results per project, allowing for fast resumption and only re-processing changed files.
 *   **Find Similarities**: It can identify crates that are structurally or semantically similar to each other based on their code content.
-*   **Build a Term Index**: It creates an index of keywords and the crates they appear in, enabling fast keyword searches.
+*   **Build a Term Index (Reverse Index)**: It creates an index of keywords and the crates/files they appear in, enabling fast keyword searches.
 *   **Identify Stopwords**: It can help you find common words that appear in almost all files, which might be useful to filter out for better search results.
 
 ## 3. Prerequisites

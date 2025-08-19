@@ -1,6 +1,6 @@
 use walkdir::WalkDir;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use serde::{Serialize, Deserialize};
 use std::collections::{HashMap, HashSet};
 use regex::Regex;
@@ -13,7 +13,7 @@ use anyhow::Result;
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// Mode of operation: 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', or 'generate_stopword_report'
+    /// Mode of operation: 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', 'generate_stopword_report', or 'build_hierarchical_index'
     #[arg(short, long, default_value = "full_analysis")]
     mode: String,
 
@@ -28,6 +28,10 @@ struct Args {
     /// Keywords to search for (used with --mode search_keywords)
     #[arg(long, value_delimiter = ' ')]
     keywords: Vec<String>,
+
+    /// Optional path to search within (used with --mode search_keywords)
+    #[arg(long)]
+    search_path: Option<PathBuf>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -502,39 +506,49 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
     Ok(())
 }
 
-fn run_search_keywords_mode(keywords: Vec<String>) -> Result<()> {
+fn run_search_keywords_mode(keywords: Vec<String>, search_path: Option<PathBuf>) -> Result<()> {
     let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
-    let term_index_file = search_root.join("term_index.json");
+    let hierarchical_term_index_file = search_root.join("hierarchical_term_index.json");
 
-    eprintln!("Loading term index from {:?}", term_index_file);
-    let cached_data = fs::read_to_string(&term_index_file)?;
-    let term_index: HashMap<String, HashSet<String>> = serde_json::from_str(&cached_data)?;
+    eprintln!("Loading hierarchical term index from {:?}", hierarchical_term_index_file);
+    let cached_data = fs::read_to_string(&hierarchical_term_index_file)?;
+    let hierarchical_term_index: HashMap<String, HashSet<PathBuf>> = serde_json::from_str(&cached_data)?;
 
     if keywords.is_empty() {
         eprintln!("No keywords provided for search.");
-        return Ok(())
+        return Ok!(());
     }
 
-    let mut matching_crates: HashMap<String, usize> = HashMap::new(); // Crate name -> count of matching keywords
+    let mut matching_files: HashMap<PathBuf, usize> = HashMap::new(); // File path -> count of matching keywords
 
     eprintln!("Searching for keywords: {:?}", keywords);
     for keyword in &keywords {
-        if let Some(crates) = term_index.get(&keyword.to_lowercase()) {
-            for crate_name in crates {
-                *matching_crates.entry(crate_name.clone()).or_insert(0) += 1;
+        if let Some(files) = hierarchical_term_index.get(&keyword.to_lowercase()) {
+            for file_path in files {
+                // Filter by search_path if provided
+                if let Some(ref path_filter) = search_path {
+                    if !file_path.starts_with(path_filter) {
+                        continue;
+                    }
+                }
+                *matching_files.entry(file_path.clone()).or_insert(0) += 1;
             }
         }
     }
 
-    let mut sorted_results: Vec<(String, usize)> = matching_crates.into_iter().collect();
+    let mut sorted_results: Vec<(PathBuf, usize)> = matching_files.into_iter().collect();
     sorted_results.sort_by(|a, b| b.1.cmp(&a.1));
 
     println!("\n--- Search Results for Keywords {:?} ---", keywords);
+    if let Some(path_filter) = search_path {
+        println!("  (Filtered by path: {:?})", path_filter);
+    }
+
     if sorted_results.is_empty() {
-        println!("No crates found matching the provided keywords.");
+        println!("No files found matching the provided keywords.");
     } else {
-        for (crate_name, match_count) in sorted_results {
-            println!("Crate: {}, Matching Keywords: {}", crate_name, match_count);
+        for (file_path, match_count) in sorted_results {
+            println!("File: {:?}, Matching Keywords: {}", file_path, match_count);
         }
     }
 
@@ -644,8 +658,9 @@ fn main() -> Result<()> {
         "read_cargo_toml" => run_read_cargo_toml_mode(),
         "crate_similarity" => run_crate_similarity_analysis(args.target_crate, args.most_similar),
         "migrate_cache" => run_migrate_cache_mode(),
-        "search_keywords" => run_search_keywords_mode(args.keywords),
+        "search_keywords" => run_search_keywords_mode(args.keywords, args.search_path),
         "generate_stopword_report" => run_generate_stopword_report_mode(),
-        _ => Err(anyhow::anyhow!("Invalid mode specified. Use 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', or 'generate_stopword_report'.")),
+        "build_hierarchical_index" => run_build_hierarchical_index_mode(),
+        _ => Err(anyhow::anyhow!("Invalid mode specified. Use 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', 'generate_stopword_report', or 'build_hierarchical_index'.")),
     }
 }
