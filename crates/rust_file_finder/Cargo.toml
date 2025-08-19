@@ -1,5 +1,5 @@
 [package]
-name = "rust_file_finder"
+name = "file_content_analyzer"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,3 +7,8 @@ edition = "2021"
 walkdir = "2.3"
 toml = "0.7"
 serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+regex = "1.5"
+clap = { version = "4.0", features = ["derive"] }
+syn = { version = "2.0", features = ["full"] }
+quote = "1.0"

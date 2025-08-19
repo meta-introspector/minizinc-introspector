@@ -301,6 +301,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "877a4ace8713b0bcf2a4e7eec82529c029f1d0619886d18145fea96c3ffe5c0f"
 
 [[package]]
+name = "file_content_analyzer"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "quote",
+ "regex",
+ "serde",
+ "serde_json",
+ "syn",
+ "toml",
+ "walkdir",
+]
+
+[[package]]
 name = "getrandom"
 version = "0.2.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -645,15 +659,6 @@ name = "regex-syntax"
 version = "0.8.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b15c43186be67a4fd63bee50d0303afffcef381492ebe2c5d87f324e1b8815c"
-
-[[package]]
-name = "rust_file_finder"
-version = "0.1.0"
-dependencies = [
- "serde",
- "toml",
- "walkdir",
-]
 
 [[package]]
 name = "rust_lattice_project"
