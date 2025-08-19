@@ -1,4 +1,5 @@
 use clap::{Parser, Subcommand};
+use std::path::PathBuf; // Add this import
 use crate::commands;
 
 #[derive(Parser)]
@@ -41,4 +42,19 @@ pub enum Commands {
     SelfOptimize(commands::self_optimize::SelfOptimizeArgs),
     /// Tests AST to MiniZinc conversion for a single file
     TestAstToMiniZinc(commands::test_ast_to_minizinc::TestAstToMiniZincArgs),
+    /// Finds duplicate or similar code within the codebase
+    AnalyzeDuplicates(AnalyzeDuplicatesArgs), // New subcommand
+}
+
+#[derive(Parser)]
+pub struct AnalyzeDuplicatesArgs {
+    /// The suggested code to analyze for duplicates (can be a string or a file path)
+    #[arg(long)]
+    pub suggested_code: String,
+    /// The root directory to search for duplicate code
+    #[arg(long)]
+    pub search_path: PathBuf,
+    /// If true, treat suggested_code as a file path, otherwise as a direct string
+    #[arg(long, default_value_t = false)]
+    pub is_file: bool,
 }

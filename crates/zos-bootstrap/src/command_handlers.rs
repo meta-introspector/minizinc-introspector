@@ -2,6 +2,9 @@ use crate::cli::{Cli, Commands};
 use clap::Parser; // Import Parser trait
 use crate::utils::error::{Result, ZosError}; // Assuming ZosError is in utils::error
 use crate::commands;
+use crate::code_analysis; // Import the code_analysis module
+use std::fs; // Import fs for file operations
+use std::path::PathBuf; // Import PathBuf
 
 pub fn handle_command_dispatch() -> Result<()> {
     let cli = Cli::parse();
@@ -28,6 +31,38 @@ pub fn handle_command_dispatch() -> Result<()> {
         },
         Some(Commands::SelfOptimize(args)) => commands::self_optimize::handle_self_optimize_command(args).map_err(|e| ZosError::Unknown(format!("SelfOptimize command failed: {}", e))),
         Some(Commands::TestAstToMiniZinc(args)) => commands::test_ast_to_minizinc::handle_test_ast_to_minizinc_command(args).map_err(|e| ZosError::Unknown(format!("TestAstToMiniZinc command failed: {}", e))),
+        Some(Commands::AnalyzeDuplicates(args)) => {
+            // New match arm for AnalyzeDuplicates
+            let suggested_code_content = if args.is_file {
+                fs::read_to_string(&args.suggested_code)
+                    .map_err(|e| ZosError::Unknown(format!("Failed to read suggested code from file {}: {}", args.suggested_code.display(), e)))
+            ? {
+                args.suggested_code
+            };
+
+            println!("Analyzing for duplicates in: {}", args.search_path.display());
+
+            match code_analysis::find_duplicate_code(&suggested_code_content, &args.search_path) {
+                Ok(matches) => {
+                    if matches.is_empty() {
+                        println!("No similar code found.");
+                    } else {
+                        println!("\nFound similar code matches:");
+                        for (i, m) in matches.iter().enumerate() {
+                            println!("---"Match {}" ---", i + 1);
+                            println!("File: {}", m.file_path.display());
+                            println!("Similarity Score: {:.4}", m.similarity_score);
+                            println!("Code Snippet (first 10 lines):\n{}", m.code_snippet.lines().take(10).collect::<Vec<&str>>().join("\n"));
+                            println!("-----------------\n");
+                        }
+                    }
+                    Ok(())
+                }
+                Err(e) => {
+                    Err(ZosError::Unknown(format!("Code analysis failed: {:?}", e)))
+                }
+            }
+        },
         None => {
             println!("No command provided. Use --help for more information.");
             Ok(())
