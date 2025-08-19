@@ -19,7 +19,7 @@ pub use report_extracted_data::report_extracted_data;
 
 pub fn generate_data(args: Args, all_relations: Vec<(String, String, f64)>) -> Result<(), Box<dyn std::error::Error>> {
     let current_dir = std::env::current_dir()?;
-    let minizinc_data_dir = current_dir.join("minizinc_data");
+    let minizinc_data_dir = current_dir.join("minizinc_data").join("huggingface");
     fs::create_dir_all(&minizinc_data_dir)?;
 
     let log_path = minizinc_data_dir.join("doc_to_minizinc_data.log");
@@ -32,8 +32,13 @@ pub fn generate_data(args: Args, all_relations: Vec<(String, String, f64)>) -> R
 
     // 2. Process files and collect words
     let extensions = ["md", "rs", "cpp", "h", "hpp"];
+    let input_path = if let Some(path) = args.input_path {
+        path
+    } else {
+        current_dir
+    };
     process_files_and_collect_words(
-        &current_dir,
+        &input_path,
         &extensions,
         &mut initialized_data.word_to_id,
         &mut initialized_data.id_to_word,
@@ -55,7 +60,9 @@ pub fn generate_data(args: Args, all_relations: Vec<(String, String, f64)>) -> R
     // 4. Write chunked embeddings to .dzn files
     write_chunked_embeddings_dzn(
         &initialized_data.id_to_word,
+        &initialized_data.word_to_id,
         &initialized_data.embeddings,
+        &all_relations,
         args.chunk_size,
         &minizinc_data_dir,
         &mut logger,

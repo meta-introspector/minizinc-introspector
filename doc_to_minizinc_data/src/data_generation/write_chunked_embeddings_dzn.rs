@@ -3,7 +3,9 @@ use crate::logger::LogWriter;
 
 pub fn write_chunked_embeddings_dzn(
     id_to_word: &Vec<String>,
+    word_to_id: &std::collections::HashMap<String, usize>,
     embeddings: &Vec<Vec<f64>>,
+    all_relations: &Vec<(String, String, f64)>,
     chunk_size: usize,
     minizinc_data_dir: &PathBuf,
     logger: &mut LogWriter,
@@ -40,6 +42,28 @@ pub fn write_chunked_embeddings_dzn(
             }
         }
         dzn_content.push_str("\n]);\n");
+
+        // Filter relations relevant to this chunk and map words to chunk-local IDs
+        let mut chunk_relation_pairs = Vec::new();
+        let mut chunk_desired_distances = Vec::new();
+
+        for (word1_str, word2_str, desired_dist) in all_relations.iter() {
+            if let (Some(&id1_global), Some(&id2_global)) = (word_to_id.get(word1_str), word_to_id.get(word2_str)) {
+                // Check if both words are within the current chunk's global index range
+                if id1_global >= start_index && id1_global < end_index &&
+                   id2_global >= start_index && id2_global < end_index {
+                    // Calculate chunk-local IDs (1-based for MiniZinc)
+                    let id1_local = id1_global - start_index + 1;
+                    let id2_local = id2_global - start_index + 1;
+                    chunk_relation_pairs.push(format!("({},{}", id1_local, id2_local));
+                    chunk_desired_distances.push(desired_dist.to_string());
+                }
+            }
+        }
+
+        dzn_content.push_str(&format!("num_relations = {};\n", chunk_relation_pairs.len()));
+        dzn_content.push_str(&format!("relation_pairs = [{}];\n", chunk_relation_pairs.join(", ")));
+        dzn_content.push_str(&format!("desired_distances = [{}];\n", chunk_desired_distances.join(", ")));
 
         fs::write(&dzn_path, dzn_content)?;
         logger.log(&format!("Generated {}", dzn_path.display()));
