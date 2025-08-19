@@ -1,5 +1,10 @@
 include "globals.mzn";
-include "minizinc_data/data_declarations.mzn";
-include "minizinc_data/co_occurrence_data.dzn";include "minizinc_models/functions.mzn";
+int: num_words;
+array[1..num_words] of string: word_map;
+array[1..num_words, 1..8] of float: embeddings;
+int: num_relations;
+array[1..num_relations] of tuple(int, int): relation_pairs;
+array[1..num_relations] of float: desired_distances;
+include "minizinc_models/functions.mzn";
 include "minizinc_models/constraints.mzn";
 include "minizinc_models/solve_output.mzn";

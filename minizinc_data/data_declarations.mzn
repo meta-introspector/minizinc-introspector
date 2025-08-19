@@ -1,15 +1,51 @@
-% Data declarations for word embeddings, logical relationships, and co-occurrence
-int: num_words;
-array[1..num_words] of string: word_map;
-array[1..num_words, 1..8] of var float: embeddings; % Make embeddings variables to be optimized
-
-int: num_relations;
-array[1..num_relations, 1..2] of string: relation_pairs;
-array[1..num_relations] of float: desired_distances;
-
-int: num_bigrams;
-array[1..num_bigrams, 1..2] of string: bigram_pairs;
-array[1..num_bigrams] of int: bigram_counts;
-int: num_trigrams;
-array[1..num_trigrams, 1..3] of string: trigram_triples;
-array[1..num_trigrams] of int: trigram_counts;
+num_relations = 23;
+relation_pairs = [
+  (86, 1503),
+  (86, 6038),
+  (86, 332),
+  (86, 2978),
+  (554, 943),
+  (554, 120513),
+  (554, 96519),
+  (554, 91163),
+  (22, 2314),
+  (22, 378),
+  (22, 3973),
+  (22, 137940),
+  (22, 104294),
+  (325, 1906),
+  (325, 108941),
+  (325, 194),
+  (325, 121089),
+  (325, 18081),
+  (1967, 608),
+  (1967, 2573),
+  (1967, 1085),
+  (1967, 3030),
+  (1967, 111101)
+];
+desired_distances = [
+  0.01,
+  0.01,
+  0.01,
+  5,
+  0.01,
+  0.01,
+  5,
+  5,
+  0.01,
+  0.01,
+  0.01,
+  5,
+  5,
+  0.01,
+  0.01,
+  0.01,
+  5,
+  5,
+  0.01,
+  0.01,
+  0.01,
+  5,
+  5
+];

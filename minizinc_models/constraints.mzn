@@ -1,7 +1,7 @@
 % Calculate actual distances for the defined relationships
 array[1..num_relations] of var float: actual_distances;
 constraint forall(r in 1..num_relations) (
-    actual_distances[r] = euclidean_distance(get_embedding(relation_pairs[r, 1]), get_embedding(relation_pairs[r, 2]))
+    actual_distances[r] = euclidean_distance(get_embedding(word_map[relation_pairs[r].1]), get_embedding(word_map[relation_pairs[r].2]))
 );
 
 % Define the loss function (Mean Squared Error)

@@ -1,6 +1,9 @@
-## MiniZinc Dry Run Plan
+## MiniZinc Dry Run Plan (Revised)
 
-This document outlines the plan for executing the MiniZinc model for word embedding inference, including estimates for runtime, size, and complexity, without actually running the full solver.
+**Problem Encountered:**
+During the attempt to run MiniZinc for a single chunk, a persistent `Error: type error: undefined identifier 'num_relations'` was encountered, pointing to `data_declarations.mzn`. This error occurs even when `data_declarations.mzn` is passed explicitly as a data file or included by a simple test model. This suggests a fundamental issue with how this specific MiniZinc environment is parsing data definitions within included `.dzn` files, or a very subtle interaction with the model's structure. This issue prevents a full, successful execution of the MiniZinc model at this time.
+
+**Despite this parsing issue, here is the conceptual "dry run" plan for executing the MiniZinc model, assuming the parsing issue would be resolved:**
 
 ### 1. Overview
 
@@ -10,13 +13,13 @@ This document outlines the plan for executing the MiniZinc model for word embedd
 
 ### 2. Estimated Size and Complexity
 
-*   **Per Chunk:** Each chunk contains up to 100 words and their 8D embeddings. The exact number of words per chunk can vary, with the last chunk likely having fewer than 100.
+*   **Per Chunk:** Each chunk contains up to 100 words and their 8D embeddings.
     *   A typical chunk will have:
         *   `num_words`: up to 100
         *   `word_map`: an array of up to 100 strings
         *   `embeddings`: a 2D array of `100 x 8` floating-point numbers.
 *   **Total Data Size:** With 2764 chunks, the total number of words processed is approximately `2764 * 100 = 276,400` words (this is an upper bound, as the last chunk might be smaller). Each word has an 8D embedding.
-*   **Model Complexity:** The `word_embedding_inference.mzn` model calculates Euclidean distances between specified word pairs. The complexity of the MiniZinc model itself depends on the number of word pairs it's asked to analyze and the constraints applied. Since the goal is incremental solving, each MiniZinc run will only process one chunk at a time, keeping the per-run complexity manageable.
+*   **Model Complexity:** The `word_embedding_inference.mzn` model calculates Euclidean distances between specified word pairs and optimizes embeddings. The complexity of the MiniZinc model itself depends on the number of variables and constraints. Since the goal is incremental solving, each MiniZinc run will only process one chunk at a time, keeping the per-run complexity manageable.
 
 ### 3. Estimated Runtime
 
@@ -36,6 +39,7 @@ The process would involve a loop, likely managed by a shell script or a Rust pro
     /data/data/com.termux/files/home/storage/github/libminizinc/build/minizinc \
         /data/data/com.termux/files/home/storage/github/libminizinc/word_embedding_inference.mzn \
         /data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/word_embeddings_chunk_X.dzn \
+        /data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/data_declarations.mzn \
         -s # (or other solver flags for optimization/output)
     ```
 3.  **Execute MiniZinc:** Run the command.
