@@ -18,26 +18,37 @@ This plan leverages several existing components and conceptual frameworks within
 
 3.  **`minizinc_introspector` Crate**: While primarily for C++ AST analysis using `clang-rs`, its approach to robust parsing and AST traversal patterns will serve as a valuable reference for the Rust program's own AST analysis using `syn`.
 
-4.  **Conceptual Frameworks (SOPs and Plans)**:
+4.  **`zos-bootstrap` Crate (Refactored)**: The `zos-bootstrap` crate has been refactored to include a new `SelfOptimize` command, which orchestrates the self-modeling and self-optimization process in distinct, manageable steps.
+
+5.  **Conceptual Frameworks (SOPs and Plans)**:
     *   **`quasi_meta_introspection_sop.tex`**: Provides the overarching conceptual framework for computational self-awareness, numerical embeddings, LLM-driven analysis, and self-reflection. It emphasizes the "add-only, never edit" philosophy, which will guide code evolution.
     *   **`project_wide_ast_analysis.tex`**: Outlines the theoretical basis for holistic AST analysis, treating code elements as "solutions" to be optimized by MiniZinc. This will inform the design of MiniZinc models for code analysis and synthesis.
 
 ## Phased Implementation Plan
 
+The self-modeling and self-optimization process is orchestrated by the `zos-bootstrap self-optimize` command, which can execute distinct steps. This modularity allows for fine-grained control, debugging, and adherence to time constraints.
+
 ### Phase 1: Enhanced Self-Modeling and MiniZinc Integration
 
 *   **Objective**: Extend the existing Rust program to deeply model its own Rust code and integrate with MiniZinc for basic analysis.
-*   **Actions**: 
-    *   **Refine Rust AST Traversal**: Enhance the `model_and_generate_asm` function (or a new module) to extract more detailed information from the Rust AST using `syn`, beyond just function and variable declarations. This includes control flow, data types, function calls, etc.
-    *   **Generate MiniZinc Representation of Rust AST**: Develop a component that translates the extracted Rust AST information into a MiniZinc model. This will involve defining MiniZinc data structures to represent Rust constructs (e.g., `RustFn`, `RustVar`, `RustStmt`).
-    *   **Integrate `doc_to_minizinc_data`**: Modify the Rust program to call `doc_to_minizinc_data` (or integrate its logic) to generate embeddings of its own source code.
-    *   **Basic MiniZinc Analysis**: Create a simple MiniZinc model that takes the Rust AST representation and embeddings as input. Initially, this model could perform basic checks (e.g., identify duplicate code patterns, simple code metrics).
-    *   **FFI Interaction**: Use the `minizinc_ffi` crate to load and solve the MiniZinc model from within the Rust program, and extract basic results.
+*   **Orchestration**: This phase is initiated by calling `zos-bootstrap self-optimize --step <step_name>`.
+*   **Actions**:
+    *   **Step: `GenerateEmbeddings`**:
+        *   **Action**: Calls `doc_to_minizinc_data` to generate initial 8D numerical embeddings from the project's source code and documentation. This produces `word_embeddings_chunk_X.dzn` files.
+    *   **Step: `ParseRustAstAndGenerateMiniZinc`**:
+        *   **Action**: Iterates through Rust source files, parses their ASTs using `syn`, and converts AST elements into numerical vectors.
+        *   **Action**: Generates MiniZinc models (`.mzn`) and data files (`.dzn`) from these numerical representations.
+        *   **Refactoring Note**: The `AstToMiniZinc` command (now refactored into `handler.rs` and `parser.rs` within `commands/ast_to_minizinc/`) supports processing file subsets, enabling incremental MiniZinc problem generation.
+        *   **MiniZinc Verbosity**: MiniZinc execution now includes `--verbose` flags for detailed output.
 
 ### Phase 2: LLM and SAT Solver Integration for Code Optimization
 
 *   **Objective**: Integrate LLM and SAT solver capabilities (via MiniZinc) to analyze and suggest optimizations for the Rust code.
-*   **Actions**: 
+*   **Orchestration**: This phase is initiated by calling `zos-bootstrap self-optimize --step <step_name>`.
+*   **Actions**:
+    *   **Step: `SimulateAndAnalyze`**:
+        *   **Action**: Simulates execution of generated assembly-like instructions.
+        *   **Action**: Includes placeholders for LLM analysis and SAT solver verification of instructions.
     *   **Define Optimization Objectives in MiniZinc**: Based on `project_wide_ast_analysis.tex`, define MiniZinc objective functions for desired code properties (e.g., minimizing complexity, maximizing modularity, improving readability).
     *   **LLM-Guided MiniZinc Model Generation**: Explore using an LLM to assist in generating or refining MiniZinc models based on high-level optimization goals.
     *   **LLM for Code Transformation Suggestions**: The LLM can analyze MiniZinc solutions (which represent optimized code elements) and translate them back into Rust code transformation suggestions.
@@ -46,14 +57,24 @@ This plan leverages several existing components and conceptual frameworks within
 ### Phase 3: Self-Recreation and Iterative Refinement
 
 *   **Objective**: Enable the Rust program to modify its own source code based on MiniZinc-derived optimizations and iteratively refine itself.
-*   **Actions**: 
-    *   **Code Generation/Modification**: Develop a component that can apply the LLM-suggested code transformations back to the Rust program's source code. This will require careful consideration of idempotency and safety.
-    *   **Iterative Loop**: Establish an iterative loop where the program:
-        1.  Analyzes its own code (Phase 1).
-        2.  Optimizes using MiniZinc/LLM (Phase 2).
-        3.  Modifies its own source (Phase 3).
-        4.  Re-analyzes, creating a self-improving cycle.
-    *   **Profiling and Feedback**: Integrate more detailed profiling to measure the impact of self-modifications and feed this data back into the optimization objectives.
+*   **Orchestration**: This phase is initiated by calling `zos-bootstrap self-optimize --step <step_name>`.
+*   **Actions**:
+    *   **Step: `OptimizeAndTransform`**:
+        *   **Action**: Develop a component that can apply the LLM-suggested code transformations back to the Rust program's source code. This will require careful consideration of idempotency and safety.
+        *   **Iterative Loop**: Establish an iterative loop where the program:
+            1.  Analyzes its own code (Phase 1).
+            2.  Optimizes using MiniZinc/LLM (Phase 2).
+            3.  Modifies its own source (Phase 3).
+            4.  Re-analyzes, creating a self-improving cycle.
+        *   **Profiling and Feedback**: Integrate more detailed profiling to measure the impact of self-modifications and feed this data back into the optimization objectives.
+
+## Incremental Problem Solving with MiniZinc
+
+To address performance concerns and enable fine-grained control, the MiniZinc problem will be tackled incrementally:
+
+*   **Chunking of Input**: The `doc_to_minizinc_data` crate already supports chunking of words and generates multiple `.dzn` files. This provides the basis for feeding smaller subsets of data to MiniZinc.
+*   **File Subset Processing in `AstToMiniZinc`**: The `AstToMiniZinc` command (specifically `handler.rs`) now accepts `file_subset_index` and `total_file_subsets` arguments. This allows processing only a fraction of the Rust source files at a time, generating smaller MiniZinc problems.
+*   **Iterative Optimization**: The `SelfOptimize` command will orchestrate iterative calls to `AstToMiniZinc` (or its underlying logic), feeding it chunks of AST data. Optimized embeddings or solutions from one chunk can be used as "warm-start" data or constraints for subsequent chunks, enabling a progressive refinement of the overall model.
 
 ## Challenges and Considerations
 

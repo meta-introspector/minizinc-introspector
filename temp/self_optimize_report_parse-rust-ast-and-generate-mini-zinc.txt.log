@@ -1,10 +1,13 @@
---- Step: Parse Rust AST and Generate MiniZinc ---
-  Processing file for AST and Assembly generation: temp_project/src/test_self_optimize.rs
+--- Step: Parse Rust AST and Generate MiniZinc --- 
+
+Attempting with 1 file subsets...
+  Processing subset 0 of 1...
 
 --- Starting AST to MiniZinc Process ---
 Analyzing project: temp_project
 
 Phase 1 & 2: Parsing Rust code to AST and extracting numerical vectors...
+Processing file subset 0 of 1 (files 0 to 0).
   Processing file (1): temp_project/src/test_self_optimize.rs
 Phase 1 & 2 Complete: Processed 1 files.
 Extracted 10 total AST elements and converted to numerical vectors from the project.

@@ -1,4 +1,4 @@
-use zos_bootstrap::{Cli, Commands};
+use zos_bootstrap::cli::{Cli, Commands};
 use clap::Parser; // Import Parser trait
 
 fn main() -> Result<(), String> {

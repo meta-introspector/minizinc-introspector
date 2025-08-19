@@ -1,5 +1,7 @@
+use zos_bootstrap::cli::Cli;
+use zos_bootstrap::cli::Commands;
 use zos_bootstrap::{
-    Cli, Commands,
+//    Cli, Commands,
     utils::{error::{Result, ZosError}, paths},
     commands::{build::handle_build_command,
                test::handle_test_command,
@@ -69,6 +71,9 @@ fn main() -> Result<()> {
         Some(Commands::CodeSearch(args)) => {
             handle_code_search_command(args.clone())?;
         }
+	&Some(Commands::SelfOptimize(_)) => {
+	    todo!("FIXME")
+	}
         Some(Commands::Bootstrap { target }) => {
             if target == "zos" {
                 println!("Commencing ZOS Bootstrap: Building all core components...");

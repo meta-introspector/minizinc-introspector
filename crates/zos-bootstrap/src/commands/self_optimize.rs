@@ -154,6 +154,38 @@ fn recreate_source(file: &File) -> String {
     source
 }
 
+// Helper function to create AstToMiniZincArgs
+fn create_ast_to_minizinc_args(
+    project_root: &PathBuf,
+    minizinc_output_dir: &PathBuf,
+    subset_index: Option<usize>,
+    total_subsets: Option<usize>,
+) -> AstToMiniZincArgs {
+    AstToMiniZincArgs {
+        project_root: project_root.to_string_lossy().to_string(),
+        output_dir: minizinc_output_dir.to_string_lossy().to_string(),
+        target_index: None, // No specific target for now
+        file_subset_index: subset_index,
+        total_file_subsets: total_subsets,
+        ast_element_subset_index: None, // FIX: Add missing fields
+        total_ast_element_subsets: None, // FIX: Add missing fields
+    }
+}
+
+// Helper function to format log messages
+fn format_log_message(message: &str) -> String {
+    format!("Step: {} ", message)
+}
+
+// Helper function to format step complete messages
+fn format_step_complete_message(step_name: &str, subsets_info: Option<usize>) -> String {
+    if let Some(subsets) = subsets_info {
+        format!("Step: {} Complete (with {} subsets)", step_name, subsets)
+    } else {
+        format!("Step: {} Complete ", step_name)
+    }
+}
+
 pub fn handle_self_optimize_command(args: SelfOptimizeArgs) -> Result<()> {
     let project_root = args.source_path;
     let mut report = String::new();
@@ -165,7 +197,7 @@ pub fn handle_self_optimize_command(args: SelfOptimizeArgs) -> Result<()> {
 
     match step {
         SelfOptimizeStep::GenerateEmbeddings => {
-            println!("--- Step: Generate Embeddings ---");
+            println!("{}", format_log_message("Generate Embeddings"));
             let embeddings_output_dir = project_root.join("minizinc_data");
             fs::create_dir_all(&embeddings_output_dir)?;
 
@@ -178,45 +210,56 @@ pub fn handle_self_optimize_command(args: SelfOptimizeArgs) -> Result<()> {
                 chunk_size: 1000, // Default chunk size
             };
             data_generation::generate_data(doc_to_minizinc_args, all_relations)?;
-            println!("--- Step: Generate Embeddings Complete ---");
+            println!("{}", format_step_complete_message("Generate Embeddings", None));
         }
         SelfOptimizeStep::ParseRustAstAndGenerateMiniZinc => {
-            println!("--- Step: Parse Rust AST and Generate MiniZinc ---");
+            println!("{}", format_log_message("Parse Rust AST and Generate MiniZinc"));
             let minizinc_output_dir = project_root.join("minizinc_output");
             fs::create_dir_all(&minizinc_output_dir)?;
 
-            for entry in WalkDir::new(&project_root)
-                .into_iter()
-                .filter_map(|e| e.ok())
-            {
-                let path = entry.path();
+            let mut current_total_subsets = 1; // Start with no splitting
+            let mut success = false;
 
-                if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") {
-                    println!("  Processing file for AST and Assembly generation: {}", path.display());
-                    let code = fs::read_to_string(path)?;
-                    let syntax = match parse_file(&code) {
-                        Ok(s) => s,
-                        Err(e) => {
-                            eprintln!("Warning: Failed to parse Rust file {}: {}", path.display(), e);
-                            continue;
-                        }
-                    };
-                    // all_instructions.extend(model_and_generate_asm(&syntax)); // This will be collected in SimulateAndAnalyze step
+            while !success {
+                println!("\nAttempting with {} file subsets...", current_total_subsets);
+                let mut all_subsets_completed_in_time = true;
 
-                    let ast_to_minizinc_args = AstToMiniZincArgs {
-                        project_root: project_root.to_string_lossy().to_string(),
-                        output_dir: minizinc_output_dir.to_string_lossy().to_string(),
-                        target_index: None,
-                        file_subset_index: None, // FIX: Add missing fields
-                        total_file_subsets: None, // FIX: Add missing fields
-                    };
-                    handle_ast_to_minizinc_command(ast_to_minizinc_args)?;
+                for subset_index in 0..current_total_subsets {
+                    println!("  Processing subset {} of {}...", subset_index, current_total_subsets);
+                    let start_time = std::time::Instant::now();
+
+                    let ast_to_minizinc_args = create_ast_to_minizinc_args(
+                        &project_root,
+                        &minizinc_output_dir,
+                        Some(subset_index),
+                        Some(current_total_subsets),
+                    );
+
+                    let result = handle_ast_to_minizinc_command(ast_to_minizinc_args);
+                    let elapsed_time = start_time.elapsed();
+                    println!("  Subset {} completed in {:?}", subset_index, elapsed_time);
+
+                    if elapsed_time.as_secs() >= 10 { // Check for 10-second timeout
+                        println!("  Subset {} exceeded 10-second limit. Splitting further...", subset_index);
+                        all_subsets_completed_in_time = false;
+                        break; // Break inner loop to re-start with more splits
+                    }
+
+                    if result.is_err() {
+                        return result; // Propagate error
+                    }
+                }
+
+                if all_subsets_completed_in_time {
+                    success = true;
+                } else {
+                    current_total_subsets *= 2; // Double the number of subsets
                 }
             }
-            println!("--- Step: Parse Rust AST and Generate MiniZinc Complete ---");
+            println!("{}", format_step_complete_message("Parse Rust AST and Generate MiniZinc", Some(current_total_subsets)));
         }
         SelfOptimizeStep::SimulateAndAnalyze => {
-            println!("--- Step: Simulate and Analyze ---");
+            println!("{}", format_log_message("Simulate and Analyze"));
             let mut all_instructions: Vec<AsmInstruction> = Vec::new();
             // Re-collect instructions from all files for this step
             for entry in WalkDir::new(&project_root)
@@ -248,10 +291,10 @@ pub fn handle_self_optimize_command(args: SelfOptimizeArgs) -> Result<()> {
             }
             report.push_str(&format!("Execution profile: {} instructions executed\n", emulator.profile()));
             report.push_str(&format!("Final emulator state: {:?}\n", emulator));
-            println!("--- Step: Simulate and Analyze Complete ---");
+            println!("{}", format_step_complete_message("Simulate and Analyze", None));
         }
         SelfOptimizeStep::OptimizeAndTransform => {
-            println!("--- Step: Optimize and Transform ---");
+            println!("{}", format_log_message("Optimize and Transform"));
             if args.self_optimize {
                 for iteration in 1..=args.max_optimization_iterations {
                     let dummy_file_path = project_root.join("src/test_self_optimize.rs");
@@ -268,7 +311,7 @@ pub fn handle_self_optimize_command(args: SelfOptimizeArgs) -> Result<()> {
                     }
                 }
             }
-            println!("--- Step: Optimize and Transform Complete ---");
+            println!("{}", format_step_complete_message("Optimize and Transform", None));
         }
     }
 

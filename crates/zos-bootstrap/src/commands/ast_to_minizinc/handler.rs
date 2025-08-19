@@ -28,6 +28,12 @@ pub struct AstToMiniZincArgs {
     /// Optional: Total number of file subsets.
     #[arg(long)]
     pub total_file_subsets: Option<usize>,
+    /// Optional: Index of the AST element subset to process (0-indexed).
+    #[arg(long)]
+    pub ast_element_subset_index: Option<usize>,
+    /// Optional: Total number of AST element subsets.
+    #[arg(long)]
+    pub total_ast_element_subsets: Option<usize>,
 }
 
 pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::utils::error::Result<()> {
@@ -101,6 +107,21 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::utils::
 
     println!("Phase 1 & 2 Complete: Processed {} files.", processed_files_count);
     println!("Extracted {} total AST elements and converted to numerical vectors from the project.", all_ast_numerical_vectors.len());
+
+    // Filter AST elements based on subset index
+    if let (Some(subset_index), Some(total_subsets)) = (args.ast_element_subset_index, args.total_ast_element_subsets) {
+        if total_subsets == 0 {
+            return Err(crate::utils::error::ZosError::InvalidArgument("total_ast_element_subsets cannot be 0.".to_string()));
+        }
+        if subset_index >= total_subsets {
+            return Err(crate::utils::error::ZosError::InvalidArgument("ast_element_subset_index must be less than total_ast_element_subsets.".to_string()));
+        }
+        let chunk_size = (all_ast_numerical_vectors.len() + total_subsets - 1) / total_subsets;
+        let start_index = subset_index * chunk_size;
+        let end_index = (start_index + chunk_size).min(all_ast_numerical_vectors.len());
+        all_ast_numerical_vectors = all_ast_numerical_vectors[start_index..end_index].to_vec();
+        println!("Processing AST element subset {} of {} (elements {} to {}).", subset_index, total_subsets, start_index, end_index - 1);
+    }
 
     println!("\nPhase 3: Generating MiniZinc Data (.dzn)...");
     let data_file_path = output_dir.join("ast_data.dzn");
