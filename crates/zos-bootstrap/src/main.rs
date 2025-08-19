@@ -12,7 +12,8 @@ use zos_bootstrap::{
                generate_minizinc_params::handle_generate_params_command,
                generate_constants_file::handle_generate_constants_file_command,
                ast_to_minizinc::handle_ast_to_minizinc_command,
-               code_search::handle_code_search_command},
+               code_search::handle_code_search_command,
+               test_ast_to_minizinc::handle_test_ast_to_minizinc_command},
     code_analysis::constant_analyzer::ConstantAnalyzer,
 };
 use clap::Parser;
@@ -67,6 +68,9 @@ fn main() -> Result<()> {
         }
         Some(Commands::AstToMiniZinc(args)) => {
             handle_ast_to_minizinc_command(args.clone())?;
+        }
+        Some(Commands::TestAstToMiniZinc(args)) => {
+            handle_test_ast_to_minizinc_command(args.clone())?;
         }
         Some(Commands::CodeSearch(args)) => {
             handle_code_search_command(args.clone())?;

@@ -27,6 +27,7 @@ pub fn handle_command_dispatch() -> Result<()> {
             Ok(())
         },
         Some(Commands::SelfOptimize(args)) => commands::self_optimize::handle_self_optimize_command(args).map_err(|e| ZosError::Unknown(format!("SelfOptimize command failed: {}", e))),
+        Some(Commands::TestAstToMiniZinc(args)) => commands::test_ast_to_minizinc::handle_test_ast_to_minizinc_command(args).map_err(|e| ZosError::Unknown(format!("TestAstToMiniZinc command failed: {}", e))),
         None => {
             println!("No command provided. Use --help for more information.");
             Ok(())

@@ -10,3 +10,4 @@ pub mod build_constants;
 pub mod ast_to_minizinc;
 pub mod code_search;
 pub mod self_optimize;
+pub mod test_ast_to_minizinc;

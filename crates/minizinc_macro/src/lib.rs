@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
-use quote::{quote, ToTokens};
-use syn::{parse_macro_input, ItemFn, Lit, Meta, Ident, parse::{Parse, ParseStream}, Token};
+use quote::quote;
+use syn::{parse_macro_input, ItemFn, Lit, Ident, parse::{Parse, ParseStream}, Token};
 
 // Define a struct to parse the macro attributes
 struct MiniZincSolveArgs {

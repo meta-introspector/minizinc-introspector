@@ -5,6 +5,7 @@ use minizinc_macro::minizinc_solve;
 struct MySolution {
     // Add fields as needed for your MiniZinc output
     // For now, just a placeholder
+    #[allow(dead_code)]
     value: i32,
 }
 

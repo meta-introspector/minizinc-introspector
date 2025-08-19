@@ -39,4 +39,6 @@ pub enum Commands {
     },
     /// Self-optimizes the codebase using MiniZinc and LLM
     SelfOptimize(commands::self_optimize::SelfOptimizeArgs),
+    /// Tests AST to MiniZinc conversion for a single file
+    TestAstToMiniZinc(commands::test_ast_to_minizinc::TestAstToMiniZincArgs),
 }

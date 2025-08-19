@@ -9,6 +9,9 @@ pub fn write_data_declarations_mzn(
     minizinc_data_dir: &PathBuf,
     logger: &mut LogWriter,
 ) -> Result<(), Box<dyn std::error::Error>> {
+    // Suppress unused variable warnings by printing them (as requested by user)
+    println!("DEBUG: id_to_word length: {}", id_to_word.len());
+    println!("DEBUG: embeddings length: {}", embeddings.len());
     let data_declarations_path = minizinc_data_dir.join("data_declarations.mzn");
     let mut data_declarations_content = String::new();
 

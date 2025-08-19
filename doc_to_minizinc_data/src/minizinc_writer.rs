@@ -1,4 +1,4 @@
-use std::{fs, io, path::PathBuf};
+use std::{fs, path::PathBuf};
 use crate::logger::LogWriter;
 use crate::word_data::WordData;
 

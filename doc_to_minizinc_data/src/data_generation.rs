@@ -1,4 +1,4 @@
-use std::{fs, path::PathBuf};
+use std::fs;
 use crate::cli::Args;
 use crate::logger::LogWriter;
 

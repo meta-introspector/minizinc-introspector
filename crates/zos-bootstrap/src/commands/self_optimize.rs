@@ -160,6 +160,7 @@ fn create_ast_to_minizinc_args(
     minizinc_output_dir: &PathBuf,
     subset_index: Option<usize>,
     total_subsets: Option<usize>,
+    plan_mode: bool,
 ) -> AstToMiniZincArgs {
     AstToMiniZincArgs {
         project_root: project_root.to_string_lossy().to_string(),
@@ -169,6 +170,8 @@ fn create_ast_to_minizinc_args(
         total_file_subsets: total_subsets,
         ast_element_subset_index: None, // FIX: Add missing fields
         total_ast_element_subsets: None, // FIX: Add missing fields
+        plan_mode: plan_mode,
+        single_file_path: None,
     }
 }
 
@@ -208,6 +211,7 @@ pub fn handle_self_optimize_command(args: SelfOptimizeArgs) -> Result<()> {
 
             let doc_to_minizinc_args = doc_to_minizinc_data::cli::Args {
                 chunk_size: 1000, // Default chunk size
+                input_path: None,
             };
             data_generation::generate_data(doc_to_minizinc_args, all_relations)?;
             println!("{}", format_step_complete_message("Generate Embeddings", None));
@@ -233,6 +237,7 @@ pub fn handle_self_optimize_command(args: SelfOptimizeArgs) -> Result<()> {
                         &minizinc_output_dir,
                         Some(subset_index),
                         Some(current_total_subsets),
+                        false, // plan_mode
                     );
 
                     let result = handle_ast_to_minizinc_command(ast_to_minizinc_args);

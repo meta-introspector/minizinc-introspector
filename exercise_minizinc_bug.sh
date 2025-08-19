@@ -23,7 +23,7 @@ echo "${SIMULATED_WORDNET_FILE} created."
 # 2. Run doc_to_minizinc_data to generate .dzn files
 echo "Generating word embeddings data using doc_to_minizinc_data..."
 mkdir -p "${HUGGINGFACE_DIR}" # Ensure the target directory exists
-cargo run --package doc_to_minizinc_data -- --chunk-size 1 --input-path /data/data/com.termux/files/home/storage/github/libminizinc/include/minizinc/minizinc.hh
+cargo run --package doc_to_minizinc_data -- --chunk-size 1 --input-path /data/data/com.termux/files/home/storage/github/libminizinc/minimal_test.rs
 if [ $? -ne 0 ]; then
     echo "Error: doc_to_minizinc_data failed to run."
     exit 1
@@ -34,7 +34,7 @@ echo "Data generation complete. Check ${HUGGINGFACE_DIR} for .dzn files."
 echo "Generating temporary MiniZinc execution script..."
 TEMP_MINIZINC_SCRIPT="${MINIZINC_DATA_DIR}/run_minizinc_temp.sh"
 echo "#!/bin/bash" > "${TEMP_MINIZINC_SCRIPT}"
-echo "${MINIZINC_EXECUTABLE} ${TEST_MODEL} ${CHUNK_DZN_FILE} --time-limit 10000 --verbose --verbose-compilation" >> "${TEMP_MINIZINC_SCRIPT}"
+echo "timeout 10s ${MINIZINC_EXECUTABLE} ${TEST_MODEL} ${CHUNK_DZN_FILE} --time-limit 10000 --verbose --verbose-compilation" >> "${TEMP_MINIZINC_SCRIPT}"
 chmod +x "${TEMP_MINIZINC_SCRIPT}"
 echo "Temporary MiniZinc script generated: ${TEMP_MINIZINC_SCRIPT}"
 echo "To run MiniZinc, execute: ${TEMP_MINIZINC_SCRIPT}"

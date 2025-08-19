@@ -1,6 +1,7 @@
 use crate::utils::paths;
 use crate::utils::subprocess;
 use std::path::PathBuf;
+use std::time::Instant;
 use clap::Args;
 use crate::code_analysis::ast_to_numerical_vector_converter::{self};
 use crate::code_analysis::numerical_vector_to_llm_instructions;
@@ -34,6 +35,12 @@ pub struct AstToMiniZincArgs {
     /// Optional: Total number of AST element subsets.
     #[arg(long)]
     pub total_ast_element_subsets: Option<usize>,
+    /// Enable plan mode to estimate runtime, size, and complexity without full execution.
+    #[arg(long)]
+    pub plan_mode: bool,
+    /// Optional: Path to a single Rust file to process. If provided, overrides project_root for file discovery.
+    #[arg(long)]
+    pub single_file_path: Option<PathBuf>,
 }
 
 pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::utils::error::Result<()> {
@@ -53,12 +60,17 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::utils::
     let mut processed_files_count = 0;
 
     println!("\nPhase 1 & 2: Parsing Rust code to AST and extracting numerical vectors...");
-    let mut all_rust_files: Vec<PathBuf> = WalkDir::new(&project_root_path)
-        .into_iter()
-        .filter_map(|e| e.ok()) // Filter out errors
-        .filter(|e| e.path().is_file() && e.path().extension().map_or(false, |ext| ext == "rs"))
-        .map(|e| e.path().to_path_buf())
-        .collect();
+    let phase1_2_start_time = Instant::now();
+    let mut all_rust_files: Vec<PathBuf> = if let Some(single_path) = args.single_file_path {
+        vec![single_path]
+    } else {
+        WalkDir::new(&project_root_path)
+            .into_iter()
+            .filter_map(|e| e.ok()) // Filter out errors
+            .filter(|e| e.path().is_file() && e.path().extension().map_or(false, |ext| ext == "rs"))
+            .map(|e| e.path().to_path_buf())
+            .collect()
+    };
 
     // Filter files based on subset index
     if let (Some(subset_index), Some(total_subsets)) = (args.file_subset_index, args.total_file_subsets) {
@@ -105,8 +117,14 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::utils::
         all_ast_numerical_vectors.extend(ast_numerical_vectors_for_file);
     }
 
-    println!("Phase 1 & 2 Complete: Processed {} files.", processed_files_count);
+    let phase1_2_elapsed = phase1_2_start_time.elapsed();
+    println!("Phase 1 & 2 Complete: Processed {} files in {:?}.", processed_files_count, phase1_2_elapsed);
     println!("Extracted {} total AST elements and converted to numerical vectors from the project.", all_ast_numerical_vectors.len());
+    if args.plan_mode {
+        println!("  [PLAN MODE] Estimated AST parsing and vector extraction time: {:?}", phase1_2_elapsed);
+        println!("  [PLAN MODE] Number of files processed: {}", processed_files_count);
+        println!("  [PLAN MODE] Number of AST elements extracted: {}", all_ast_numerical_vectors.len());
+    }
 
     // Filter AST elements based on subset index
     if let (Some(subset_index), Some(total_subsets)) = (args.ast_element_subset_index, args.total_ast_element_subsets) {
@@ -124,6 +142,7 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::utils::
     }
 
     println!("\nPhase 3: Generating MiniZinc Data (.dzn)...");
+    let phase3_start_time = Instant::now();
     let data_file_path = output_dir.join("ast_data.dzn");
     // Use the new dzn_data_generator
     let dzn_content = dzn_data_generator::generate_ast_dzn_data_string(
@@ -131,61 +150,84 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::utils::
         target_index,
     );
     std::fs::write(&data_file_path, dzn_content)?;
-    println!("Phase 3 Complete: Generated MiniZinc data file: {}", data_file_path.display());
+    let phase3_elapsed = phase3_start_time.elapsed();
+    println!("Phase 3 Complete: Generated MiniZinc data file: {} in {:?}.", data_file_path.display(), phase3_elapsed);
+    if args.plan_mode {
+        println!("  [PLAN MODE] Estimated MiniZinc data generation time: {:?}", phase3_elapsed);
+        println!("  [PLAN MODE] Size of generated DZN file: {} bytes", std::fs::metadata(&data_file_path)?.len());
+    }
 
     println!("\nPhase 4: Generating MiniZinc Model (.mzn)...");
+    let phase4_start_time = Instant::now();
     let model_file_path = output_dir.join("ast_model.mzn");
     // Use the new minizinc_model_generator
     let model_content = minizinc_model_generator::generate_ast_minizinc_model_string();
     std::fs::write(&model_file_path, model_content)?;
-    println!("Phase 4 Complete: Generated MiniZinc model file: {}", model_file_path.display());
-
-    println!("\nPhase 5: Executing MiniZinc...");
-    let libminizinc_build_dir = paths::get_build_dir()?;
-    let minizinc_exe = libminizinc_build_dir.join("minizinc");
-
-    let mut args_mzn = vec![
-        model_file_path.to_string_lossy().to_string(),
-        data_file_path.to_string_lossy().to_string(),
-        "--verbose".to_string(), // Add verbose flag
-    ];
-
-    // Add solver-specific flags if needed, e.g., for Gecode
-    // args_mzn.push("--solver-time-limit".to_string());
-    // args_mzn.push("10000".to_string()); // 10 seconds
-
-    let args_str: Vec<&str> = args_mzn.iter().map(|s| s.as_ref()).collect();
-
-    let output = subprocess::run_command(&minizinc_exe.to_string_lossy(), &args_str)?;
-
-    println!("MiniZinc Output:\n{}", String::from_utf8_lossy(&output.stdout));
-    println!("MiniZinc Errors:\n{}", String::from_utf8_lossy(&output.stderr));
-
-    if !output.status.success() {
-        return Err(crate::utils::error::ZosError::CommandFailed {
-            command: format!("minizinc {}", args_str.join(" ")),
-            exit_code: output.status.code(),
-            stdout: String::from_utf8_lossy(&output.stdout).to_string(),
-            stderr: String::from_utf8_lossy(&output.stderr).to_string(),
-        });
+    let phase4_elapsed = phase4_start_time.elapsed();
+    println!("Phase 4 Complete: Generated MiniZinc model file: {} in {:?}.", model_file_path.display(), phase4_elapsed);
+    if args.plan_mode {
+        println!("  [PLAN MODE] Estimated MiniZinc model generation time: {:?}", phase4_elapsed);
+        println!("  [PLAN MODE] Size of generated MZN file: {} bytes", std::fs::metadata(&model_file_path)?.len());
     }
 
-    println!("Phase 5 Complete: MiniZinc execution finished.");
+    println!("\nPhase 5: Executing MiniZinc...");
+    let phase5_start_time = Instant::now();
+    if args.plan_mode {
+        println!("  [PLAN MODE] Skipping MiniZinc execution.");
+    } else {
+        let libminizinc_build_dir = paths::get_build_dir()?;
+        let minizinc_exe = libminizinc_build_dir.join("minizinc");
 
-    println!("\nPhase 6: Parsing MiniZinc Output...");
-    // This part will be moved to parser.rs
-    let parsed_results = MiniZincAnalysisResults { suggested_numerical_vector: 0 }; // Dummy for now
-    // let parsed_results = parse_minizinc_output(&String::from_utf8_lossy(&output.stdout))?;
-    println!("Phase 6 Complete: MiniZinc Analysis Results ---");
-    println!("Suggested Numerical Vector: {}", parsed_results.suggested_numerical_vector);
-    println!("-----------------------------------");
+        let args_mzn = vec![
+            model_file_path.to_string_lossy().to_string(),
+            data_file_path.to_string_lossy().to_string(),
+            "--verbose".to_string(), // Add verbose flag
+        ];
 
-    println!("\nPhase 7: Interpreting Solver Output and Generating LLM Instructions...");
-    let interpreted_concepts = numerical_vector_to_llm_instructions::interpret_numerical_vector(parsed_results.suggested_numerical_vector);
-    let llm_instructions = numerical_vector_to_llm_instructions::generate_llm_instructions(interpreted_concepts);
-    println!("Phase 7 Complete: LLM Instructions ---");
-    println!("{}", llm_instructions);
-    println!("------------------------");
+        // Add solver-specific flags if needed, e.g., for Gecode
+        // args_mzn.push("--solver-time-limit".to_string());
+        // args_mzn.push("10000".to_string()); // 10 seconds
+
+        let args_str: Vec<&str> = args_mzn.iter().map(|s| s.as_ref()).collect();
+
+        let output = subprocess::run_command(&minizinc_exe.to_string_lossy(), &args_str)?;
+
+        println!("MiniZinc Output:\n{}", String::from_utf8_lossy(&output.stdout));
+        println!("MiniZinc Errors:\n{}", String::from_utf8_lossy(&output.stderr));
+
+        if !output.status.success() {
+            return Err(crate::utils::error::ZosError::CommandFailed {
+                command: format!("minizinc {}", args_str.join(" ")),
+                exit_code: output.status.code(),
+                stdout: String::from_utf8_lossy(&output.stdout).to_string(),
+                stderr: String::from_utf8_lossy(&output.stderr).to_string(),
+            });
+        }
+    }
+    let phase5_elapsed = phase5_start_time.elapsed();
+    println!("Phase 5 Complete: MiniZinc execution finished in {:?}.", phase5_elapsed);
+    if args.plan_mode {
+        println!("  [PLAN MODE] Estimated MiniZinc execution time: {:?}", phase5_elapsed);
+    }
+
+    if args.plan_mode {
+        println!("  [PLAN MODE] Skipping MiniZinc output parsing and LLM instruction generation.");
+    } else {
+        println!("\nPhase 6: Parsing MiniZinc Output...");
+        // This part will be moved to parser.rs
+        let parsed_results = MiniZincAnalysisResults { suggested_numerical_vector: 0 }; // Dummy for now
+        // let parsed_results = parse_minizinc_output(&String::from_utf8_lossy(&output.stdout))?;
+        println!("Phase 6 Complete: MiniZinc Analysis Results ---");
+        println!("Suggested Numerical Vector: {}", parsed_results.suggested_numerical_vector);
+        println!("-----------------------------------");
+
+        println!("\nPhase 7: Interpreting Solver Output and Generating LLM Instructions...");
+        let interpreted_concepts = numerical_vector_to_llm_instructions::interpret_numerical_vector(parsed_results.suggested_numerical_vector);
+        let llm_instructions = numerical_vector_to_llm_instructions::generate_llm_instructions(interpreted_concepts);
+        println!("Phase 7 Complete: LLM Instructions ---");
+        println!("{}", llm_instructions);
+        println!("------------------------");
+    }
 
     println!("\n--- AST to MiniZinc Process Completed Successfully ---");
     Ok(())
