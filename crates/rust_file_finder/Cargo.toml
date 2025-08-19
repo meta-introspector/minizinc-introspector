@@ -1,0 +1,9 @@
+[package]
+name = "rust_file_finder"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+walkdir = "2.3"
+toml = "0.7"
+serde = { version = "1.0", features = ["derive"] }
