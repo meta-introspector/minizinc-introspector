@@ -21,3 +21,5 @@ regex = "1.10.0"
 doc_to_minizinc_data = { path = "../../doc_to_minizinc_data" }
 minizinc_ffi = { path = "../../tools/minizinc_ffi" }
 
+
+
