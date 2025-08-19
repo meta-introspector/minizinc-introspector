@@ -12,7 +12,7 @@ members = [
     "doc_organizer",
     "doc_to_minizinc_data",
     "embedding_analyzer",
-    "temp_zos_test",
+    "zos-bootstrap-main",
     "crates/minizinc_output_parser",
     "rust_lattice_project",
     "crates/rust_file_finder",

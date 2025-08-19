@@ -24,7 +24,7 @@ pub fn test_rust_ffi() -> Result<()> {
 
     // Test run_make_for_ffi (without strace)
     println!("\n--- Testing run_make_for_ffi (without strace) ---");
-    run_make_for_ffi::run_make_for_ffi(&build_dir, false)?;
+    run_make_for_ffi::run_make_for_ffi(&build_dir, false, &[])?;
     println!("run_make_for_ffi (without strace) test passed.");
 
     // Test verify_ffi_library_exists
@@ -34,7 +34,7 @@ pub fn test_rust_ffi() -> Result<()> {
 
     // Test run_make_for_ffi (with strace)
     println!("\n--- Testing run_make_for_ffi (with strace) ---");
-    run_make_for_ffi::run_make_for_ffi(&build_dir, true)?;
+    run_make_for_ffi::run_make_for_ffi(&build_dir, true, &[])?;
     println!("run_make_for_ffi (with strace) test passed. Check make_strace.log in build dir.");
 
     println!("\n--- All Rust FFI modular tests completed successfully. ---");

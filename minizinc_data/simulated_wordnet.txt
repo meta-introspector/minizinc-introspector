@@ -1,1 +1,6 @@
-word1,word2,0.5
+word: happy
+synonyms: joyful, cheerful
+antonyms: sad, miserable
+word: big
+synonyms: large, enormous
+antonyms: small, tiny

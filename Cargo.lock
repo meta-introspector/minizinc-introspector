@@ -792,14 +792,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "temp_zos_test"
-version = "0.1.0"
-dependencies = [
- "clap",
- "zos-bootstrap",
-]
-
-[[package]]
 name = "thiserror"
 version = "1.0.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1286,4 +1278,12 @@ dependencies = [
  "syn",
  "thiserror 1.0.69",
  "walkdir",
+]
+
+[[package]]
+name = "zos-bootstrap-main"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "zos-bootstrap",
 ]

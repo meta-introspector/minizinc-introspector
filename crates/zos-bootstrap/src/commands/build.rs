@@ -88,12 +88,12 @@ fn build_gecode() -> Result<()> {
     args_cmake.push(gecode_build_dir.to_string_lossy().to_string());
     args_cmake.push(build_constants::DOT.to_string()); // Source directory is current directory (gecode_vendor_dir)
     args_cmake.push(constants::ARG_CMAKE_POLICY_MINIMUM.to_string());
-    subprocess::run_command_in_dir(build_constants::CMAKE, &args_cmake.iter().map(|s| s.as_str()).collect::<Vec<&str>>(), &gecode_vendor_dir)?;
+    subprocess::run_command_in_dir(build_constants::CMAKE, &args_cmake.iter().map(|s| s.as_str()).collect::<Vec<&str>>(), &gecode_vendor_dir, &[])?;
 
     let mut args_make: Vec<String> = Vec::new();
     args_make.push(constants::ARG_MAKE_C.to_string());
     args_make.push(gecode_build_dir.to_string_lossy().to_string());
-    subprocess::run_command_in_dir(build_constants::MAKE, &args_make.iter().map(|s| s.as_str()).collect::<Vec<&str>>(), &gecode_build_dir)?;
+    subprocess::run_command_in_dir(build_constants::MAKE, &args_make.iter().map(|s| s.as_str()).collect::<Vec<&str>>(), &gecode_build_dir, &[])?;
 
     println!("{}", constants::MSG_GECODE_BUILT_SUCCESSFULLY);
     Ok(())
@@ -141,7 +141,12 @@ fn build_ffi_wrapper(strace_enabled: bool) -> Result<()> {
 
     ensure_build_directory_exists::ensure_build_directory_exists(&build_dir)?;
     run_cmake_for_ffi::run_cmake_for_ffi(&project_root, &build_dir)?;
-    run_make_for_ffi::run_make_for_ffi(&build_dir, strace_enabled)?;
+
+    // Construct LD_LIBRARY_PATH
+    let ld_library_path = build_dir.to_string_lossy().to_string();
+    let env_vars = [("LD_LIBRARY_PATH", ld_library_path.as_str())];
+
+    run_make_for_ffi::run_make_for_ffi(&build_dir, strace_enabled, &env_vars)?;
     verify_ffi_library_exists::verify_ffi_library_exists(&build_dir)?;
 
     println!("{}", constants::MSG_FFI_WRAPPER_BUILT_SUCCESSFULLY);

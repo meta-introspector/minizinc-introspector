@@ -1,7 +1,22 @@
 use zos_bootstrap::cli::{Cli, Commands};
 use clap::Parser; // Import Parser trait
+use std::env;
+use std::path::PathBuf;
 
 fn main() -> Result<(), String> {
+    // Set LD_LIBRARY_PATH dynamically
+    let current_exe_path = env::current_exe()
+        .map_err(|e| format!("Failed to get current executable path: {}", e))?;
+    let project_root = current_exe_path.parent()
+        .and_then(|p| p.parent()) // target/debug/
+        .and_then(|p| p.parent()) // libminizinc/
+        .ok_or("Could not determine project root")?;
+    let build_dir = project_root.join("build");
+
+    let ld_library_path = build_dir.to_string_lossy().to_string();
+    env::set_var("LD_LIBRARY_PATH", ld_library_path);
+    eprintln!("Set LD_LIBRARY_PATH to: {}", env::var("LD_LIBRARY_PATH").unwrap_or_default());
+
     let cli = Cli::parse();
     match cli.command {
         Some(Commands::Build(args)) => zos_bootstrap::commands::build::handle_build_command(args).map_err(|e| format!("Build command failed: {}", e)),
@@ -26,7 +41,7 @@ fn main() -> Result<(), String> {
         },
         Some(Commands::SelfOptimize(args)) => zos_bootstrap::commands::self_optimize::handle_self_optimize_command(args).map_err(|e| format!("SelfOptimize command failed: {}", e)),
         Some(Commands::TestAstToMiniZinc(args)) => zos_bootstrap::commands::test_ast_to_minizinc::handle_test_ast_to_minizinc_command(args).map_err(|e| format!("TestAstToMiniZinc command failed: {}", e)),
-        Some(Commands::AnalyzeDuplicates(_)) => todo!(),
+        Some(Commands::AnalyzeDuplicates(args)) => zos_bootstrap::commands::analyze_duplicates::handle_analyze_duplicates_command(args).map_err(|e| format!("AnalyzeDuplicates command failed: {}", e)),
         None => {
             println!("No command provided. Use --help for more information.");
             Ok(())

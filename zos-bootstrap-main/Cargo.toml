@@ -1,5 +1,5 @@
 [package]
-name = "temp_zos_test"
+name = "zos-bootstrap-main"
 version = "0.1.0"
 edition = "2021"
 

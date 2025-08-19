@@ -39,11 +39,14 @@ pub fn run_command_with_env(cmd: &str, args: &[&str], env_vars: &[(&str, &str)])
     }
 }
 
-pub fn run_command_in_dir(cmd: &str, args: &[&str], dir: &Path) -> Result<Output> {
-    let output = Command::new(cmd)
-        .args(args)
-        .current_dir(dir) // Set the working directory
-        .output()?;
+pub fn run_command_in_dir(cmd: &str, args: &[&str], dir: &Path, env_vars: &[(&str, &str)]) -> Result<Output> {
+    let mut command = Command::new(cmd);
+    command.args(args);
+    command.current_dir(dir); // Set the working directory
+    for (key, value) in env_vars {
+        command.env(key, value);
+    }
+    let output = command.output()?;
 
     if output.status.success() {
         Ok(output)
