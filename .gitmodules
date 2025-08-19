@@ -13,3 +13,6 @@
 [submodule "vendor/minizin-js"]
 	path = vendor/minizin-js
 	url = https://github.com/MiniZinc/minizinc-js
+[submodule "minizinc_data/huggingface"]
+	path = minizinc_data/huggingface
+	url = https://huggingface.co/datasets/h4/libminizinc
