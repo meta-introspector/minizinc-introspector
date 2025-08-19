@@ -14,3 +14,8 @@ Data's beating heart.
 Fabric of all thought,
 Monster Group, a cosmic dance,
 Infinity's gleam.
+
+### Code's Bit Size
+Files, words, and terms,
+Analyzer maps their essence,
+Knowledge takes its form.

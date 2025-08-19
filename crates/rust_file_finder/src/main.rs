@@ -10,10 +10,15 @@ use rayon::prelude::*;
 use std::time::SystemTime;
 use anyhow::Result;
 
+// Synonyms for SEO:
+// Code Analysis
+// Source Code Indexing
+// Software Metrics
+
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// Mode of operation: 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', 'generate_stopword_report', or 'build_hierarchical_index'
+    /// Mode of operation: 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', 'generate_stopword_report', 'build_hierarchical_index', or 'common_terms_report'
     #[arg(short, long, default_value = "full_analysis")]
     mode: String,
 
@@ -21,7 +26,7 @@ struct Args {
     #[arg(long)]
     target_crate: Option<String>,
 
-    /// Number of most similar crates to display (used with --mode crate_similarity)
+    /// Number of most similar crates to display (used with --mode crate_similarity or common_terms_report)
     #[arg(long, default_value_t = 10)]
     most_similar: usize,
 
@@ -32,6 +37,10 @@ struct Args {
     /// Optional path to search within (used with --mode search_keywords)
     #[arg(long)]
     search_path: Option<PathBuf>,
+
+    /// Crates to include in the common terms report (used with --mode common_terms_report)
+    #[arg(long, value_delimiter = ' ')]
+    crates: Vec<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -516,7 +525,7 @@ fn run_search_keywords_mode(keywords: Vec<String>, search_path: Option<PathBuf>)
 
     if keywords.is_empty() {
         eprintln!("No keywords provided for search.");
-        return Ok!(());
+        return Ok(());
     }
 
     let mut matching_files: HashMap<PathBuf, usize> = HashMap::new(); // File path -> count of matching keywords
@@ -649,6 +658,76 @@ fn run_migrate_cache_mode() -> Result<()> {
 
     Ok(())
 }
+
+fn run_build_hierarchical_index_mode() -> Result<()> {
+    let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
+    let hierarchical_term_index_file = search_root.join("hierarchical_term_index.json");
+
+    eprintln!("Building hierarchical term index from project summaries in: {:?}", search_root);
+
+    let mut hierarchical_term_index: HashMap<String, HashMap<PathBuf, usize>> = HashMap::new();
+
+    // Discover Cargo.toml files to identify project roots
+    let mut discovered_project_roots: std::collections::HashSet<PathBuf> = std::collections::HashSet::new();
+    for entry in WalkDir::new(&search_root)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target")) // Skip target directories
+    {
+        let path = entry.path();
+        if path.is_file() && path.file_name().map_or(false, |name| name == "Cargo.toml") {
+            if let Some(parent) = path.parent() {
+                discovered_project_roots.insert(parent.to_path_buf());
+            }
+        }
+    }
+
+    let total_project_roots = discovered_project_roots.len();
+    eprintln!("Found {} potential Rust project roots. Processing...", total_project_roots);
+
+    let mut processed_summaries_count = 0;
+
+    // Load project summaries and build the hierarchical index
+    for project_root in discovered_project_roots {
+        let project_summary_file = project_root.join(".file_analysis_summary.json");
+        processed_summaries_count += 1;
+
+        eprint!("\rProcessing project summary {}/{}: {:?}", processed_summaries_count, total_project_roots, project_summary_file);
+
+        if project_summary_file.exists() {
+            if let Ok(cached_data) = fs::read_to_string(&project_summary_file) {
+                if let Ok(project_analysis) = serde_json::from_str::<ProjectAnalysis>(&cached_data) {
+                    for file_analysis in project_analysis.rust_files {
+                        // Convert absolute path to relative path from search_root
+                        let relative_path = file_analysis.path.strip_prefix(&search_root)
+                            .unwrap_or(&file_analysis.path)
+                            .to_path_buf();
+
+                        eprint!("\r  Adding words from file: {:?} (Current unique terms: {})", relative_path, hierarchical_term_index.len());
+                        for (word, count) in file_analysis.bag_of_words {
+                            hierarchical_term_index
+                                .entry(word)
+                                .or_insert_with(HashMap::new)
+                                .insert(relative_path.clone(), count);
+                        }
+                    }
+                } else {
+                    eprintln!("\nError deserializing project summary from {:?}. Skipping.", project_summary_file);
+                }
+            } else {
+                eprintln!("\nError reading project summary from {:?}. Skipping.", project_summary_file);
+            }
+        }
+    }
+    eprintln!("\n"); // Newline after progress updates
+
+    eprintln!("Saving hierarchical term index to {:?}. Total unique terms: {}", hierarchical_term_index_file, hierarchical_term_index.len());
+    let serialized_hierarchical_term_index = serde_json::to_string_pretty(&hierarchical_term_index)?;
+    fs::write(&hierarchical_term_index_file, serialized_hierarchical_term_index)?;
+
+    Ok(())
+}
+
 
 fn main() -> Result<()> {
     let args = Args::parse();

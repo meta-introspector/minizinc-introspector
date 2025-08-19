@@ -2,6 +2,6 @@
 
 The bootstrap, with emojis so grand,
 Mapped folders across the whole land.
-A root, green and bright,
-Docs, a paper-filled sight,
-A visual, clear, helping hand.
+Our analyzer's gaze,
+Through code's intricate maze,
+Builds knowledge, a helping hand.

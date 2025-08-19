@@ -2,6 +2,6 @@
 
 A backpack, with primes in its core,
 Held knowledge, and asked for no more.
-With numbers so neat,
-Its wisdom complete,
-A codec, from shore to far shore.
+Our analyzer's might,
+Packs code, clear and bright,
+For fast search, from shore to far shore.
