@@ -6,13 +6,24 @@ use std::collections::HashMap;
 use regex::Regex;
 use toml::Value;
 use clap::Parser;
+use rayon::prelude::*;
+use std::time::{SystemTime, UNIX_EPOCH};
+use anyhow::Result;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// Mode of operation: 'full_analysis', 'read_cargo_toml', or 'crate_similarity'
+    /// Mode of operation: 'full_analysis', 'read_cargo_toml', 'crate_similarity', or 'migrate_cache'
     #[arg(short, long, default_value = "full_analysis")]
     mode: String,
+
+    /// Target crate for similarity analysis (used with --mode crate_similarity)
+    #[arg(long)]
+    target_crate: Option<String>,
+
+    /// Number of most similar crates to display (used with --mode crate_similarity)
+    #[arg(long, default_value_t = 10)]
+    most_similar: usize,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -20,6 +31,7 @@ struct FileAnalysis {
     path: PathBuf,
     word_count: usize,
     bag_of_words: HashMap<String, usize>,
+    last_modified: SystemTime,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -61,28 +73,13 @@ fn calculate_cosine_similarity(map1: &HashMap<String, usize>, map2: &HashMap<Str
     dot_product / (magnitude1 * magnitude2)
 }
 
-fn run_full_analysis() -> Result<(), Box<dyn std::error::Error>> {
+fn run_full_analysis() -> Result<()> {
+    // Set up Rayon thread pool
+    rayon::ThreadPoolBuilder::new().num_threads(16).build_global().unwrap();
+
     let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
-    let cache_file = search_root.join("file_analysis_cache.json");
 
-    let mut all_project_analyses: Vec<ProjectAnalysis> = Vec::new();
     let mut all_rust_files: Vec<FileAnalysis> = Vec::new();
-    let mut processed_project_roots: std::collections::HashSet<PathBuf> = std::collections::HashSet::new();
-
-    // Attempt to load existing state from cache
-    if cache_file.exists() {
-        eprintln!("Loading existing analysis from cache: {:?}", cache_file);
-        let cached_data = fs::read_to_string(&cache_file)?;
-        all_project_analyses = serde_json::from_str(&cached_data)?;
-
-        for project_analysis in &all_project_analyses {
-            processed_project_roots.insert(project_analysis.project_root.clone());
-            for file_analysis in &project_analysis.rust_files {
-                all_rust_files.push(file_analysis.clone());
-            }
-        }
-        eprintln!("Loaded {} projects and {} Rust files from cache.", all_project_analyses.len(), all_rust_files.len());
-    }
 
     eprintln!("Discovering Rust projects in: {:?}", search_root);
 
@@ -103,140 +100,180 @@ fn run_full_analysis() -> Result<(), Box<dyn std::error::Error>> {
 
     eprintln!("Found {} potential Rust project roots.", discovered_project_roots.len());
 
-    // Second pass: Process .rs files within identified project roots, skipping already processed ones
+    // Second pass: Process .rs files within identified project roots
     for project_root in discovered_project_roots {
-        if processed_project_roots.contains(&project_root) {
-            eprintln!("Skipping already processed project: {:?}", project_root);
-            continue;
+        let project_summary_file = project_root.join(".file_analysis_summary.json");
+        let cargo_toml_path = project_root.join("Cargo.toml");
+
+        let mut should_reprocess_project = true;
+
+        // Check if project summary file exists and is newer than Cargo.toml
+        if project_summary_file.exists() {
+            if let Ok(summary_metadata) = fs::metadata(&project_summary_file) {
+                if let Ok(summary_mtime) = summary_metadata.modified() {
+                    if let Ok(cargo_metadata) = fs::metadata(&cargo_toml_path) {
+                        if let Ok(cargo_mtime) = cargo_metadata.modified() {
+                            if summary_mtime >= cargo_mtime {
+                                // Summary file is up-to-date or newer than Cargo.toml
+                                // Now check individual file staleness
+                                if let Ok(cached_data) = fs::read_to_string(&project_summary_file) {
+                                    if let Ok(cached_project_analysis) = serde_json::from_str::<ProjectAnalysis>(&cached_data) {
+                                        let mut project_is_stale = false;
+                                        for file_analysis in &cached_project_analysis.rust_files {
+                                            if let Ok(metadata) = fs::metadata(&file_analysis.path) {
+                                                if let Ok(modified_time) = metadata.modified() {
+                                                    if modified_time > file_analysis.last_modified {
+                                                        project_is_stale = true;
+                                                        eprintln!("  File {:?} is newer than cached. Project {:?} is stale.", file_analysis.path, project_root);
+                                                        break;
+                                                    }
+                                                }
+                                            } else {
+                                                // File is missing or inaccessible, consider project stale
+                                                project_is_stale = true;
+                                                eprintln!("  File {:?} is missing or inaccessible. Project {:?} is stale.", file_analysis.path, project_root);
+                                                break;
+                                            }
+                                        }
+                                        if !project_is_stale {
+                                            should_reprocess_project = false;
+                                            eprintln!("Skipping up-to-date project: {:?}", project_root);
+                                            // Add files from this project to all_rust_files
+                                            all_rust_files.extend(cached_project_analysis.rust_files.into_iter());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
-        eprintln!("Processing new Rust project: {:?}", project_root);
-        let mut current_project_rust_files: Vec<FileAnalysis> = Vec::new();
+        if should_reprocess_project {
+            eprintln!("Processing project: {:?}", project_root);
+            let mut current_project_rust_files: Vec<FileAnalysis> = Vec::new();
 
-        let cargo_toml_path = project_root.join("Cargo.toml");
-        let mut prioritized_files: std::collections::HashSet<PathBuf> = std::collections::HashSet::new();
+            let mut prioritized_files: std::collections::HashSet<PathBuf> = std::collections::HashSet::new();
 
-        // Parse Cargo.toml to find prioritized files
-        if let Ok(cargo_toml_content) = fs::read_to_string(&cargo_toml_path) {
-            if let Ok(parsed_toml) = cargo_toml_content.parse::<Value>() {
-                // Add lib.rs if it exists
-                if let Some(lib_table) = parsed_toml.get("lib") {
-                    if let Some(lib_path) = lib_table.get("path").and_then(|path| path.as_str()) {
-                        prioritized_files.insert(project_root.join(lib_path));
+            // Parse Cargo.toml to find prioritized files
+            if let Ok(cargo_toml_content) = fs::read_to_string(&cargo_toml_path) {
+                if let Ok(parsed_toml) = cargo_toml_content.parse::<Value>() {
+                    // Add lib.rs if it exists
+                    if let Some(lib_table) = parsed_toml.get("lib") {
+                        if let Some(lib_path) = lib_table.get("path").and_then(|path| path.as_str()) {
+                            prioritized_files.insert(project_root.join(lib_path));
+                        } else {
+                            prioritized_files.insert(project_root.join("src/lib.rs"));
+                        }
                     } else {
                         prioritized_files.insert(project_root.join("src/lib.rs"));
                     }
-                } else {
-                    prioritized_files.insert(project_root.join("src/lib.rs"));
-                }
 
-                // Add main.rs if it exists
-                if let Some(bin_array) = parsed_toml.get("bin").and_then(|bin| bin.as_array()) {
-                    for bin_entry in bin_array {
-                        if let Some(path) = bin_entry.get("path").and_then(|path| path.as_str()) {
-                            prioritized_files.insert(project_root.join(path));
+                    // Add main.rs if it exists
+                    if let Some(bin_array) = parsed_toml.get("bin").and_then(|bin| bin.as_array()) {
+                        for bin_entry in bin_array {
+                            if let Some(path) = bin_entry.get("path").and_then(|path| path.as_str()) {
+                                prioritized_files.insert(project_root.join(path));
+                            }
+                        }
+                    } else {
+                        prioritized_files.insert(project_root.join("src/main.rs"));
+                    }
+                }
+            }
+            
+            // Process prioritized files first
+            let processed_prioritized_files: Vec<FileAnalysis> = prioritized_files.par_iter().filter_map(|path| {
+                if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") {
+                    match fs::read_to_string(path) {
+                        Ok(file_content) => {
+                            let tokens = tokenize(&file_content);
+                            let mut bag_of_words: HashMap<String, usize> = HashMap::new();
+                            for token in &tokens {
+                                *bag_of_words.entry(token.clone()).or_insert(0) += 1;
+                            }
+                            let word_count = tokens.len();
+                            let last_modified = fs::metadata(path).and_then(|m| m.modified()).unwrap_or_else(|_| SystemTime::now());
+
+                            Some(FileAnalysis {
+                                path: path.to_path_buf(),
+                                word_count,
+                                bag_of_words,
+                                last_modified,
+                            })
+                        },
+                        Err(e) => {
+                            eprintln!("  Error reading prioritized Rust file {:?}: {}", path, e);
+                            None
                         }
                     }
                 } else {
-                    prioritized_files.insert(project_root.join("src/main.rs"));
+                    None
                 }
-            }
-        }
+            }).collect();
+            current_project_rust_files.extend(processed_prioritized_files.into_iter());
 
-        // Process prioritized files first
-        for path in &prioritized_files {
-            if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") {
-                match fs::read_to_string(path) {
-                    Ok(file_content) => {
-                        let tokens = tokenize(&file_content);
-                        let mut bag_of_words: HashMap<String, usize> = HashMap::new();
-                        for token in &tokens {
-                            *bag_of_words.entry(token.clone()).or_insert(0) += 1;
+            // Process remaining .rs files in parallel
+            let remaining_files: Vec<FileAnalysis> = WalkDir::new(&project_root)
+                .into_iter()
+                .filter_map(|e| e.ok())
+                .par_bridge() // Use par_bridge for parallel iteration over WalkDir entries
+                .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target")) // Skip target directories
+                .filter_map(|entry| {
+                    let path = entry.path();
+                    if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") && !prioritized_files.contains(path) {
+                        match fs::read_to_string(path) {
+                            Ok(file_content) => {
+                                let tokens = tokenize(&file_content);
+                                let mut bag_of_words: HashMap<String, usize> = HashMap::new();
+                                for token in &tokens {
+                                    *bag_of_words.entry(token.clone()).or_insert(0) += 1;
+                                }
+                                let word_count = tokens.len();
+                                let last_modified = fs::metadata(path).and_then(|m| m.modified()).unwrap_or_else(|_| SystemTime::now());
+
+                                Some(FileAnalysis {
+                                    path: path.to_path_buf(),
+                                    word_count,
+                                    bag_of_words,
+                                    last_modified,
+                                })
+                            },
+                            Err(e) => {
+                                eprintln!("  Error reading Rust file {:?}: {}", path, e);
+                                None
+                            }
                         }
-                        let word_count = tokens.len();
-
-                        let file_analysis = FileAnalysis {
-                            path: path.to_path_buf(),
-                            word_count,
-                            bag_of_words,
-                        };
-                        current_project_rust_files.push(file_analysis.clone());
-                        all_rust_files.push(file_analysis);
-                    },
-                    Err(e) => {
-                        eprintln!("  Error reading prioritized Rust file {:?}: {}", path, e);
+                    } else {
+                        None
                     }
-                }
-            }
+                }).collect();
+            current_project_rust_files.extend(remaining_files.into_iter());
+
+            let project_analysis = ProjectAnalysis {
+                project_root: project_root.clone(),
+                rust_files: current_project_rust_files.clone(),
+            };
+            // Save per-project summary
+            eprintln!("Saving project summary to {:?}", project_summary_file);
+            let serialized = serde_json::to_string_pretty(&project_analysis)?;
+            fs::write(&project_summary_file, serialized)?;
+
+            all_rust_files.extend(current_project_rust_files.into_iter());
         }
-
-        // Process remaining .rs files
-        for entry in WalkDir::new(&project_root)
-            .into_iter()
-            .filter_map(|e| e.ok())
-            .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target")) // Skip target directories
-        {
-            let path = entry.path();
-            if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") && !prioritized_files.contains(path) {
-                match fs::read_to_string(path) {
-                    Ok(file_content) => {
-                        let tokens = tokenize(&file_content);
-                        let mut bag_of_words: HashMap<String, usize> = HashMap::new();
-                        for token in &tokens {
-                            *bag_of_words.entry(token.clone()).or_insert(0) += 1;
-                        }
-                        let word_count = tokens.len();
-
-                        let file_analysis = FileAnalysis {
-                            path: path.to_path_buf(),
-                            word_count,
-                            bag_of_words,
-                        };
-                        current_project_rust_files.push(file_analysis.clone());
-                        all_rust_files.push(file_analysis);
-                    },
-                    Err(e) => {
-                        eprintln!("  Error reading Rust file {:?}: {}", path, e);
-                    }
-                }
-            }
-        }
-        all_project_analyses.push(ProjectAnalysis {
-            project_root: project_root.clone(),
-            rust_files: current_project_rust_files,
-        });
-
-        // Save state incrementally after each project
-        eprintln!("Saving incremental cache to {:?}", cache_file);
-        let serialized = serde_json::to_string_pretty(&all_project_analyses)?;
-        fs::write(&cache_file, serialized)?;
     }
 
     eprintln!("All project analysis complete. Finalizing similarity calculation...");
 
-    eprintln!("Calculating similarities among all .rs files...");
-    for i in 0..all_rust_files.len() {
-        for j in (i + 1)..all_rust_files.len() {
-            let file1 = &all_rust_files[i];
-            let file2 = &all_rust_files[j];
-
-            let similarity = calculate_cosine_similarity(&file1.bag_of_words, &file2.bag_of_words);
-
-            if similarity >= 0.90 {
-                println!("\n--- 90% Similar Rust Files ---");
-                println!("File 1: {:?}", file1.path);
-                println!("File 2: {:?}", file2.path);
-                println!("Similarity: {:.2}%", similarity * 100.0);
-            }
-        }
-    }
-
-    eprintln!("Similarity calculation complete.");
+    // File similarity calculation removed from here to avoid verbose output.
+    // This can be re-added if detailed file-level similarities are needed.
+    eprintln!("File-level similarity calculation skipped for brevity.");
 
     Ok(())
 }
 
-fn run_read_cargo_toml_mode() -> Result<(), Box<dyn std::error::Error>> {
+fn run_read_cargo_toml_mode() -> Result<()> {
     let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
 
     eprintln!("Searching for Cargo.toml files in: {:?}", search_root);
@@ -259,18 +296,42 @@ fn run_read_cargo_toml_mode() -> Result<(), Box<dyn std::error::Error>> {
         }
     }
 
-    eprintln!("Search complete.");
-
     Ok(())
 }
 
-fn run_crate_similarity_analysis() -> Result<(), Box<dyn std::error::Error>> {
+fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results: usize) -> Result<()> {
     let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
-    let cache_file = search_root.join("file_analysis_cache.json");
 
-    eprintln!("Loading analysis from cache for crate similarity: {:?}", cache_file);
-    let cached_data = fs::read_to_string(&cache_file)?;
-    let all_project_analyses: Vec<ProjectAnalysis> = serde_json::from_str(&cached_data)?;
+    eprintln!("Discovering Rust projects in: {:?}", search_root);
+
+    // First pass: Discover Cargo.toml files to identify project roots
+    let mut discovered_project_roots: std::collections::HashSet<PathBuf> = std::collections::HashSet::new();
+    for entry in WalkDir::new(&search_root)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target")) // Skip target directories
+    {
+        let path = entry.path();
+        if path.is_file() && path.file_name().map_or(false, |name| name == "Cargo.toml") {
+            if let Some(parent) = path.parent() {
+                discovered_project_roots.insert(parent.to_path_buf());
+            }
+        }
+    }
+
+    let mut all_project_analyses: Vec<ProjectAnalysis> = Vec::new();
+
+    // Load project summaries
+    for project_root in discovered_project_roots {
+        let project_summary_file = project_root.join(".file_analysis_summary.json");
+        if project_summary_file.exists() {
+            if let Ok(cached_data) = fs::read_to_string(&project_summary_file) {
+                if let Ok(project_analysis) = serde_json::from_str::<ProjectAnalysis>(&cached_data) {
+                    all_project_analyses.push(project_analysis);
+                }
+            }
+        }
+    }
 
     let mut crate_bags_of_words: HashMap<String, HashMap<String, usize>> = HashMap::new();
 
@@ -303,34 +364,36 @@ fn run_crate_similarity_analysis() -> Result<(), Box<dyn std::error::Error>> {
         crate_bags_of_words.insert(crate_name, aggregated_bag_of_words);
     }
 
-    let file_content_analyzer_bag = crate_bags_of_words.get("file_content_analyzer").ok_or("file_content_analyzer not found in cache. Run full_analysis first.")?;
+    let target_crate_name = target_crate_name.unwrap_or_else(|| "file_content_analyzer".to_string());
+    let target_crate_bag = crate_bags_of_words.get(&target_crate_name).ok_or(anyhow::anyhow!("Target crate '{}' not found in cache. Run full_analysis first.", target_crate_name))?;
 
-    eprintln!("Calculating similarities to file_content_analyzer...");
+    eprintln!("Calculating similarities to '{}'...", target_crate_name);
     let mut similarities: Vec<(String, f64)> = Vec::new();
     for (crate_name, bag_of_words) in &crate_bags_of_words {
-        if crate_name != "file_content_analyzer" {
-            let similarity = calculate_cosine_similarity(file_content_analyzer_bag, bag_of_words);
+        if crate_name != &target_crate_name {
+            let similarity = calculate_cosine_similarity(target_crate_bag, bag_of_words);
             similarities.push((crate_name.clone(), similarity));
         }
     }
 
     similarities.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
 
-    println!("\n--- Top Similar Crates to file_content_analyzer ---");
-    for (crate_name, similarity) in similarities.iter().take(10) {
+    println!("\n--- Top {} Similar Crates to {} ---", num_results, target_crate_name);
+    for (crate_name, similarity) in similarities.iter().take(num_results) {
         println!("Crate: {}, Similarity: {:.2}%", crate_name, similarity * 100.0);
     }
 
     Ok(())
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> Result<()> {
     let args = Args::parse();
 
     match args.mode.as_str() {
         "full_analysis" => run_full_analysis(),
         "read_cargo_toml" => run_read_cargo_toml_mode(),
-        "crate_similarity" => run_crate_similarity_analysis(),
-        _ => Err("Invalid mode specified. Use 'full_analysis', 'read_cargo_toml', or 'crate_similarity'.".into()),
+        "crate_similarity" => run_crate_similarity_analysis(args.target_crate, args.most_similar),
+        "migrate_cache" => run_migrate_cache_mode(),
+        _ => Err(anyhow::anyhow!("Invalid mode specified. Use 'full_analysis', 'read_cargo_toml', 'crate_similarity', or 'migrate_cache'.")),
     }
 }

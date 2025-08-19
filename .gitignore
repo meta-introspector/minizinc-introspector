@@ -88,3 +88,4 @@ patch.txt
 
 full_analysis.log
 report.txt
+*.json
