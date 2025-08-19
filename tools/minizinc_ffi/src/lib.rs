@@ -8,3 +8,4 @@ pub mod environment;
 pub mod model;
 //pub use model::*;
 pub mod coverage_report;
+pub mod base_type;

@@ -1,17 +1,12 @@
 use crate::code_analysis::ast_to_numerical_vector_converter::AstNumericalVector;
 use minizinc_ffi::environment::MiniZincEnvironment;
-use minizinc_ffi::types::{
-    MiniZincModel, MiniZincItem, MiniZincVarDecl, MiniZincExpression, MiniZincSolveItem,
-    MiniZincOutputItem, MiniZincBaseType, MiniZincId, MiniZincIntLit, MiniZincStringLit,
-    MiniZincArrayLit,
-};
 
 pub fn generate_ast_minizinc_model_string(
-    env: &mut MiniZincEnvironment,
+    _env: &mut MiniZincEnvironment,
     ast_numerical_vectors: &Vec<AstNumericalVector>,
-    target_index: usize,
+    _target_index: usize,
     complexity_index: u8,
-) -> Result<MiniZincModel, String> {
+) -> Result<String, String> {
     let mut model_content = String::new();
 
     // 1. Declarations
@@ -42,5 +37,5 @@ pub fn generate_ast_minizinc_model_string(
     model_content.push_str("    \"suggested_numerical_vectors = \", show(suggested_numerical_vectors), \"\\n\"");
     model_content.push_str("];\n");
 
-    env.parse_model(&model_content, "generated_model.mzn")
+    Ok(model_content)
 }
