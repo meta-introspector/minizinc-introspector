@@ -9,6 +9,8 @@ pub fn generate_data(args: Args, all_relations: Vec<(String, String, f64)>) -> R
     let minizinc_data_dir = current_dir.join("minizinc_data");
     fs::create_dir_all(&minizinc_data_dir)?;
 
+    
+
     use crate::minizinc_writer::{write_data_declarations, write_chunked_embeddings};
 
     let log_path = minizinc_data_dir.join("doc_to_minizinc_data.log");
@@ -22,7 +24,7 @@ pub fn generate_data(args: Args, all_relations: Vec<(String, String, f64)>) -> R
     let mut rng = rand::thread_rng();
 
     let extensions = ["md", "rs", "cpp", "h", "hpp"];
-    let mut files_to_process: Vec<PathBuf> = Vec::new();
+    let mut files_to_process: Vec<PathBuf> = collect_files(&current_dir, &extensions)?;
 
     use crate::file_processing::{collect_files, process_file};
 
