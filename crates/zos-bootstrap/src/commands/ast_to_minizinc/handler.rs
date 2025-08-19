@@ -50,6 +50,9 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::utils::
     println!("\n--- Starting AST to MiniZinc Process ---");
     println!("Analyzing project: {}", args.project_root);
 
+    let mut env = MiniZincEnvironment::new().map_err(|e| crate::utils::error::ZosError::MiniZincError(format!("Failed to create MiniZinc environment: {}", e)))?;
+
+
     let project_root_path = PathBuf::from(&args.project_root);
     let output_dir = PathBuf::from(&args.output_dir);
     std::fs::create_dir_all(&output_dir)?;
@@ -164,12 +167,13 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::utils::
     let phase4_start_time = Instant::now();
     let model_file_path = output_dir.join("ast_model.mzn");
     // Use the new minizinc_model_generator
-    let model_content = minizinc_model_generator::generate_ast_minizinc_model_string(
+    let model = minizinc_model_generator::generate_ast_minizinc_model_string(
+        &mut env, // Pass the environment
         &all_ast_numerical_vectors,
         target_index,
         args.complexity_index,
-    );
-    std::fs::write(&model_file_path, model_content)?;
+    ).map_err(|e| crate::utils::error::ZosError::MiniZincError(format!("Failed to generate MiniZinc model: {}", e)))?;
+    std::fs::write(&model_file_path, model.to_string(&mut env).expect("Failed to convert model to string"))?;
     let phase4_elapsed = phase4_start_time.elapsed();
     println!("Phase 4 Complete: Generated MiniZinc model file: {} in {:?}.", model_file_path.display(), phase4_elapsed);
     if args.plan_mode {

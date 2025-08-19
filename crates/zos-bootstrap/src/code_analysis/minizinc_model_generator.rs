@@ -1,25 +1,46 @@
-pub fn generate_ast_minizinc_model_string() -> String {
-    r###"array[int] of int: ast_elements_numerical;
-int: num_elements = length(ast_elements_numerical);
-int: target_index;
+use crate::code_analysis::ast_to_numerical_vector_converter::AstNumericalVector;
+use minizinc_ffi::environment::MiniZincEnvironment;
+use minizinc_ffi::types::{
+    MiniZincModel, MiniZincItem, MiniZincVarDecl, MiniZincExpression, MiniZincSolveItem,
+    MiniZincOutputItem, MiniZincBaseType, MiniZincId, MiniZincIntLit, MiniZincStringLit,
+    MiniZincArrayLit,
+};
 
-% Define the prime for "modularity"
-int: modularity_prime = 3;
+pub fn generate_ast_minizinc_model_string(
+    env: &mut MiniZincEnvironment,
+    ast_numerical_vectors: &Vec<AstNumericalVector>,
+    target_index: usize,
+    complexity_index: u8,
+) -> Result<MiniZincModel, String> {
+    let mut model_content = String::new();
 
-% Original target value
-int: original_target_value = ast_elements_numerical[target_index];
+    // 1. Declarations
+    model_content.push_str("array[int] of int: ast_elements_numerical;\n");
+    model_content.push_str("int: num_elements = length(ast_elements_numerical);\n\n");
+    model_content.push_str("int: target_index;\n\n");
+    model_content.push_str("int: modularity_prime = 3;\n\n"); // Define the prime for "modularity"
 
-% Decision variable for the suggested numerical vector of the target element
-var int: suggested_numerical_vector;
+    // 2. Decision variables for the suggested numerical vector of each AST element
+    let max_val = 2u32.pow(complexity_index as u32) - 1;
+    model_content.push_str(&format!("array[1..num_elements] of var 0..{}: suggested_numerical_vectors;\n\n", max_val));
 
-% Constraint: suggested_numerical_vector mod modularity_prime = 0;
+    // 3. Constraints for each suggested numerical vector
+    for i in 0..ast_numerical_vectors.len() {
+        // Constraint: suggested_numerical_vectors[i] mod modularity_prime = 0;
+        model_content.push_str(&format!("constraint suggested_numerical_vectors[{}] mod modularity_prime = 0;\n", i + 1));
 
-% Objective: Minimize the absolute difference between the original target value
-% and the suggested numerical vector.
-solve minimize abs(original_target_value - suggested_numerical_vector);
+        // Constraint: abs(ast_elements_numerical[i] - suggested_numerical_vectors[i]) <= max_val;
+        model_content.push_str(&format!("constraint abs(ast_elements_numerical[{}] - suggested_numerical_vectors[{}]) <= {};\n", i + 1, i + 1, max_val));
+    }
+    model_content.push_str("\n");
 
-output [
-    "suggested_numerical_vector = ", show(suggested_numerical_vector), "\n"
-];
-"###.to_string()
+    // 4. Objective: Minimize the sum of absolute differences between original and suggested numerical vectors
+    model_content.push_str("solve minimize sum(i in 1..num_elements) (abs(ast_elements_numerical[i] - suggested_numerical_vectors[i]));\n\n");
+
+    // 5. Output item
+    model_content.push_str("output [\n");
+    model_content.push_str("    \"suggested_numerical_vectors = \", show(suggested_numerical_vectors), \"\\n\"");
+    model_content.push_str("];\n");
+
+    env.parse_model(&model_content, "generated_model.mzn")
 }

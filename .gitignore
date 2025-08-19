@@ -84,3 +84,4 @@ test_code.rs
 run1.txt
 *.patch.txt
 patch.txt
+/logs/
