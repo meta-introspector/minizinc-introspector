@@ -172,6 +172,7 @@ fn create_ast_to_minizinc_args(
         total_ast_element_subsets: None, // FIX: Add missing fields
         plan_mode: plan_mode,
         single_file_path: None,
+        complexity_index: 2, // Default complexity index
     }
 }
 

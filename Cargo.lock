@@ -1184,6 +1184,7 @@ dependencies = [
  "dirs",
  "doc_to_minizinc_data",
  "glob",
+ "minizinc_ffi",
  "once_cell",
  "proc-macro2",
  "quote",

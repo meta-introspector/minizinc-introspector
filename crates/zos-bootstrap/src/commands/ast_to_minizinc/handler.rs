@@ -41,6 +41,9 @@ pub struct AstToMiniZincArgs {
     /// Optional: Path to a single Rust file to process. If provided, overrides project_root for file discovery.
     #[arg(long)]
     pub single_file_path: Option<PathBuf>,
+    /// The complexity index for generating the MiniZinc model (e.g., bit size for variables).
+    #[arg(long, default_value_t = 2)]
+    pub complexity_index: u8,
 }
 
 pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::utils::error::Result<()> {
@@ -161,7 +164,11 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::utils::
     let phase4_start_time = Instant::now();
     let model_file_path = output_dir.join("ast_model.mzn");
     // Use the new minizinc_model_generator
-    let model_content = minizinc_model_generator::generate_ast_minizinc_model_string();
+    let model_content = minizinc_model_generator::generate_ast_minizinc_model_string(
+        &all_ast_numerical_vectors,
+        target_index,
+        args.complexity_index,
+    );
     std::fs::write(&model_file_path, model_content)?;
     let phase4_elapsed = phase4_start_time.elapsed();
     println!("Phase 4 Complete: Generated MiniZinc model file: {} in {:?}.", model_file_path.display(), phase4_elapsed);

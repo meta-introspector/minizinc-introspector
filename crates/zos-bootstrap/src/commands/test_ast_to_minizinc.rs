@@ -12,6 +12,9 @@ pub struct TestAstToMiniZincArgs {
     /// Enable plan mode to estimate runtime, size, and complexity without full execution.
     #[arg(long)]
     pub plan_mode: bool,
+    /// The complexity index for generating the MiniZinc model (e.g., bit size for variables).
+    #[arg(long, default_value_t = 2)]
+    pub complexity_index: u8,
 }
 
 pub fn handle_test_ast_to_minizinc_command(args: TestAstToMiniZincArgs) -> Result<()> {
@@ -31,6 +34,7 @@ pub fn handle_test_ast_to_minizinc_command(args: TestAstToMiniZincArgs) -> Resul
         total_ast_element_subsets: None,
         plan_mode: args.plan_mode,
         single_file_path: Some(args.file_path),
+        complexity_index: args.complexity_index,
     };
 
     handle_ast_to_minizinc_command(ast_to_minizinc_args)?;
