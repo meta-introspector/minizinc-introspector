@@ -2,9 +2,9 @@ use crate::cli::{Cli, Commands};
 use clap::Parser; // Import Parser trait
 use crate::utils::error::{Result, ZosError}; // Assuming ZosError is in utils::error
 use crate::commands;
-use crate::code_analysis; // Import the code_analysis module
-use std::fs; // Import fs for file operations
-use std::path::PathBuf; // Import PathBuf
+use crate::code_analysis;
+use std::fs;
+use std::path::PathBuf;
 
 pub fn handle_command_dispatch() -> Result<()> {
     let cli = Cli::parse();
@@ -18,25 +18,23 @@ pub fn handle_command_dispatch() -> Result<()> {
         Some(Commands::GenerateParams(args)) => commands::generate_minizinc_params::handle_generate_params_command(args).map_err(|e| ZosError::Unknown(format!("GenerateParams command failed: {}", e))),
         Some(Commands::GenerateConstantsFile(args)) => commands::generate_constants_file::handle_generate_constants_file_command(args).map_err(|e| ZosError::Unknown(format!("GenerateConstantsFile command failed: {}", e))),
         Some(Commands::AnalyzeConstants) => {
-            // Placeholder for AnalyzeConstants logic
             println!("AnalyzeConstants command executed.");
             Ok(())
         },
         Some(Commands::AstToMiniZinc(args)) => commands::ast_to_minizinc::handle_ast_to_minizinc_command(args).map_err(|e| ZosError::Unknown(format!("AstToMiniZinc command failed: {}", e))),
         Some(Commands::CodeSearch(args)) => commands::code_search::handle_code_search_command(args).map_err(|e| ZosError::Unknown(format!("CodeSearch command failed: {}", e))),
         Some(Commands::Bootstrap { target }) => {
-            // Placeholder for Bootstrap logic
             println!("Bootstrap command executed for target: {}", target);
             Ok(())
         },
         Some(Commands::SelfOptimize(args)) => commands::self_optimize::handle_self_optimize_command(args).map_err(|e| ZosError::Unknown(format!("SelfOptimize command failed: {}", e))),
         Some(Commands::TestAstToMiniZinc(args)) => commands::test_ast_to_minizinc::handle_test_ast_to_minizinc_command(args).map_err(|e| ZosError::Unknown(format!("TestAstToMiniZinc command failed: {}", e))),
         Some(Commands::AnalyzeDuplicates(args)) => {
-            // New match arm for AnalyzeDuplicates
             let suggested_code_content = if args.is_file {
-                fs::read_to_string(&args.suggested_code)
-                    .map_err(|e| ZosError::Unknown(format!("Failed to read suggested code from file {}: {}", args.suggested_code.display(), e)))
-            ? {
+                let path = PathBuf::from(&args.suggested_code);
+                fs::read_to_string(&path)
+                    .map_err(|e| ZosError::Unknown(format!("Failed to read suggested code from file {}: {}", path.display(), e)))? 
+            } else {
                 args.suggested_code
             };
 
@@ -49,11 +47,11 @@ pub fn handle_command_dispatch() -> Result<()> {
                     } else {
                         println!("\nFound similar code matches:");
                         for (i, m) in matches.iter().enumerate() {
-                            println!("---"Match {}" ---", i + 1);
+                            println!("Match {} ", i + 1);
                             println!("File: {}", m.file_path.display());
                             println!("Similarity Score: {:.4}", m.similarity_score);
                             println!("Code Snippet (first 10 lines):\n{}", m.code_snippet.lines().take(10).collect::<Vec<&str>>().join("\n"));
-                            println!("-----------------\n");
+                            println!("-----------------");
                         }
                     }
                     Ok(())
