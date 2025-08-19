@@ -1,13 +1,13 @@
 use walkdir::WalkDir;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use serde::{Serialize, Deserialize};
 use std::collections::HashMap;
 use regex::Regex;
 use toml::Value;
 use clap::Parser;
 use rayon::prelude::*;
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::SystemTime;
 use anyhow::Result;
 
 #[derive(Parser, Debug)]
@@ -364,13 +364,13 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
         crate_bags_of_words.insert(crate_name, aggregated_bag_of_words);
     }
 
-    let target_crate_name = target_crate_name.unwrap_or_else(|| "file_content_analyzer".to_string());
-    let target_crate_bag = crate_bags_of_words.get(&target_crate_name).ok_or(anyhow::anyhow!("Target crate '{}' not found in cache. Run full_analysis first.", target_crate_name))?;
+    let target_crate_name_str = target_crate_name.unwrap_or_else(|| "file_content_analyzer".to_string());
+    let target_crate_bag = crate_bags_of_words.get(&target_crate_name_str).ok_or(anyhow::anyhow!("Target crate '{}' not found in cache. Run full_analysis first.", target_crate_name_str))?;
 
-    eprintln!("Calculating similarities to '{}'...", target_crate_name);
+    eprintln!("Calculating similarities to '{}'...", target_crate_name_str);
     let mut similarities: Vec<(String, f64)> = Vec::new();
     for (crate_name, bag_of_words) in &crate_bags_of_words {
-        if crate_name != &target_crate_name {
+        if crate_name != &target_crate_name_str {
             let similarity = calculate_cosine_similarity(target_crate_bag, bag_of_words);
             similarities.push((crate_name.clone(), similarity));
         }
@@ -378,9 +378,33 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
 
     similarities.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
 
-    println!("\n--- Top {} Similar Crates to {} ---", num_results, target_crate_name);
+    println!("\n--- Top {} Similar Crates to {} ---", num_results, target_crate_name_str);
     for (crate_name, similarity) in similarities.iter().take(num_results) {
         println!("Crate: {}, Similarity: {:.2}%", crate_name, similarity * 100.0);
+    }
+
+    Ok(())
+}
+
+fn run_migrate_cache_mode() -> Result<()> {
+    let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
+    let old_cache_file = search_root.join("file_analysis_cache.json");
+
+    eprintln!("Attempting to migrate old cache from {:?}", old_cache_file);
+
+    if old_cache_file.exists() {
+        let cached_data = fs::read_to_string(&old_cache_file)?;
+        let all_project_analyses: Vec<ProjectAnalysis> = serde_json::from_str(&cached_data)?;
+
+        for project_analysis in all_project_analyses {
+            let project_summary_file = project_analysis.project_root.join(".file_analysis_summary.json");
+            eprintln!("Migrating project {:?} to {:?}", project_analysis.project_root, project_summary_file);
+            let serialized = serde_json::to_string_pretty(&project_analysis)?;
+            fs::write(&project_summary_file, serialized)?;
+        }
+        eprintln!("Migration complete. You can now safely remove {:?}", old_cache_file);
+    } else {
+        eprintln!("Old cache file {:?} not found. Nothing to migrate.", old_cache_file);
     }
 
     Ok(())
