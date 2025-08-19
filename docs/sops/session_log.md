@@ -17,3 +17,8 @@
     - `winnow`
 
 These changes reflect the integration of a new file finding utility into the `libminizinc` project, along with its required ecosystem of crates.
+
+### New Files Added
+
+- **`crates/rust_file_finder/`:** This new directory contains the source code for the `rust_file_finder` crate, which was previously added to the `Cargo.toml` workspace members. This signifies the full inclusion of this new utility.
+- **`poems/` Directory:** A new directory named `poems/` has been added, containing several new Markdown files. These files appear to be new documentation or creative content, potentially related to the project's philosophical or conceptual aspects.
