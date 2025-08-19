@@ -1,19 +1,19 @@
 use walkdir::WalkDir;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use serde::{Serialize, Deserialize};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use regex::Regex;
 use toml::Value;
 use clap::Parser;
 use rayon::prelude::*;
-use std::time::SystemTime;
+use std::time::{SystemTime, UNIX_EPOCH};
 use anyhow::Result;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// Mode of operation: 'full_analysis', 'read_cargo_toml', 'crate_similarity', or 'migrate_cache'
+    /// Mode of operation: 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', or 'generate_stopword_report'
     #[arg(short, long, default_value = "full_analysis")]
     mode: String,
 
@@ -24,6 +24,10 @@ struct Args {
     /// Number of most similar crates to display (used with --mode crate_similarity)
     #[arg(long, default_value_t = 10)]
     most_similar: usize,
+
+    /// Keywords to search for (used with --mode search_keywords)
+    #[arg(long, value_delimiter = ' ')]
+    keywords: Vec<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -40,10 +44,24 @@ struct ProjectAnalysis {
     rust_files: Vec<FileAnalysis>,
 }
 
+#[derive(Debug, Serialize, Deserialize, Clone)]
+struct FilePairSimilarity {
+    file1_path: PathBuf,
+    file2_path: PathBuf,
+    similarity: f64,
+}
+
+// Define a list of common English stopwords
+const STOPWORDS: &[&str] = &[
+    "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "has", "he", "in",
+    "is", "it", "its", "of", "on", "that", "the", "to", "was", "were", "will", "with",
+];
+
 fn tokenize(text: &str) -> Vec<String> {
     let re = Regex::new(r"\b\w+\b").unwrap();
     re.find_iter(text)
         .map(|m| m.as_str().to_lowercase())
+        .filter(|word| !STOPWORDS.contains(&word.as_str())) // Filter out stopwords
         .collect()
 }
 
@@ -78,6 +96,8 @@ fn run_full_analysis() -> Result<()> {
     rayon::ThreadPoolBuilder::new().num_threads(16).build_global().unwrap();
 
     let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
+    let term_index_file = search_root.join("term_index.json");
+    let file_pair_similarities_file = search_root.join("file_pair_similarities.json");
 
     let mut all_rust_files: Vec<FileAnalysis> = Vec::new();
 
@@ -266,9 +286,61 @@ fn run_full_analysis() -> Result<()> {
 
     eprintln!("All project analysis complete. Finalizing similarity calculation...");
 
-    // File similarity calculation removed from here to avoid verbose output.
-    // This can be re-added if detailed file-level similarities are needed.
-    eprintln!("File-level similarity calculation skipped for brevity.");
+    // File similarity calculation and storage
+    let mut file_pair_similarities: Vec<FilePairSimilarity> = Vec::new();
+    eprintln!("Calculating and storing file-level similarities...");
+    for i in 0..all_rust_files.len() {
+        for j in (i + 1)..all_rust_files.len() {
+            let file1 = &all_rust_files[i];
+            let file2 = &all_rust_files[j];
+
+            let similarity = calculate_cosine_similarity(&file1.bag_of_words, &file2.bag_of_words);
+
+            if similarity >= 0.90 {
+                file_pair_similarities.push(FilePairSimilarity {
+                    file1_path: file1.path.clone(),
+                    file2_path: file2.path.clone(),
+                    similarity,
+                });
+            }
+        }
+    }
+
+    eprintln!("Saving file pair similarities to {:?}", file_pair_similarities_file);
+    let serialized_file_pair_similarities = serde_json::to_string_pretty(&file_pair_similarities)?;
+    fs::write(&file_pair_similarities_file, serialized_file_pair_similarities)?;
+
+    eprintln!("Similarity calculation complete.");
+
+    // Build and save term index
+    let mut term_index: HashMap<String, HashSet<String>> = HashMap::new();
+    for file_analysis in &all_rust_files {
+        let crate_name = if let Ok(cargo_toml_content) = fs::read_to_string(file_analysis.path.parent().unwrap().join("Cargo.toml")) {
+            if let Ok(parsed_toml) = cargo_toml_content.parse::<Value>() {
+                if let Some(package_table) = parsed_toml.get("package") {
+                    if let Some(name) = package_table.get("name").and_then(|name| name.as_str()) {
+                        name.to_string()
+                    } else {
+                        file_analysis.path.parent().unwrap().file_name().unwrap_or_default().to_string_lossy().into_owned()
+                    }
+                } else {
+                    file_analysis.path.parent().unwrap().file_name().unwrap_or_default().to_string_lossy().into_owned()
+                }
+            } else {
+                file_analysis.path.parent().unwrap().file_name().unwrap_or_default().to_string_lossy().into_owned()
+            }
+        } else {
+            file_analysis.path.parent().unwrap().file_name().unwrap_or_default().to_string_lossy().into_owned()
+        };
+
+        for (word, _count) in &file_analysis.bag_of_words {
+            term_index.entry(word.clone()).or_insert_with(HashSet::new).insert(crate_name.clone());
+        }
+    }
+
+    eprintln!("Saving term index to {:?}", term_index_file);
+    let serialized_term_index = serde_json::to_string_pretty(&term_index)?;
+    fs::write(&term_index_file, serialized_term_index)?;
 
     Ok(())
 }
@@ -301,6 +373,7 @@ fn run_read_cargo_toml_mode() -> Result<()> {
 
 fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results: usize) -> Result<()> {
     let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
+    let file_pair_similarities_file = search_root.join("file_pair_similarities.json");
 
     eprintln!("Discovering Rust projects in: {:?}", search_root);
 
@@ -334,13 +407,17 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
     }
 
     let mut crate_bags_of_words: HashMap<String, HashMap<String, usize>> = HashMap::new();
+    let mut crate_file_paths: HashMap<String, HashSet<PathBuf>> = HashMap::new();
 
     for project_analysis in &all_project_analyses {
         let mut aggregated_bag_of_words: HashMap<String, usize> = HashMap::new();
+        let mut current_crate_file_paths: HashSet<PathBuf> = HashSet::new();
+
         for file_analysis in &project_analysis.rust_files {
             for (word, count) in &file_analysis.bag_of_words {
                 *aggregated_bag_of_words.entry(word.clone()).or_insert(0) += count;
             }
+            current_crate_file_paths.insert(file_analysis.path.clone());
         }
         // Extract crate name from Cargo.toml
         let cargo_toml_path = project_analysis.project_root.join("Cargo.toml");
@@ -361,7 +438,8 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
         } else {
             project_analysis.project_root.file_name().unwrap_or_default().to_string_lossy().into_owned()
         };
-        crate_bags_of_words.insert(crate_name, aggregated_bag_of_words);
+        crate_bags_of_words.insert(crate_name.clone(), aggregated_bag_of_words);
+        crate_file_paths.insert(crate_name, current_crate_file_paths);
     }
 
     let target_crate_name_str = target_crate_name.unwrap_or_else(|| "file_content_analyzer".to_string());
@@ -379,8 +457,85 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
     similarities.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
 
     println!("\n--- Top {} Similar Crates to {} ---", num_results, target_crate_name_str);
+    let top_similar_crates: Vec<String> = similarities.iter().take(num_results).map(|(name, _)| name.clone()).collect();
+
     for (crate_name, similarity) in similarities.iter().take(num_results) {
         println!("Crate: {}, Similarity: {:.2}%", crate_name, similarity * 100.0);
+    }
+
+    // Load file pair similarities
+    if file_pair_similarities_file.exists() {
+        eprintln!("Loading file pair similarities from {:?}", file_pair_similarities_file);
+        let cached_data = fs::read_to_string(&file_pair_similarities_file)?;
+        let all_file_pair_similarities: Vec<FilePairSimilarity> = serde_json::from_str(&cached_data)?;
+
+        println!("\n--- File-level Similarities within Top Similar Crates ---");
+        let target_crate_files = crate_file_paths.get(&target_crate_name_str).cloned().unwrap_or_default();
+
+        for similar_crate_name in &top_similar_crates {
+            if let Some(similar_crate_files) = crate_file_paths.get(similar_crate_name) {
+                println!("\n  Files similar to {} (in {})", target_crate_name_str, similar_crate_name);
+                let mut found_similarities = false;
+                for file_pair in &all_file_pair_similarities {
+                    let file1_in_target = target_crate_files.contains(&file_pair.file1_path);
+                    let file2_in_target = target_crate_files.contains(&file_pair.file2_path);
+                    let file1_in_similar = similar_crate_files.contains(&file_pair.file1_path);
+                    let file2_in_similar = similar_crate_files.contains(&file_pair.file2_path);
+
+                    // Case 1: One file from target crate, one from similar crate
+                    if (file1_in_target && file2_in_similar) || (file2_in_target && file1_in_similar) {
+                        println!("    File 1: {:?}", file_pair.file1_path);
+                        println!("    File 2: {:?}", file_pair.file2_path);
+                        println!("    Similarity: {:.2}%", file_pair.similarity * 100.0);
+                        found_similarities = true;
+                    }
+                }
+                if !found_similarities {
+                    println!("    No file-level similarities found between these crates (>=90%).");
+                }
+            }
+        }
+    } else {
+        eprintln!("File pair similarities file {:?} not found. Run full_analysis first.", file_pair_similarities_file);
+    }
+
+    Ok(())
+}
+
+fn run_search_keywords_mode(keywords: Vec<String>) -> Result<()> {
+    let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
+    let term_index_file = search_root.join("term_index.json");
+
+    eprintln!("Loading term index from {:?}", term_index_file);
+    let cached_data = fs::read_to_string(&term_index_file)?;
+    let term_index: HashMap<String, HashSet<String>> = serde_json::from_str(&cached_data)?;
+
+    if keywords.is_empty() {
+        eprintln!("No keywords provided for search.");
+        return Ok!(());
+    }
+
+    let mut matching_crates: HashMap<String, usize> = HashMap::new(); // Crate name -> count of matching keywords
+
+    eprintln!("Searching for keywords: {:?}", keywords);
+    for keyword in keywords {
+        if let Some(crates) = term_index.get(&keyword.to_lowercase()) {
+            for crate_name in crates {
+                *matching_crates.entry(crate_name.clone()).or_insert(0) += 1;
+            }
+        }
+    }
+
+    let mut sorted_results: Vec<(String, usize)> = matching_crates.into_iter().collect();
+    sorted_results.sort_by(|a, b| b.1.cmp(&a.1));
+
+    println!("\n--- Search Results for Keywords {:?} ---", keywords);
+    if sorted_results.is_empty() {
+        println!("No crates found matching the provided keywords.");
+    } else {
+        for (crate_name, match_count) in sorted_results {
+            println!("Crate: {}, Matching Keywords: {}", crate_name, match_count);
+        }
     }
 
     Ok(())
@@ -418,6 +573,7 @@ fn main() -> Result<()> {
         "read_cargo_toml" => run_read_cargo_toml_mode(),
         "crate_similarity" => run_crate_similarity_analysis(args.target_crate, args.most_similar),
         "migrate_cache" => run_migrate_cache_mode(),
-        _ => Err(anyhow::anyhow!("Invalid mode specified. Use 'full_analysis', 'read_cargo_toml', 'crate_similarity', or 'migrate_cache'.")),
+        "search_keywords" => run_search_keywords_mode(args.keywords),
+        _ => Err(anyhow::anyhow!("Invalid mode specified. Use 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', or 'search_keywords'.")),
     }
 }
