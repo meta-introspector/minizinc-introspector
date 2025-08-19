@@ -26,6 +26,7 @@ fn main() -> Result<(), String> {
         },
         Some(Commands::SelfOptimize(args)) => zos_bootstrap::commands::self_optimize::handle_self_optimize_command(args).map_err(|e| format!("SelfOptimize command failed: {}", e)),
         Some(Commands::TestAstToMiniZinc(args)) => zos_bootstrap::commands::test_ast_to_minizinc::handle_test_ast_to_minizinc_command(args).map_err(|e| format!("TestAstToMiniZinc command failed: {}", e)),
+        Some(Commands::AnalyzeDuplicates(_)) => todo!(),
         None => {
             println!("No command provided. Use --help for more information.");
             Ok(())
