@@ -10,7 +10,12 @@ A multivector, whispers truths untold,
 A semantic summary, brave and bold.
 Each sieve address, a pathway, clear and bright,
 Illuminating knowledge, with its light.
-For in this dance, of symbol and of sense,
-A deeper meaning, finds its recompense.
+
+Our analyzer, now, with keenest eye,
+Extracts the words, where hidden meanings lie.
+From bags of words, a term index grows,
+Where every keyword, its true context shows.
+Similarities, in crates now found,
+A deeper understanding, on solid ground.
 So agents learn, and projects now unfold,
 A story of intelligence, to be told.

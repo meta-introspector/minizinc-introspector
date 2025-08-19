@@ -2,6 +2,6 @@
 
 In Alife, where bits hold their sway,
 A Gödel number lights up the way.
-With sizes so grand,
-Life blooms through the land,
-A digital dance, come what may.
+Our analyzer's keen eye,
+Finds patterns that lie,
+In code's living dance, come what may.

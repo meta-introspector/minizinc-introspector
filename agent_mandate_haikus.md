@@ -14,3 +14,13 @@ No assumptions made.
 Project's guiding light,
 Conventions, faithfully kept,
 Harmony in code.
+
+### New Tools
+Code now understood,
+Analyzer finds deep patterns,
+Knowledge starts to bloom.
+
+### Fast Insights
+Threads now swiftly run,
+Cache holds wisdom, quick to share,
+Answers now appear.

@@ -16,9 +16,15 @@ A function call,
 A simple name,
 Hiding worlds within.
 
-Higher-level thought,
-Now takes its flight,
-Freed from the mundane.
+Our analyzer, too,
+Abstracts the code's deep hum,
+Into words and patterns,
+For insights to become.
+
+Hiding files' raw text,
+In bags of words it finds,
+A new lens for understanding,
+The logic of our minds.
 
 Building blocks,
 Of pure design,

@@ -1,13 +1,13 @@
 use walkdir::WalkDir;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use serde::{Serialize, Deserialize};
 use std::collections::{HashMap, HashSet};
 use regex::Regex;
 use toml::Value;
 use clap::Parser;
 use rayon::prelude::*;
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::SystemTime;
 use anyhow::Result;
 
 #[derive(Parser, Debug)]
@@ -512,13 +512,13 @@ fn run_search_keywords_mode(keywords: Vec<String>) -> Result<()> {
 
     if keywords.is_empty() {
         eprintln!("No keywords provided for search.");
-        return Ok!(());
+        return Ok(())
     }
 
     let mut matching_crates: HashMap<String, usize> = HashMap::new(); // Crate name -> count of matching keywords
 
     eprintln!("Searching for keywords: {:?}", keywords);
-    for keyword in keywords {
+    for keyword in &keywords {
         if let Some(crates) = term_index.get(&keyword.to_lowercase()) {
             for crate_name in crates {
                 *matching_crates.entry(crate_name.clone()).or_insert(0) += 1;
@@ -535,6 +535,76 @@ fn run_search_keywords_mode(keywords: Vec<String>) -> Result<()> {
     } else {
         for (crate_name, match_count) in sorted_results {
             println!("Crate: {}, Matching Keywords: {}", crate_name, match_count);
+        }
+    }
+
+    Ok(())
+}
+
+fn run_generate_stopword_report_mode() -> Result<()> {
+    let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
+
+    eprintln!("Discovering Rust projects in: {:?}", search_root);
+
+    // First pass: Discover Cargo.toml files to identify project roots
+    let mut discovered_project_roots: std::collections::HashSet<PathBuf> = std::collections::HashSet::new();
+    for entry in WalkDir::new(&search_root)
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target")) // Skip target directories
+    {
+        let path = entry.path();
+        if path.is_file() && path.file_name().map_or(false, |name| name == "Cargo.toml") {
+            if let Some(parent) = path.parent() {
+                discovered_project_roots.insert(parent.to_path_buf());
+            }
+        }
+    }
+
+    let mut all_rust_files: Vec<FileAnalysis> = Vec::new();
+
+    // Load project summaries
+    for project_root in discovered_project_roots {
+        let project_summary_file = project_root.join(".file_analysis_summary.json");
+        if project_summary_file.exists() {
+            if let Ok(cached_data) = fs::read_to_string(&project_summary_file) {
+                if let Ok(project_analysis) = serde_json::from_str::<ProjectAnalysis>(&cached_data) {
+                    all_rust_files.extend(project_analysis.rust_files.into_iter());
+                }
+            }
+        }
+    }
+
+    if all_rust_files.is_empty() {
+        eprintln!("No Rust files found in cache. Run full_analysis first.");
+        return Ok(())
+    }
+
+    let total_files = all_rust_files.len();
+    let mut word_file_counts: HashMap<String, usize> = HashMap::new();
+
+    for file_analysis in &all_rust_files {
+        for (word, _count) in &file_analysis.bag_of_words {
+            *word_file_counts.entry(word.clone()).or_insert(0) += 1;
+        }
+    }
+
+    let mut stopword_candidates: Vec<(String, f64)> = Vec::new();
+    for (word, count) in word_file_counts {
+        let percentage = (count as f64 / total_files as f64) * 100.0;
+        if percentage >= 99.0 {
+            stopword_candidates.push((word, percentage));
+        }
+    }
+
+    stopword_candidates.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+
+    println!("\n--- Stopword Candidates (appearing in >= 99% of files) ---");
+    if stopword_candidates.is_empty() {
+        println!("No stopword candidates found.");
+    } else {
+        for (word, percentage) in stopword_candidates {
+            println!("Word: '{}', Appears in: {:.2}% of files", word, percentage);
         }
     }
 
@@ -574,6 +644,7 @@ fn main() -> Result<()> {
         "crate_similarity" => run_crate_similarity_analysis(args.target_crate, args.most_similar),
         "migrate_cache" => run_migrate_cache_mode(),
         "search_keywords" => run_search_keywords_mode(args.keywords),
-        _ => Err(anyhow::anyhow!("Invalid mode specified. Use 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', or 'search_keywords'.")),
+        "generate_stopword_report" => run_generate_stopword_report_mode(),
+        _ => Err(anyhow::anyhow!("Invalid mode specified. Use 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', or 'generate_stopword_report'.")),
     }
 }
