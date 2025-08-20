@@ -26,6 +26,7 @@ struct ConfigWrapper {
 struct BuildPathsConfig {
     #[allow(dead_code)]
     home_dir: String,
+    #[allow(dead_code)]
     github_root: String,
     project_root: String,
     hierarchical_term_index: String,

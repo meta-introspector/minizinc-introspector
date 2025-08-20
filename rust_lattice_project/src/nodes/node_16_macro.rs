@@ -1,7 +1,8 @@
-pub fn run() {
-    let x = 1;
-    println!("x is: {}", x);
-    simple_function();
+
+macro_rules! my_macro {
+    () => {
+        println!("Hello from macro!");
+    };
 }
 
 pub fn simple_function() {
@@ -85,11 +86,11 @@ pub fn unsafe_block() {
     }
 }
 
-macro_rules! my_macro {
-    () => {
-        println!("Hello from macro!");
-    };
-}
-
 //#[!my_macro]
 fn foo(){}
+pub fn run() {
+    let x = 1;
+    println!("x is: {}", x);
+    simple_function();
+    my_macro!(); // Example usage of my_macro
+}
