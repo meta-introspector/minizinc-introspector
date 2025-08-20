@@ -27,7 +27,7 @@ const GITHUB_ROOT_DIR: &str = "/data/data/com.termux/files/home/storage/github/"
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// Mode of operation: 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', 'generate_stopword_report', 'build_hierarchical_index', or 'common_terms_report'
+    /// Mode of operation: 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', 'generate_stopword_report', 'build_hierarchical_index', 'find_exact_shared_files_terms' (helps find common code across projects), or 'common_terms_report'
     #[arg(short, long, default_value = "full_analysis")]
     mode: String,
 
@@ -530,42 +530,53 @@ fn run_search_keywords_mode(keywords: Vec<String>, search_path: Option<PathBuf>)
 
     eprintln!("Loading hierarchical term index from {:?}", hierarchical_term_index_file);
     let cached_data = fs::read_to_string(&hierarchical_term_index_file)?;
-    let hierarchical_term_index: HashMap<String, HashSet<PathBuf>> = serde_json::from_str(&cached_data)?;
+    let hierarchical_term_index: HashMap<String, HashMap<PathBuf, usize>> = serde_json::from_str(&cached_data)?;
 
     if keywords.is_empty() {
         eprintln!("No keywords provided for search.");
-        return Ok(());
+        return Ok(())
     }
 
-    let mut matching_files: HashMap<PathBuf, usize> = HashMap::new(); // File path -> count of matching keywords
+    let mut matching_files_summary: HashMap<PathBuf, usize> = HashMap::new(); // File path -> count of matching keywords
 
-    eprintln!("Searching for keywords: {:?}", keywords);
-    for keyword in &keywords {
-        if let Some(files) = hierarchical_term_index.get(&keyword.to_lowercase()) {
-            for file_path in files {
-                // Filter by search_path if provided
-                if let Some(ref path_filter) = search_path {
-                    if !file_path.starts_with(path_filter) {
-                        continue;
-                    }
-                }
-                *matching_files.entry(file_path.clone()).or_insert(0) += 1;
-            }
-        }
-    }
-
-    let mut sorted_results: Vec<(PathBuf, usize)> = matching_files.into_iter().collect();
-    sorted_results.sort_by(|a, b| b.1.cmp(&a.1));
-
-    println!("\n--- Search Results for Keywords {:?} ---", keywords);
-    if let Some(path_filter) = search_path {
+    println!("\n--- Detailed Search Results for Keywords {:?} ---", keywords);
+    if let Some(ref path_filter) = search_path {
         println!("  (Filtered by path: {:?})", path_filter);
     }
 
-    if sorted_results.is_empty() {
-        println!("No files found matching the provided keywords.");
+    for keyword in &keywords {
+        println!("\nKeyword: '{}'\n--------------------", keyword);
+        if let Some(file_counts) = hierarchical_term_index.get(&keyword.to_lowercase()) {
+            let mut files_for_keyword: Vec<(&PathBuf, &usize)> = file_counts.iter().collect();
+            files_for_keyword.sort_by(|a, b| b.1.cmp(a.1)); // Sort by count, descending
+
+            if files_for_keyword.is_empty() {
+                println!("  No files found for this keyword.");
+            } else {
+                for (file_path, count) in files_for_keyword {
+                    // Filter by search_path if provided
+                    if let Some(ref path_filter) = search_path {
+                        if !file_path.starts_with(path_filter) {
+                            continue;
+                        }
+                    }
+                    println!("  File: {:?}, Occurrences: {}", file_path, count);
+                    *matching_files_summary.entry(file_path.clone()).or_insert(0) += 1;
+                }
+            }
+        } else {
+            println!("  Keyword not found in index.");
+        }
+    }
+
+    println!("\n--- Summary of Matching Files ---");
+    let mut sorted_summary: Vec<(PathBuf, usize)> = matching_files_summary.into_iter().collect();
+    sorted_summary.sort_by(|a, b| b.1.cmp(&a.1)); // Sort by number of matching keywords, descending
+
+    if sorted_summary.is_empty() {
+        println!("No files found matching any of the provided keywords.");
     } else {
-        for (file_path, match_count) in sorted_results {
+        for (file_path, match_count) in sorted_summary {
             println!("File: {:?}, Matching Keywords: {}", file_path, match_count);
         }
     }
@@ -792,6 +803,53 @@ fn run_build_hierarchical_index_mode() -> Result<()> {
 }
 
 
+fn run_find_exact_shared_files_terms_mode(search_path: Option<PathBuf>) -> Result<()> {
+    let search_root = PathBuf::from(GITHUB_ROOT_DIR);
+    let hierarchical_term_index_file = search_root.join("hierarchical_term_index.json");
+
+    eprintln!("Loading hierarchical term index from {:?}", hierarchical_term_index_file);
+    let cached_data = fs::read_to_string(&hierarchical_term_index_file)?;
+    let hierarchical_term_index: HashMap<String, HashMap<PathBuf, usize>> = serde_json::from_str(&cached_data)?;
+
+    let mut files_to_terms: HashMap<Vec<PathBuf>, HashSet<String>> = HashMap::new(); // Change key type to Vec<PathBuf>
+
+    for (term, file_counts) in hierarchical_term_index {
+        let mut file_paths_vec: Vec<PathBuf> = file_counts.keys()
+            .filter(|file_path| {
+                if let Some(ref path_filter) = search_path {
+                    file_path.starts_with(path_filter)
+                } else {
+                    true
+                }
+            })
+            .cloned()
+            .collect();
+        file_paths_vec.sort(); // Sort to ensure consistent order for hashing
+        // Only process if there are still files after filtering
+        if !file_paths_vec.is_empty() {
+            files_to_terms.entry(file_paths_vec).or_insert_with(HashSet::new).insert(term);
+        }
+    }
+
+    println!("\n--- Terms Sharing Exact Same Set of Files ---");
+    let mut count = 0;
+    for (file_paths, terms) in files_to_terms {
+        if terms.len() > 1 {
+            count += 1;
+            println!("\nGroup {}:", count);
+            println!("  Files: {:?}", file_paths);
+            println!("  Terms: {:?}", terms);
+        }
+    }
+
+    if count == 0 {
+        println!("No terms found sharing the exact same set of files (excluding single-term groups).");
+    }
+
+    Ok(())
+}
+
+
 fn main() -> Result<()> {
     let args = Args::parse();
 
@@ -803,6 +861,7 @@ fn main() -> Result<()> {
         "search_keywords" => run_search_keywords_mode(args.keywords, args.search_path),
         "generate_stopword_report" => run_generate_stopword_report_mode(),
         "build_hierarchical_index" => run_build_hierarchical_index_mode(),
-        _ => Err(anyhow::anyhow!("Invalid mode specified. Use 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', 'generate_stopword_report', or 'build_hierarchical_index'.")),
+        "find_exact_shared_files_terms" => run_find_exact_shared_files_terms_mode(args.search_path),
+        _ => Err(anyhow::anyhow!("Invalid mode specified. Use 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', 'generate_stopword_report', 'build_hierarchical_index', or 'find_exact_shared_files_terms'.")),
     }
 }

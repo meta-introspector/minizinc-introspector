@@ -1,0 +1,60 @@
+@startuml
+!theme plain
+
+title File Content Analyzer Flow
+
+skinparam component {
+  BorderColor #303030
+  BackgroundColor #F0F0F0
+  FontColor #303030
+}
+skinparam rectangle {
+  BorderColor #303030
+  BackgroundColor #F0F0F0
+  FontColor #303030
+}
+skinparam arrow {
+  Color #303030
+}
+
+rectangle "User" as User
+rectangle "File Content Analyzer\n(Rust Executable)" as FCA
+
+rectangle "Codebase\n(Rust Projects, Docs)" as Codebase {
+  folder "Project Root 1" as PR1
+  folder "Project Root 2" as PR2
+  folder "..." as PRn
+}
+
+rectangle "Local Cache" as Cache {
+  file ".file_analysis_summary.json\n(Per Project)" as SummaryJson
+  file ".dir_index.json\n(Per Directory)" as DirIndexJson
+  file "hierarchical_term_index.json\n(Global Index)" as GlobalIndexJson
+  file "additional_keywords.md\n(Per Directory)" as KeywordsMd
+}
+
+User --> FCA : Select Mode & Args
+
+FCA -[#blue,thickness=2]-> Codebase : Discover Cargo.toml (full_analysis)
+FCA -[#blue,thickness=2]-> PR1 : Process .rs files (full_analysis)
+FCA -[#blue,thickness=2]-> PR2 : Process .rs files (full_analysis)
+FCA -[#blue,thickness=2]-> PRn : Process .rs files (full_analysis)
+
+FCA -[#green,thickness=2]-> SummaryJson : Save ProjectAnalysis (full_analysis)
+
+FCA -[#blue,thickness=2]-> Codebase : Traverse Directories (build_hierarchical_index)
+FCA -[#blue,thickness=2]-> KeywordsMd : Read Keywords (build_hierarchical_index)
+FCA -[#blue,thickness=2]-> SummaryJson : Read Project Summaries (build_hierarchical_index)
+
+FCA -[#green,thickness=2]-> DirIndexJson : Save Directory Index (build_hierarchical_index)
+FCA -[#green,thickness=2]-> GlobalIndexJson : Save Global Index (build_hierarchical_index)
+
+User --> FCA : Query Keywords (search_keywords)
+User --> FCA : Find Shared Terms (find_exact_shared_files_terms)
+
+FCA -[#blue,thickness=2]-> GlobalIndexJson : Read Global Index (search_keywords, find_exact_shared_files_terms)
+FCA -[#blue,thickness=2]-> DirIndexJson : Read Directory Indexes (find_exact_shared_files_terms)
+
+FCA --> User : Search Results / Grouped Terms
+
+@enduml
