@@ -15,5 +15,10 @@ members = [
     "zos-bootstrap-main",
     "crates/minizinc_output_parser",
     "rust_lattice_project",
-    "crates/rust_file_finder", "crates/zos-fast-query",
+    "crates/rust_file_finder",
+    "crates/zos-fast-query",
+    "crates/ragit-string-utils",
+    "crates/vocabulary_dfa_generator",
+    "crates/vocabulary_dfa_lib",
+    "crates/dfa_tester",
 ]

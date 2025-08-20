@@ -1,0 +1,7 @@
+use regex::Regex;
+
+pub fn matches_lä(text: &str) -> bool {
+    let pattern = r"^(lämb)$";
+    let re = Regex::new(pattern).unwrap();
+    re.is_match(text)
+}

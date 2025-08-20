@@ -1,0 +1,7 @@
+use regex::Regex;
+
+pub fn matches_ts(text: &str) -> bool {
+    let pattern = r"^(ts1|ts2|ts_array_kind|ts_block|ts_builtin_sym_end|ts_builtin_sym_error|ts_comment_kind|ts_document_kind|ts_empty|ts_erasedptr_and2|ts_filter_map_iter|ts_filter_map_to_quads|ts_filter_map_to_triples|ts_filter_triples|ts_fq_self|ts_getvtable_dummy_struct_fields|ts_getvtable_params|ts_json|ts_language_symbol_for_name|ts_make_vtable_args|ts_make_vtable_args_const|ts_map_iter|ts_map_to_quads|ts_map_to_triples|ts_node_tag_name_child_index|ts_println|ts_range|ts_rule_config|ts_self_colon2|ts_self_erasedptr|ts_str|ts_to_quads|ts_unit_erasedptr|ts_uself_colon2|tschüssˇ|tschüßˇ|tsconfig_schema|tscore|tscoresegmenttweaker|tscoretweaker|tscr|tscy|tsdk|tsdk_path|tsearching|tsegmentscoretweaker|tsfn|tsh|tshape|tshc|tshcy|tsignerid|tsinglevaluemerger|tskip3|tslangwrapper|tsm|tsne|tsneerror|tsneparams|tsnevalidparams|tspace|tspaces|tspan|tsparseerror|tspawn|tspoint|tsr|tsr_at_root|tsr_maintains_query_params|tsr_with_params|tsr_works_in_nested_router|tsrange|tsriples_conj|tss_test_quiesce_num_retries|tss_test_quiesce_sleep_time_ms|tsserver|tsstable|tst_img|tst_lbl|tstatus|tstay5|tstorage_|tstorage_alignment|tstorage_size|tstring|tstro|tstrok|tstruct|tsts|tsubjectserialnumber|tsukiji|tsurf|tsx_lang|tsxmatcher|tsynmcspg4xficj1v3tdb4c7crmr5tsbhlz4sf7rrna)$";
+    let re = Regex::new(pattern).unwrap();
+    re.is_match(text)
+}

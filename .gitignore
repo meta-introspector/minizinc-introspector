@@ -90,3 +90,4 @@ patch.txt
 full_analysis.log
 report.txt
 *.json
+/all_terms.txt

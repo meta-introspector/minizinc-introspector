@@ -1,0 +1,7 @@
+use regex::Regex;
+
+pub fn matches_b_(text: &str) -> bool {
+    let pattern = r"^(b_____|b_a|b_addr|b_ancestors|b_arr|b_b|b_bar|b_blockstore|b_bn|b_channels|b_char|b_chars|b_cli|b_col|b_col_max|b_comp|b_compat_count|b_cost|b_data|b_default|b_dims|b_docs|b_elem|b_end_idx|b_est|b_exact|b_expr|b_f128|b_f16|b_f32|b_f64|b_gen|b_h|b_has_messages|b_hh|b_hh_init|b_i128|b_i16|b_i32|b_i64|b_i8|b_ident|b_ih|b_ih_init|b_in_bound|b_in_filename|b_in_proj|b_index|b_info|b_invite|b_is_file|b_is_guest|b_is_simple_path|b_isize|b_item|b_iter|b_key|b_l|b_l_i|b_ledger_path|b_len|b_linear|b_list|b_map|b_mat|b_mono_sprites|b_mut|b_n_refs|b_name|b_normal_components|b_normal_path|b_notified|b_obj|b_or_l|b_package|b_panel_match|b_path_sprites|b_path_vertices|b_poly_sprites|b_pos|b_prefix|b_prime|b_private|b_pubkey|b_quads|b_quant|b_query|b_r|b_r_i|b_range|b_rename|b_repr|b_rest|b_row|b_row_max|b_rx|b_score|b_segment|b_shadows|b_shape|b_skip|b_some_data|b_somedata|b_span|b_start|b_status|b_status_end|b_status_start|b_stride_k|b_stride_o|b_stride_q|b_stride_v|b_struct|b_sz_times_codebooks|b_target|b_term|b_text|b_thread_col|b_thread_row|b_to_a|b_to_idx|b_token|b_total|b_traits|b_trans|b_tree|b_tree_map|b_tree_set|b_tt|b_tx|b_txt|b_ty|b_u128|b_u16|b_u32|b_u64|b_u8|b_unchecked|b_unchecked_mut|b_underlines|b_unsubscribe|b_usize|b_val|b_value|b_vec|b_version|b_wrapped)$";
+    let re = Regex::new(pattern).unwrap();
+    re.is_match(text)
+}

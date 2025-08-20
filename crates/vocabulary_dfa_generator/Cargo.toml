@@ -1,0 +1,9 @@
+[package]
+name = "vocabulary_dfa_generator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+regex = "1"
+# For file I/O and collections
+# No explicit dependencies needed for std::fs and std::io, they are part of the standard library

@@ -1,0 +1,7 @@
+use regex::Regex;
+
+pub fn matches_tp(text: &str) -> bool {
+    let pattern = r"^(tp004|tp_shape|tp_tensor|tpad|tparamcommand|tpat|tpath|tpb|tpc_client|tpe|tpkx|tpl_extension|tpockg|tpostings|tpot|tpr|tpredicate|tpredicatevalue|tpri|tprim|tprime|tprint|tps_client|tps_fps|tpu_addrs|tpu_client_quic_bench_tps|tpu_client_test|tpu_config|tpu_connection_cache|tpu_counts|tpu_dropped_packets_count|tpu_entry_notifier|tpu_forward_stats|tpu_forwards_port|tpu_forwards_quic_t|tpu_forwards_receiver|tpu_forwards_sockets|tpu_forwards_threads|tpu_fwd_address|tpu_fwd_quic_server_config|tpu_fwd_receiver|tpu_fwd_result|tpu_fwd_sender|tpu_has_bank|tpu_leader_service_creation_timeout|tpu_max_connections_per_peer|tpu_max_fwd_staked_connections|tpu_max_fwd_unstaked_connections|tpu_max_staked_connections|tpu_max_streams_per_ms|tpu_max_unstaked_connections|tpu_newly_buffered_forwarded_packets_count|tpu_newly_buffered_packets_count|tpu_packet_batches|tpu_quic_fwd|tpu_quic_server_config|tpu_quic_t|tpu_receive_and_buffer_packets_count|tpu_result|tpu_sender|tpu_socket|tpu_threads|tpu_vortexor_receiver_address|tpu_vote_batch|tpu_vote_batch_count|tpu_vote_forwards_client|tpu_vote_port|tpu_vote_quic|tpu_vote_quic_port|tpu_vote_quic_sockets|tpu_vote_quic_t|tpu_vote_sender|tpu_vote_socket|tpu_vote_sockets|tpu_vote_stats|tpu_vote_threads|tpu_vote_tps|tpu_vote_tx_count|tpu_votes|tpub|tpuclientjoinhandle|tpuentrynotifier|tpuforwardsquic|tpufwd|tpuquic|tpus)$";
+    let re = Regex::new(pattern).unwrap();
+    re.is_match(text)
+}

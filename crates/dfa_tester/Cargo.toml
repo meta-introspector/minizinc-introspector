@@ -1,0 +1,7 @@
+[package]
+name = "dfa_tester"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+vocabulary_dfa_lib = { path = "../vocabulary_dfa_lib" }
