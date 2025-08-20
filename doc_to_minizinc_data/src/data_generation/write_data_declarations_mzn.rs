@@ -1,5 +1,6 @@
 use std::{collections::HashMap, fs, path::PathBuf};
 use crate::logger::LogWriter;
+//use crate::prelude::LogWriter;
 
 pub fn write_data_declarations_mzn(
     all_relations: &Vec<(String, String, f64)>,

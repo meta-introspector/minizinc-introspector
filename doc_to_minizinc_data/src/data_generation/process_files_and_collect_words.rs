@@ -1,8 +1,8 @@
 use std::{collections::HashMap, fs, path::PathBuf};
 use rand::Rng;
 use crate::file_processing::collect_files;
+//use crate::prelude::{collect_files, LogWriter};
 use crate::logger::LogWriter;
-
 pub fn process_files_and_collect_words(
     current_dir: &PathBuf,
     extensions: &[&str],

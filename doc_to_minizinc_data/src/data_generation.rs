@@ -1,6 +1,6 @@
 use std::fs;
 use crate::cli::{Args, Command}; // Import Command enum
-use crate::logger::LogWriter;
+//use crate::prelude::LogWriter;
 
 // Declare sub-modules
 pub mod initialize_data_structures;
@@ -17,7 +17,7 @@ pub use write_data_declarations_mzn::write_data_declarations_mzn;
 pub use write_chunked_embeddings_dzn::write_chunked_embeddings_dzn;
 pub use report_extracted_data::report_extracted_data;
 pub use parquet_export::export_embeddings_to_parquet; // New export
-
+use crate::logger::LogWriter;
 pub fn generate_data(args: Args, all_relations: Vec<(String, String, f64)>) -> Result<(), Box<dyn std::error::Error>> {
     let current_dir = std::env::current_dir()?;
     let minizinc_data_dir = current_dir.join("minizinc_data").join("huggingface");

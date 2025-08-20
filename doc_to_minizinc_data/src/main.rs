@@ -10,7 +10,12 @@ use crate::config::AppConfig;
 
 mod commands; // Declare the commands module
 mod config; // Declare the config module
-mod prelude; // Declare the prelude module
+pub mod prelude; // Declare the prelude module
+mod cli; // Declare the cli module
+mod wordnet_processing; // Declare the wordnet_processing module
+mod data_generation; // Declare the data_generation module
+mod logger; // Declare the logger module
+mod file_processing; // Declare the file_processing module
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();

@@ -1,6 +1,6 @@
-use crate::logger::LogWriter;
+//use crate::prelude::LogWriter;
 use std::collections::HashMap; // Import HashMap
-
+use crate::logger::LogWriter;
 pub fn report_extracted_data(
     id_to_word: &HashMap<u32, String>, // Changed to HashMap
     embeddings: &HashMap<u32, Vec<f64>>, // Changed to HashMap

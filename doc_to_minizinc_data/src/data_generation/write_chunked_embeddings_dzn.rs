@@ -1,6 +1,6 @@
 use std::{fs, path::PathBuf, collections::HashMap}; // Import HashMap
+//use crate::prelude::LogWriter;
 use crate::logger::LogWriter;
-
 pub fn write_chunked_embeddings_dzn(
     id_to_word: &HashMap<u32, String>, // Changed to HashMap
     word_to_id: &std::collections::HashMap<String, usize>,
