@@ -5,7 +5,6 @@
 //! 
 //! * **Full Analysis:** Recursively finds all Rust projects in a directory,
 //!   analyzes each file to create a bag-of-words representation,
-//!   and
 //!   calculates cosine similarity between files.
 //! * **Crate Similarity:** Compares a target crate to all other crates found
 //!   in the analysis and reports the most similar ones.
@@ -28,6 +27,7 @@ use rayon::prelude::*;
 use std::time::SystemTime;
 use anyhow::Result;
 
+
 const GITHUB_ROOT_DIR: &str = "/data/data/com.termux/files/home/storage/github/";
 
 // Synonyms for SEO:
@@ -46,7 +46,7 @@ const GITHUB_ROOT_DIR: &str = "/data/data/com.termux/files/home/storage/github/"
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
-    /// Mode of operation: 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', 'generate_stopword_report', 'build_hierarchical_index', 'find_exact_shared_files_terms' (helps find common code across projects), or 'common_terms_report'
+    /// Mode of operation: 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', 'generate_stopword_report', 'build_hierarchical_index', 'find_exact_shared_files_terms' (helps find common code across projects), or 'common_terms_report', or 'estimate'
     #[arg(short, long, default_value = "full_analysis")]
     mode: String,
 
@@ -73,6 +73,10 @@ struct Args {
     /// Crates to include in the common terms report (used with --mode common_terms_report)
     #[arg(long, value_delimiter = ' ')]
     crates: Vec<String>,
+
+    /// Enable profiling and generate a profile report.
+    #[arg(long)]
+    profile: bool,
 }
 
 /// Represents the analysis of a single file.
@@ -107,6 +111,7 @@ const STOPWORDS: &[&str] = &[
 
 /// Tokenizes a string into a vector of words, filtering out stopwords.
 fn tokenize(text: &str) -> Vec<String> {
+    puffin::profile_function!();
     let re = Regex::new(r"\b\w+\b").unwrap();
     re.find_iter(text)
         .map(|m| m.as_str().to_lowercase())
@@ -116,6 +121,7 @@ fn tokenize(text: &str) -> Vec<String> {
 
 /// Calculates the cosine similarity between two bags of words.
 fn calculate_cosine_similarity(map1: &HashMap<String, usize>, map2: &HashMap<String, usize>) -> f64 {
+    puffin::profile_function!();
     let mut dot_product = 0.0;
     let mut magnitude1 = 0.0;
     let mut magnitude2 = 0.0;
@@ -143,6 +149,7 @@ fn calculate_cosine_similarity(map1: &HashMap<String, usize>, map2: &HashMap<Str
 
 /// Runs the full analysis of all Rust projects in the specified root directory.
 fn run_full_analysis() -> Result<()> {
+    puffin::profile_function!();
     // Set up Rayon thread pool
     rayon::ThreadPoolBuilder::new().num_threads(16).build_global().unwrap();
 
@@ -173,6 +180,7 @@ fn run_full_analysis() -> Result<()> {
 
     // Second pass: Process .rs files within identified project roots
     for project_root in discovered_project_roots {
+        puffin::profile_scope!("process_project", project_root.to_str().unwrap_or_default());
         let project_summary_file = project_root.join(".file_analysis_summary.json");
         let cargo_toml_path = project_root.join("Cargo.toml");
 
@@ -398,6 +406,7 @@ fn run_full_analysis() -> Result<()> {
 
 /// Reads all Cargo.toml files in the specified root directory and prints their content.
 fn run_read_cargo_toml_mode() -> Result<()> {
+    puffin::profile_function!();
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
 
     eprintln!("Searching for Cargo.toml files in: {:?}", search_root);
@@ -425,6 +434,7 @@ fn run_read_cargo_toml_mode() -> Result<()> {
 
 /// Runs the crate similarity analysis.
 fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results: usize) -> Result<()> {
+    puffin::profile_function!();
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let file_pair_similarities_file = search_root.join("file_pair_similarities.json");
 
@@ -557,6 +567,7 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
 
 /// Searches for keywords in the hierarchical term index.
 fn run_search_keywords_mode(keywords: Vec<String>, search_path: Option<PathBuf>) -> Result<()> {
+    puffin::profile_function!();
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let hierarchical_term_index_file = search_root.join("hierarchical_term_index.json");
 
@@ -618,6 +629,7 @@ fn run_search_keywords_mode(keywords: Vec<String>, search_path: Option<PathBuf>)
 
 /// Generates a report of stopword candidates.
 fn run_generate_stopword_report_mode() -> Result<()> {
+    puffin::profile_function!();
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
 
     eprintln!("Discovering Rust projects in: {:?}", search_root);
@@ -690,6 +702,7 @@ fn run_generate_stopword_report_mode() -> Result<()> {
 
 /// Migrates the old cache file to the new per-project summary format.
 fn run_migrate_cache_mode() -> Result<()> {
+    puffin::profile_function!();
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let old_cache_file = search_root.join("file_analysis_cache.json");
 
@@ -715,6 +728,7 @@ fn run_migrate_cache_mode() -> Result<()> {
 
 /// Builds a hierarchical term index for the entire codebase.
 fn build_directory_index(current_dir: &Path, search_root: &Path) -> Result<HashMap<String, HashMap<PathBuf, usize>>> {
+    puffin::profile_function!();
     let mut local_index: HashMap<String, HashMap<PathBuf, usize>> = HashMap::new();
     let dir_summary_file = current_dir.join(".dir_index.json");
 
@@ -821,6 +835,7 @@ fn build_directory_index(current_dir: &Path, search_root: &Path) -> Result<HashM
 
 /// Builds a hierarchical term index for the entire codebase.
 fn run_build_hierarchical_index_mode() -> Result<()> {
+    puffin::profile_function!();
     // Set up Rayon thread pool
     rayon::ThreadPoolBuilder::new().num_threads(16).build_global().unwrap();
 
@@ -841,6 +856,7 @@ fn run_build_hierarchical_index_mode() -> Result<()> {
 
 /// Finds terms that are shared across the exact same set of files.
 fn run_find_exact_shared_files_terms_mode(search_path: Option<PathBuf>, filter_by_path: Option<PathBuf>) -> Result<()> {
+    puffin::profile_function!();
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let hierarchical_term_index_file = search_root.join("hierarchical_term_index.json");
 
@@ -917,12 +933,115 @@ fn run_find_exact_shared_files_terms_mode(search_path: Option<PathBuf>, filter_b
     Ok(())
 }
 
+fn run_estimate_mode() -> Result<()> {
+    puffin::profile_function!();
+    let search_root = PathBuf::from(GITHUB_ROOT_DIR);
+    let mut new_files = Vec::new();
+    let mut modified_files = Vec::new();
+    let mut deleted_files = Vec::new();
+    let mut total_size = 0;
+
+    eprintln!("Estimating work to be done...");
+
+    let mut discovered_project_roots: std::collections::HashSet<PathBuf> = std::collections::HashSet::new();
+    {
+        puffin::profile_scope!("discover_projects");
+        for entry in WalkDir::new(&search_root)
+            .into_iter()
+            .filter_map(|e| e.ok())
+            .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target"))
+        {
+            let path = entry.path();
+            if path.is_file() && path.file_name().map_or(false, |name| name == "Cargo.toml") {
+                if let Some(parent) = path.parent() {
+                    discovered_project_roots.insert(parent.to_path_buf());
+                }
+            }
+        }
+    }
+
+    for project_root in discovered_project_roots {
+        puffin::profile_scope!("estimate_project", project_root.to_str().unwrap_or_default());
+        let project_summary_file = project_root.join(".file_analysis_summary.json");
+
+        if project_summary_file.exists() {
+            if let Ok(cached_data) = fs::read_to_string(&project_summary_file) {
+                if let Ok(cached_project_analysis) = serde_json::from_str::<ProjectAnalysis>(&cached_data) {
+                    let mut cached_files: HashMap<PathBuf, FileAnalysis> = cached_project_analysis.rust_files.into_iter().map(|f| (f.path.clone(), f)).collect();
+
+                    for entry in WalkDir::new(&project_root)
+                        .into_iter()
+                        .filter_map(|e| e.ok())
+                        .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target"))
+                        .filter(|e| e.path().is_file() && e.path().extension().map_or(false, |ext| ext == "rs"))
+                    {
+                        let path = entry.path();
+                        if let Some(cached_file) = cached_files.remove(path) {
+                            if let Ok(metadata) = fs::metadata(path) {
+                                if let Ok(modified_time) = metadata.modified() {
+                                    if modified_time > cached_file.last_modified {
+                                        modified_files.push(path.to_path_buf());
+                                        total_size += metadata.len();
+                                    }
+                                }
+                            }
+                        } else {
+                            new_files.push(path.to_path_buf());
+                            if let Ok(metadata) = fs::metadata(path) {
+                                total_size += metadata.len();
+                            }
+                        }
+                    }
+
+                    deleted_files.extend(cached_files.keys().cloned());
+                }
+            }
+        } else {
+            for entry in WalkDir::new(&project_root)
+                .into_iter()
+                .filter_map(|e| e.ok())
+                .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target"))
+                .filter(|e| e.path().is_file() && e.path().extension().map_or(false, |ext| ext == "rs"))
+            {
+                new_files.push(entry.path().to_path_buf());
+                if let Ok(metadata) = fs::metadata(entry.path()) {
+                    total_size += metadata.len();
+                }
+            }
+        }
+    }
+
+    println!("--- Indexing Estimation Report ---");
+    println!("New files: {}", new_files.len());
+    for file in new_files {
+        println!("  - {:?}", file);
+    }
+    println!("Modified files: {}", modified_files.len());
+    for file in modified_files {
+        println!("  - {:?}", file);
+    }
+    println!("Deleted files: {}", deleted_files.len());
+    for file in deleted_files {
+        println!("  - {:?}", file);
+    }
+
+    // Simple estimation heuristic: 1 second per 100KB
+    let estimated_time_seconds = (total_size as f64 / 102400.0).ceil();
+    println!("\nEstimated time to index: {} seconds", estimated_time_seconds);
+
+    Ok(())
+}
+
 
 /// Main entry point for the application.
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    match args.mode.as_str() {
+    if args.profile {
+        puffin::set_scopes_on(true);
+    }
+
+    let result = match args.mode.as_str() {
         "full_analysis" => run_full_analysis(),
         "read_cargo_toml" => run_read_cargo_toml_mode(),
         "crate_similarity" => run_crate_similarity_analysis(args.target_crate, args.most_similar),
@@ -931,6 +1050,18 @@ fn main() -> Result<()> {
         "generate_stopword_report" => run_generate_stopword_report_mode(),
         "build_hierarchical_index" => run_build_hierarchical_index_mode(),
         "find_exact_shared_files_terms" => run_find_exact_shared_files_terms_mode(args.search_path, args.filter_by_path),
-        _ => Err(anyhow::anyhow!("Invalid mode specified. Use 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', 'generate_stopword_report', 'build_hierarchical_index', or 'find_exact_shared_files_terms'.")),
+        "estimate" => run_estimate_mode(),
+        _ => Err(anyhow::anyhow!("Invalid mode specified. Use 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', 'generate_stopword_report', 'build_hierarchical_index', 'find_exact_shared_files_terms', or 'estimate'.")),
+    };
+
+    if args.profile {
+        if let Ok(guard) = puffin_egui::start_puffin_server() {
+            eprintln!("Started puffin server on {}", guard.url());
+            // Keep the server running until the user presses enter
+            let mut input = String::new();
+            std::io::stdin().read_line(&mut input)?;
+        }
     }
+
+    result
 }
