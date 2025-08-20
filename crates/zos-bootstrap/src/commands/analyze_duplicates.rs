@@ -12,6 +12,7 @@ use syn::visit::Visit; // Added Visit trait import
 
 // A visitor to collect code features
 struct CodeFeatureExtractor {
+    #[allow(dead_code)]
     file_path: PathBuf,
     keywords: HashSet<String>,
     fn_count: usize,

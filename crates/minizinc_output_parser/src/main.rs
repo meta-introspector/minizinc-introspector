@@ -1,5 +1,4 @@
 use std::io::{self, Read};
-use regex::Regex;
 
 fn main() -> io::Result<()> {
     let mut buffer = String::new();

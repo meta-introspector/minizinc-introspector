@@ -1,7 +1,7 @@
 use zos_bootstrap::cli::{Cli, Commands};
 use clap::Parser; // Import Parser trait
 use std::env;
-use std::path::PathBuf;
+//use std::path::PathBuf;
 
 fn main() -> Result<(), String> {
     // Set LD_LIBRARY_PATH dynamically
@@ -42,6 +42,7 @@ fn main() -> Result<(), String> {
         Some(Commands::SelfOptimize(args)) => zos_bootstrap::commands::self_optimize::handle_self_optimize_command(args).map_err(|e| format!("SelfOptimize command failed: {}", e)),
         Some(Commands::TestAstToMiniZinc(args)) => zos_bootstrap::commands::test_ast_to_minizinc::handle_test_ast_to_minizinc_command(args).map_err(|e| format!("TestAstToMiniZinc command failed: {}", e)),
         Some(Commands::AnalyzeDuplicates(args)) => zos_bootstrap::commands::analyze_duplicates::handle_analyze_duplicates_command(args).map_err(|e| format!("AnalyzeDuplicates command failed: {}", e)),
+        Some(Commands::IndexUpdate(_)) => todo!(),
         None => {
             println!("No command provided. Use --help for more information.");
             Ok(())

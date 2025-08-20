@@ -61,6 +61,7 @@ pub fn handle_command_dispatch() -> Result<()> {
                 }
             }
         },
+        Some(Commands::IndexUpdate(_)) => todo!(),
         None => {
             println!("No command provided. Use --help for more information.");
             Ok(())

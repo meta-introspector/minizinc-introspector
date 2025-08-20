@@ -1,4 +1,4 @@
-use crate::utils::error::{Result, ZosError};
+use crate::utils::error::Result;
 use crate::cli::IndexUpdateArgs;
 use std::fs;
 use std::path::{Path, PathBuf};

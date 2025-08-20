@@ -90,3 +90,6 @@ macro_rules! my_macro {
         println!("Hello from macro!");
     };
 }
+
+//#[!my_macro]
+fn foo(){}

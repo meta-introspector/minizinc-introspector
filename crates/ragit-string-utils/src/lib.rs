@@ -1,4 +1,4 @@
-use regex_automata::{meta::Regex, PatternID};
+use regex_automata::meta::Regex;
 
 pub fn parse_key_value_pairs(hay: &str) -> Result<Vec<(&str, &str)>, Box<dyn std::error::Error>> {
     let re = Regex::new_many(&[

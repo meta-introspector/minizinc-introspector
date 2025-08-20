@@ -22,7 +22,9 @@ struct ConfigWrapper {
 }
 
 #[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 struct BuildPathsConfig {
+    #[allow(dead_code)]
     home_dir: String,
     github_root: String,
     project_root: String,
