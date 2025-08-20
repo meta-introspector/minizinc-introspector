@@ -43,9 +43,13 @@ struct Args {
     #[arg(long, value_delimiter = ' ')]
     keywords: Vec<String>,
 
-    /// Optional path to search within (used with --mode search_keywords)
+    /// Optional path to search within (used with --mode search_keywords, find_exact_shared_files_terms)
     #[arg(long)]
     search_path: Option<PathBuf>,
+
+    /// Optional path to filter results by (used with --mode find_exact_shared_files_terms)
+    #[arg(long)]
+    filter_by_path: Option<PathBuf>,
 
     /// Crates to include in the common terms report (used with --mode common_terms_report)
     #[arg(long, value_delimiter = ' ')]
@@ -803,7 +807,7 @@ fn run_build_hierarchical_index_mode() -> Result<()> {
 }
 
 
-fn run_find_exact_shared_files_terms_mode(search_path: Option<PathBuf>) -> Result<()> {
+fn run_find_exact_shared_files_terms_mode(search_path: Option<PathBuf>, filter_by_path: Option<PathBuf>) -> Result<()> {
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let hierarchical_term_index_file = search_root.join("hierarchical_term_index.json");
 
@@ -811,39 +815,70 @@ fn run_find_exact_shared_files_terms_mode(search_path: Option<PathBuf>) -> Resul
     let cached_data = fs::read_to_string(&hierarchical_term_index_file)?;
     let hierarchical_term_index: HashMap<String, HashMap<PathBuf, usize>> = serde_json::from_str(&cached_data)?;
 
-    let mut files_to_terms: HashMap<Vec<PathBuf>, HashSet<String>> = HashMap::new(); // Change key type to Vec<PathBuf>
+    let files_to_terms: HashMap<Vec<PathBuf>, HashSet<String>> = hierarchical_term_index.into_par_iter()
+        .filter_map(|(term, file_counts)| {
+            let mut file_paths_vec: Vec<PathBuf> = file_counts.keys()
+                .filter(|file_path| {
+                    if let Some(ref path_filter) = search_path {
+                        file_path.starts_with(path_filter)
+                    } else {
+                        true
+                    }
+                })
+                .cloned()
+                .collect();
+            file_paths_vec.sort(); // Sort to ensure consistent order for hashing
 
-    for (term, file_counts) in hierarchical_term_index {
-        let mut file_paths_vec: Vec<PathBuf> = file_counts.keys()
-            .filter(|file_path| {
-                if let Some(ref path_filter) = search_path {
-                    file_path.starts_with(path_filter)
-                } else {
-                    true
-                }
-            })
-            .cloned()
-            .collect();
-        file_paths_vec.sort(); // Sort to ensure consistent order for hashing
-        // Only process if there are still files after filtering
-        if !file_paths_vec.is_empty() {
-            files_to_terms.entry(file_paths_vec).or_insert_with(HashSet::new).insert(term);
-        }
+            if !file_paths_vec.is_empty() {
+                Some((file_paths_vec, term))
+            } else {
+                None
+            }
+        })
+        .fold(HashMap::new, |mut acc: HashMap<Vec<PathBuf>, HashSet<String>>, (file_paths_vec, term)| {
+            acc.entry(file_paths_vec).or_insert_with(HashSet::new).insert(term);
+            acc
+        })
+        .reduce(HashMap::new, |mut map1, map2| {
+            for (key, value) in map2 {
+                map1.entry(key).or_insert_with(HashSet::new).extend(value);
+            }
+            map1
+        });
+
+    #[derive(Serialize)]
+    struct SharedTermsGroup {
+        group_id: usize,
+        files: Vec<PathBuf>,
+        terms: Vec<String>,
     }
 
-    println!("\n--- Terms Sharing Exact Same Set of Files ---");
+    let mut groups: Vec<SharedTermsGroup> = Vec::new();
     let mut count = 0;
+
     for (file_paths, terms) in files_to_terms {
-        if terms.len() > 1 {
+        // Apply filter_by_path if provided
+        let passes_filter = if let Some(ref path_filter) = filter_by_path {
+            file_paths.iter().any(|p| p.starts_with(path_filter))
+        } else {
+            true // No filter applied
+        };
+
+        if terms.len() > 1 && passes_filter {
             count += 1;
-            println!("\nGroup {}:", count);
-            println!("  Files: {:?}", file_paths);
-            println!("  Terms: {:?}", terms);
+            groups.push(SharedTermsGroup {
+                group_id: count,
+                files: file_paths,
+                terms: terms.into_iter().collect(), // Convert HashSet to Vec
+            });
         }
     }
+
+    // Print JSON output to stdout
+    println!("{}", serde_json::to_string_pretty(&groups)?);
 
     if count == 0 {
-        println!("No terms found sharing the exact same set of files (excluding single-term groups).");
+        eprintln!("No terms found sharing the exact same set of files (excluding single-term groups).");
     }
 
     Ok(())
@@ -861,7 +896,7 @@ fn main() -> Result<()> {
         "search_keywords" => run_search_keywords_mode(args.keywords, args.search_path),
         "generate_stopword_report" => run_generate_stopword_report_mode(),
         "build_hierarchical_index" => run_build_hierarchical_index_mode(),
-        "find_exact_shared_files_terms" => run_find_exact_shared_files_terms_mode(args.search_path),
+        "find_exact_shared_files_terms" => run_find_exact_shared_files_terms_mode(args.search_path, args.filter_by_path),
         _ => Err(anyhow::anyhow!("Invalid mode specified. Use 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', 'generate_stopword_report', 'build_hierarchical_index', or 'find_exact_shared_files_terms'.")),
     }
 }
