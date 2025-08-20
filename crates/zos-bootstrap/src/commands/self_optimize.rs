@@ -211,8 +211,10 @@ pub fn handle_self_optimize_command(args: SelfOptimizeArgs) -> Result<()> {
             let all_relations = wordnet_processing::generate_wordnet_constraints(&simulated_wordnet_path)?;
 
             let doc_to_minizinc_args = doc_to_minizinc_data::cli::Args {
-                chunk_size: 1000, // Default chunk size
-                input_path: None,
+                command: doc_to_minizinc_data::cli::Command::GenerateData {
+                    chunk_size: 1000, // Default chunk size
+                    input_path: None,
+                },
             };
             data_generation::generate_data(doc_to_minizinc_args, all_relations)?;
             println!("{}", format_step_complete_message("Generate Embeddings", None));

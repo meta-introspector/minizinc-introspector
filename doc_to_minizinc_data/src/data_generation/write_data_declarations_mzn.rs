@@ -4,8 +4,8 @@ use crate::logger::LogWriter;
 pub fn write_data_declarations_mzn(
     all_relations: &Vec<(String, String, f64)>,
     word_to_id: &HashMap<String, usize>,
-    id_to_word: &Vec<String>,
-    embeddings: &Vec<Vec<f64>>,
+    id_to_word: &HashMap<u32, String>, // Changed to HashMap
+    embeddings: &HashMap<u32, Vec<f64>>, // Changed to HashMap
     minizinc_data_dir: &PathBuf,
     logger: &mut LogWriter,
 ) -> Result<(), Box<dyn std::error::Error>> {
@@ -47,4 +47,3 @@ pub fn write_data_declarations_mzn(
     logger.log(&format!("Generated {}", data_declarations_path.display()));
     Ok(())
 }
-

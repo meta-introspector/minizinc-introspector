@@ -4,15 +4,15 @@ use rand::thread_rng;
 
 pub struct InitializedData {
     pub word_to_id: HashMap<String, usize>,
-    pub id_to_word: Vec<String>,
-    pub embeddings: Vec<Vec<f64>>,
+    pub id_to_word: HashMap<u32, String>, // Changed to HashMap
+    pub embeddings: HashMap<u32, Vec<f64>>, // Changed to HashMap
     pub rng: ThreadRng,
 }
 
 pub fn initialize_data_structures() -> InitializedData {
     let word_to_id: HashMap<String, usize> = HashMap::new();
-    let id_to_word: Vec<String> = Vec::new();
-    let embeddings: Vec<Vec<f64>> = Vec::new();
+    let id_to_word: HashMap<u32, String> = HashMap::new(); // Changed to HashMap
+    let embeddings: HashMap<u32, Vec<f64>> = HashMap::new(); // Changed to HashMap
     let rng = thread_rng();
 
     InitializedData {

@@ -26,7 +26,8 @@ use clap::Parser;
 use rayon::prelude::*;
 use std::time::SystemTime;
 use anyhow::Result;
-
+use puffin;
+//use puffin_egui;
 
 const GITHUB_ROOT_DIR: &str = "/data/data/com.termux/files/home/storage/github/";
 
@@ -1038,7 +1039,8 @@ fn main() -> Result<()> {
     let args = Args::parse();
 
     if args.profile {
-        puffin::set_scopes_on(true);
+//  #[cfg(feature = "profile")]
+    puffin::set_scopes_on(true);
     }
 
     let result = match args.mode.as_str() {
@@ -1054,14 +1056,15 @@ fn main() -> Result<()> {
         _ => Err(anyhow::anyhow!("Invalid mode specified. Use 'full_analysis', 'read_cargo_toml', 'crate_similarity', 'migrate_cache', 'search_keywords', 'generate_stopword_report', 'build_hierarchical_index', 'find_exact_shared_files_terms', or 'estimate'.")),
     };
 
-    if args.profile {
-        if let Ok(guard) = puffin_egui::start_puffin_server() {
-            eprintln!("Started puffin server on {}", guard.url());
-            // Keep the server running until the user presses enter
-            let mut input = String::new();
-            std::io::stdin().read_line(&mut input)?;
-        }
-    }
+//o    #[cfg(feature = "profile")]
+    // if args.profile {
+    //     if let Ok(guard) = puffin_egui::start_puffin_server() {
+    //         eprintln!("Started puffin server on {}", guard.url());
+    //         // Keep the server running until the user presses enter
+    //         let mut input = String::new();
+    //         std::io::stdin().read_line(&mut input)?;
+    //     }
+    // }
 
     result
 }

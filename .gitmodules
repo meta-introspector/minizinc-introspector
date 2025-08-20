@@ -16,3 +16,6 @@
 [submodule "minizinc_data/huggingface"]
 	path = minizinc_data/huggingface
 	url = https://huggingface.co/datasets/h4/libminizinc
+[submodule "vendor/hugging-face-dataset-validator-rust"]
+	path = vendor/hugging-face-dataset-validator-rust
+	url = https://github.com/meta-introspector/hugging-face-dataset-validator-rust

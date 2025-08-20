@@ -1,0 +1,4 @@
+project_root = "/data/data/com.termux/files/home/storage/github/libminizinc"
+github_root = "/data/data/com.termux/files/home/storage/github"
+home_dir = "/data/data/com.termux/files/home"
+build_target = "release" # Added build_target
