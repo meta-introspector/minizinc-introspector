@@ -1430,6 +1430,8 @@ dependencies = [
  "jaq-core",
  "jaq-json",
  "jaq-std",
+ "lazy_static",
+ "regex",
  "serde",
  "serde_json",
 ]

@@ -1,91 +1,37 @@
-use std::fs;
-use std::path::PathBuf;
-use serde::{Deserialize, Serialize};
-use clap::Parser;
-use std::collections::{HashSet, HashMap};
+use clap::{Parser, Subcommand};
+
+mod commands;
+mod recognizer;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
-struct Args {
-    /// Path to the JSON file containing shared terms
-    #[arg(short, long)]
-    input_file: PathBuf,
-
-    /// Term to filter by (e.g., "rust_file_finder")
-    #[arg(short, long)]
-    filter_term: Option<String>,
+struct Cli {
+    #[command(subcommand)]
+    command: Commands,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-struct SharedTermsGroup {
-    group_id: usize,
-    files: Vec<PathBuf>,
-    terms: Vec<String>,
+#[derive(Subcommand, Debug)]
+enum Commands {
+    /// Perform a batch query on the hierarchical term index
+    BatchQuery(commands::batch_query::BatchQueryArgs),
+    /// Compile all terms from the hierarchical term index into a single regex
+    CompileTermsRegex,
+    /// Recognize terms in a given text using the compiled regex
+    RecognizeText(commands::recognize_text::RecognizeTextArgs),
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args = Args::parse();
+fn main() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> {
+    let cli = Cli::parse();
 
-    println!("ZOS Fast Query Tool - Reading Shared Terms");
+    let result = match &cli.command {
+        Commands::BatchQuery(args) => commands::batch_query::run_batch_query(args.clone()),
+        Commands::CompileTermsRegex => {
+            let (regex_pattern, filtered_terms) = commands::compile_terms_regex::run_compile_terms_regex()?;
+            commands::compile_terms_regex::generate_recognizer_file(regex_pattern, filtered_terms)?;
+            Ok(())
+        },
+        Commands::RecognizeText(args) => commands::recognizer::run_recognize_text(args.clone()),
+    };
 
-    println!("Loading shared terms from: {:?}", args.input_file);
-    let cached_data = fs::read_to_string(&args.input_file)?;
-    let shared_terms_groups: Vec<SharedTermsGroup> = serde_json::from_str(&cached_data)?;
-
-    println!("Successfully loaded {} shared term groups.", shared_terms_groups.len());
-
-    let mut files_from_other_projects: HashSet<PathBuf> = HashSet::new();
-    let mut related_projects_dirs: HashMap<PathBuf, usize> = HashMap::new();
-
-    for group in shared_terms_groups {
-        let mut is_relevant_group = false;
-        for file_path in &group.files {
-            let file_path_str = file_path.to_string_lossy();
-            let matches_filter_term = if let Some(ref term) = args.filter_term {
-                file_path_str.contains(term)
-            } else {
-                false // If no filter term is provided, it doesn't match by term
-            };
-
-            if matches_filter_term || *file_path == args.input_file {
-                is_relevant_group = true;
-                break;
-            }
-        }
-
-        if is_relevant_group {
-            // This group is relevant because it contains files matching the filter term or the input file
-            for file_path in group.files {
-                let file_path_str = file_path.to_string_lossy();
-                let matches_filter_term = if let Some(ref term) = args.filter_term {
-                    file_path_str.contains(term)
-                } else {
-                    false // If no filter term is provided, it doesn't match by term
-                };
-
-                // Collect files from *other* projects within this relevant group
-                if !matches_filter_term && *file_path != args.input_file {
-                    if files_from_other_projects.insert(file_path.clone()) {
-                        // If the file was newly inserted (i.e., it's unique and from an 'other' project)
-                        if let Some(parent) = file_path.parent() {
-                            *related_projects_dirs.entry(parent.to_path_buf()).or_insert(0) += 1;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    println!("\n--- Analysis Results ---");
-    println!("Total unique files from other projects/directories related to the filter term or the input file: {}", files_from_other_projects.len());
-
-    println!("\nRelated projects/directories and their file counts (based on shared terms):");
-    let mut sorted_related_projects: Vec<(&PathBuf, &usize)> = related_projects_dirs.iter().collect();
-    sorted_related_projects.sort_by(|a, b| b.1.cmp(a.1));
-
-    for (dir, count) in sorted_related_projects {
-        println!("  - {:?} (files: {})", dir, count);
-    }
-
-    Ok(())
+    result
 }
