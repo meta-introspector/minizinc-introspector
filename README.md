@@ -34,19 +34,8 @@
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Running the Embedding Model](#running-the-embedding-model)
-- [Tutorials](#tutorials)
-  - [Episode 1: Introduction to Hyperspace and Lambda Embedding](#episode-1-introduction-to-hyperspace-and-lambda-embedding)
+- [Documentation](#documentation)
 - [Development Guidelines](#development-guidelines)
-  - [No Direct Edits](#no-direct-edits)
-  - [Proof Tapes for Reproducibility](#proof-tapes-for-reproducibility)
-  - [Integer Discretization](#integer-discretization)
-  - [Gecode Integration](#gecode-integration)
-  - [Performance Analysis and Optimization](#performance-analysis-and-optimization)
-- [Recent Model Analysis and Debugging](#recent-model-analysis-and-debugging)
-- [Term Recognition System (ZOS Fast Query) 🧠🔍](#term-recognition-system-zos-fast-query-🧠🔍)
-- [CLI Tools](#cli-tools)
-- [Model Documentation](#model-documentation)
-- [Standard Operating Procedures (SOPs)](#standard-operating-procedures-sops)
 - [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgements](#acknowledgements)
@@ -83,7 +72,7 @@ To get this specialized `libminizinc` environment up and running:
 *   MiniZinc (refer to [MiniZinc website](http://www.minizinc.org/software.html) for installation).
 *   CMake (>=3.4)
 *   A recent C++ compiler (Clang, GCC, MSVC tested).
-*   (Optional) Gecode: For specific solver integrations. Refer to `docs/sops/project_workflow.md` for build and configuration details.
+*   (Optional) Gecode: For specific solver integrations. Refer to `docs/technical/project_workflow.md` for build and configuration details.
 
 ### Running the Embedding Model
 
@@ -97,93 +86,17 @@ The core MiniZinc embedding model can be executed using the `run_embedding_model
 ```bash
 ./scripts/run_embedding_model_v7.sh v6 v1 v1 v1 v1 v1
 ```
-For more details on running tests and understanding the new framework, refer to [MiniZinc Model Performance Analysis and Debugging Report](docs/performance_analysis_report.md).
+For more details on running tests and understanding the new framework, refer to `docs/technical/performance_analysis_report.md`.
 
-### New to the Project? Start Here!
+## Documentation
 
-If you're new to this project, we highly recommend starting with our "N00b's Guide" for a simplified introduction to running the models and understanding the basics:
+This project's documentation is organized into the following categories:
 
-*   [Getting Started: A N00b's Guide to libminizinc](docs/n00b_guide.md)
-
-## Recent Model Analysis and Debugging
-
-This section documents recent findings and debugging efforts related to the MiniZinc embedding models.
-
-*   [MiniZinc Model Performance Analysis and Debugging Report](docs/performance_analysis_report.md)
-
-## Term Recognition System (ZOS Fast Query) 🧠🔍
-
-The project is actively developing a robust term recognition system, primarily implemented within the `zos-fast-query` crate. This system is designed for efficient identification and processing of terms from codebases and other textual sources, addressing challenges related to large vocabularies and memory constraints through a modular, chunk-based generation approach.
-
-**Current Status:**
-The core generation and recognition mechanisms are in place, with ongoing work to refine module structures and ensure seamless integration. Recent efforts have focused on improving filename sanitization for Unicode characters and resolving build complexities between the build script and the main application.
-
-**Ongoing Work:**
-The next major development involves implementing "pattern2" analysis, a function to identify subpattern relationships between terms, thereby building a comprehensive term topology.
-
-*   [Standard Operating Procedure: Term Recognition System Generation and Modification](docs/sops/term_recognition_system_generation_sop.md) 📜
-*   [Conceptual MiniZinc Specification: Term Recognition System Generation](docs/sops/term_recognition_system_generation.mzn) ✨
-
-## CLI Tools
-
-This project includes several command-line interface (CLI) tools to facilitate various development and analysis tasks.
-
-### `doc_to_minizinc_data`
-
-This binary is responsible for extracting words from various source files (Markdown, Rust, C++, C, and HPP), generating 8D random embeddings for these words, and preparing the data for MiniZinc models. It supports chunking of the output data to manage large vocabularies and improve performance.
-
-**Usage:**
-
-```bash
-doc_to_minizinc_data --chunk-size <SIZE> --input-path <PATH>
-```
-
-*   `--chunk-size <SIZE>`: Specifies the size of each chunk for word embeddings (default: 100).
-*   `--input-path <PATH>`: Optional path to a specific file or directory to process. If not provided, the current directory will be processed.
-
-### `zos-bootstrap-main`
-
-This is the primary command-line interface for managing the project. It provides a comprehensive set of subcommands for building, testing, running, and analyzing the codebase, as well as bootstrapping the Zero-One-System (ZOS).
-
-**Usage:**
-
-```bash
-zos-bootstrap-main <COMMAND> [OPTIONS]
-```
-
-**Available Commands:**
-
-*   `build`: Handles building project components.
-*   `test`: Runs project tests.
-*   `run`: Executes project components.
-*   `debug`: Provides debugging functionalities.
-*   `clean`: Cleans the project's build artifacts.
-*   `extract-constants`: Extracts constants from the codebase.
-*   `generate-params`: Generates MiniZinc parameters.
-*   `generate-constants-file`: Generates a constants file.
-*   `analyze-constants`: Analyzes constant usage within the project.
-*   `ast-to-minizinc`: Converts Abstract Syntax Trees (AST) to MiniZinc models.
-*   `test-ast-to-minizinc`: Tests the AST to MiniZinc conversion process.
-*   `code-search`: Performs code searches across the codebase.
-*   `bootstrap`: A meta-command to bootstrap the ZOS system, including building, testing, and running an initial embedding model.
-*   `self-optimize`: (Future implementation)
-*   `analyze-duplicates`: (Future implementation)
-
-For detailed usage of each subcommand, run `zos-bootstrap-main <COMMAND> --help`.
-
-## Model Documentation
-
-This section provides detailed documentation and analysis of the MiniZinc models within this project.
-
-*   [MiniZinc Models Overview](docs/minizinc_models_overview.md)
-
-## Tutorials
-
-### Episode 1: Introduction to Hyperspace and Lambda Embedding
-
-Dive into the foundational concepts of our hyperspace embedding project, exploring lambda calculus, MiniZinc, and how we're giving abstract programs a concrete home.
-
-*   [Read Episode 1: Introduction to Hyperspace and Lambda Embedding](docs/tutorial/episode1/001_intro.md)
+*   **[Core Concepts](docs/vision):** High-level vision, philosophy, and core concepts.
+*   **[Technical Documentation](docs/technical):** SOPs, RFCs, and other technical documents.
+*   **[Crate Documentation](docs/crates):** Documentation for individual crates.
+*   **[Poems and Creative Writing](docs/poems):** A collection of poems, sonnets, and other creative writing that captures the spirit of the project.
+*   **[Tutorials](docs/tutorial):** Step-by-step guides for getting started with the project.
 
 ## Development Guidelines
 
@@ -191,45 +104,27 @@ Adherence to these guidelines is crucial for contributing to this project:
 
 ### No Direct Edits
 
-Strictly adhere to the "add-only, never edit" philosophy. All changes are implemented by creating new, composable modules that supersede existing functionality. Refer to `docs/sops/no_direct_edits_sop.md` for detailed procedures.
+Strictly adhere to the "add-only, never edit" philosophy. All changes are implemented by creating new, composable modules that supersede existing functionality. Refer to `docs/technical/no_direct_edits_sop.md` for detailed procedures.
 
 ### Proof Tapes for Reproducibility
 
-Every model run automatically generates a "proof tape" in the `proof_tapes/` directory. This tape captures the exact version vector and all `.mzn` and `.dzn` files used, ensuring complete reproducibility of experimental results. See `docs/sops/run_model_sop_v3.md` for more.
+Every model run automatically generates a "proof tape" in the `proof_tapes/` directory. This tape captures the exact version vector and all `.mzn` and `.dzn` files used, ensuring complete reproducibility of experimental results. See `docs/technical/run_model_sop_v3.md` for more.
 
 ### Integer Discretization
 
-A key technical aspect of this project involves discretizing floating-point values into integers to enable solving with Constraint Programming (CP) solvers like Gecode. This requires careful scaling of all coefficients and constants and adaptation of mathematical operations. Refer to `docs/sops/project_workflow.md` for details.
+A key technical aspect of this project involves discretizing floating-point values into integers to enable solving with Constraint Programming (CP) solvers like Gecode. This requires careful scaling of all coefficients and constants and adaptation of mathematical operations. Refer to `docs/technical/project_workflow.md` for details.
 
 ### Gecode Integration
 
-Specific procedures are in place for building, configuring, and integrating Gecode as a solver. Troubleshooting steps for common build issues and solver discovery are documented. See `docs/sops/project_workflow.md`.
+Specific procedures are in place for building, configuring, and integrating Gecode as a solver. Troubleshooting steps for common build issues and solver discovery are documented. See `docs/technical/project_workflow.md`.
 
 ### Performance Analysis and Optimization
 
-To systematically identify and address performance bottlenecks in MiniZinc models, particularly the `v6` embedding model, we follow a structured deconstruction and reconstruction process. This involves incremental reintroduction of complexity and rigorous performance measurement at each step. For detailed procedures and recent findings, refer to [MiniZinc Model Performance Analysis and Debugging Report](docs/performance_analysis_report.md).
-
-## Standard Operating Procedures (SOPs)
-
-This project adheres to a strict set of Standard Operating Procedures (SOPs) to ensure consistency, quality, and reproducibility. Please familiarize yourself with these documents:
-
-*   [Monotonic Epic Idea SOP](docs/sops/monotonic_epic_idea_sop.md)
-*   [No Direct Edits SOP](docs/sops/no_direct_edits_sop.md)
-*   [Project Workflow SOP](docs/sops/project_workflow.md)
-*   [Run Model SOP v3](docs/sops/run_model_sop_v3.md)
-*   [MiniZinc v6 Model Reconstruction SOP](docs/sops/v6_reconstruction_sop.md)
-*   [Backpack Filling SOP](docs/sops/backpack_filling_sop.md)
-*   [Eigenvector of Athena SOP](docs/sops/eigenvector_of_athena_sop.md)
-*   [Muse SOP](docs/sops/muse_sop.md)
-*   [QA DZN Generation Verification SOP](docs/sops/qa_dzn_generation_verification.md)
-*   [Tutorial Livestream Mode SOP](docs/sops/tutorial_livestream_mode.md)
-*   [MiniZinc Model Performance Analysis and Debugging Report](docs/performance_analysis_report.md)
-*   [Generating `constants.rs` with MiniZinc Proof](docs/sops/generate_constants_sop.md)
-*   [Testing and Performance Guidelines for CLI Tools](docs/sops/testing_performance_cli_tools_sop.md)
+To systematically identify and address performance bottlenecks in MiniZinc models, particularly the `v6` embedding model, we follow a structured deconstruction and reconstruction process. This involves incremental reintroduction of complexity and rigorous performance measurement at each. For detailed procedures and recent findings, refer to `docs/technical/performance_analysis_report.md`.
 
 ## Contributing
 
-Contributions that align with the project's vision and adhere to its unique development philosophy are welcome. Please familiarize yourself with the SOPs in the `docs/sops/` directory before contributing.
+Contributions that align with the project's vision and adhere to its unique development philosophy are welcome. Please familiarize yourself with the documentation in the `docs/` directory before contributing.
 
 ## License
 
@@ -250,13 +145,3 @@ This research was partially funded by the Australian Government through the Aust
 🏛 **Monash Optimisation Group**
 
 - Website: [https://www.monash.edu/it/dsai/optimisation](https://www.monash.edu/it/dsai/optimisation)
-
-## The "Zinc Oxide" Metaphor in MiniZinc FFI
-
-The term "Zinc Oxide" is used metaphorically to describe the Rust FFI (Foreign Function Interface) for MiniZinc. In this analogy:
-
-*   **"Zinc"** represents MiniZinc, the powerful constraint programming language.
-*   **"Rust"** refers to the Rust programming language, known for its safety and performance.
-*   **"Oxide"** draws a parallel to the chemical compound zinc oxide, where zinc (the core element) is combined with oxygen (representing Rust's interaction).
-
-Thus, "Zinc Oxide" signifies the critical process of **value extraction and solution retrieval** from MiniZinc models into Rust applications, enabling Rust to leverage MiniZinc's capabilities. It highlights the integration where Rust "oxidizes" MiniZinc, making its power accessible and usable within the Rust ecosystem.

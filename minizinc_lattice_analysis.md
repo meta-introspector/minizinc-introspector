@@ -1,1 +1,0 @@
-| 1 | node_01_empty_main.rs | 1755601821.557724571 | 1755601842.597971542 | 21.040246971 | /data/data/com.termux/files/home/storage/github/libminizinc/minizinc_lattice_output/node_01 | Failed (Persistent Shared Library Linking Issue, even with RPATH) |
