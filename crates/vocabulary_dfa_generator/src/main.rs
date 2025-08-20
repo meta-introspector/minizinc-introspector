@@ -1,6 +1,19 @@
 use std::fs::File;
 use std::io::{self, BufReader, BufRead, Write};
 use std::path::PathBuf;
+use std::collections::HashMap;
+use serde::Deserialize;
+use std::fs;
+
+#[derive(Debug, Deserialize)]
+struct BuildPathsConfig {
+    home_dir: String,
+    github_root: String,
+    project_root: String,
+    hierarchical_term_index: String,
+}
+
+const MAX_TERMS_PER_FILE: usize = 1000;
 
 fn sanitize_filename_char(c: char) -> String {
     if c.is_ascii_alphanumeric() {
@@ -13,9 +26,6 @@ fn sanitize_filename_char(c: char) -> String {
 fn sanitize_filename(s: &str) -> String {
     s.chars().map(|c| sanitize_filename_char(c)).collect::<Vec<String>>().join("")
 }
-use std::collections::HashMap;
-
-const MAX_TERMS_PER_FILE: usize = 1000;
 
 fn is_purely_numeric(s: &str) -> bool {
     s.chars().all(|c| c.is_ascii_digit())
@@ -26,8 +36,12 @@ fn is_purely_hex(s: &str) -> bool {
 }
 
 fn main() -> io::Result<()> {
-    let input_file_path = "/data/data/com.termux/files/home/storage/github/libminizinc/all_terms.txt";
-    let base_output_dir = PathBuf::from("/data/data/com.termux/files/home/storage/github/libminizinc/crates/vocabulary_dfa_lib/src");
+    let config_path = PathBuf::from("/data/data/com.termux/files/home/storage/github/libminizinc/build_config.toml");
+    let config_content = fs::read_to_string(&config_path)?;
+    let config: BuildPathsConfig = toml::from_str(&config_content)?;
+
+    let input_file_path = config.project_root.clone() + "all_terms.txt";
+    let base_output_dir = PathBuf::from(config.project_root.clone() + "crates/vocabulary_dfa_lib/src");
 
     // Create the base output directory if it doesn't exist
     std::fs::create_dir_all(&base_output_dir)?;

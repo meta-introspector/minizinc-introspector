@@ -1,0 +1,5 @@
+[paths]
+home_dir = "/data/data/com.termux/files/home/"
+github_root = "/data/data/com.termux/files/home/storage/github/"
+project_root = "/data/data/com.termux/files/home/storage/github/libminizinc/"
+hierarchical_term_index = "/data/data/com.termux/files/home/storage/github/hierarchical_term_index.json"

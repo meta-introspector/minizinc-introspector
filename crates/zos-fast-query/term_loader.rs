@@ -2,8 +2,7 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use std::fs;
 
-const HIERARCHICAL_INDEX_PATH: &str = "/data/data/com.termux/files/home/storage/github/hierarchical_term_index.json";
-const MAX_TOTAL_TERMS: usize = 500_000; // Example limit, adjust as needed
+pub const MAX_TOTAL_TERMS: usize = 500_000; // Example limit, adjust as needed
 
 // Function to determine if a term is "junk"
 pub fn is_junk_term(term: &str) -> bool {
@@ -41,8 +40,8 @@ pub fn is_junk_term(term: &str) -> bool {
     false
 }
 
-pub fn load_and_filter_terms() -> Result<Vec<String>, Box<dyn std::error::Error>> {
-    let hierarchical_term_index_file = PathBuf::from(HIERARCHICAL_INDEX_PATH);
+pub fn load_and_filter_terms(hierarchical_index_path: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
+    let hierarchical_term_index_file = PathBuf::from(hierarchical_index_path);
 
     println!("cargo:warning=Loading hierarchical term index from: {:?}", hierarchical_term_index_file);
     let cached_data = fs::read_to_string(&hierarchical_term_index_file)?;

@@ -38,7 +38,7 @@ impl TermRecognizer {
         // For now, we iterate through words and check if they exist in our loaded terms.
         for word in text.split_whitespace() {
             if let Some(first_char) = word.chars().next() {
-                let sanitized_char = super::build_utils::sanitize_filename(&first_char.to_string());
+                let sanitized_char = crate::build_utils::sanitize_filename(&first_char.to_string());
                 if let Some(terms_for_char) = self.terms.get(&sanitized_char) {
                     if terms_for_char.contains(word) {
                         matched_terms.push(word.to_string());
