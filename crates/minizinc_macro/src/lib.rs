@@ -1,8 +1,15 @@
+//! # MiniZinc Procedural Macro
+//!
+//! This crate provides a procedural macro for solving MiniZinc models.
+//!
+//! The `minizinc_solve` macro can be used to generate a function that
+//! solves a MiniZinc model and returns the result.
+
 use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, ItemFn, Lit, Ident, parse::{Parse, ParseStream}, Token};
 
-// Define a struct to parse the macro attributes
+/// Arguments for the `minizinc_solve` macro.
 struct MiniZincSolveArgs {
     model_path: String,
     data_path: String,
@@ -57,6 +64,19 @@ impl Parse for MiniZincSolveArgs {
 }
 
 
+/// A procedural macro to solve a MiniZinc model.
+///
+/// This macro generates a function that solves a MiniZinc model using the
+/// `minizinc_ffi` crate. The generated function will have the same signature
+/// as the function it is attached to, but the body will be replaced with
+/// the MiniZinc solving logic.
+///
+/// # Arguments
+///
+/// * `model` - The path to the MiniZinc model file.
+/// * `data` - The path to the MiniZinc data file.
+/// * `output_type` - The type of the value to be returned by the generated
+///   function. This type must implement the `Default` trait.
 #[proc_macro_attribute]
 pub fn minizinc_solve(attr: TokenStream, item: TokenStream) -> TokenStream {
     let args = parse_macro_input!(attr as MiniZincSolveArgs);

@@ -1,3 +1,21 @@
+//! # Rust File Finder and Code Analyzer
+//! 
+//! This tool provides a suite of utilities for analyzing Rust codebases.
+//! It can be used to perform tasks such as:
+//! 
+//! * **Full Analysis:** Recursively finds all Rust projects in a directory,
+//!   analyzes each file to create a bag-of-words representation,
+//!   and
+//!   calculates cosine similarity between files.
+//! * **Crate Similarity:** Compares a target crate to all other crates found
+//!   in the analysis and reports the most similar ones.
+//! * **Keyword Search:** Searches for keywords across the entire codebase
+//!   and reports the files where they are found.
+//! * **And more:** See the `Args` struct for a full list of modes.
+//! 
+//! The tool is designed to be modular and extensible, with different
+//! functionalities encapsulated in separate `run_` functions.
+
 use walkdir::WalkDir;
 use std::fs;
 use std::path::{Path, PathBuf};
@@ -24,6 +42,7 @@ const GITHUB_ROOT_DIR: &str = "/data/data/com.termux/files/home/storage/github/"
 // file indexing
 // text mining
 
+/// Command-line arguments for the Rust File Finder and Code Analyzer.
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
@@ -56,6 +75,7 @@ struct Args {
     crates: Vec<String>,
 }
 
+/// Represents the analysis of a single file.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct FileAnalysis {
     path: PathBuf,
@@ -64,12 +84,14 @@ struct FileAnalysis {
     last_modified: SystemTime,
 }
 
+/// Represents the analysis of an entire project.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct ProjectAnalysis {
     project_root: PathBuf,
     rust_files: Vec<FileAnalysis>,
 }
 
+/// Represents the similarity between two files.
 #[derive(Debug, Serialize, Deserialize, Clone)]
 struct FilePairSimilarity {
     file1_path: PathBuf,
@@ -83,6 +105,7 @@ const STOPWORDS: &[&str] = &[
     "is", "it", "its", "of", "on", "that", "the", "to", "was", "were", "will", "with",
 ];
 
+/// Tokenizes a string into a vector of words, filtering out stopwords.
 fn tokenize(text: &str) -> Vec<String> {
     let re = Regex::new(r"\b\w+\b").unwrap();
     re.find_iter(text)
@@ -91,6 +114,7 @@ fn tokenize(text: &str) -> Vec<String> {
         .collect()
 }
 
+/// Calculates the cosine similarity between two bags of words.
 fn calculate_cosine_similarity(map1: &HashMap<String, usize>, map2: &HashMap<String, usize>) -> f64 {
     let mut dot_product = 0.0;
     let mut magnitude1 = 0.0;
@@ -117,6 +141,7 @@ fn calculate_cosine_similarity(map1: &HashMap<String, usize>, map2: &HashMap<Str
     dot_product / (magnitude1 * magnitude2)
 }
 
+/// Runs the full analysis of all Rust projects in the specified root directory.
 fn run_full_analysis() -> Result<()> {
     // Set up Rayon thread pool
     rayon::ThreadPoolBuilder::new().num_threads(16).build_global().unwrap();
@@ -371,6 +396,7 @@ fn run_full_analysis() -> Result<()> {
     Ok(())
 }
 
+/// Reads all Cargo.toml files in the specified root directory and prints their content.
 fn run_read_cargo_toml_mode() -> Result<()> {
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
 
@@ -385,7 +411,7 @@ fn run_read_cargo_toml_mode() -> Result<()> {
             eprintln!("Found Cargo.toml: {:?}", path);
             match fs::read_to_string(path) {
                 Ok(content) => {
-                    println!("\n--- Content of {:?} ---\n{}", path, content);
+                    println!("\n--- Content of {:?} ---\n{}\n", path, content);
                 },
                 Err(e) => {
                     eprintln!("Error reading Cargo.toml {:?}: {}", path, e);
@@ -397,6 +423,7 @@ fn run_read_cargo_toml_mode() -> Result<()> {
     Ok(())
 }
 
+/// Runs the crate similarity analysis.
 fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results: usize) -> Result<()> {
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let file_pair_similarities_file = search_root.join("file_pair_similarities.json");
@@ -471,7 +498,7 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
     let target_crate_name_str = target_crate_name.unwrap_or_else(|| "file_content_analyzer".to_string());
     let target_crate_bag = crate_bags_of_words.get(&target_crate_name_str).ok_or(anyhow::anyhow!("Target crate '{}' not found in cache. Run full_analysis first.", target_crate_name_str))?;
 
-    eprintln!("Calculating similarities to '{}'...", target_crate_name_str);
+    eprintln!("Calculating similarities to '{}'ները...", target_crate_name_str);
     let mut similarities: Vec<(String, f64)> = Vec::new();
     for (crate_name, bag_of_words) in &crate_bags_of_words {
         if crate_name != &target_crate_name_str {
@@ -528,6 +555,7 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
     Ok(())
 }
 
+/// Searches for keywords in the hierarchical term index.
 fn run_search_keywords_mode(keywords: Vec<String>, search_path: Option<PathBuf>) -> Result<()> {
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let hierarchical_term_index_file = search_root.join("hierarchical_term_index.json");
@@ -588,6 +616,7 @@ fn run_search_keywords_mode(keywords: Vec<String>, search_path: Option<PathBuf>)
     Ok(())
 }
 
+/// Generates a report of stopword candidates.
 fn run_generate_stopword_report_mode() -> Result<()> {
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
 
@@ -659,6 +688,7 @@ fn run_generate_stopword_report_mode() -> Result<()> {
     Ok(())
 }
 
+/// Migrates the old cache file to the new per-project summary format.
 fn run_migrate_cache_mode() -> Result<()> {
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let old_cache_file = search_root.join("file_analysis_cache.json");
@@ -683,6 +713,7 @@ fn run_migrate_cache_mode() -> Result<()> {
     Ok(())
 }
 
+/// Builds a hierarchical term index for the entire codebase.
 fn build_directory_index(current_dir: &Path, search_root: &Path) -> Result<HashMap<String, HashMap<PathBuf, usize>>> {
     let mut local_index: HashMap<String, HashMap<PathBuf, usize>> = HashMap::new();
     let dir_summary_file = current_dir.join(".dir_index.json");
@@ -788,6 +819,7 @@ fn build_directory_index(current_dir: &Path, search_root: &Path) -> Result<HashM
     Ok(local_index)
 }
 
+/// Builds a hierarchical term index for the entire codebase.
 fn run_build_hierarchical_index_mode() -> Result<()> {
     // Set up Rayon thread pool
     rayon::ThreadPoolBuilder::new().num_threads(16).build_global().unwrap();
@@ -807,6 +839,7 @@ fn run_build_hierarchical_index_mode() -> Result<()> {
 }
 
 
+/// Finds terms that are shared across the exact same set of files.
 fn run_find_exact_shared_files_terms_mode(search_path: Option<PathBuf>, filter_by_path: Option<PathBuf>) -> Result<()> {
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let hierarchical_term_index_file = search_root.join("hierarchical_term_index.json");
@@ -885,6 +918,7 @@ fn run_find_exact_shared_files_terms_mode(search_path: Option<PathBuf>, filter_b
 }
 
 
+/// Main entry point for the application.
 fn main() -> Result<()> {
     let args = Args::parse();
 

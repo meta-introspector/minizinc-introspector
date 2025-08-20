@@ -1,17 +1,27 @@
+//! # MiniZinc Introspector
+//!
+//! This tool uses `clang-rs` to parse a MiniZinc C++ source file and
+//! extract information about its structure, such as function declarations.
+//!
+//! It is a simple demonstration of how to use `clang-rs` to perform
+//! basic C++ code analysis.
+
 use clang::*;
 use std::path::Path;
 
 fn main() {
-    // Replace with the actual path to a MiniZinc C++ source file
+    // Path to the C++ source file to be parsed.
+    // TODO: This should be a command-line argument.
     let cpp_file_path = Path::new("/data/data/com.termux/files/home/storage/github/libminizinc/lib/parser.cpp");
 
-    // Create a new Clang instance
+    // Create a new Clang instance.
     let clang = Clang::new().unwrap();
 
-    // Create a new Clang index
+    // Create a new Clang index. The index provides access to the Clang AST.
     let index = Index::new(&clang, false, true);
 
-    // Common include paths for MiniZinc
+    // Specify the command-line arguments to be passed to Clang.
+    // These are necessary to correctly parse the C++ source file.
     let all_args = [
         // MiniZinc specific includes
         "-I/data/data/com.termux/files/home/storage/github/libminizinc/include",
@@ -40,10 +50,11 @@ fn main() {
         "-Xclang", "-fno-pch-reuse",
     ];
 
+    // Create a parser for the C++ file.
     let mut parser = index.parser(cpp_file_path);
     parser.arguments(&all_args);
 
-    // Parse the C++ file
+    // Parse the C++ file and create a translation unit.
     let tu = match parser.parse() {
         Ok(tu) => tu,
         Err(e) => {
@@ -59,7 +70,7 @@ fn main() {
     println!("Successfully parsed C++ file: {}", cpp_file_path.display());
     println!("Functions found:");
 
-    // Iterate over the AST to find function declarations
+    // Visit the AST and print the names of all function declarations.
     tu.get_entity().visit_children(|entity, _| {
         if entity.get_kind() == EntityKind::FunctionDecl {
             if let Some(name) = entity.get_display_name() {
