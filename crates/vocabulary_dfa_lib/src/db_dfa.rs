@@ -1,7 +1,0 @@
-use regex::Regex;
-
-pub fn matches_db(text: &str) -> bool {
-    let pattern = r"^(db93vvlk6304nx7wujlbjdsch38zjcimhupeo9uydxflfu2n1cltrsimikbvp|db_at|db_attr|db_callback|db_callbacks|db_cfg|db_collaborator|db_collaborators|db_condition_wait_nanos|db_contact|db_contacts|db_dir|db_embedding|db_embeddings|db_entries|db_entry|db_env|db_executor|db_file_name|db_fname|db_folds|db_follower|db_followers|db_handle|db_hash|db_initialize_query|db_iterator|db_key_for_path|db_load_sw|db_mut|db_mutex_lock_nanos|db_names|db_participant|db_participants|db_paths|db_project|db_projects|db_repo|db_repos|db_repositories|db_repository|db_repository_entries|db_repository_entry|db_results|db_ret|db_return|db_room|db_selections|db_settings_file|db_settings_files|db_size|db_sizes|db_status|db_status_to_proto|db_statuses|db_summaries|db_summary|db_token|db_type|db_url|db_version|db_worktree|db_worktrees|db_write|db_write_batch|dbank|dbank_paths|dbbackend|dbc5d45luhtcrq42zmcdzc8a8ufwtaiysl9pzy7ku6tr|dbcompressiontype|dbconditionwaitnanos|dbg_command|dbg_in_print|dbg_macro_info|dbg_raw|dbg_reset_raw|dbg_too_many_asterisks|dbg_wrapped|dbghelp|dbgr|dbhandle|dbiterator|dbk|dbka|dbkar|dbkaro|dbkarow|dbkmug3ofdqnvobunypkqoe|dbla|dblac|dbmismatch|dbmutexlocknanos|dbox|dbpinnableslice|dbrawiterator|dbrecoverymode|dbrgn|dbrx_instruct|dbs|dbscanparams|dbscanvalidparams|dbtests|dbuild|dbwarning)$";
-    let re = Regex::new(pattern).unwrap();
-    re.is_match(text)
-}

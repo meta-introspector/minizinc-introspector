@@ -1,7 +1,0 @@
-use regex::Regex;
-
-pub fn matches_ki(text: &str) -> bool {
-    let pattern = r"^(ki|kib_400|kibibyte|kickstart|kids|kif|kikeriki|kiki|kikikerikih|kill_current_process|kill_entry_and_spend_and_verify_rest|kill_job|kill_output|kill_process|kill_result|kill_ring|kill_ring_cut|kill_ring_yank|kill_running_job|kill_running_server|kill_tx|killer|killing_cargo_releases_the_lock|killjobresponse|killpg|killring|killringcut|killringyank|killtimer|kimchi|kimi_api_key|kimi_k2|kimono|kind1|kind_after_truncate|kind_arg|kind_bits|kind_desc|kind_description|kind_disc|kind_enum|kind_field|kind_from_files|kind_from_raw|kind_is_cmp|kind_item|kind_key|kind_macro_call|kind_mask|kind_matched|kind_matcher|kind_matches|kind_of|kind_order|kind_ordering|kind_owned|kind_path|kind_pred|kind_rule_mapping|kind_shift|kind_style|kind_tag|kind_to_attributes|kind_to_raw|kind_to_refine|kind_with_lang|kind_with_non_exhaustive_attr|kind_word|kindb|kinded|kindle|kindling|kinds_src|kinds_to_create|kinds_without_dupes|kindssrc|kindtype|kinesis_access_key|kinesis_client|kinesis_config|kinesis_region|kinesis_secret_key|kinesis_stream|kinetic|kinfo_file|kinfo_file_size|kingi|kingoflolz|kingsnake|kip|kiro_free|kiro_power|kiro_pro|kiro_pro_plus|kirofree|kiropower|kiropro|kiroproplus|kiser|kisutch|kitchensink|kitchensinkstory|kite|kitten|kittie|kiwi|ki̇taplik)$";
-    let re = Regex::new(pattern).unwrap();
-    re.is_match(text)
-}

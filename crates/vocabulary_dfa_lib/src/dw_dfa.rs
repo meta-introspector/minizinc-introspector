@@ -1,7 +1,0 @@
-use regex::Regex;
-
-pub fn matches_dw(text: &str) -> bool {
-    let pattern = r"^(dw0|dw1|dw_at_gnu_dwo_name|dw_conv|dw_mid|dw_start|dw_start_stride|dwa|dwan|dwang|dwangl|dwangle|dwaspect|dwbuildnumber|dwbvjia1myesgojipzhaf4l5hfer2dj1ys681vzqm5yy|dwconv|dwelling|dwexstyle|dwflags|dwhighdatetime|dwhovertime|dwimvibeontology|dwin32|dwlowdatetime|dwm|dwmajorversion|dwmflush|dwminorversion|dwmsetwindowattribute|dwmwa_use_immersive_dark_mode|dwnewlong|dwrite|dwrite_color_f|dwrite_factory_type_shared|dwrite_font_feature|dwrite_font_feature_tag|dwrite_font_stretch_normal|dwrite_font_style|dwrite_font_style_italic|dwrite_font_style_normal|dwrite_font_style_oblique|dwrite_font_weight|dwrite_font_weight_normal|dwrite_glyph_image_formats_colr|dwrite_glyph_image_formats_jpeg|dwrite_glyph_image_formats_png|dwrite_glyph_image_formats_premultiplied_b8g8r8a8|dwrite_glyph_image_formats_svg|dwrite_glyph_metrics|dwrite_glyph_offset|dwrite_glyph_run|dwrite_glyph_run_description|dwrite_informational_string_postscript_name|dwrite_line_metrics|dwrite_matrix|dwrite_measuring_mode|dwrite_measuring_mode_natural|dwrite_pixel_geometry_rgb|dwrite_rendering_mode1_natural_symmetric|dwrite_strikethrough|dwrite_text_range|dwrite_underline|dwrite_unicode_range|dwritecreatefactory|dws|dwscazpujuv65tmbdnfy7agwmotzwy3xpejmxm3hzfab|dwstyle)$";
-    let re = Regex::new(pattern).unwrap();
-    re.is_match(text)
-}

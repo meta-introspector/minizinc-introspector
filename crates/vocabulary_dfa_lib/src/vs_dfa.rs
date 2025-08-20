@@ -1,7 +1,0 @@
-use regex::Regex;
-
-pub fn matches_vs(text: &str) -> bool {
-    let pattern = r"^(vs_add|vs_ae|vs_attn|vs_attns|vs_codes|vs_cos|vs_db|vs_dir_path|vs_div|vs_down_blocks|vs_exp|vs_exp_inplace|vs_gelu|vs_ln|vs_max|vs_min|vs_mono_sprite|vs_mul|vs_path|vs_poly_sprite|vs_quad|vs_resnets|vs_shadow|vs_silu|vs_sin|vs_sln|vs_sqr|vs_sqrt|vs_sub|vs_suo|vs_surface|vs_tanh|vs_tanh_inplace|vs_tb|vs_ub|vs_underline|vs_unet|vs_up_blocks|vsadd|vscode_appdata|vscode_base_status_colors|vscode_colors|vscode_debug_format|vscode_definition|vscode_definitions|vscode_dir|vscode_editor_background|vscode_editor_foreground|vscode_inspector_options|vscode_languages|vscode_panel_border|vscode_path|vscode_portable|vscode_product_names|vscode_scrollbar_slider_background|vscode_settings|vscode_settings_file_paths|vscode_tab_inactive_background|vscode_tasks|vscode_token_colors_foreground|vscode_user_data_paths|vscodecontextservercommand|vscodedebugtaskdefinition|vscodeenvvariable|vscodeinsiders|vscodes|vscodesnippet|vscodetaskdefinition|vscodetasks|vscodethemeconverter|vscodetokencolorsettings|vscodetokenscope|vscodium|vscos|vscr|vsdiv|vsdot|vseed|vsexp|vsfmax|vsfmin|vsh|vshlq_n_u8|vshrn_n_u16|vshrq_n_u8|vsize|vsl|vsln|vsmul|vsn|vsob|vspace|vsplit|vssin|vssqrt|vssub|vst1q_f32|vst1q_u8|vstanh|vstride|vsu|vsub|vsubn|vsubne|vsubq_s8|vsup|vsupn|vsupne|vsx|vsync_event)$";
-    let re = Regex::new(pattern).unwrap();
-    re.is_match(text)
-}
