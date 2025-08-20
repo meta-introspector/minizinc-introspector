@@ -1,0 +1,7 @@
+use regex::Regex;
+
+pub fn matches_f6(text: &str) -> bool {
+    let pattern = r"^(f64_approx_eq_ratio_test1|f64_approx_eq_ratio_test2|f64_approx_eq_ratio_test_negative_numbers|f64_approx_eq_ratio_test_zero_eq_zero_returns_true|f64_approx_eq_ratio_test_zero_ne_zero_returns_false|f64_approx_eq_test1|f64_approx_eq_test2|f64_approx_eq_test3|f64_approx_eq_test4|f64_approx_eq_test5|f64_approx_eq_test6|f64_approx_eq_ulps_test1|f64_approx_eq_ulps_test2|f64_approx_eq_ulps_test_zeroes|f64_as_literal|f64_code|f64_code_triggering_issue_20|f64_epsilon|f64_functions|f64_legacy_const_digits|f64_legacy_const_epsilon|f64_legacy_const_infinity|f64_legacy_const_mantissa_dig|f64_legacy_const_max|f64_legacy_const_max_10_exp|f64_legacy_const_max_exp|f64_legacy_const_min|f64_legacy_const_min_10_exp|f64_legacy_const_min_exp|f64_legacy_const_min_positive|f64_legacy_const_nan|f64_legacy_const_neg_infinity|f64_legacy_const_radix|f64_nan|f64_options|f64_ordered_bits|f64_path|f64_suffixed|f64_term|f64_to_decimal|f64_to_int|f64_ulps_test1|f64_ulps_test2|f64_ulps_test3|f64_ulps_test4|f64_ulps_test5|f64_ulps_test6|f64_unsuffixed|f64_val|f64_vec|f64abs|f64const|f64margin|f64mm|f64parser|f64range|f64s|f64x2|f6uvkh1ujtefk3en2syal3cdvnqko1fvexwhmdlru6wp)$";
+    let re = Regex::new(pattern).unwrap();
+    re.is_match(text)
+}

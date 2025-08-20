@@ -1,0 +1,3 @@
+pub const RECOGNIZER_TERM_FILES: &[&str] = &[
+    // GENERATED_TERM_FILES_PLACEHOLDER
+];

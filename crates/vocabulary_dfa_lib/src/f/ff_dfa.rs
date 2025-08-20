@@ -1,0 +1,7 @@
+use regex::Regex;
+
+pub fn matches_ff(text: &str) -> bool {
+    let pattern = r"^(ff8b1fbeb86q8cjq47zhsqlgv5ekhu3g1c99zjufazrq|ff_data|ff_field_with_type|ff_fields|ff_i|ff_norm|ff_params|ff_str|ff_tx|ff_with_lora|ffattribute|ffe9gl8vxrabkiv3hqblvbqy7i9v4qtzxjh83jyyde1v|ffeclrhhakksghmuc6fz2lnfq4ut9q3iu9zsnaplxpc|ffhhf0wpyfokcfenu9bfwelpp9km79hknfbgwovxceordu|ffi_array|ffi_arrowarray|ffi_arrowschema|ffi_const|ffi_error|ffi_export|ffi_from_rust|ffi_mod|ffi_modules|ffi_panic_message|ffi_pure|ffi_roundtrip_tool_request_ok_and_err|ffi_roundtrip_tool_response_ok_and_err|ffi_schema|ffi_to_rust|ffi_try|ffi_unwind_calls|ffiboxeddynfunction|fficonverter|ffideclarations|ffidoctemplate|ffidocumentation|ffifromrust|ffifuture|ffifutureext|ffiinternaldocumentation|ffil|ffili|ffilig|ffimarkdowndoc|ffimoduledoc|ffireturn|ffiseq|ffistring|ffitorust|ffivaluedoc|ffivector|ffiwrapper|ffiwstring|ffl|fflag|fflayer|ffli|fflig|ffll|fflli|ffllig|fflt|ffmins|ffn0|ffn1|ffn_down|ffn_down_proj|ffn_gate|ffn_gate_inp|ffn_hidden_size|ffn_norm_b|ffn_output|ffn_post_norm|ffn_up|ffn_up_proj|ffr|ffrbvnoaaesnkzvgzantdy5bhnt9kt6kfctbixpvrlczg4m5udfuqyrn1gdgjx|ffswd3egl3tccb6rv3xy6oqfdzn913vucjcsnpvckpfx|fft_bench|fft_in|fft_inv_test|fft_out|fft_repr_exp_test|fft_repr_pow_test|fft_repr_test|fft_rmag|fft_rotated_a|fft_size|fft_size_t|fft_step|fft_test_case|fftconditionsnotmet|fftfixedinout|ffttiling)$";
+    let re = Regex::new(pattern).unwrap();
+    re.is_match(text)
+}

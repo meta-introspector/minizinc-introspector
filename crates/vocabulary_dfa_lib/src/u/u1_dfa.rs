@@ -1,0 +1,7 @@
+use regex::Regex;
+
+pub fn matches_u1(text: &str) -> bool {
+    let pattern = r"^(u10|u1024|u1044|u12|u125|u128_cycles|u128_from_bytes|u128_legacy_const_max|u128_legacy_const_min|u128_legacy_fn_max_value|u128_legacy_fn_min_value|u128_legacy_mod|u128_path|u128_to_binary|u128_to_compact|u128_to_hex|u128_to_octal|u128_vals|u128be|u128fastfieldcodectype|u128header|u128le|u128overflow|u128parser|u15|u160|u16_hash|u16_legacy_const_max|u16_legacy_const_min|u16_legacy_fn_max_value|u16_legacy_fn_min_value|u16_legacy_mod|u16_path|u16_repr_a|u16_suffixed|u16_to_binary|u16_to_hex|u16_to_octal|u16be|u16cstr|u16cstring|u16le|u16parser|u16str|u1addu0|u1addu1|u1addu2|u1addu3|u1addu4|u1addu5|u1bitandu0|u1bitandu1|u1bitandu2|u1bitandu3|u1bitandu4|u1bitandu5|u1bitoru0|u1bitoru1|u1bitoru2|u1bitoru3|u1bitoru4|u1bitoru5|u1bitxoru0|u1bitxoru1|u1bitxoru2|u1bitxoru3|u1bitxoru4|u1bitxoru5|u1cmpu0|u1cmpu1|u1cmpu2|u1cmpu3|u1cmpu4|u1cmpu5|u1divu1|u1divu2|u1divu3|u1divu4|u1divu5|u1ee7|u1f994|u1gcdu0|u1gcdu1|u1gcdu2|u1gcdu3|u1gcdu4|u1gcdu5|u1maxu0|u1maxu1|u1maxu2|u1maxu3|u1maxu4|u1maxu5|u1minu0|u1minu1|u1minu2|u1minu3|u1minu4|u1minu5|u1mulu0|u1mulu1|u1mulu2|u1mulu3|u1mulu4|u1mulu5|u1partialdivu1|u1powu0|u1powu1|u1powu2|u1powu3|u1powu4|u1powu5|u1remu1|u1remu2|u1remu3|u1remu4|u1remu5|u1shlu0|u1shlu1|u1shlu2|u1shlu3|u1shlu4|u1shlu5|u1shru0|u1shru1|u1shru2|u1shru3|u1shru4|u1shru5|u1subu0|u1subu1)$";
+    let re = Regex::new(pattern).unwrap();
+    re.is_match(text)
+}

@@ -1,0 +1,7 @@
+use regex::Regex;
+
+pub fn matches_c_(text: &str) -> bool {
+    let pattern = r"^(c_1|c_2|c_3|c_4|c_abi_fn|c_abi_fn_again|c_abi_in_block|c_abi_test|c_abi_testing|c_abi_testing_macros|c_args|c_args_ptrs|c_attn|c_attn_attn_b|c_attn_attn_w|c_attn_k_proj_w|c_attn_out_proj_weight|c_attn_proj_b|c_attn_proj_w|c_attn_q_proj_w|c_attn_v_proj_w|c_attn_wqkv_weight|c_bar|c_char_ptr|c_ciphertext|c_claimed|c_cnt|c_command|c_commitment|c_cond|c_dash_cmse_dash_nonsecure_dash_call|c_dash_cmse_dash_nonsecure_dash_entry|c_dash_unwind|c_data|c_delta|c_destination|c_embed|c_end|c_end_idx|c_enum_min_size|c_equality|c_extra_filename|c_extra_filename_hasher|c_fast|c_fc1|c_fc2|c_fee|c_first|c_hi|c_hidden|c_in2|c_in_block|c_in_idx|c_interface|c_invite|c_invoke_program_id|c_key|c_l|c_leader_schedule|c_level|c_levels|c_lo|c_lsp_adapter|c_m|c_max|c_max_proof|c_metadata|c_metadata_hasher|c_mlp_fc_b|c_mlp_fc_w|c_mlp_proj_b|c_mlp_proj_w|c_moo|c_moo_ptr|c_mut|c_name|c_neg|c_node|c_o_n_stan_t|c_p|c_per_head|c_percentage|c_ph_pw|c_pos|c_ptr|c_repr_a|c_repr_b|c_schar|c_search_paths|c_second|c_shape|c_sharp|c_short|c_sink|c_size_t|c_skip_res|c_slow|c_some_data|c_somedata|c_source|c_squared|c_status_end|c_str_module|c_t|c_test_abi_path|c_test_dir|c_test_file_content|c_test_file_path|c_test_file_path_str|c_timestep|c_to_idx|c_token|c_txt|c_ty|c_uid|c_unchecked|c_unchecked_mut|c_unwind|c_validator_to_slots|c_value|c_void_variant|c_x|c_xy)$";
+    let re = Regex::new(pattern).unwrap();
+    re.is_match(text)
+}

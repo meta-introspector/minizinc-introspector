@@ -1,5 +1,18 @@
 use std::fs::File;
 use std::io::{self, BufReader, BufRead, Write};
+use std::path::PathBuf;
+
+fn sanitize_filename_char(c: char) -> String {
+    if c.is_ascii_alphanumeric() {
+        c.to_string()
+    } else {
+        format!("U{:04X}", c as u32) // Format as UXXXX (hex Unicode codepoint)
+    }
+}
+
+fn sanitize_filename(s: &str) -> String {
+    s.chars().map(|c| sanitize_filename_char(c)).collect::<Vec<String>>().join("")
+}
 use std::collections::HashMap;
 
 const MAX_TERMS_PER_FILE: usize = 1000;
@@ -14,10 +27,10 @@ fn is_purely_hex(s: &str) -> bool {
 
 fn main() -> io::Result<()> {
     let input_file_path = "/data/data/com.termux/files/home/storage/github/libminizinc/all_terms.txt";
-    let output_dir = "/data/data/com.termux/files/home/storage/github/libminizinc/crates/vocabulary_dfa_lib/src";
+    let base_output_dir = PathBuf::from("/data/data/com.termux/files/home/storage/github/libminizinc/crates/vocabulary_dfa_lib/src");
 
-    // Create the output directory if it doesn't exist
-    std::fs::create_dir_all(output_dir)?;
+    // Create the base output directory if it doesn't exist
+    std::fs::create_dir_all(&base_output_dir)?;
 
     let file = File::open(input_file_path)?;
     let reader = BufReader::new(file);
@@ -60,8 +73,14 @@ fn main() -> io::Result<()> {
             }
 
             for (second_letter, sub_terms) in terms_by_second_letter {
-                let file_name = format!("{}{}_dfa.rs", first_letter, second_letter);
-                let output_file_path = format!("{}/{}", output_dir, file_name);
+                let sanitized_first_letter = sanitize_filename(&first_letter.to_string());
+                let sanitized_second_letter = sanitize_filename(&second_letter.to_string());
+
+                let sub_dir = base_output_dir.join(&sanitized_first_letter);
+                std::fs::create_dir_all(&sub_dir)?;
+
+                let file_name = format!("{}{}_dfa.rs", sanitized_first_letter, sanitized_second_letter);
+                let output_file_path = sub_dir.join(&file_name);
                 let mut output_file = File::create(output_file_path)?;
 
                 writeln!(output_file, "use regex::Regex;")?;
@@ -74,8 +93,13 @@ fn main() -> io::Result<()> {
             }
         } else {
             // Write directly to a single file for this first letter
-            let file_name = format!("{}_dfa.rs", first_letter);
-            let output_file_path = format!("{}/{}", output_dir, file_name);
+            let sanitized_first_letter = sanitize_filename(&first_letter.to_string());
+
+            let sub_dir = base_output_dir.join(&sanitized_first_letter);
+            std::fs::create_dir_all(&sub_dir)?;
+
+            let file_name = format!("{}_dfa.rs", sanitized_first_letter);
+            let output_file_path = sub_dir.join(&file_name);
             let mut output_file = File::create(output_file_path)?;
 
             writeln!(output_file, "use regex::Regex;")?;
@@ -88,7 +112,7 @@ fn main() -> io::Result<()> {
         }
     }
 
-    println!("DFA modules generated successfully in {}", output_dir);
+    println!("DFA modules generated successfully in {}", base_output_dir.display());
 
     Ok(())
 }

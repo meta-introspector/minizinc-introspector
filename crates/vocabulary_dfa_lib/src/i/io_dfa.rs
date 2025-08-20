@@ -1,0 +1,7 @@
+use regex::Regex;
+
+pub fn matches_io(text: &str) -> bool {
+    let pattern = r"^(io_|io_args|io_buf_read_interface_test|io_bufread_consume|io_bufread_fill_buf|io_const_error|io_const_error_internals|io_ended_rx|io_ended_tx|io_err_message|io_error_inprogress|io_error_more|io_error_new|io_error_tests|io_error_uncategorized|io_errorkind|io_fut|io_handle|io_handler|io_handlers|io_icons|io_in_progress|io_invalid_data|io_kind|io_lines|io_logs_subscription|io_manager|io_module|io_not_ignored_async_write|io_other_error_info|io_pin|io_read_read|io_read_read_exact|io_readers|io_replace_with|io_rx|io_seek|io_seek_seek|io_slice_as_bytes|io_stderr|io_stdout|io_task1|io_task2|io_task3|io_task4|io_tasks|io_thread|io_timeout|io_tx|io_write|io_write_flush|io_write_write|io_write_write_all|iobjectarray|iobjectcollection|iobufreadfns|iobufreadinterface|iobufreadtrait|iobuilder|ioc|iocp|ioctl|iocy|iodefinitiontype|iodep|ioerrorkind|iof|iofc|iog|iogo|iogon|iogpumetalcommandbuffer|iointerface|iolines|iomanager|iomanagermessage|iomessage|ionic|ionicons|ioop|iopf|iopl|iopub|iopub_port|iopub_socket|ioreadfns|ioreadtrait|iorequest|ios_crypto_secret|ios_redirect_uri|iosafe|ioscrypto|ioseektrait|iostream|iota|iothreads|iou_head_depth|iou_head_hidden_dim|iou_pred|iou_prediction_head|iou_token|iou_token_out|iou_val|iov|iov_base|iov_len|iovec|iow|iowait|iowithsource|iowritefns|iowritetrait|iozlsj7spae2ogiauieuuwajya5khgbh8fhahzkh)$";
+    let re = Regex::new(pattern).unwrap();
+    re.is_match(text)
+}
