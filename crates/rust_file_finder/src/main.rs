@@ -10,10 +10,19 @@ use rayon::prelude::*;
 use std::time::SystemTime;
 use anyhow::Result;
 
+const GITHUB_ROOT_DIR: &str = "/data/data/com.termux/files/home/storage/github/";
+
 // Synonyms for SEO:
 // Code Analysis
 // Source Code Indexing
 // Software Metrics
+
+// SEO Experiment: Additional terms for discoverability (experimental, not standard practice)
+// code search
+// repository analysis
+// source code intelligence
+// file indexing
+// text mining
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -108,7 +117,7 @@ fn run_full_analysis() -> Result<()> {
     // Set up Rayon thread pool
     rayon::ThreadPoolBuilder::new().num_threads(16).build_global().unwrap();
 
-    let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
+    let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let term_index_file = search_root.join("term_index.json");
     let file_pair_similarities_file = search_root.join("file_pair_similarities.json");
 
@@ -359,7 +368,7 @@ fn run_full_analysis() -> Result<()> {
 }
 
 fn run_read_cargo_toml_mode() -> Result<()> {
-    let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
+    let search_root = PathBuf::from(GITHUB_ROOT_DIR);
 
     eprintln!("Searching for Cargo.toml files in: {:?}", search_root);
 
@@ -385,7 +394,7 @@ fn run_read_cargo_toml_mode() -> Result<()> {
 }
 
 fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results: usize) -> Result<()> {
-    let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
+    let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let file_pair_similarities_file = search_root.join("file_pair_similarities.json");
 
     eprintln!("Discovering Rust projects in: {:?}", search_root);
@@ -516,7 +525,7 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
 }
 
 fn run_search_keywords_mode(keywords: Vec<String>, search_path: Option<PathBuf>) -> Result<()> {
-    let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
+    let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let hierarchical_term_index_file = search_root.join("hierarchical_term_index.json");
 
     eprintln!("Loading hierarchical term index from {:?}", hierarchical_term_index_file);
@@ -565,7 +574,7 @@ fn run_search_keywords_mode(keywords: Vec<String>, search_path: Option<PathBuf>)
 }
 
 fn run_generate_stopword_report_mode() -> Result<()> {
-    let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
+    let search_root = PathBuf::from(GITHUB_ROOT_DIR);
 
     eprintln!("Discovering Rust projects in: {:?}", search_root);
 
@@ -636,7 +645,7 @@ fn run_generate_stopword_report_mode() -> Result<()> {
 }
 
 fn run_migrate_cache_mode() -> Result<()> {
-    let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
+    let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let old_cache_file = search_root.join("file_analysis_cache.json");
 
     eprintln!("Attempting to migrate old cache from {:?}", old_cache_file);
@@ -659,71 +668,125 @@ fn run_migrate_cache_mode() -> Result<()> {
     Ok(())
 }
 
-fn run_build_hierarchical_index_mode() -> Result<()> {
-    let search_root = PathBuf::from("/data/data/com.termux/files/home/storage/github/");
-    let hierarchical_term_index_file = search_root.join("hierarchical_term_index.json");
+fn build_directory_index(current_dir: &Path, search_root: &Path) -> Result<HashMap<String, HashMap<PathBuf, usize>>> {
+    let mut local_index: HashMap<String, HashMap<PathBuf, usize>> = HashMap::new();
+    let dir_summary_file = current_dir.join(".dir_index.json");
 
-    eprintln!("Building hierarchical term index from project summaries in: {:?}", search_root);
-
-    let mut hierarchical_term_index: HashMap<String, HashMap<PathBuf, usize>> = HashMap::new();
-
-    // Discover Cargo.toml files to identify project roots
-    let mut discovered_project_roots: std::collections::HashSet<PathBuf> = std::collections::HashSet::new();
-    for entry in WalkDir::new(&search_root)
-        .into_iter()
-        .filter_map(|e| e.ok())
-        .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target")) // Skip target directories
-    {
-        let path = entry.path();
-        if path.is_file() && path.file_name().map_or(false, |name| name == "Cargo.toml") {
-            if let Some(parent) = path.parent() {
-                discovered_project_roots.insert(parent.to_path_buf());
-            }
-        }
-    }
-
-    let total_project_roots = discovered_project_roots.len();
-    eprintln!("Found {} potential Rust project roots. Processing...", total_project_roots);
-
-    let mut processed_summaries_count = 0;
-
-    // Load project summaries and build the hierarchical index
-    for project_root in discovered_project_roots {
-        let project_summary_file = project_root.join(".file_analysis_summary.json");
-        processed_summaries_count += 1;
-
-        eprint!("\rProcessing project summary {}/{}: {:?}", processed_summaries_count, total_project_roots, project_summary_file);
-
-        if project_summary_file.exists() {
-            if let Ok(cached_data) = fs::read_to_string(&project_summary_file) {
-                if let Ok(project_analysis) = serde_json::from_str::<ProjectAnalysis>(&cached_data) {
-                    for file_analysis in project_analysis.rust_files {
-                        // Convert absolute path to relative path from search_root
-                        let relative_path = file_analysis.path.strip_prefix(&search_root)
-                            .unwrap_or(&file_analysis.path)
-                            .to_path_buf();
-
-                        eprint!("\r  Adding words from file: {:?} (Current unique terms: {})", relative_path, hierarchical_term_index.len());
-                        for (word, count) in file_analysis.bag_of_words {
-                            hierarchical_term_index
-                                .entry(word)
-                                .or_insert_with(HashMap::new)
-                                .insert(relative_path.clone(), count);
+    // Check if a cached summary exists and is up-to-date
+    if dir_summary_file.exists() {
+        if let Ok(metadata) = fs::metadata(&dir_summary_file) {
+            if let Ok(modified_time) = metadata.modified() {
+                let mut all_files_up_to_date = true;
+                // Check if any file in current_dir or its immediate subdirs is newer than the summary
+                for entry in WalkDir::new(current_dir).max_depth(1).into_iter().filter_map(|e| e.ok()) {
+                    let path = entry.path();
+                    if path.is_file() {
+                        if let Ok(file_modified_time) = fs::metadata(path).and_then(|m| m.modified()) {
+                            if file_modified_time > modified_time {
+                                all_files_up_to_date = false;
+                                break;
+                            }
                         }
                     }
-                } else {
-                    eprintln!("\nError deserializing project summary from {:?}. Skipping.", project_summary_file);
                 }
-            } else {
-                eprintln!("\nError reading project summary from {:?}. Skipping.", project_summary_file);
+                if all_files_up_to_date {
+                    // Load from cache
+                    if let Ok(cached_data) = fs::read_to_string(&dir_summary_file) {
+                        if let Ok(index) = serde_json::from_str::<HashMap<String, HashMap<PathBuf, usize>>>(&cached_data) {
+                            eprintln!("Loaded cached index for: {:?}", current_dir);
+                            return Ok(index);
+                        }
+                    }
+                }
             }
         }
     }
-    eprintln!("\n"); // Newline after progress updates
 
-    eprintln!("Saving hierarchical term index to {:?}. Total unique terms: {}", hierarchical_term_index_file, hierarchical_term_index.len());
-    let serialized_hierarchical_term_index = serde_json::to_string_pretty(&hierarchical_term_index)?;
-    fs::write(&hierarchical_term_index_file, serialized_hierarchical_term_index)?;
+    eprintln!("Processing directory: {:?}", current_dir);
+
+    // Process files directly in the current directory
+    for entry in WalkDir::new(current_dir).max_depth(1).into_iter().filter_map(|e| e.ok()) {
+        let path = entry.path();
+        if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") {
+            if let Ok(file_content) = fs::read_to_string(path) {
+                let tokens = tokenize(&file_content);
+                let mut bag_of_words: HashMap<String, usize> = HashMap::new();
+                for token in &tokens {
+                    *bag_of_words.entry(token.clone()).or_insert(0) += 1;
+                }
+
+                let relative_path = path.strip_prefix(search_root)
+                    .unwrap_or(path)
+                    .to_path_buf();
+
+                for (word, count) in bag_of_words {
+                    local_index
+                        .entry(word)
+                        .or_insert_with(HashMap::new)
+                        .insert(relative_path.clone(), count);
+                }
+            }
+        }
+    }
+
+    // Process subdirectories in parallel and merge their indexes
+    let sub_dir_indexes: Vec<HashMap<String, HashMap<PathBuf, usize>>> = WalkDir::new(current_dir)
+        .min_depth(1) // Start from subdirectories
+        .max_depth(1) // Only immediate subdirectories
+        .into_iter()
+        .filter_map(|e| e.ok())
+        .filter(|e| e.path().is_dir())
+        .collect::<Vec<_>>() // Collect into a Vec first
+        .par_iter() // Process subdirectories in parallel
+        .filter_map(|entry| {
+            let sub_dir_path = entry.path();
+            // Skip target directories
+            if sub_dir_path.components().any(|comp| comp.as_os_str() == "target") {
+                return None;
+            }
+            match build_directory_index(sub_dir_path, search_root) {
+                Ok(index) => Some(index),
+                Err(e) => {
+                    eprintln!("Error processing subdirectory {:?}: {}", sub_dir_path, e);
+                    None
+                }
+            }
+        })
+        .collect();
+
+    for sub_index in sub_dir_indexes {
+        for (word, file_counts) in sub_index {
+            for (path, count) in file_counts {
+                local_index
+                    .entry(word.clone()) // Clone the word here
+                    .or_insert_with(HashMap::new)
+                    .insert(path, count);
+            }
+        }
+    }
+
+    // Save the local index for this directory
+    eprintln!("Saving directory index for: {:?}", current_dir);
+    let serialized_local_index = serde_json::to_string_pretty(&local_index)?;
+    fs::write(&dir_summary_file, serialized_local_index)?;
+
+    Ok(local_index)
+}
+
+fn run_build_hierarchical_index_mode() -> Result<()> {
+    // Set up Rayon thread pool
+    rayon::ThreadPoolBuilder::new().num_threads(16).build_global().unwrap();
+
+    let search_root = PathBuf::from(GITHUB_ROOT_DIR);
+    let hierarchical_term_index_file = search_root.join("hierarchical_term_index.json");
+
+    eprintln!("Starting hierarchical index build from: {:?}", search_root);
+
+    let final_index = build_directory_index(&search_root, &search_root)?;
+
+    eprintln!("Saving final hierarchical term index to {:?}. Total unique terms: {}", hierarchical_term_index_file, final_index.len());
+    let serialized_final_index = serde_json::to_string_pretty(&final_index)?;
+    fs::write(&hierarchical_term_index_file, serialized_final_index)?;
 
     Ok(())
 }
