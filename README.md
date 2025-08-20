@@ -43,6 +43,8 @@
   - [Gecode Integration](#gecode-integration)
   - [Performance Analysis and Optimization](#performance-analysis-and-optimization)
 - [Recent Model Analysis and Debugging](#recent-model-analysis-and-debugging)
+- [Term Recognition System (ZOS Fast Query) 🧠🔍](#term-recognition-system-zos-fast-query-🧠🔍)
+- [CLI Tools](#cli-tools)
 - [Model Documentation](#model-documentation)
 - [Standard Operating Procedures (SOPs)](#standard-operating-procedures-sops)
 - [Contributing](#contributing)
@@ -109,6 +111,66 @@ This section documents recent findings and debugging efforts related to the Mini
 
 *   [MiniZinc Model Performance Analysis and Debugging Report](docs/performance_analysis_report.md)
 
+## Term Recognition System (ZOS Fast Query) 🧠🔍
+
+The project is actively developing a robust term recognition system, primarily implemented within the `zos-fast-query` crate. This system is designed for efficient identification and processing of terms from codebases and other textual sources, addressing challenges related to large vocabularies and memory constraints through a modular, chunk-based generation approach.
+
+**Current Status:**
+The core generation and recognition mechanisms are in place, with ongoing work to refine module structures and ensure seamless integration. Recent efforts have focused on improving filename sanitization for Unicode characters and resolving build complexities between the build script and the main application.
+
+**Ongoing Work:**
+The next major development involves implementing "pattern2" analysis, a function to identify subpattern relationships between terms, thereby building a comprehensive term topology.
+
+*   [Standard Operating Procedure: Term Recognition System Generation and Modification](docs/sops/term_recognition_system_generation_sop.md) 📜
+*   [Conceptual MiniZinc Specification: Term Recognition System Generation](docs/sops/term_recognition_system_generation.mzn) ✨
+
+## CLI Tools
+
+This project includes several command-line interface (CLI) tools to facilitate various development and analysis tasks.
+
+### `doc_to_minizinc_data`
+
+This binary is responsible for extracting words from various source files (Markdown, Rust, C++, C, and HPP), generating 8D random embeddings for these words, and preparing the data for MiniZinc models. It supports chunking of the output data to manage large vocabularies and improve performance.
+
+**Usage:**
+
+```bash
+doc_to_minizinc_data --chunk-size <SIZE> --input-path <PATH>
+```
+
+*   `--chunk-size <SIZE>`: Specifies the size of each chunk for word embeddings (default: 100).
+*   `--input-path <PATH>`: Optional path to a specific file or directory to process. If not provided, the current directory will be processed.
+
+### `zos-bootstrap-main`
+
+This is the primary command-line interface for managing the project. It provides a comprehensive set of subcommands for building, testing, running, and analyzing the codebase, as well as bootstrapping the Zero-One-System (ZOS).
+
+**Usage:**
+
+```bash
+zos-bootstrap-main <COMMAND> [OPTIONS]
+```
+
+**Available Commands:**
+
+*   `build`: Handles building project components.
+*   `test`: Runs project tests.
+*   `run`: Executes project components.
+*   `debug`: Provides debugging functionalities.
+*   `clean`: Cleans the project's build artifacts.
+*   `extract-constants`: Extracts constants from the codebase.
+*   `generate-params`: Generates MiniZinc parameters.
+*   `generate-constants-file`: Generates a constants file.
+*   `analyze-constants`: Analyzes constant usage within the project.
+*   `ast-to-minizinc`: Converts Abstract Syntax Trees (AST) to MiniZinc models.
+*   `test-ast-to-minizinc`: Tests the AST to MiniZinc conversion process.
+*   `code-search`: Performs code searches across the codebase.
+*   `bootstrap`: A meta-command to bootstrap the ZOS system, including building, testing, and running an initial embedding model.
+*   `self-optimize`: (Future implementation)
+*   `analyze-duplicates`: (Future implementation)
+
+For detailed usage of each subcommand, run `zos-bootstrap-main <COMMAND> --help`.
+
 ## Model Documentation
 
 This section provides detailed documentation and analysis of the MiniZinc models within this project.
@@ -163,6 +225,7 @@ This project adheres to a strict set of Standard Operating Procedures (SOPs) to 
 *   [Tutorial Livestream Mode SOP](docs/sops/tutorial_livestream_mode.md)
 *   [MiniZinc Model Performance Analysis and Debugging Report](docs/performance_analysis_report.md)
 *   [Generating `constants.rs` with MiniZinc Proof](docs/sops/generate_constants_sop.md)
+*   [Testing and Performance Guidelines for CLI Tools](docs/sops/testing_performance_cli_tools_sop.md)
 
 ## Contributing
 

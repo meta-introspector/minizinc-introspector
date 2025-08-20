@@ -148,3 +148,6 @@ echo "All term data and DFA modules regenerated."
 *   **Problematic Filenames (`vocabulary_dfa_lib`)**: 
     *   **Cause**: Non-ASCII characters in terms are not being correctly sanitized, or old files with problematic names persist.
     *   **Solution**: Ensure `sanitize_filename_char` and `sanitize_filename` functions are robust. Run `scripts/clean_generated_files.sh` and then `scripts/regenerate_all_terms.sh` to ensure a clean regeneration.
+*   **DFA Tester Errors (`dfa_tester`)**: 
+    *   **Cause**: `dfa_tester` cannot find the generated DFA modules (e.g., `a_dfa`, `b__dfa`). This typically happens because the `vocabulary_dfa_generator` binary has not been run, or the generated files are not accessible to `dfa_tester`.
+    *   **Solution**: Ensure that `vocabulary_dfa_generator` has been successfully run. This binary generates the necessary `.rs` files within `crates/vocabulary_dfa_lib/src/`. You can run it manually using `cargo run --package vocabulary_dfa_generator`. After running the generator, rebuild `dfa_tester` (or the entire workspace) to pick up the newly generated modules.

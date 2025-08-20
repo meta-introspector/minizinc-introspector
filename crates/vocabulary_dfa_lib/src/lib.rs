@@ -1,4 +1,4 @@
-//pub mod a_dfa;
+pub mod a;
 //pub mod à_dfa;
 //pub mod aˇ_dfa;
 // pub mod a1_dfa;
@@ -37,7 +37,7 @@
 // //pub mod aα_dfa;
 // //pub mod aβ_dfa;
 // //pub mod aあ_dfa;
-// pub mod b__dfa;
+pub mod b;
 // //pub mod bˇ_dfa;
 // pub mod b1_dfa;
 // pub mod b2_dfa;

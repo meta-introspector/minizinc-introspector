@@ -13,6 +13,11 @@ struct BuildPathsConfig {
     hierarchical_term_index: String,
 }
 
+#[derive(Debug, Deserialize)]
+struct ConfigWrapper {
+    paths: BuildPathsConfig,
+}
+
 const MAX_TERMS_PER_FILE: usize = 1000;
 
 fn sanitize_filename_char(c: char) -> String {
@@ -35,13 +40,13 @@ fn is_purely_hex(s: &str) -> bool {
     s.chars().all(|c| c.is_ascii_hexdigit())
 }
 
-fn main() -> io::Result<()> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config_path = PathBuf::from("/data/data/com.termux/files/home/storage/github/libminizinc/build_config.toml");
     let config_content = fs::read_to_string(&config_path)?;
-    let config: BuildPathsConfig = toml::from_str(&config_content)?;
+    let config: ConfigWrapper = toml::from_str(&config_content)?;
 
-    let input_file_path = config.project_root.clone() + "all_terms.txt";
-    let base_output_dir = PathBuf::from(config.project_root.clone() + "crates/vocabulary_dfa_lib/src");
+    let input_file_path = config.paths.project_root.clone() + "all_terms.txt";
+    let base_output_dir = PathBuf::from(config.paths.project_root.clone() + "crates/vocabulary_dfa_lib/src");
 
     // Create the base output directory if it doesn't exist
     std::fs::create_dir_all(&base_output_dir)?;

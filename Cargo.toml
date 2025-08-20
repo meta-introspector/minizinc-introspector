@@ -18,7 +18,8 @@ members = [
     "crates/rust_file_finder",
     "crates/zos-fast-query",
     "crates/ragit-string-utils",
-    "crates/vocabulary_dfa_generator",
-    "crates/vocabulary_dfa_lib",
-    "crates/dfa_tester",
+    # "crates/vocabulary_dfa_generator",
+    # "crates/vocabulary_dfa_lib",
+    # "crates/dfa_tester",
+    "crates/backpack_tool", "crates/code_search_tool",
 ]

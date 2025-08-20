@@ -78,7 +78,10 @@ fn main() -> Result<()> {
 	&Some(Commands::SelfOptimize(_)) => {
 	    todo!("FIXME")
 	}
-	&Some(Commands::AnalyzeDuplicates(_)) => { todo!() }
+	        Some(Commands::AnalyzeDuplicates(_)) => { todo!() }
+        Some(Commands::IndexUpdate(args)) => {
+            commands::index_update::handle_index_update_command(args.clone())?;
+        }
         Some(Commands::Bootstrap { target }) => {
             if target == "zos" {
                 println!("Commencing ZOS Bootstrap: Building all core components...");

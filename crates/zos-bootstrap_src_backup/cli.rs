@@ -43,7 +43,9 @@ pub enum Commands {
     /// Tests AST to MiniZinc conversion for a single file
     TestAstToMiniZinc(commands::test_ast_to_minizinc::TestAstToMiniZincArgs),
     /// Finds duplicate or similar code within the codebase
-    AnalyzeDuplicates(AnalyzeDuplicatesArgs), // New subcommand
+    AnalyzeDuplicates(AnalyzeDuplicatesArgs),
+    /// Updates the project index incrementally with status reports
+    IndexUpdate(IndexUpdateArgs),
 }
 
 #[derive(Parser)]
@@ -57,4 +59,11 @@ pub struct AnalyzeDuplicatesArgs {
     /// If true, treat suggested_code as a file path, otherwise as a direct string
     #[arg(long, default_value_t = false)]
     pub is_file: bool,
+}
+
+#[derive(Parser)]
+pub struct IndexUpdateArgs {
+    /// Perform an incremental update of the index
+    #[arg(long, default_value_t = true)]
+    pub incremental: bool,
 }

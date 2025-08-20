@@ -2,6 +2,19 @@ use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use serde_json;
 
+// Duplicated from build.rs for now to resolve build issues
+pub fn sanitize_filename_char(c: char) -> String {
+    if c.is_ascii_alphanumeric() {
+        c.to_string()
+    } else {
+        format!("U{:04X}", c as u32) // Format as UXXXX (hex Unicode codepoint)
+    }
+}
+
+pub fn sanitize_filename(s: &str) -> String {
+    s.chars().map(|c| sanitize_filename_char(c)).collect::<Vec<String>>().join("")
+}
+
 include!(concat!(env!("OUT_DIR"), "/generated_recognizer.rs"));
 
 pub struct TermRecognizer {
@@ -37,7 +50,7 @@ impl TermRecognizer {
         // For now, we iterate through words and check if they exist in our loaded terms.
         for word in text.split_whitespace() {
             if let Some(first_char) = word.chars().next() {
-                let sanitized_char = crate::build_utils::sanitize_filename(&first_char.to_string());
+                let sanitized_char = sanitize_filename(&first_char.to_string());
                 if let Some(terms_for_char) = self.terms.get(&sanitized_char) {
                     if terms_for_char.contains(word) {
                         matched_terms.push(word.to_string());

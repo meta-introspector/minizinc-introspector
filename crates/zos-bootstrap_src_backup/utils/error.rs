@@ -30,6 +30,9 @@ pub enum ZosError {
 
     #[error("Unknown error: {0}")]
     Unknown(String),
+
+    #[error("JSON serialization/deserialization error: {0}")]
+    Json(#[from] serde_json::Error),
 }
 
 impl From<glob::PatternError> for ZosError {

@@ -1,0 +1,20 @@
+@startuml
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+title System Context Diagram for Term Recognition System
+
+Person(user, "Developer/User", "Interacts with the system to analyze code and terms.")
+System(term_recognition_system, "Term Recognition System", "Identifies and analyzes terms within codebases and other textual data.")
+
+System_Ext(codebase, "Codebase", "Source code files (Rust, C++, etc.) that are analyzed for terms.")
+System_Ext(term_index_source, "Hierarchical Term Index Source", "External source (e.g., JSON file) providing the raw list of terms.")
+System_Ext(build_system, "Build System (Cargo)", "Orchestrates the compilation and generation processes.")
+System_Ext(file_system, "File System", "Stores generated term data, DFA modules, and configuration.")
+
+Rel(user, term_recognition_system, "Uses CLI commands to trigger analysis")
+Rel(term_recognition_system, codebase, "Reads and processes", "Code Analysis")
+Rel(term_recognition_system, term_index_source, "Loads terms from")
+Rel(term_recognition_system, build_system, "Integrates with", "Build-time Generation")
+Rel(term_recognition_system, file_system, "Reads/Writes generated data to")
+
+@enduml
