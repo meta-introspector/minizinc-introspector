@@ -94,6 +94,9 @@ This project's documentation is organized into the following categories:
 
 *   **[Core Concepts](docs/vision):** High-level vision, philosophy, and core concepts.
 *   **[Technical Documentation](docs/technical):** SOPs, RFCs, and other technical documents.
+    *   [Debugging and Error Resolution SOP](docs/technical/debugging_error_resolution_sop.md)
+    *   [Dependency Management SOP](docs/technical/dependency_management_sop.md)
+    *   [Feature Flag Management SOP](docs/technical/feature_flag_management_sop.md)
 *   **[Crate Documentation](docs/crates):** Documentation for individual crates.
 *   **[Poems and Creative Writing](docs/poems):** A collection of poems, sonnets, and other creative writing that captures the spirit of the project.
 *   **[Tutorials](docs/tutorial):** Step-by-step guides for getting started with the project.
@@ -121,6 +124,24 @@ Specific procedures are in place for building, configuring, and integrating Geco
 ### Performance Analysis and Optimization
 
 To systematically identify and address performance bottlenecks in MiniZinc models, particularly the `v6` embedding model, we follow a structured deconstruction and reconstruction process. This involves incremental reintroduction of complexity and rigorous performance measurement at each. For detailed procedures and recent findings, refer to `docs/technical/performance_analysis_report.md`.
+
+### Indexing and Profiling Tools
+
+This project provides several utility scripts to assist with indexing the codebase and profiling its performance, adhering to the "add-only, never edit" philosophy.
+
+*   **Incremental Index Update (`scripts/update_index.sh`)**:
+    This script performs an incremental update of the hierarchical term index. It leverages the `file_content_analyzer`'s built-in caching mechanism to efficiently re-process only files and directories that have changed since the last index build. This is the recommended way to keep your index up-to-date.
+    ```bash
+    ./scripts/update_index.sh
+    ```
+
+*   **Reindexing Optimization and Profiling (`scripts/optimize_reindex.sh`)**:
+    This script demonstrates various techniques for profiling the reindexing process and performing targeted, incremental reindexing. It uses the `time -v` command for detailed performance metrics and illustrates how to use the `--search-path` argument of the `file_content_analyzer` to limit the scope of reindexing to specific directories. This is useful for analyzing performance bottlenecks or reindexing only parts of the codebase.
+    ```bash
+    ./scripts/optimize_reindex.sh
+    ```
+    For more detailed profiling, you can run the `file_content_analyzer` directly with the `--profile` flag (e.g., `./target/debug/file_content_analyzer --mode build_hierarchical_index --profile`). You will need a Puffin viewer to visualize the generated profiling data.
+
 
 ## Contributing
 
