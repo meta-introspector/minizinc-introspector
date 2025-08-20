@@ -1,0 +1,50 @@
+________  ____    ____            _           _     ____  _                   
+|__  / _ \/ ___|  |  _ \ _ __ ___ (_) ___  ___| |_  / ___|| |_ ___  _ __ _   _ 
+  / / | | \___ \  | |_) | '__/ _ \| |/ _ \/ __| __| \___ \| __/ _ \| '__| | | |
+ / /| |_| |___) | |  __/| | | (_) | |  __/ (__| |_   ___) | || (_) | |  | |_| |
+/____\___/|____/  |_|   |_|  \___// |\___|\___|\__| |____/ \__\___|_|   \__, |
+                                |__/                                     |___/ 
+
+# Our Codebase Journey 🚀
+
+```ansi
+\x1b[34m
+  _______
+ |       |
+ | Code  |
+ |_______|
+ |       |
+ | Data  |
+ |_______|
+\x1b[0m
+```
+
+In the land of Rust, where bytes do roam,
+A project grand, now finds its home.
+With ZOS at core, a vision bright,
+To query code with all its might.
+
+Our `file_content_analyzer`, a trusty friend,
+Helped us explore, from start to end.
+But speed was needed, a faster pace,
+For insights deep, in time and space.
+
+So `zos-fast-query` came to be,
+A lightning bolt, for you and me!
+With `jaq` inside, so quick and keen,
+It sifts through data, a joyful scene.
+
+No more slow waits, no more delay,
+Just answers swift, to light our way.
+From `temp_shared_terms`, it pulls with grace,
+Related projects, in their place.
+
+And for the "noobs," with hearts so pure,
+Our docs now shine, a guiding lure.
+With Borat's wisdom, bold and true,
+"Very nice!" for all that's new!
+
+So wave to audience, far and wide,
+Our ZOS journey, with pride we ride!
+From code to knowledge, a seamless flow,
+The future's bright, watch ZOS grow! ✨
