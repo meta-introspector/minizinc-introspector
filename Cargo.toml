@@ -15,5 +15,5 @@ members = [
     "zos-bootstrap-main",
     "crates/minizinc_output_parser",
     "rust_lattice_project",
-    "crates/rust_file_finder",
+    "crates/rust_file_finder", "crates/zos-fast-query",
 ]
