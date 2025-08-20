@@ -1,5 +1,4 @@
 use std::fs;
-use std::io::Write;
 use std::path::PathBuf;
 
 pub fn generate_recognizer_index(generated_files: Vec<String>, out_dir: &PathBuf, project_root: &str) -> Result<(), Box<dyn std::error::Error>> {
