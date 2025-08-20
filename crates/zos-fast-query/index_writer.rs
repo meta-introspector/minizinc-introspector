@@ -8,7 +8,7 @@ pub fn generate_recognizer_index(generated_files: Vec<String>, out_dir: &PathBuf
 
     let mut files_list_str = String::new();
     for file_name in generated_files {
-        files_list_str.push_str(&format!("    \"{{}}\"\n", file_name));
+        files_list_str.push_str(&format!("    \"{}\",\n", file_name));
     }
 
     template_content = template_content.replace("// GENERATED_TERM_FILES_PLACEHOLDER", &files_list_str);

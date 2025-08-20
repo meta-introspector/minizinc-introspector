@@ -109,9 +109,6 @@ rm -rf "${PROJECT_ROOT}target/debug/build/zos-fast-query-*/out/"
 rm -rf "${PROJECT_ROOT}target/release/build/zos-fast-query-*/out/"
 
 # Remove vocabulary_dfa_lib generated subdirectories
-rm -rf "${PROJECT_ROOT}crates/vocabulary_dfa_lib/src/a/"
-rm -rf "${PROJECT_ROOT}crates/vocabulary_dfa_lib/src/b/"
-# ... and so on for all letters (or use a loop/wildcard if safe)
 # A safer approach might be to list directories and filter
 find "${PROJECT_ROOT}crates/vocabulary_dfa_lib/src/" -maxdepth 1 -type d -name '[a-z]' -exec rm -rf {} + 
 find "${PROJECT_ROOT}crates/vocabulary_dfa_lib/src/" -maxdepth 1 -type d -name '[0-9]' -exec rm -rf {} + 
@@ -139,15 +136,15 @@ echo "All term data and DFA modules regenerated."
 
 ## 6. Troubleshooting
 
-*   **Memory Errors during Build (`zos-fast-query`)**:
+*   **Memory Errors during Build (`zos-fast-query`)**: 
     *   **Cause**: `hierarchical_term_index.json` is too large, or `MAX_TOTAL_TERMS` is set too high.
     *   **Solution**: Reduce the size of `hierarchical_term_index.json` by filtering more terms, or increase `MAX_TOTAL_TERMS` if system memory allows. Consider optimizing `is_junk_term` or the initial term collection process.
-*   **Memory Errors during Runtime (`zos-fast-query`)**:
+*   **Memory Errors during Runtime (`zos-fast-query`)**: 
     *   **Cause**: `MAX_TERMS_PER_CHUNK` is too high, leading to large JSON files being loaded into memory.
     *   **Solution**: Reduce `MAX_TERMS_PER_CHUNK` in `chunk_generator.rs`. This will create more, smaller JSON files, reducing the memory footprint of individual chunks.
-*   **Malformed Generated Files (`generated_recognizer.rs`)**:
+*   **Malformed Generated Files (`generated_recognizer.rs`)**: 
     *   **Cause**: Errors in `index_writer.rs` or `recognizer_template.rs` leading to invalid Rust syntax.
     *   **Solution**: Carefully review the `format!` strings and placeholder replacement logic in `index_writer.rs` and the template content in `recognizer_template.rs`.
-*   **Problematic Filenames (`vocabulary_dfa_lib`)**:
+*   **Problematic Filenames (`vocabulary_dfa_lib`)**: 
     *   **Cause**: Non-ASCII characters in terms are not being correctly sanitized, or old files with problematic names persist.
     *   **Solution**: Ensure `sanitize_filename_char` and `sanitize_filename` functions are robust. Run `scripts/clean_generated_files.sh` and then `scripts/regenerate_all_terms.sh` to ensure a clean regeneration.

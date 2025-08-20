@@ -3,12 +3,22 @@ use std::path::PathBuf;
 use std::fs;
 
 const MAX_TERMS_PER_CHUNK: usize = 50_000; // Example limit, adjust as needed
+pub fn sanitize_filename_char(c: char) -> String {
+    if c.is_ascii_alphanumeric() {
+        c.to_string()
+    } else {
+        format!("U{:04X}", c as u32) // Format as UXXXX (hex Unicode codepoint)
+    }
+}
 
+pub fn sanitize_filename(s: &str) -> String {
+    s.chars().map(|c| sanitize_filename_char(c)).collect::<Vec<String>>().join("")
+}
 pub fn generate_term_chunks(filtered_terms: Vec<String>, out_dir: &PathBuf) -> Result<(Vec<String>, u64), Box<dyn std::error::Error>> {
     let mut terms_by_first_char: BTreeMap<String, Vec<String>> = BTreeMap::new();
     for term in filtered_terms {
         if let Some(first_char) = term.chars().next() {
-            let sanitized_char = super::build_utils::sanitize_filename(&first_char.to_string());
+            let sanitized_char = sanitize_filename(&first_char.to_string());
             terms_by_first_char.entry(sanitized_char).or_insert_with(Vec::new).push(term);
         }
     }

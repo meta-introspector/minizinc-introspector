@@ -16,6 +16,8 @@ enum Commands {
     BatchQuery(commands::batch_query::BatchQueryArgs),
     /// Recognize terms in a given text using the compiled regex
     RecognizeText(commands::recognize_text::RecognizeTextArgs),
+    /// Analyze subpattern relationships in text
+    SubpatternAnalysis(commands::subpattern_analysis::SubpatternAnalysisArgs),
 }
 
 fn main() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> {
@@ -24,6 +26,7 @@ fn main() -> std::result::Result<(), std::boxed::Box<dyn std::error::Error>> {
     let result = match &cli.command {
         Commands::BatchQuery(args) => commands::batch_query::run_batch_query(args.clone()),
         Commands::RecognizeText(args) => commands::recognize_text::run_recognize_text(args.clone()),
+        Commands::SubpatternAnalysis(args) => commands::subpattern_analysis::run_subpattern_analysis(args.clone()),
     };
 
     result
