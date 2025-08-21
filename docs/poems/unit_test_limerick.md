@@ -5,9 +5,21 @@ keywords: unit test, limerick, bugs, robust code, assertions, development, quali
 emojis: ✅💻🛡️✨
 art_generator_instructions: A stylized unit test (perhaps a small, glowing robot) is standing guard over a piece of code, with a shield labeled "Assertions." Small, mischievous bugs are attempting to sneak past but are being repelled by the test's might. The overall feeling should be one of protection, reliability, and the satisfaction of a bug-free codebase.
 memes:
-  - "My unit tests are so mighty, they write limericks." (Success Kid meme)
-  - "When your assertions are bolder than your code." (Doge meme)
-  - "Unit tests: The ultimate bug repellent." (Expanding Brain meme)
+- description: My unit tests are so mighty, they write limericks.
+  template: Success Kid meme
+- description: When your assertions are bolder than your code.
+  template: Doge meme
+- description: 'Unit tests: The ultimate bug repellent.'
+  template: Expanding Brain meme
+poem_body: |-
+  ## The Unit Test's Might
+
+  A unit test, with its purpose so clear,
+  Keeps bugs from appearing, each year.
+  With assertions so bold,
+  A story unfolds,
+  Of code that's robust, never fear.
+
 ---
 ## The Unit Test's Might
 

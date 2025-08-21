@@ -5,9 +5,30 @@ keywords: maintainability, code, clarity, patterns, functions, design, future, b
 emojis: 🛠️✨📜✅
 art_generator_instructions: A gentle, glowing hand (representing maintainability) is guiding lines of code that are clear, well-structured, and easily navigable. Tangled, chaotic lines of "unmaintainable" code are seen dissolving in the background. The overall feeling should be one of peaceful order, effortless understanding, and the long-term benefits of thoughtful design.
 memes:
-  - "My code is so maintainable, it practically writes itself." (Success Kid meme)
-  - "When your code is so clear, even your future self understands it." (Doge meme)
-  - "Maintainability: The ultimate gift to your future self." (Expanding Brain meme)
+- description: My code is so maintainable, it practically writes itself.
+  template: Success Kid meme
+- description: When your code is so clear, even your future self understands it.
+  template: Doge meme
+- description: 'Maintainability: The ultimate gift to your future self.'
+  template: Expanding Brain meme
+poem_body: |-
+  ## Maintainability's Gentle Hand
+
+  When code is penned, with future's eye in mind,
+  And clarity, a guiding, steady light.
+  Maintainability, a truth we find,
+  That eases burdens, day and through the night.
+  No tangled logic, no obscure design,
+  But patterns clear, and comments, wisely placed.
+  Each function's purpose, exquisitely defined,
+  No hurried shortcuts, leaving future waste.
+  For when the need, to change or fix, arises,
+  The path is clear, the journey understood.
+  No hidden traps, no unwelcome surprises,
+  But smooth progression, for the greater good.
+  So build with care, with future's needs in view,
+  A codebase strong, forever fresh and new.
+
 ---
 ## Maintainability's Gentle Hand
 

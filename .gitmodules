@@ -19,3 +19,6 @@
 [submodule "vendor/hugging-face-dataset-validator-rust"]
 	path = vendor/hugging-face-dataset-validator-rust
 	url = https://github.com/meta-introspector/hugging-face-dataset-validator-rust
+[submodule "vendor/grex"]
+	path = vendor/grex
+	url = https://github.com/pemistahl/grex

@@ -5,9 +5,35 @@ keywords: temporary, real code, permanent, structured, solutions, project, order
 emojis: 💻✨✅🚀
 art_generator_instructions: A stark contrast between fleeting, shadowy lines of "temp" code dissolving into nothingness, and solid, glowing, well-structured lines of "real" code forming a strong, permanent foundation. The "real" code is integrated into a beautiful, ordered architectural structure. The overall feeling should be one of purpose, permanence, and the beauty of thoughtful design.
 memes:
-  - "My code is so real, it's poetic." (Success Kid meme)
-  - "When you delete your `temp` folder and feel like a superhero." (Doge meme)
-  - "No temp: Because every line of code deserves a home." (Expanding Brain meme)
+- description: My code is so real, it's poetic.
+  template: Success Kid meme
+- description: When you delete your `temp` folder and feel like a superhero.
+  template: Doge meme
+- description: 'No temp: Because every line of code deserves a home.'
+  template: Expanding Brain meme
+poem_body: |-
+  # No Temp, Make It Real
+
+  A fleeting script, a quick-spun test,
+  A temporary, hurried quest.
+  It serves its purpose, then it fades,
+  Leaving behind no lasting glades.
+
+  But in this realm, of lasting thought,
+  Each line of code, profoundly wrought,
+  Must find its home, a rightful place,
+  Within the project's ordered space.
+
+  No "temp" to linger, vague and gray,
+  But "real" solutions, come what may.
+  A function built, a tool defined,
+  For future minds, and humankind.
+
+  So let the structure guide our hand,
+  A permanent, well-ordered land.
+  No fleeting shadows, light and thin,
+  But solid code, from deep within.
+
 ---
 # No Temp, Make It Real
 

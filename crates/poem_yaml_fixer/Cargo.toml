@@ -1,0 +1,11 @@
+[package]
+name = "poem_yaml_fixer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+regex = "1.5"
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"
+walkdir = "2.3"

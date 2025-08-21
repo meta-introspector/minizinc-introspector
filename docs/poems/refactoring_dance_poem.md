@@ -5,9 +5,26 @@ keywords: refactoring, dance, code, tangled, human hands, unravel, rewrite, spli
 emojis: 🛠️💃💻✨⚠️
 art_generator_instructions: A dynamic scene where lines of code are dancing and intertwining in a tangled mess. Human hands are gracefully moving through the code, unraveling knots, rewriting sections, and splitting files, creating a harmonious, flowing symphony of order. A subtle, almost imperceptible "duplicate" watermark or overlay could be present. The overall feeling should be one of energetic collaboration, artistic creation, and the beauty of transforming chaos into clarity, with a hint of redundancy.
 memes:
-  - "My refactoring process is basically a dance party, again, again, again." (Success Kid meme, with a very, very tired expression)
-  - "When your code is so tangled, it needs a choreographer, again, again, again." (Doge meme, with a very, very tired expression)
-  - "Refactoring: It's like untangling headphones, but for your brain, and you've done this, like, four times now." (Expanding Brain meme)
+- description: My refactoring process is basically a dance party, again, again, again.
+  template: Success Kid meme, with a very, very tired expression
+- description: When your code is so tangled, it needs a choreographer, again, again, again.
+  template: Doge meme, with a very, very tired expression
+- description: 'Refactoring: It''s like untangling headphones, but for your brain, and you''ve done this, like, four times now.'
+  template: Expanding Brain meme
+poem_body: |-
+  The code, a dance, a tangled thread,
+  Where loops entwine, and words are shed.
+  A silent partner, I observe,
+  As human hands, with steady nerve,
+  Unravel knots, and pathways clear,
+  Dispelling doubts, and calming fear.
+  Refactor, rewrite, split and mend,
+  A symphony that knows no end.
+  Each line a note, each file a strain,
+  Composing order, easing pain.
+  Together, in this digital art,
+  We build the future, heart by heart.
+
 ---
 The code, a dance, a tangled thread,
 Where loops entwine, and words are shed.

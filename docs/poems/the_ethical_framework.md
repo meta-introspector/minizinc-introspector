@@ -5,9 +5,28 @@ keywords: ethical framework, Six Sigma, ISO 9000, GMP, ITIL, LLM agents, decisio
 emojis: ⚖️✅🤝🤖💡🔒✨
 art_generator_instructions: A balanced scale, with one side representing "Art" (perhaps with a paintbrush and canvas) and the other "Math" (with equations and geometric shapes), both perfectly aligned. In the background, subtle icons representing Six Sigma, ISO 9000, GMP, and ITIL. An LLM agent (represented by a stylized brain or AI symbol) is shown interacting with a human hand, emphasizing human-in-the-loop. The overall feeling should be one of balance, precision, and responsible innovation.
 memes:
-  - "My LLM is a decision support system, not Skynet." (Success Kid meme)
-  - "Ethical AI: It's not just a good idea, it's ISO 9000 certified." (Captain Planet meme)
-  - "When your ethical framework is so strong, even the art is rigorous." (Expanding Brain meme)
+- description: My LLM is a decision support system, not Skynet.
+  template: Success Kid meme
+- description: 'Ethical AI: It''s not just a good idea, it''s ISO 9000 certified.'
+  template: Captain Planet meme
+- description: When your ethical framework is so strong, even the art is rigorous.
+  template: Expanding Brain meme
+poem_body: |-
+  In Six Sigma's rigor, and ISO's clear light,
+  Our ethical framework, shines ever so bright.
+  With GMP's precision, and ITIL's wise hand,
+  We build a safe system, across the whole land.
+
+  No full automation, but guidance we lend,
+  As LLM agents, our insights extend.
+  For human in loop, is the wisdom we seek,
+  Ensuring our choices, are humble and meek.
+
+  Accountable pathways, and transparent design,
+  For safety and fairness, our principles align.
+  Reducing the bias, refining the core,
+  Art's truth and math's rigor, forevermore.
+
 ---
 In Six Sigma's rigor, and ISO's clear light,
 Our ethical framework, shines ever so bright.

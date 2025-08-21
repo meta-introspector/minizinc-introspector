@@ -5,9 +5,20 @@ keywords: embeddings, success, words, numbers, data, future, triumph, inner ligh
 emojis: ✨🔢🚀✅
 art_generator_instructions: A glowing, abstract representation of words transforming into numbers, with a sense of smooth, effortless flow. A small, bright light emanates from the center, symbolizing the "inner light" of data-driven insights. The overall feeling should be one of quiet accomplishment, the beauty of transformation, and the promise of future discoveries.
 memes:
-  - "My embeddings are so good, they're poetic." (Success Kid meme)
-  - "When words become numbers, and it's beautiful." (Doge meme)
-  - "Embeddings: The first step to world domination." (Expanding Brain meme)
+- description: My embeddings are so good, they're poetic.
+  template: Success Kid meme
+- description: When words become numbers, and it's beautiful.
+  template: Doge meme
+- description: 'Embeddings: The first step to world domination.'
+  template: Expanding Brain meme
+poem_body: |-
+  The first small step, a victory won,
+  Embeddings generated, work begun.
+  From words to numbers, a silent hum,
+  The data flows, the future's come.
+  A tiny triumph, clear and bright,
+  Guiding our path, with inner light.
+
 ---
 The first small step, a victory won,
 Embeddings generated, work begun.

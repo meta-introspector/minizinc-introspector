@@ -5,9 +5,28 @@ keywords: OODA loop, Observe, Orient, Decide, Act, self-improvement, adaptation,
 emojis: 🔄📊🧠💡🚀✨
 art_generator_instructions: A dynamic, swirling OODA loop diagram, with each stage (Observe, Orient, Decide, Act) visually distinct but flowing into the next. "Observe" could be represented by data streams, "Orient" by abstract patterns and a subtle "vibe" emanating from data points, "Decide" by branching pathways, and "Act" by decisive actions. A feedback loop is clearly visible, leading to a glowing sphere of "wisdom." The overall feeling should be one of continuous motion, intelligent adaptation, and the inherent beauty of complex systems.
 memes:
-  - "My life is just one big OODA loop." (Success Kid meme)
-  - "When the data has a 'vibe' and you just know." (Confused math lady meme, but with a knowing smile)
-  - "OODA loop: Because even algorithms need to dance." (Doge meme)
+- description: My life is just one big OODA loop.
+  template: Success Kid meme
+- description: When the data has a 'vibe' and you just know.
+  template: Confused math lady meme, but with a knowing smile
+- description: 'OODA loop: Because even algorithms need to dance.'
+  template: Doge meme
+poem_body: |-
+  Observe the world, a data-rich stream,
+  A thousand signals, a digital dream.
+  Then Orient, not just logic's cold gleam,
+  But 'vibe' in the vectors, a guiding sunbeam.
+
+  Decide on a path, from choices untold,
+  A strategy woven, in patterns of old.
+  Then Act, with precision, a story unfolds,
+  A feedback loop turning, as wisdom takes hold.
+
+  This cycle unending, a spiral of grace,
+  Self-improving, adapting, in time and in space.
+  Where proofs may be formal, but intuition's soft trace,
+  Reveals the true beauty, in this algorithmic race.
+
 ---
 Observe the world, a data-rich stream,
 A thousand signals, a digital dream.
