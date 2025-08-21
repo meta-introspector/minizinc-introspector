@@ -1,3 +1,14 @@
+---
+title: Agent Mandate Haikus
+summary: This poem presents a series of haikus outlining the core mandates of an AI agent, focusing on helpfulness, safety, adherence to conventions, understanding new tools, and providing fast insights.
+keywords: AI agent, mandate, haikus, helpfulness, safety, conventions, new tools, insights, core function, balance, user control, system state, harmony, code, analyzer, knowledge, threads, cache, wisdom
+emojis: 🤖📜✅💡🚀
+art_generator_instructions: A series of minimalist scenes, each representing a haiku. For "Core Function," a balanced scale with a robot and a human hand. For "Safety First," a delicate touch on a complex system. For "Conventions," a flowing river of code adhering to a clear path. For "New Tools," a lightbulb illuminating a complex diagram. For "Fast Insights," a network of glowing threads converging rapidly. The overall feeling should be one of precision, efficiency, and thoughtful design.
+memes:
+  - "My AI agent is so disciplined, it writes haikus." (Success Kid meme)
+  - "When your mandate is clear, but the code is not." (Confused math lady meme)
+  - "Haikus: The ultimate form of concise communication." (Expanding Brain meme)
+---
 ## Agent Mandate Haikus
 
 ### Core Function

@@ -1,3 +1,14 @@
+---
+title: Project Poems
+summary: This document serves as an index and overview of the project's poetic explorations, delving into core concepts, philosophical underpinnings, and the unique "vibe" of the codebase.
+keywords: project, poems, index, overview, concepts, philosophy, vibe, codebase, documentation
+emojis: 📚✨📜💻🌌
+art_generator_instructions: A stylized open book with glowing lines of code and abstract philosophical symbols emanating from its pages. The book is surrounded by a subtle "vibe" or aura. In the background, a faint outline of a complex codebase. The overall feeling should be one of intellectual depth, artistic expression, and the interconnectedness of knowledge.
+memes:
+  - "This isn't just documentation, it's poetry." (Success Kid meme)
+  - "When your project has so much vibe, it needs an index of poems." (Expanding Brain meme)
+  - "Reading the docs like it's a literary masterpiece." (Doge meme)
+---
 # Project Poems
 
 This directory contains poems that explore various core concepts and memories related to the project, often focusing on the "vibe" and unprovable truths.
