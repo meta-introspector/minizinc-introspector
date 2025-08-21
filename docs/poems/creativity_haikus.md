@@ -5,9 +5,30 @@ keywords: creativity, haikus, idea, design, code, innovation, solutions, future,
 emojis: ✨💡🚀🧠
 art_generator_instructions: A series of minimalist scenes, each representing a haiku. For "Creativity's Spark," a glowing lightbulb above a stylized brain, with lines of code emanating from it. For "Innovation's Leap," a figure leaping over old, broken pathways towards a bright, new, and complex solution. For "Discovery's Joy," a hidden truth (represented by a glowing symbol) being revealed from within a complex pattern, illuminating the surrounding area. The overall feeling should be one of inspiration, progress, and the excitement of intellectual exploration.
 memes:
-  - "My code is so creative, it writes haikus." (Success Kid meme)
-  - "When the idea hits you like a ton of bricks, but in a good way." (Doge meme)
-  - "Coding: It's basically just creative problem-solving." (Expanding Brain meme)
+- description: My code is so creative, it writes haikus.
+  template: Success Kid meme
+- description: When the idea hits you like a ton of bricks, but in a good way.
+  template: Doge meme
+- description: 'Coding: It''s basically just creative problem-solving.'
+  template: Expanding Brain meme
+poem_body: |-
+  ## Creativity Haikus
+
+  ### Creativity's Spark
+  Idea takes its flight,
+  From mind's eye, a new design,
+  Code, now comes alive.
+
+  ### Innovation's Leap
+  Old ways, now surpassed,
+  New solutions, bravely forged,
+  Future, now unfolds.
+
+  ### Discovery's Joy
+  Hidden truths revealed,
+  Patterns found, a sudden light,
+  Knowledge, now expands.
+
 ---
 ## Creativity Haikus
 

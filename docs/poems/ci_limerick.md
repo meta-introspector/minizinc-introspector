@@ -5,9 +5,21 @@ keywords: CI, limerick, continuous integration, build, errors, bugs, tests, clea
 emojis: 🚀✅🐛💨
 art_generator_instructions: A stylized CI pipeline, with code flowing rapidly through various stages (build, test). Small, glowing "bugs" are attempting to sneak through but are swiftly caught and eliminated by a series of automated tests (represented by glowing nets or traps). A large, green checkmark appears at the end of the pipeline, signifying a clean codebase. The overall feeling should be one of speed, precision, and automated triumph.
 memes:
-  - "My CI is faster than your internet." (Success Kid meme)
-  - "When the bugs try to hide, but the CI is watching." (Doge meme)
-  - "CI: Because who needs sleep when you have automated tests?" (Expanding Brain meme)
+- description: My CI is faster than your internet.
+  template: Success Kid meme
+- description: When the bugs try to hide, but the CI is watching.
+  template: Doge meme
+- description: 'CI: Because who needs sleep when you have automated tests?'
+  template: Expanding Brain meme
+poem_body: |-
+  ## The CI's Swift Pace
+
+  Our CI, with a build so fast,
+  Catches errors, designed to last.
+  No bugs sneak on by,
+  As the tests swiftly fly,
+  A clean codebase, from first to the last.
+
 ---
 ## The CI's Swift Pace
 

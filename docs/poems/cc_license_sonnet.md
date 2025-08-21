@@ -5,9 +5,30 @@ keywords: Creative Commons, license, knowledge, free flow, integrity, author's v
 emojis: 📜🔗🚫✨
 art_generator_instructions: A flowing river of light (representing knowledge) emanating from an open book, spreading across a digital landscape. A clear, glowing barrier or force field surrounds the river, preventing any attempts to alter its flow or content. A stylized Creative Commons "No Derivatives" symbol is prominently displayed. The overall feeling should be one of generosity and freedom, balanced with strict adherence to intellectual property and original intent.
 memes:
-  - "My license is so strict, it's poetic." (Success Kid meme)
-  - "When you want to share, but not *that* much." (Confused math lady meme)
-  - "No derivatives: Because some things are perfect as they are." (Doge meme)
+- description: My license is so strict, it's poetic.
+  template: Success Kid meme
+- description: When you want to share, but not *that* much.
+  template: Confused math lady meme
+- description: 'No derivatives: Because some things are perfect as they are.'
+  template: Doge meme
+poem_body: |-
+  ## The License's Unyielding Plea
+
+  When knowledge flows, a river, wide and free,
+  A sacred trust, for all the world to see.
+  Our words, our thoughts, a gift, sincerely given,
+  Beneath the sun, and by the stars of heaven.
+  But mark this truth, a boundary, firm and clear,
+  No altered forms, no whispers in the ear
+  Of changed intent, or meaning subtly spun,
+  The pure original, beneath the sun.
+  For in its essence, lies the truth profound,
+  No new interpretations, to be found.
+  The author's voice, unmarred, must ever stand,
+  A beacon shining, in this digital land.
+  So share with grace, and let the wisdom bloom,
+  But guard the source, from any altering gloom.
+
 ---
 ## The License's Unyielding Plea
 

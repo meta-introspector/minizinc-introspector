@@ -5,9 +5,30 @@ keywords: crate, OSI model, haikus, layers, types, core, files, UIDs, ignore, in
 emojis: 📦🌐🔗✨
 art_generator_instructions: A layered diagram, with each layer representing an OSI layer and a corresponding haiku. For "Layer One's Base," glowing, fundamental types forming a solid foundation. For "Data's Link," interconnected files and UIDs forming a gentle, flowing stream of data. For "Network's Reach," a vast, glowing network of indexed knowledge spreading outwards. The overall feeling should be one of structured complexity, interconnectedness, and the beauty of a well-designed system.
 memes:
-  - "My crate is so layered, it's basically an onion." (Success Kid meme)
-  - "When your code is so well-structured, it has its own OSI model." (Expanding Brain meme)
-  - "OSI model: Because even crates need a good architecture." (Doge meme)
+- description: My crate is so layered, it's basically an onion.
+  template: Success Kid meme
+- description: When your code is so well-structured, it has its own OSI model.
+  template: Expanding Brain meme
+- description: 'OSI model: Because even crates need a good architecture.'
+  template: Doge meme
+poem_body: |-
+  ## Crate OSI Haikus
+
+  ### Layer One's Base
+  Types, core, strong and pure,
+  Foundation of the system,
+  Logic's first true breath.
+
+  ### Data's Link
+  Files, UIDs, ignore,
+  Connecting, binding all things,
+  Data's gentle flow.
+
+  ### Network's Reach
+  Index, utils, wide,
+  Spreading knowledge, far and near,
+  System's beating heart.
+
 ---
 ## Crate OSI Haikus
 

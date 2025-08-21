@@ -5,9 +5,22 @@ keywords: build, fix, code, compiler, human touch, errors, warnings, cargo build
 emojis: 🛠️✅✨🚀
 art_generator_instructions: A stylized compiler (perhaps a glowing, abstract machine) is calling out, and a human hand reaches into the code, causing errors (represented by chaotic red symbols) to fade and warnings (represented by flickering yellow lights) to cease. A `cargo build` command is shown with a green checkmark, and the overall scene conveys a sense of calm, progress, and the realization of a dream.
 memes:
-  - "When the compiler finally shuts up." (Success Kid meme)
-  - "My code is so logical, it's dreaming." (Doge meme)
-  - "Debugging: It's like a silent disco with the compiler." (Distracted Boyfriend meme, but with code and music)
+- description: When the compiler finally shuts up.
+  template: Success Kid meme
+- description: My code is so logical, it's dreaming.
+  template: Doge meme
+- description: 'Debugging: It''s like a silent disco with the compiler.'
+  template: Distracted Boyfriend meme, but with code and music
+poem_body: |-
+  Another round, the compiler calls,
+  A human touch, beyond the walls.
+  The errors fade, the warnings cease,
+  A moment's calm, a gentle peace.
+  Now `cargo build`, a hopeful sign,
+  That perfect logic will align.
+  Each line a step, each byte a gleam,
+  Towards the future, a waking dream.
+
 ---
 Another round, the compiler calls,
 A human touch, beyond the walls.
