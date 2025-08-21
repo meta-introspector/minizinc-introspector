@@ -1,0 +1,105 @@
+@prefix : <http://solfunmeme.com/ontology/emoji_algebra#>
+@prefix owl: <http://www.w3.org/2002/07/owl#>
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+@prefix xml: <http://www.w3.org/XML/1998/namespace>
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+@prefix em: <http://solfunmeme.com/ontology/emoji#>
+
+<http://solfunmeme.com/ontology/emoji_algebra>
+  rdf:type owl:Ontology ;
+  rdfs:comment "Ontology defining the algebraic meanings of emojis for dataset equivalence proofs." ;
+  owl:imports <http://solfunmeme.com/ontology/emoji> ;
+.
+
+
+# Emoji Algebra Concepts
+
+:AlgebraicConcept
+  rdf:type owl:Class ;
+  rdfs:label "Algebraic Concept" ;
+  rdfs:comment "A fundamental concept in the emoji algebra, representing a mathematical or logical entity." ;
+.
+
+:Operation
+  rdf:type owl:Class ;
+  rdfs:label "Operation" ;
+  rdfs:comment "An operation that transforms or relates Algebraic Concepts." ;
+  rdfs:subClassOf :AlgebraicConcept ;
+.
+
+:Type
+  rdf:type owl:Class ;
+  rdfs:label "Type" ;
+  rdfs:comment "A classification for Algebraic Concepts." ;
+  rdfs:subClassOf :AlgebraicConcept ;
+.
+
+:Path
+  rdf:type owl:Class ;
+  rdfs:label "Path" ;
+  rdfs:comment "A connection or transformation between two Algebraic Concepts, representing a proof step or homotopy." ;
+  rdfs:subClassOf :AlgebraicConcept ;
+.
+
+:Equivalence
+  rdf:type owl:Class ;
+  rdfs:label "Equivalence" ;
+  rdfs:comment "A special type of path indicating that two Algebraic Concepts are homotopically equivalent." ;
+  rdfs:subClassOf :Path ;
+.
+
+
+# Specific Emoji Mappings to Algebraic Concepts
+
+# Data Types
+
+em:Word
+  rdf:type :Type ;
+  rdfs:label "Word" ;
+  rdfs:comment "Represents a linguistic token or word." ;
+  em:hasEmojiRepresentation "💬" ;
+.
+
+em:Embedding
+  rdf:type :Type ;
+  rdfs:label "Embedding" ;
+  rdfs:comment "Represents a numerical vector embedding of a word or concept." ;
+  em:hasEmojiRepresentation "📊" ;
+.
+
+em:Dataset
+  rdf:type :Type ;
+  rdfs:label "Dataset" ;
+  rdfs:comment "Represents a collection of structured data, such as word embeddings." ;
+  em:hasEmojiRepresentation "🗃️" ;
+.
+
+# Operations and Relationships
+
+em:MapsTo
+  rdf:type :Operation ;
+  rdfs:label "Maps To" ;
+  rdfs:comment "An operation that maps one concept to another (e.g., word to embedding)." ;
+  em:hasEmojiRepresentation "➡️" ;
+.
+
+em:IsEquivalentTo
+  rdf:type :Equivalence ;
+  rdfs:label "Is Equivalent To" ;
+  rdfs:comment "Indicates homotopy equivalence between two concepts." ;
+  em:hasEmojiRepresentation "≃" ;
+.
+
+em:HasPath
+  rdf:type :Path ;
+  rdfs:label "Has Path" ;
+  rdfs:comment "Indicates the existence of a path or transformation between two concepts." ;
+  em:hasEmojiRepresentation "↔️" ;
+.
+
+# Example Usage (Conceptual)
+
+# :word1 em:MapsTo :embedding1 .
+# :datasetA em:HasPath :datasetB .
+# :datasetA em:IsEquivalentTo :datasetB .

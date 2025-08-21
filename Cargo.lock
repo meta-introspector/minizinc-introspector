@@ -2412,6 +2412,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "temp_parquet_inspector"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "arrow 56.0.0",
+ "parquet 56.0.0",
+]
+
+[[package]]
 name = "tempfile"
 version = "3.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"

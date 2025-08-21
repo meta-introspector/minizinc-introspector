@@ -18,6 +18,7 @@ pub fn process_files_and_collect_words(
     let mut next_id: u32 = 0; // New counter for IDs
 
     for file_path in files_to_process {
+        logger.debug_log(&format!("Processing file: {:?}", file_path));
         let content = match fs::read(&file_path) { // Read as bytes
             Ok(bytes) => String::from_utf8_lossy(&bytes).into_owned(), // Convert bytes to string, replacing invalid UTF-8
             Err(e) => {

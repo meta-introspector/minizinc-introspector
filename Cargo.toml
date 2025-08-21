@@ -22,7 +22,7 @@ members = [
     # "crates/vocabulary_dfa_lib",
     # "crates/dfa_tester",
     "crates/backpack_tool", "crates/code_search_tool",
-    "vendor/hugging-face-dataset-validator-rust",
+    "vendor/hugging-face-dataset-validator-rust", "temp_parquet_inspector",
 ]
 
 [patch.crates-io]
