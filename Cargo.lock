@@ -2580,6 +2580,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "poem_macro_impl_test"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "linkme",
+ "poem_yaml_fixer",
+]
+
+[[package]]
 name = "poem_macros"
 version = "0.1.0"
 dependencies = [

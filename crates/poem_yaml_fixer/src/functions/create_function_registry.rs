@@ -11,17 +11,17 @@ use linkme::distributed_slice;
 
 // Define the distributed slice where functions will register themselves
 #[distributed_slice]
-pub static FUNCTIONS: [&'static (String, fn(&str, Vec<String>, &mut FixedFrontMatter) -> Result<(), anyhow::Error>)]; // Changed type
+pub static FUNCTIONS: [&'static (String, fn() -> Box<dyn Fn(&str, Vec<String>, &mut FixedFrontMatter) -> Result<(), anyhow::Error> + Send + Sync + 'static>)];
 
 // A global, lazily initialized HashMap for the function registry.
 static FUNCTION_REGISTRY: Lazy<HashMap<String, CallbackFn>> = Lazy::new(|| {
     let mut registry = HashMap::new();
     for (name, callback_fn_ptr) in FUNCTIONS {
         // Convert the function pointer to a Box<dyn Fn>
-        let boxed_callback: CallbackFn = Box::new(move |line, captures, fixed_fm| {
-            callback_fn_ptr(line, captures, fixed_fm)
-        });
-        registry.insert(name.clone(), boxed_callback);
+//        let boxed_callback: CallbackFn = Box::new(move |line, captures, fixed_fm| {
+            //callback_fn_ptr(line, captures, fixed_fm)
+//        });
+//        registry.insert(name.clone(), boxed_callback);
     }
     registry
 });
