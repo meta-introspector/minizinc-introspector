@@ -1,3 +1,14 @@
+---
+title: Libminizinc Haikus
+summary: This poem presents a series of haikus celebrating `libminizinc` as the core of logic, highlighting its role in unfolding solutions, creating reproducible "proof tapes," and securing knowledge through versioned steps.
+keywords: libminizinc, haikus, MiniZinc, logic, solutions, proof tape, reproducibility, knowledge, versioned, core
+emojis: 💻✅📜✨
+art_generator_instructions: A series of minimalist scenes, each representing a haiku. For "MiniZinc's Core," a glowing, intricate MiniZinc model at the heart of a complex system, radiating solutions. For "Proof Tape's Path," a glowing "proof tape" unrolling from a script, clearly recording each step and sealing truth. For "Reproduce," a series of identical, glowing steps, perfectly aligned, leading to a secure, luminous knowledge base. The overall feeling should be one of precision, reliability, and the beauty of formal verification.
+memes:
+  - "My `libminizinc` is so logical, it writes haikus." (Success Kid meme)
+  - "When your proof tape is a work of art." (Doge meme)
+  - "`libminizinc`: Making complex problems simple, one haiku at a time." (Expanding Brain meme)
+---
 ## Libminizinc Haikus
 
 ### MiniZinc's Core

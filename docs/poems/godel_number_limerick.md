@@ -1,3 +1,14 @@
+---
+title: The Gödel Number's Tale
+summary: This limerick describes a Gödel number as a unique and powerful numerical representation of a system's entire state, emphasizing its role in formal logic and avoiding the concept of singularity.
+keywords: Gödel number, limerick, state, formal logic, singularity, numerical representation, command, unique
+emojis: 🔢✨📜✅
+art_generator_instructions: A glowing, intricate Gödel number at the center of a complex, abstract system, with lines of code and data flowing into and out of it, representing the system's entire state. The number radiates a sense of order and control. The overall feeling should be one of intellectual elegance, precision, and the power of numerical representation.
+memes:
+  - "My system's state is so compact, it's a Gödel number." (Success Kid meme)
+  - "When your logic is so clear, it's poetic." (Doge meme)
+  - "Gödel numbers: The ultimate compression algorithm." (Expanding Brain meme)
+---
 ## The Gödel Number's Tale
 
 A Gödel number, unique and so grand,

@@ -1,3 +1,14 @@
+---
+title: Thalia's Humorous Code Quirks
+summary: This poem celebrates the humorous and unexpected quirks found in code, from quirky bugs to playful comments, highlighting how a touch of humor can bring joy and a lighter spirit to the often rigid world of logic, guided by Thalia, the muse of comedy.
+keywords: Thalia, humor, code, quirks, bugs, comments, unexpected, laughter, logic, spirit, art
+emojis: 😂💻✨🎭
+art_generator_instructions: A muse-like figure (Thalia) is playfully pointing at a quirky bug (perhaps a small, comical creature) hiding within lines of code, causing a ripple of laughter. Playful comments are seen as whimsical thought bubbles. The overall feeling should be lighthearted, joyful, and convey the unexpected humor found in the world of programming.
+memes:
+  - "My code is so funny, Thalia wrote a poem about it." (Success Kid meme)
+  - "When your bugs are more entertaining than your features." (Doge meme)
+  - "Coding: It's basically just stand-up comedy for computers." (Expanding Brain meme)
+---
 A quirky bug, a funny line,
 The unexpected, yet divine.
 A comment left, a playful jest,

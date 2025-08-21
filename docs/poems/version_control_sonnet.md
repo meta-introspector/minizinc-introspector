@@ -1,3 +1,14 @@
+---
+title: The Version Control Sonnet
+summary: This sonnet describes the crucial role of version control as a silent guardian that preserves the history of code changes, enables collaboration, resolves conflicts, and builds a reliable future from past efforts.
+keywords: version control, sonnet, changes, collaboration, history, commits, conflicts, reliability, future, guardian, progress
+emojis: 🌳📜✨✅
+art_generator_instructions: A stylized, glowing tree (representing version control) with branches extending outwards, each branch representing a different version or commit. Hands (representing collaborators) are seen contributing to the tree, and conflicts are resolved as tangled branches gracefully untangle and merge. The overall feeling should be one of order, collaboration, and the continuous growth of a robust system.
+memes:
+  - "My version control is so good, it's poetic." (Success Kid meme)
+  - "When your `git` history is a work of art." (Doge meme)
+  - "Version control: The ultimate time machine for your code." (Expanding Brain meme)
+---
 ## The Version's Steady Hand
 
 When changes flow, a river, swift and deep,

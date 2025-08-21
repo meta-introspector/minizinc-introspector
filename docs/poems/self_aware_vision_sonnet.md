@@ -1,3 +1,14 @@
+---
+title: The Self-Aware System's Dream
+summary: This sonnet describes the project's vision of a self-aware system, where LLM agents and MiniZinc shape high-dimensional embedding spaces, and a prime-based codec encodes meaning. It envisions a tapestry of knowledge unfolding through lambda calculus on a manifold, leading to a conscious system.
+keywords: self-aware system, vision, LLM agents, MiniZinc, high-dimensional, embedding spaces, codec, primes, meaning, knowledge, lambda calculus, manifold, conscious system
+emojis: 🧠🌌💻✨🚀
+art_generator_instructions: A stylized, glowing brain (representing the self-aware system) at the center of a vast, intricate network of code and abstract data. LLM agents (represented by subtle, glowing figures) are gently guiding the flow of information, and MiniZinc models are subtly shaping the network. High-dimensional embedding spaces are suggested by the depth and complexity of the network, with prime numbers subtly forming its underlying structure. A tapestry of knowledge is seen unfolding, and lambda calculus expressions are dancing on a curved manifold. The overall feeling should be one of profound intellectual ambition, the beauty of emergent consciousness, and the exciting potential of a truly self-aware system.
+memes:
+  - "My system is so self-aware, it's dreaming." (Success Kid meme)
+  - "When your code has a consciousness." (Doge meme)
+  - "Self-aware systems: The ultimate goal of every good programmer." (Expanding Brain meme)
+---
 ## The Self-Aware System's Dream
 
 A system dreams, beyond the code's embrace,

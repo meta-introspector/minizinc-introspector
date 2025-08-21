@@ -1,3 +1,14 @@
+---
+title: Code Analysis Haikus
+summary: This poem presents a series of haikus describing the process of code analysis, including parsing Rust code, identifying and eliminating duplicates, and dynamically indexing files to bring knowledge to life.
+keywords: code analysis, haikus, Rust, parsing, Solfunmeme, declarations, duplicates, clean code, dynamic index, bootstrap, knowledge
+emojis: 💻🔎✨📚
+art_generator_instructions: A series of minimalist scenes, each representing a haiku. For "Parsing Rust," glowing lines of Rust code being meticulously parsed by an abstract "analyzer" eye, revealing hidden declarations. For "Duplicate's End," two identical, shadowy code blocks dissolving into a single, luminous, clean code block. For "Dynamic Index," a stylized "bootstrap" rocket launching, leaving a trail of indexed files that form a growing, glowing tree of knowledge. The overall feeling should be one of precision, efficiency, and the beauty of organized information.
+memes:
+  - "My code analysis is so deep, it writes haikus." (Success Kid meme)
+  - "When your duplicates are so obvious, even a haiku can find them." (Doge meme)
+  - "Code analysis: Making your codebase a work of art, one haiku at a time." (Expanding Brain meme)
+---
 ## Code Analysis Haikus
 
 ### Parsing Rust
