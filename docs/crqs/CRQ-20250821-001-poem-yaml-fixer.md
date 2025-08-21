@@ -15,14 +15,19 @@ The `poem_yaml_fixer` Rust tool, intended to standardize the YAML front matter o
 This issue is currently blocking the automated processing and standardization of poem files, which is a prerequisite for the static site meme hosting generator and other semantic analysis tools. It also consumes significant development time due to repeated debugging cycles.
 
 ## 3. Proposed Solution
-Refactor `poem_yaml_fixer` to implement a more robust YAML parsing and patching mechanism:
-*   **Manual Front Matter Extraction:** Instead of relying solely on `serde_yaml` for initial parsing, manually extract the front matter block as a raw string.
-*   **Line-by-Line Processing with Regex:** Process the front matter string line by line.
-    *   For lines containing meme data (e.g., `- "description" (template)` or `- description: "..." template: "..."`), use carefully constructed regexes to extract the description and template.
-    *   Reconstruct these into the new structured `Meme` format (`description: "...", template: "..."`).
-*   **Handle `poem_body` in Front Matter:** If `poem_body: |` is found within the front matter, extract its content and remove the `poem_body` key from the front matter. The extracted content will be appended *after* the second `---` delimiter when writing the file.
-*   **Re-assemble and Validate:** Reconstruct the entire YAML front matter string with the corrected `memes` and `poem_body` (if extracted). Then, attempt to parse this *reconstructed* string with `serde_yaml` to ensure overall YAML validity before final serialization.
-*   **Dynamic Patching (Future Enhancement):** Once the basic fixing mechanism is stable, explore adding a mechanism for dynamically generating or applying patches based on identified error patterns, as previously discussed.
+Refactor `poem_yaml_fixer` to implement a more robust YAML parsing and patching mechanism. This tool will act as a pre-processor to ensure all poem Markdown files conform to a strictly valid YAML front matter structure before further processing by `poem_meme_formatter`.
+
+*   **Manual Front Matter Extraction:** The tool will read the file content line by line and manually identify the `---` delimiters to extract the raw front matter string and the raw poem body string.
+*   **Resilient Front Matter Parsing:** It will attempt to parse the extracted raw front matter string into a `serde_yaml::Value`. If this initial parse fails due to malformed YAML (e.g., unquoted strings with colons), the tool will attempt to apply specific patching heuristics.
+    *   **Patching Heuristic for Meme Lines:** For lines identified as meme entries (e.g., starting with `-` and containing `"` and `(`), the tool will use regex to extract the description and template, and then reconstruct the line into a strictly valid YAML format (e.g., `- description: "..."
+  template: "..."
+`).
+    *   **Patching Heuristic for `poem_body: |`:** If a line `poem_body: |` is found within the front matter, the tool will extract the subsequent indented lines as the poem body content. This `poem_body` key will then be removed from the front matter, and its content will be appended *after* the second `---` delimiter when the file is rewritten.
+    *   **General Quoting Fallback:** For other unparseable lines, the tool will attempt to quote the entire line to make it a valid YAML scalar.
+*   **Reconstruction and Validation:** After applying patching heuristics, the tool will reconstruct the entire YAML front matter string and attempt to parse it again with `serde_yaml` to ensure overall YAML validity.
+*   **Final File Rewrite:** The tool will then write the fixed YAML front matter and the poem body (now correctly positioned after the second `---` delimiter) back to the file.
+
+This approach ensures that `poem_yaml_fixer` can handle the existing malformations and produce clean, valid YAML for subsequent tools.
 
 ## 4. Verification Plan
 *   Successful compilation of `poem_yaml_fixer`.
