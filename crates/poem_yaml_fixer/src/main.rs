@@ -4,6 +4,33 @@ use walkdir::WalkDir;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
 use serde_yaml;
+use toml;
+use clap::Parser;
+
+// Define structs for TOML deserialization
+#[derive(Debug, Deserialize)]
+struct RegexConfig {
+    regexes: Vec<RegexEntry>,
+}
+
+#[derive(Debug, Deserialize)]
+struct RegexEntry {
+    name: String,
+    pattern: String,
+}
+
+// Add Cli struct
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+struct Cli {
+    /// Optional path to a single poem file to process. If not provided, processes all .md files in docs/poems/.
+    #[arg(short, long, value_name = "FILE_PATH")]
+    file: Option<PathBuf>,
+
+    /// Maximum allowed percentage of content reduction. Aborts if reduction exceeds this. Defaults to 1.0.
+    #[arg(long, value_name = "PERCENTAGE")]
+    max_change_percentage: Option<f64>,
+}
 
 // Struct for the structured meme (same as in poem_meme_formatter)
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -35,24 +62,32 @@ struct FixedFrontMatter {
     poem_body: Option<String>, // This will be extracted if found in FM
 }
 
-
 fn main() -> Result<()> {
+    let cli = Cli::parse();
+
     let current_dir = std::env::current_dir()?;
     let poems_dir = current_dir.join("docs").join("poems");
 
-    for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
-        let path = entry.path();
-        if path.is_file() && path.extension().map_or(false, |ext| ext == "md") {
-            if path.file_name().map_or(false, |name| name == "index.md") {
-                continue;
-            }
+    if let Some(file_path) = cli.file {
+        println!("Processing single file: {:?}", file_path);
+        match process_poem_file(&file_path, cli.max_change_percentage) {
+            Ok(_) => println!("Successfully fixed: {:?}", file_path),
+            Err(e) => eprintln!("Error fixing {:?}: {}", file_path, e),
+        }
+    } else {
+        for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
+            let path = entry.path();
+            if path.is_file() && path.extension().map_or(false, |ext| ext == "md") {
+                if path.file_name().map_or(false, |name| name == "index.md") {
+                    continue;
+                }
 
-            println!("Processing: {:?}", path);
-            // Fix: Convert &Path to PathBuf and then pass a reference
-            let path_buf = path.to_path_buf(); // Convert &Path to PathBuf
-            match process_poem_file(&path_buf) {
-                Ok(_) => println!("Successfully fixed: {:?}", path_buf),
-                Err(e) => eprintln!("Error fixing {:?}: {}", path_buf, e),
+                println!("Processing: {:?}", path);
+                let path_buf = path.to_path_buf();
+                match process_poem_file(&path_buf, cli.max_change_percentage) {
+                    Ok(_) => println!("Successfully fixed: {:?}", path_buf),
+                    Err(e) => eprintln!("Error fixing {:?}: {}", path_buf, e),
+                }
             }
         }
     }
@@ -60,10 +95,8 @@ fn main() -> Result<()> {
     Ok(())
 }
 
-fn process_poem_file(path: &PathBuf) -> Result<()> {
-    let content = fs::read_to_string(path)?;
-    let mut lines: Vec<&str> = content.lines().collect();
-
+// New function to extract front matter
+fn extract_front_matter(lines: &mut Vec<&str>, content: &str) -> Result<(isize, isize, String, String)> {
     let mut fm_start = -1;
     let mut fm_end = -1;
     for (i, line) in lines.iter().enumerate() {
@@ -82,37 +115,41 @@ fn process_poem_file(path: &PathBuf) -> Result<()> {
     }
 
     let front_matter_lines_slice = &lines[(fm_start + 1) as usize .. fm_end as usize];
-    let poem_body_raw_from_file = lines[(fm_end + 1) as usize ..].join("\n");
-
     let mut front_matter_str_for_parsing = String::new();
     let mut extracted_poem_body_from_fm = String::new();
     let mut in_poem_body_in_fm = false;
 
     // Manually process front matter lines to extract poem_body if present
-    for line in front_matter_lines_slice.iter() { // Corrected loop variable
+    for line in front_matter_lines_slice.iter() {
         if line.trim().starts_with("poem_body: |") {
             in_poem_body_in_fm = true;
-            // Skip this line, we'll extract content from subsequent indented lines
         } else if in_poem_body_in_fm {
-            if line.starts_with(" ") { // Check for indentation
-                extracted_poem_body_from_fm.push_str(line.trim_start()); // Remove leading spaces
+            if line.starts_with(" ") {
+                extracted_poem_body_from_fm.push_str(line.trim_start());
                 extracted_poem_body_from_fm.push('\n');
             } else {
-                in_poem_body_in_fm = false; // End of poem_body in FM
-                front_matter_str_for_parsing.push_str(line); // Add this line back to FM
+                in_poem_body_in_fm = false;
+                front_matter_str_for_parsing.push_str(line);
                 front_matter_str_for_parsing.push('\n');
             }
         } else {
-            front_matter_str_for_parsing.push_str(line); // Add this line back to FM
+            front_matter_str_for_parsing.push_str(line);
             front_matter_str_for_parsing.push('\n');
         }
     }
 
-    // Attempt to parse the (potentially modified) front matter into a serde_yaml::Value
-    let mut parsed_front_matter: serde_yaml::Value = serde_yaml::from_str(&front_matter_str_for_parsing)
-        .map_err(|e| anyhow!("Failed to parse front matter YAML after poem_body extraction: {}", e))?;
+    Ok((fm_start, fm_end, front_matter_str_for_parsing, extracted_poem_body_from_fm))
+}
 
-    // If poem_body was extracted from front matter, it overrides the content after ---
+
+fn process_poem_file(path: &PathBuf, max_change_percentage: Option<f64>) -> Result<()> {
+    let content = fs::read_to_string(path)?;
+    let original_content_len = content.len();
+    let mut lines: Vec<&str> = content.lines().collect();
+
+    let (fm_start, fm_end, front_matter_str_for_parsing, extracted_poem_body_from_fm) = extract_front_matter(&mut lines, &content)?;
+    let poem_body_raw_from_file = lines[(fm_end + 1) as usize ..].join("\n");
+
     let final_poem_body = if !extracted_poem_body_from_fm.is_empty() {
         extracted_poem_body_from_fm
     } else {
@@ -134,112 +171,64 @@ fn process_poem_file(path: &PathBuf) -> Result<()> {
     let mut current_meme_description = String::new();
     let mut current_meme_template = String::new();
 
-    // Corrected Regexes
-    let old_meme_regex = Regex::new(r"^\s*-\s*(.*?)\s*\((.*?)\)"")?;
-    let new_meme_desc_regex = Regex::new(r"^\s*-\s*description:\s*(.*?)"")?;
-    let new_meme_template_regex = Regex::new(r"^\s*template:\s*(.*?)"")?;
+    // Load regex patterns from TOML
+    let regex_config_str = fs::read_to_string("crates/poem_yaml_fixer/src/regex_patterns.toml")?;
+    let regex_config: RegexConfig = toml::from_str(&regex_config_str)?;
+
+    let old_meme_regex_pattern = regex_config.regexes.iter()
+        .find(|r| r.name == "old_meme_regex")
+        .ok_or_else(|| anyhow!("old_meme_regex not found in config"))?.pattern.clone();
+    let new_meme_desc_regex_pattern = regex_config.regexes.iter()
+        .find(|r| r.name == "new_meme_desc_regex")
+        .ok_or_else(|| anyhow!("new_meme_desc_regex not found in config"))?.pattern.clone();
+    let new_meme_template_regex_pattern = regex_config.regexes.iter()
+        .find(|r| r.name == "new_meme_template_regex")
+        .ok_or_else(|| anyhow!("new_meme_template_regex not found in config"))?.pattern.clone();
+
+    let old_meme_regex = Regex::new(&old_meme_regex_pattern)?;
+    let new_meme_desc_regex = Regex::new(&new_meme_desc_regex_pattern)?;
+    let new_meme_template_regex = Regex::new(&new_meme_template_regex_pattern)?;
 
 
-    for line in front_matter_lines_slice.iter() { // Corrected loop variable
-        let trimmed_line = line.trim();
-
-        if trimmed_line.starts_with("title:") {
-            fixed_fm.title = Some(line.trim_start_matches("title:").trim().to_string());
-            in_memes_section = false;
-        } else if trimmed_line.starts_with("summary:") {
-            fixed_fm.summary = Some(line.trim_start_matches("summary:").trim().to_string());
-            in_memes_section = false;
-        } else if trimmed_line.starts_with("keywords:") {
-            fixed_fm.keywords = Some(line.trim_start_matches("keywords:").trim().to_string());
-            in_memes_section = false;
-        } else if trimmed_line.starts_with("emojis:") {
-            fixed_fm.emojis = Some(line.trim_start_matches("emojis:").trim().to_string());
-            in_memes_section = false;
-        } else if trimmed_line.starts_with("art_generator_instructions:") {
-            fixed_fm.art_generator_instructions = Some(line.trim_start_matches("art_generator_instructions:").trim().to_string());
-            in_memes_section = false;
-        } else if trimmed_line.starts_with("poem_body:") {
-            // Extract poem_body if it's found in the front matter
-            fixed_fm.poem_body = Some(line.trim_start_matches("poem_body: |").trim().to_string());
-            in_memes_section = false;
-        } else if trimmed_line.starts_with("memes:") {
-            in_memes_section = true;
-            // Reset current meme parsing state
-            current_meme_description.clear();
-            current_meme_template.clear();
-        } else if in_memes_section {
-            if new_meme_desc_regex.is_match(line) {
-                // Already in new structured format
-                if !current_meme_description.is_empty() { // If previous meme was incomplete, add it
-                    fixed_fm.memes.push(Meme {
-                        description: current_meme_description.clone(),
-                        template: current_meme_template.clone(),
-                        traits: None, nft_id: None, lore: None, numerology: None
-                    });
-                }
-                current_meme_description = new_meme_desc_regex.captures(line).unwrap()[1].trim().to_string();
-                current_meme_template.clear(); // Clear template for next line
-            } else if new_meme_template_regex.is_match(line) {
-                // Template line for new structured format
-                current_meme_template = new_meme_template_regex.captures(line).unwrap()[1].trim().to_string();
-                // Add the completed meme
-                fixed_fm.memes.push(Meme {
-                    description: current_meme_description.clone(),
-                    template: current_meme_template.clone(),
-                    traits: None, nft_id: None, lore: None, numerology: None
-                });
-                current_meme_description.clear(); // Clear for next meme
-                    current_meme_template.clear();
-                } else if old_meme_regex.is_match(line) {
-                    // Old string meme format
-                    let captures = old_meme_regex.captures(line).unwrap();
-                    let description = captures[1].trim().to_string();
-                    let template = captures[2].trim().to_string();
-                    fixed_fm.memes.push(Meme { description, template, traits: None, nft_id: None, lore: None, numerology: None });
-                    // Do not set in_memes_section to false here, as there might be more old memes
-                } else if line.trim().is_empty() || !line.starts_with(" ") {
-                    // End of memes section or new top-level key
-                    in_memes_section = false;
-                    // If there's a pending meme, add it
-                    if !current_meme_description.is_empty() {
-                        fixed_fm.memes.push(Meme {
-                            description: current_meme_description.clone(),
-                            template: current_meme_template.clone(),
-                            traits: None, nft_id: None, lore: None, numerology: None
-                        });
-                        current_meme_description.clear();
-                        current_meme_template.clear();
-                    }
-                }
-            }
-        }
-
-        // Handle any remaining pending meme at the end of the file
-        if in_memes_section && !current_meme_description.is_empty() {
-            fixed_fm.memes.push(Meme {
-                description: current_meme_description.clone(),
-                template: current_meme_template.clone(),
-                traits: None, nft_id: None, lore: None, numerology: None
-            });
-        }
+    // Attempt to parse the (potentially modified) front matter into a serde_yaml::Value
+    let mut parsed_front_matter: serde_yaml::Value = serde_yaml::from_str(&front_matter_str_for_parsing)
+        .map_err(|e| anyhow!("Failed to parse front matter YAML after poem_body extraction: {}", e))?;
 
 
-        // Reconstruct the file content
-        let mut new_content_parts = Vec::new();
-        new_content_parts.push("---".to_string());
-        new_content_parts.push(serde_yaml::to_string(&fixed_fm)?);
-        new_content_parts.push("---".to_string());
+    // This loop needs to be refactored into its own function
+    // for line in front_matter_lines_slice.iter() { ... }
 
-        // Append poem body, prioritizing extracted one
-        if let Some(pb) = fixed_fm.poem_body {
-            new_content_parts.push(pb);
-        }
-        else {
-            new_content_parts.push(poem_body_raw_from_file);
-        }
+    // Reconstruct the file content
+    let mut new_content_parts = Vec::new();
+    new_content_parts.push("---".to_string());
+    new_content_parts.push(serde_yaml::to_string(&fixed_fm)?);
+    new_content_parts.push("---".to_string());
 
-
-        fs::write(path, new_content_parts.join("\n"))?;
-
-        Ok(())
+    // Append poem body, prioritizing extracted one
+    if let Some(pb) = fixed_fm.poem_body {
+        new_content_parts.push(pb);
+    } else {
+        new_content_parts.push(final_poem_body);
     }
+
+    let new_content = new_content_parts.join("\n");
+    let new_content_len = new_content.len();
+
+    // Calculate change percentage and apply abort logic
+    let change_percentage = (original_content_len as f64 - new_content_len as f64).abs() / original_content_len as f64 * 100.0;
+    let effective_max_change = max_change_percentage.unwrap_or(1.0);
+
+    if change_percentage > effective_max_change {
+        return Err(anyhow!(
+            "Aborting: Content change exceeds allowed limit. Original size: {}, New size: {}, Change: {:.2}%. Max allowed: {:.2}%",
+            original_content_len,
+            new_content_len,
+            change_percentage,
+            effective_max_change
+        ));
+    }
+
+    fs::write(path, new_content)?;
+
+    Ok(())
+}

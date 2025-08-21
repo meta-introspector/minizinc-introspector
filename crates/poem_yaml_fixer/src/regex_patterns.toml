@@ -1,0 +1,13 @@
+# Regex patterns for poem_yaml_fixer
+[[regexes]]
+name = "old_meme_regex"
+pattern = "^\\s*-\\s*(.*?)\\s*\\((.*?)\\)"
+
+[[regexes]]
+name = "new_meme_desc_regex"
+pattern = "^\\s*-\\s*description:\\s*(.*?)"
+
+[[regexes]]
+name = "new_meme_template_regex"
+pattern = "^\\s*template:\\s*(.*?)"
+
