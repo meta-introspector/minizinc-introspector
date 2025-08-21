@@ -11,6 +11,7 @@ use crate::commands::run_hf_validator::handle_run_hf_validator_command;
 use crate::commands::inspect_parquet::handle_inspect_parquet_command;
 use crate::commands::lookup_embedding::handle_lookup_embedding_command;
 use crate::commands::inspect_parquet_schema::handle_inspect_parquet_schema_command;
+use crate::commands::map_element_name_to_embedding::handle_map_element_name_to_embedding_command;
 
 mod commands; // Declare the commands module
 pub mod prelude; // Declare the prelude module
@@ -23,6 +24,7 @@ mod utils; // Declare the utils module
 use doc_to_minizinc_data::data_generation::AppConfig;
 use crate::commands::run_hf_validator::handle_generate_data_command;
 
+#[allow(unused_variables)] // output_path is passed to handler, but not directly used in this scope
 fn main() -> anyhow::Result<()> {
     let args = Args::parse();
 
@@ -30,7 +32,7 @@ fn main() -> anyhow::Result<()> {
     let config = AppConfig::load()?;
 
     match args.command {
-        Command::GenerateData { chunk_size, ref input_path } => {
+        Command::GenerateData { chunk_size, ref input_path, ref output_path } => {
             println!("DEBUG: chunk_size = {}", chunk_size);
             println!("DEBUG: input_path = {:?}", input_path);
             // Pass config to handler
@@ -51,6 +53,10 @@ fn main() -> anyhow::Result<()> {
         Command::InspectParquetSchema { file_path } => {
             // Pass config to handler if needed
             handle_inspect_parquet_schema_command(file_path)?;
+        },
+        Command::MapElementNameToEmbedding { input_parquet_file, output_mapping_file } => {
+            // Pass config to handler if needed
+            handle_map_element_name_to_embedding_command(input_parquet_file, output_mapping_file)?;
         },
     }
 

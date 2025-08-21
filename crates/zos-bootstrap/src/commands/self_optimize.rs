@@ -213,6 +213,7 @@ pub fn handle_self_optimize_command(args: SelfOptimizeArgs, config: &AppConfig) 
                 command: doc_to_minizinc_data::cli::Command::GenerateData {
                     chunk_size: 1000, // Default chunk size
                     input_path: None,
+                    output_path: embeddings_output_dir.join("generated_data"), // Temporary output path
                 },
             };
             data_generation::generate_data(doc_to_minizinc_args, config)?;

@@ -9,3 +9,5 @@ pub mod minizinc_writer;
 pub mod minizinc_runner;
 pub mod file_processing;
 pub mod utils;
+pub mod embedding_algebra;
+pub mod embedding_lookup;

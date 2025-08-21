@@ -18,6 +18,10 @@ pub enum Command {
         /// Optional: Path to a specific file or directory to process. If not provided, the current directory will be processed.
         #[arg(long)]
         input_path: Option<std::path::PathBuf>,
+
+        /// Output directory for the generated dataset.
+        #[arg(short, long)]
+        output_path: std::path::PathBuf,
     },
     /// Runs the hf-validator binary to analyze a Rust project
     RunHfValidator {
@@ -45,5 +49,14 @@ pub enum Command {
         /// Path to the Parquet file to inspect
         #[arg(long)]
         file_path: std::path::PathBuf,
+    },
+    /// Maps element names from a semantic Parquet file to their embeddings.
+    MapElementNameToEmbedding {
+        /// Path to the input semantic Parquet file (e.g., parsing-phase/data.parquet).
+        #[arg(long)]
+        input_parquet_file: std::path::PathBuf,
+        /// Path to the output file for the mapping results.
+        #[arg(long)]
+        output_mapping_file: std::path::PathBuf,
     },
 }

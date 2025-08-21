@@ -23,6 +23,7 @@ pub use parquet_export::export_embeddings_to_parquet; // New export
 use crate::logger::LogWriter;
 use serde::Deserialize; // Added for AppConfig
 use std::path::PathBuf; // Added for AppConfig
+use std::env; // Added for CARGO_MANIFEST_DIR
 //use std::fs; // Added for AppConfig
 
 
@@ -42,7 +43,8 @@ pub struct AppConfig {
 #[allow(dead_code)]
 impl AppConfig {
     pub fn load() -> anyhow::Result<Self> {
-        let config_path = PathBuf::from("config.toml");
+        let manifest_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let config_path = manifest_dir.join("config.toml");
         let config_content = fs::read_to_string(&config_path)?;
         let config: AppConfig = toml::from_str(&config_content)?;
         Ok(config)
@@ -61,19 +63,19 @@ fn get_all_relations_from_wordnet(config: &AppConfig) -> anyhow::Result<Vec<(Str
 #[allow(dead_code)]
 pub fn generate_data(args: Args, config: &AppConfig) -> Result<()> {
     let current_dir = std::env::current_dir()?;
-    let minizinc_data_dir = current_dir.join("minizinc_data").join("huggingface");
-    fs::create_dir_all(&minizinc_data_dir)?;
 
-    let log_path = minizinc_data_dir.join("doc_to_minizinc_data.log");
+    // Extract chunk_size, input_path, and output_path from the Args struct
+    let (chunk_size, input_path, output_path) = match args.command {
+        Command::GenerateData { chunk_size, input_path, output_path } => (chunk_size, input_path, output_path),
+        _ => return Err(anyhow::anyhow!("Invalid command for generate_data function")), // Should not happen if called correctly from main
+    };
+
+    fs::create_dir_all(&output_path)?;
+
+    let log_path = output_path.join("doc_to_minizinc_data.log");
     let mut logger = LogWriter::new(&log_path)?;
 
     logger.debug_log("Starting generate_data function.");
-
-    // Extract chunk_size and input_path from the Args struct
-    let (chunk_size, input_path) = match args.command {
-        Command::GenerateData { chunk_size, input_path } => (chunk_size, input_path),
-        _ => return Err(anyhow::anyhow!("Invalid command for generate_data function")), // Should not happen if called correctly from main
-    };
 
     let all_relations = get_all_relations_from_wordnet(config)?; // Get all_relations from new function
 
@@ -92,6 +94,7 @@ pub fn generate_data(args: Args, config: &AppConfig) -> Result<()> {
     } else {
         current_dir
     };
+    logger.debug_log(&format!("Attempting to process files from: {:?}", actual_input_path));
     process_files_and_collect_words(
         &actual_input_path,
         &extensions,
@@ -101,6 +104,7 @@ pub fn generate_data(args: Args, config: &AppConfig) -> Result<()> {
         &mut initialized_data.rng,
         &mut logger,
     )?;
+    logger.debug_log(&format!("Successfully processed files from: {:?}", actual_input_path));
     logger.debug_log("2. Files processed and words collected.");
 
     logger.debug_log("3. Writing data_declarations.mzn.");
@@ -110,7 +114,7 @@ pub fn generate_data(args: Args, config: &AppConfig) -> Result<()> {
         &initialized_data.word_to_id,
         &initialized_data.id_to_word,
         &initialized_data.embeddings,
-        &minizinc_data_dir,
+        &output_path,
         &mut logger,
     )?;
     logger.debug_log("3. data_declarations.mzn written.");
@@ -123,7 +127,7 @@ pub fn generate_data(args: Args, config: &AppConfig) -> Result<()> {
         &initialized_data.embeddings,
         &all_relations,
         chunk_size, // Use the extracted chunk_size
-        &minizinc_data_dir,
+        &output_path,
         &mut logger,
     )?;
     logger.debug_log("4. Chunked embeddings written to .dzn files.");
@@ -133,7 +137,7 @@ pub fn generate_data(args: Args, config: &AppConfig) -> Result<()> {
     export_embeddings_to_parquet(
         &initialized_data.id_to_word,
         &initialized_data.embeddings,
-        &minizinc_data_dir,
+        &output_path,
     )?;
     logger.debug_log("5. Embeddings exported to Parquet.");
 
