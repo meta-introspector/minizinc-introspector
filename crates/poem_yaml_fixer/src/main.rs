@@ -62,7 +62,7 @@ fn main() -> Result<()> {
 
 fn process_poem_file(path: &PathBuf) -> Result<()> {
     let content = fs::read_to_string(path)?;
-    let lines: Vec<&str> = content.lines().collect();
+    let mut lines: Vec<&str> = content.lines().collect();
 
     let mut fm_start = -1;
     let mut fm_end = -1;
@@ -81,8 +81,43 @@ fn process_poem_file(path: &PathBuf) -> Result<()> {
         return Err(anyhow!("Invalid Markdown file format (missing or malformed front matter delimiters).\nContent:\n{}", content));
     }
 
-    let front_matter_lines = &lines[(fm_start + 1) as usize .. fm_end as usize];
+    let front_matter_lines_slice = &lines[(fm_start + 1) as usize .. fm_end as usize];
     let poem_body_raw_from_file = lines[(fm_end + 1) as usize ..].join("\n");
+
+    let mut front_matter_str_for_parsing = String::new();
+    let mut extracted_poem_body_from_fm = String::new();
+    let mut in_poem_body_in_fm = false;
+
+    // Manually process front matter lines to extract poem_body if present
+    for line in front_matter_lines_slice.iter() { // Corrected loop variable
+        if line.trim().starts_with("poem_body: |") {
+            in_poem_body_in_fm = true;
+            // Skip this line, we'll extract content from subsequent indented lines
+        } else if in_poem_body_in_fm {
+            if line.starts_with(" ") { // Check for indentation
+                extracted_poem_body_from_fm.push_str(line.trim_start()); // Remove leading spaces
+                extracted_poem_body_from_fm.push('\n');
+            } else {
+                in_poem_body_in_fm = false; // End of poem_body in FM
+                front_matter_str_for_parsing.push_str(line); // Add this line back to FM
+                front_matter_str_for_parsing.push('\n');
+            }
+        } else {
+            front_matter_str_for_parsing.push_str(line); // Add this line back to FM
+            front_matter_str_for_parsing.push('\n');
+        }
+    }
+
+    // Attempt to parse the (potentially modified) front matter into a serde_yaml::Value
+    let mut parsed_front_matter: serde_yaml::Value = serde_yaml::from_str(&front_matter_str_for_parsing)
+        .map_err(|e| anyhow!("Failed to parse front matter YAML after poem_body extraction: {}", e))?;
+
+    // If poem_body was extracted from front matter, it overrides the content after ---
+    let final_poem_body = if !extracted_poem_body_from_fm.is_empty() {
+        extracted_poem_body_from_fm
+    } else {
+        poem_body_raw_from_file
+    };
 
     let mut fixed_fm = FixedFrontMatter {
         title: None,
@@ -94,18 +129,18 @@ fn process_poem_file(path: &PathBuf) -> Result<()> {
         poem_body: None,
     };
 
-    //let _current_key = String::new();
+    let mut current_key = String::new();
     let mut in_memes_section = false;
     let mut current_meme_description = String::new();
     let mut current_meme_template = String::new();
 
-    // Corrected Regexes - Define them once at the beginning of the function
-    let old_meme_regex = Regex::new(r#"^\s*-\s*"(.*?)"\s*\((.*?)\)$"#)?;
-    let new_meme_desc_regex = Regex::new(r#"^\s*-\s*description:\s*"(.*?)"$"#)?;
-    let new_meme_template_regex = Regex::new(r#"^\s*template:\s*"(.*?)"$"#)?;
+    // Corrected Regexes
+    let old_meme_regex = Regex::new(r"^\s*-\s*(.*?)\s*\((.*?)\)"")?;
+    let new_meme_desc_regex = Regex::new(r"^\s*-\s*description:\s*(.*?)"")?;
+    let new_meme_template_regex = Regex::new(r"^\s*template:\s*(.*?)"")?;
 
 
-    for line in front_matter_lines.iter() {
+    for line in front_matter_lines_slice.iter() { // Corrected loop variable
         let trimmed_line = line.trim();
 
         if trimmed_line.starts_with("title:") {
@@ -154,56 +189,57 @@ fn process_poem_file(path: &PathBuf) -> Result<()> {
                     traits: None, nft_id: None, lore: None, numerology: None
                 });
                 current_meme_description.clear(); // Clear for next meme
-                current_meme_template.clear();
-            } else if old_meme_regex.is_match(line) {
-                // Old string meme format
-                let captures = old_meme_regex.captures(line).unwrap();
-                let description = captures[1].trim().to_string();
-                let template = captures[2].trim().to_string();
-                fixed_fm.memes.push(Meme { description, template, traits: None, nft_id: None, lore: None, numerology: None });
-                // Do not set in_memes_section to false here, as there might be more old memes
-            } else if line.trim().is_empty() || !line.starts_with(" ") {
-                // End of memes section or new top-level key
-                in_memes_section = false;
-                // If there's a pending meme, add it
-                if !current_meme_description.is_empty() {
-                    fixed_fm.memes.push(Meme {
-                        description: current_meme_description.clone(),
-                        template: current_meme_template.clone(),
-                        traits: None, nft_id: None, lore: None, numerology: None
-                    });
-                    current_meme_description.clear();
                     current_meme_template.clear();
+                } else if old_meme_regex.is_match(line) {
+                    // Old string meme format
+                    let captures = old_meme_regex.captures(line).unwrap();
+                    let description = captures[1].trim().to_string();
+                    let template = captures[2].trim().to_string();
+                    fixed_fm.memes.push(Meme { description, template, traits: None, nft_id: None, lore: None, numerology: None });
+                    // Do not set in_memes_section to false here, as there might be more old memes
+                } else if line.trim().is_empty() || !line.starts_with(" ") {
+                    // End of memes section or new top-level key
+                    in_memes_section = false;
+                    // If there's a pending meme, add it
+                    if !current_meme_description.is_empty() {
+                        fixed_fm.memes.push(Meme {
+                            description: current_meme_description.clone(),
+                            template: current_meme_template.clone(),
+                            traits: None, nft_id: None, lore: None, numerology: None
+                        });
+                        current_meme_description.clear();
+                        current_meme_template.clear();
+                    }
                 }
             }
         }
+
+        // Handle any remaining pending meme at the end of the file
+        if in_memes_section && !current_meme_description.is_empty() {
+            fixed_fm.memes.push(Meme {
+                description: current_meme_description.clone(),
+                template: current_meme_template.clone(),
+                traits: None, nft_id: None, lore: None, numerology: None
+            });
+        }
+
+
+        // Reconstruct the file content
+        let mut new_content_parts = Vec::new();
+        new_content_parts.push("---".to_string());
+        new_content_parts.push(serde_yaml::to_string(&fixed_fm)?);
+        new_content_parts.push("---".to_string());
+
+        // Append poem body, prioritizing extracted one
+        if let Some(pb) = fixed_fm.poem_body {
+            new_content_parts.push(pb);
+        }
+        else {
+            new_content_parts.push(poem_body_raw_from_file);
+        }
+
+
+        fs::write(path, new_content_parts.join("\n"))?;
+
+        Ok(())
     }
-
-    // Handle any remaining pending meme at the end of the file
-    if in_memes_section && !current_meme_description.is_empty() {
-        fixed_fm.memes.push(Meme {
-            description: current_meme_description.clone(),
-            template: current_meme_template.clone(),
-            traits: None, nft_id: None, lore: None, numerology: None
-        });
-    }
-
-
-    // Reconstruct the file content
-    let mut new_content_parts = Vec::new();
-    new_content_parts.push("---".to_string());
-    new_content_parts.push(serde_yaml::to_string(&fixed_fm)?);
-    new_content_parts.push("---".to_string());
-
-    // Append poem body, prioritizing extracted one
-    if let Some(pb) = fixed_fm.poem_body {
-        new_content_parts.push(pb);
-    } else {
-        new_content_parts.push(poem_body_raw_from_file);
-    }
-
-
-    fs::write(path, new_content_parts.join("\n"))?;
-
-    Ok(())
-}
