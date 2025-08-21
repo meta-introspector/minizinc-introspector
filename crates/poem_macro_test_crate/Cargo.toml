@@ -1,0 +1,10 @@
+[package]
+name = "poem_macro_test_crate"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+poem_macros = { path = "/data/data/com.termux/files/home/storage/github/libminizinc/crates/poem_macros" }
+anyhow = "1.0"

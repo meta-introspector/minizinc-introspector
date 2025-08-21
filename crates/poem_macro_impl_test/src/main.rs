@@ -1,7 +1,7 @@
 use anyhow::Result;
 use syn::{parse_quote, ItemFn};
 use poem_macro_impl::poem_function_impl;
-use std::collections::HashMap;
+//use std::collections::HashMap;
 
 fn main() -> Result<()> {
     // Define a dummy function as if it were input to the macro

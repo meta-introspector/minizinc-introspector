@@ -2590,6 +2590,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "poem_macro_test_crate"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "poem_macros",
+]
+
+[[package]]
 name = "poem_macros"
 version = "0.1.0"
 dependencies = [
