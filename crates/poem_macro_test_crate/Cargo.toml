@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 poem_macros = { path = "/data/data/com.termux/files/home/storage/github/libminizinc/crates/poem_macros" }
 anyhow = "1.0"
+tempfile = "3.10.1"
