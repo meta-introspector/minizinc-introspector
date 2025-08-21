@@ -2,12 +2,14 @@
 [[regexes]]
 name = "old_meme_regex"
 pattern = "^\\s*-\\s*(.*?)\\s*\\((.*?)\\)"
+callback_function = "handle_old_meme_regex"
 
 [[regexes]]
 name = "new_meme_desc_regex"
 pattern = "^\\s*-\\s*description:\\s*(.*?)"
+callback_function = "handle_new_meme_desc_regex"
 
 [[regexes]]
 name = "new_meme_template_regex"
 pattern = "^\\s*template:\\s*(.*?)"
-
+callback_function = "handle_new_meme_template_regex"

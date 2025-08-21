@@ -1,5 +1,7 @@
 use std::{fs, path::PathBuf};
-use anyhow::{Result, anyhow};
+use anyhow::{Result,
+	     //anyhow
+};
 use walkdir::WalkDir;
 
 use poem_meme_formatter::parser;

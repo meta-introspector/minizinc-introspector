@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+//use std::collections::HashMap;
 use anyhow::{Result, anyhow};
 use regex::Regex;
 use serde_yaml;
@@ -6,7 +6,7 @@ use serde_yaml;
 use crate::models::{Meme, PoemDocument};
 
 pub fn parse_poem_document(content: &str) -> Result<PoemDocument> {
-    let mut lines: Vec<&str> = content.lines().collect();
+    let lines: Vec<&str> = content.lines().collect();
 
     // Find the YAML front matter delimiters
     let mut fm_start = -1;
@@ -27,7 +27,7 @@ pub fn parse_poem_document(content: &str) -> Result<PoemDocument> {
     }
 
     let front_matter_lines_slice = &lines[(fm_start + 1) as usize .. fm_end as usize];
-    let mut poem_body_lines_vec: Vec<String> = lines[(fm_end + 1) as usize ..].iter().map(|s| s.to_string()).collect();
+    let poem_body_lines_vec: Vec<String> = lines[(fm_end + 1) as usize ..].iter().map(|s| s.to_string()).collect();
 
     // Attempt to parse the front matter into a serde_yaml::Value
     let mut parsed_front_matter: serde_yaml::Value = serde_yaml::from_str(&front_matter_lines_slice.join("\n"))
@@ -92,7 +92,7 @@ pub fn parse_poem_document(content: &str) -> Result<PoemDocument> {
                             traits: None, nft_id: None, lore: None, numerology: None
                         });
                     }
-                } else if let Some(meme_map) = meme_value.as_mapping() {
+                } else if let Some(_meme_map) = meme_value.as_mapping() {
                     // If it's already a map (new format), try to deserialize it directly
                     let meme: Meme = serde_yaml::from_value(meme_value.clone())
                         .map_err(|e| anyhow!("Failed to deserialize meme map: {}", e))?;
