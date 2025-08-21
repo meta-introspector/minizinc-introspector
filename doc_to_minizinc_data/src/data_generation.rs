@@ -29,12 +29,13 @@ use std::path::PathBuf; // Added for AppConfig
 #[derive(Debug, Deserialize)]
 pub struct AppConfig {
     pub project_root: PathBuf,
-    pub github_root: PathBuf,
-    pub home_dir: PathBuf,
+    pub github_root: PathBuf, // Not currently used in this module, but part of the overall configuration.
+    pub home_dir: PathBuf, // Not currently used in this module, but part of the overall configuration.
     pub build_target: String, // Added build_target
     pub simulated_wordnet_path: PathBuf,
 }
 
+#[allow(dead_code)]
 impl AppConfig {
     pub fn load() -> anyhow::Result<Self> {
         let config_path = PathBuf::from("config.toml");
@@ -46,12 +47,14 @@ impl AppConfig {
 
 //use crate::app_config::AppConfig;
 //use crate::doc_to_minizinc_data::app_config::AppConfig;
+#[allow(dead_code)]
 fn get_all_relations_from_wordnet(config: &AppConfig) -> anyhow::Result<Vec<(String, String, f64)>> {
     let simulated_wordnet_path = &config.simulated_wordnet_path;
     let all_relations = crate::wordnet_processing::generate_wordnet_constraints(simulated_wordnet_path)?;
     Ok(all_relations)
 }
 
+#[allow(dead_code)]
 pub fn generate_data(args: Args, config: &AppConfig) -> Result<()> {
     let current_dir = std::env::current_dir()?;
     let minizinc_data_dir = current_dir.join("minizinc_data").join("huggingface");

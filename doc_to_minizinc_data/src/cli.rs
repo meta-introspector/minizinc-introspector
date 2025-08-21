@@ -40,4 +40,10 @@ pub enum Command {
         #[arg(long)]
         word: String,
     },
+    /// Inspects the schema of a Parquet file
+    InspectParquetSchema {
+        /// Path to the Parquet file to inspect
+        #[arg(long)]
+        file_path: std::path::PathBuf,
+    },
 }

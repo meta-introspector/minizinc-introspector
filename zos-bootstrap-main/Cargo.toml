@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 zos-bootstrap = { path = "/data/data/com.termux/files/home/storage/github/libminizinc/crates/zos-bootstrap" }
 clap = { version = "4.0", features = ["derive"] }
+doc_to_minizinc_data = { path = "../doc_to_minizinc_data" }

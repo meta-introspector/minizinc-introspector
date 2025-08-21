@@ -1,9 +1,10 @@
 use zos_bootstrap::cli::{Cli, Commands};
 use clap::Parser; // Import Parser trait
 use std::env;
-//use std::path::PathBuf;
+use doc_to_minizinc_data::data_generation::AppConfig;
 
 fn main() -> Result<(), String> {
+    let config = AppConfig::load().map_err(|e| format!("Failed to load AppConfig: {}", e))?;
     // Set LD_LIBRARY_PATH dynamically
     let current_exe_path = env::current_exe()
         .map_err(|e| format!("Failed to get current executable path: {}", e))?;
@@ -39,7 +40,7 @@ fn main() -> Result<(), String> {
             println!("Bootstrap command executed for target: {}", target);
             Ok(())
         },
-        Some(Commands::SelfOptimize(args)) => zos_bootstrap::commands::self_optimize::handle_self_optimize_command(args).map_err(|e| format!("SelfOptimize command failed: {}", e)),
+        Some(Commands::SelfOptimize(args)) => zos_bootstrap::commands::self_optimize::handle_self_optimize_command(args, &config).map_err(|e| format!("SelfOptimize command failed: {}", e)),
         Some(Commands::TestAstToMiniZinc(args)) => zos_bootstrap::commands::test_ast_to_minizinc::handle_test_ast_to_minizinc_command(args).map_err(|e| format!("TestAstToMiniZinc command failed: {}", e)),
         Some(Commands::AnalyzeDuplicates(args)) => zos_bootstrap::commands::analyze_duplicates::handle_analyze_duplicates_command(args).map_err(|e| format!("AnalyzeDuplicates command failed: {}", e)),
         Some(Commands::IndexUpdate(_)) => todo!(),

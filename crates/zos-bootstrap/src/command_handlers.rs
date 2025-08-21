@@ -5,8 +5,10 @@ use crate::commands;
 use crate::code_analysis;
 use std::fs;
 use std::path::PathBuf;
+use doc_to_minizinc_data::data_generation::AppConfig;
 
 pub fn handle_command_dispatch() -> Result<()> {
+    let config = AppConfig::load()?;
     let cli = Cli::parse();
     match cli.command {
         Some(Commands::Build(args)) => commands::build::handle_build_command(args).map_err(|e| ZosError::Unknown(format!("Build command failed: {}", e))),
@@ -27,7 +29,7 @@ pub fn handle_command_dispatch() -> Result<()> {
             println!("Bootstrap command executed for target: {}", target);
             Ok(())
         },
-        Some(Commands::SelfOptimize(args)) => commands::self_optimize::handle_self_optimize_command(args).map_err(|e| ZosError::Unknown(format!("SelfOptimize command failed: {}", e))),
+        Some(Commands::SelfOptimize(args)) => commands::self_optimize::handle_self_optimize_command(args, &config).map_err(|e| ZosError::Unknown(format!("SelfOptimize command failed: {}", e))),
         Some(Commands::TestAstToMiniZinc(args)) => commands::test_ast_to_minizinc::handle_test_ast_to_minizinc_command(args).map_err(|e| ZosError::Unknown(format!("TestAstToMiniZinc command failed: {}", e))),
         Some(Commands::AnalyzeDuplicates(args)) => {
             let suggested_code_content = if args.is_file {

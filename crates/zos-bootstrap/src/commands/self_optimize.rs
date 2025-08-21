@@ -1,11 +1,12 @@
 use clap::{Args, ValueEnum};
-use doc_to_minizinc_data::{data_generation, wordnet_processing};
+use doc_to_minizinc_data::data_generation;
 use std::fs;
 use std::path::PathBuf;
 use syn::{parse_file, File};
 use crate::commands::ast_to_minizinc::{AstToMiniZincArgs, handle_ast_to_minizinc_command};
 use crate::utils::error::Result; // Assuming ZosError is in utils::error
 use walkdir::WalkDir;
+use doc_to_minizinc_data::data_generation::AppConfig;
 
 #[derive(Args)]
 pub struct SelfOptimizeArgs {
@@ -190,7 +191,7 @@ fn format_step_complete_message(step_name: &str, subsets_info: Option<usize>) ->
     }
 }
 
-pub fn handle_self_optimize_command(args: SelfOptimizeArgs) -> Result<()> {
+pub fn handle_self_optimize_command(args: SelfOptimizeArgs, config: &AppConfig) -> Result<()> {
     let project_root = args.source_path;
     let mut report = String::new();
 
@@ -208,15 +209,13 @@ pub fn handle_self_optimize_command(args: SelfOptimizeArgs) -> Result<()> {
             let simulated_wordnet_path = embeddings_output_dir.join("simulated_wordnet.txt");
             fs::write(&simulated_wordnet_path, "word1 word2\nword3 word4")?;
 
-            let all_relations = wordnet_processing::generate_wordnet_constraints(&simulated_wordnet_path)?;
-
             let doc_to_minizinc_args = doc_to_minizinc_data::cli::Args {
                 command: doc_to_minizinc_data::cli::Command::GenerateData {
                     chunk_size: 1000, // Default chunk size
                     input_path: None,
                 },
             };
-            data_generation::generate_data(doc_to_minizinc_args, all_relations)?;
+            data_generation::generate_data(doc_to_minizinc_args, config)?;
             println!("{}", format_step_complete_message("Generate Embeddings", None));
         }
         SelfOptimizeStep::ParseRustAstAndGenerateMiniZinc => {

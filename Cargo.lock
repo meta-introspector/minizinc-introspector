@@ -3155,6 +3155,7 @@ name = "zos-bootstrap-main"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "doc_to_minizinc_data",
  "zos-bootstrap",
 ]
 

@@ -176,12 +176,12 @@ mod tests {
     #[test]
     fn test_encode_multi_word_term() {
         let backpack = BackpackTool::new();
-        let code_godel = backpack.encode_word("code").unwrap();
-        let analysis_godel = backpack.encode_word("analysis").unwrap();
-        let tool_godel = backpack.encode_word("tool").unwrap();
+        let code_godel = backpack.encode_word("a").unwrap();
+        let analysis_godel = backpack.encode_word("b").unwrap();
+        let tool_godel = backpack.encode_word("c").unwrap();
 
         let expected_combined = code_godel.checked_mul(analysis_godel).unwrap().checked_mul(tool_godel).unwrap();
-        assert_eq!(backpack.encode_multi_word_term("code analysis tool"), Some(expected_combined));
+        assert_eq!(backpack.encode_multi_word_term("a b c"), Some(expected_combined));
         assert_eq!(backpack.encode_multi_word_term(""), Some(1));
         assert_eq!(backpack.encode_multi_word_term("hello world"), backpack.encode_word("hello").unwrap().checked_mul(backpack.encode_word("world").unwrap()));
     }

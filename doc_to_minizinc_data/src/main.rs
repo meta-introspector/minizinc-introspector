@@ -10,6 +10,7 @@ use crate::commands::run_hf_validator::handle_run_hf_validator_command;
 //use crate::commands::run_hf_validator::handle_run_hf_validator_command;
 use crate::commands::inspect_parquet::handle_inspect_parquet_command;
 use crate::commands::lookup_embedding::handle_lookup_embedding_command;
+use crate::commands::inspect_parquet_schema::handle_inspect_parquet_schema_command;
 
 mod commands; // Declare the commands module
 pub mod prelude; // Declare the prelude module
@@ -29,6 +30,8 @@ fn main() -> anyhow::Result<()> {
 
     match args.command {
         Command::GenerateData { chunk_size, ref input_path } => {
+            println!("DEBUG: chunk_size = {}", chunk_size);
+            println!("DEBUG: input_path = {:?}", input_path);
             // Pass config to handler
             handle_generate_data_command(args, &config)?; // Pass the original args and config
         },
@@ -43,6 +46,10 @@ fn main() -> anyhow::Result<()> {
         Command::LookupEmbedding { word } => {
             // Pass config to handler if needed
             handle_lookup_embedding_command(word)?; // Pass original args
+        },
+        Command::InspectParquetSchema { file_path } => {
+            // Pass config to handler if needed
+            handle_inspect_parquet_schema_command(file_path)?;
         },
     }
 
