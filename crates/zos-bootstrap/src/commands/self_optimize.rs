@@ -214,7 +214,7 @@ pub fn handle_self_optimize_command(args: SelfOptimizeArgs, config: &AppConfig) 
                     chunk_size: 1000, // Default chunk size
                     input_path: None,
                     output_path: embeddings_output_dir.join("generated_data"), // Temporary output path
-		    previous_embeddings_path: embeddings_output_dir.join("previous_data"), // FIXME
+		                        previous_embeddings_path: Some(embeddings_output_dir.join("previous_data")), // FIXME
                 },
             };
             data_generation::generate_data(doc_to_minizinc_args, config)?;

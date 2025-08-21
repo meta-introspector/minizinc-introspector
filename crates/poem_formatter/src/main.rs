@@ -1,4 +1,6 @@
-use std::{fs, io, path::PathBuf};
+use std::{fs,
+	  //io,
+	  path::PathBuf};
 use serde::{Deserialize, Serialize};
 use serde_yaml;
 use anyhow::{Result, anyhow};
@@ -92,7 +94,7 @@ fn process_poem_file(path: &PathBuf) -> Result<()> {
                         template: "default".to_string(),
                     });
                 }
-            } else if let Some(meme_map) = meme_value.as_mapping() {
+            } else if let Some(_meme_map) = meme_value.as_mapping() {
                 // If it's already a map (new format), try to deserialize it directly
                 let meme: Meme = serde_yaml::from_value(meme_value.clone())?;
                 structured_memes.push(meme);

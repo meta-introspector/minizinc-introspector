@@ -9,7 +9,7 @@ pub fn write_chunked_embeddings_dzn(
     all_relations: &Vec<(String, String, f64)>,
     chunk_size: usize,
     minizinc_data_dir: &PathBuf,
-    fixed_id_to_word: &HashMap<u32, String>,
+    _fixed_id_to_word: &HashMap<u32, String>,
     fixed_id_to_embedding: &HashMap<u32, Vec<f64>>,
     logger: &mut LogWriter,
 ) -> Result<()> {
