@@ -24,6 +24,10 @@ use crate::logger::LogWriter;
 use serde::Deserialize; // Added for AppConfig
 use std::path::PathBuf; // Added for AppConfig
 use std::env; // Added for CARGO_MANIFEST_DIR
+use std::collections::HashMap;
+use parquet::arrow::arrow_reader::ParquetRecordBatchReaderBuilder;
+use arrow::array::{Array, StringArray, UInt32Array, Float64Array, ListArray};
+use std::fs::File;
 //use std::fs; // Added for AppConfig
 
 
@@ -60,13 +64,45 @@ fn get_all_relations_from_wordnet(config: &AppConfig) -> anyhow::Result<Vec<(Str
     Ok(all_relations)
 }
 
+fn load_embeddings_from_parquet(file_path: &PathBuf) -> Result<(HashMap<u32, String>, HashMap<u32, Vec<f64>>)> {
+    let file = File::open(file_path)?;
+    let builder = ParquetRecordBatchReaderBuilder::try_new(file)?;
+    let reader = builder.build()?;
+
+    let mut id_to_word: HashMap<u32, String> = HashMap::new();
+    let mut id_to_embedding: HashMap<u32, Vec<f64>> = HashMap::new();
+
+    for batch_result in reader {
+        let record_batch = batch_result?;
+        let id_column = record_batch.column_by_name("id").expect("id column not found");
+        let word_column = record_batch.column_by_name("word").expect("word column not found");
+        let embedding_column = record_batch.column_by_name("embedding").expect("embedding column not found");
+
+        let id_array = id_column.as_any().downcast_ref::<UInt32Array>().expect("id column is not UInt32Array");
+        let word_array = word_column.as_any().downcast_ref::<StringArray>().expect("word column is not StringArray");
+        let embedding_list_array = embedding_column.as_any().downcast_ref::<ListArray>().expect("embedding column is not ListArray");
+
+        for i in 0..id_array.len() {
+            let id = id_array.value(i);
+            let word = word_array.value(i).to_string();
+            let embedding_values = embedding_list_array.value(i);
+            let float_array = embedding_values.as_any().downcast_ref::<Float64Array>().expect("embedding list element is not Float64Array");
+            let embedding_vec: Vec<f64> = float_array.values().to_vec();
+
+            id_to_word.insert(id, word);
+            id_to_embedding.insert(id, embedding_vec);
+        }
+    }
+    Ok((id_to_word, id_to_embedding))
+}
+
 #[allow(dead_code)]
 pub fn generate_data(args: Args, config: &AppConfig) -> Result<()> {
     let current_dir = std::env::current_dir()?;
 
     // Extract chunk_size, input_path, and output_path from the Args struct
-    let (chunk_size, input_path, output_path) = match args.command {
-        Command::GenerateData { chunk_size, input_path, output_path } => (chunk_size, input_path, output_path),
+    let (chunk_size, input_path, output_path, previous_embeddings_path) = match args.command {
+        Command::GenerateData { chunk_size, input_path, output_path, previous_embeddings_path } => (chunk_size, input_path, output_path, previous_embeddings_path),
         _ => return Err(anyhow::anyhow!("Invalid command for generate_data function")), // Should not happen if called correctly from main
     };
 
@@ -76,6 +112,15 @@ pub fn generate_data(args: Args, config: &AppConfig) -> Result<()> {
     let mut logger = LogWriter::new(&log_path)?;
 
     logger.debug_log("Starting generate_data function.");
+
+    let mut fixed_id_to_word: HashMap<u32, String> = HashMap::new();
+    let mut fixed_id_to_embedding: HashMap<u32, Vec<f64>> = HashMap::new();
+
+    if let Some(path) = previous_embeddings_path {
+        logger.debug_log(&format!("Loading previous embeddings from: {:?}", path));
+        (fixed_id_to_word, fixed_id_to_embedding) = load_embeddings_from_parquet(&path)?;
+        logger.debug_log(&format!("Loaded {} fixed embeddings.", fixed_id_to_word.len()));
+    }
 
     let all_relations = get_all_relations_from_wordnet(config)?; // Get all_relations from new function
 
@@ -128,6 +173,8 @@ pub fn generate_data(args: Args, config: &AppConfig) -> Result<()> {
         &all_relations,
         chunk_size, // Use the extracted chunk_size
         &output_path,
+        &fixed_id_to_word,
+        &fixed_id_to_embedding,
         &mut logger,
     )?;
     logger.debug_log("4. Chunked embeddings written to .dzn files.");

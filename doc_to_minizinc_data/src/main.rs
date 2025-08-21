@@ -32,7 +32,7 @@ fn main() -> anyhow::Result<()> {
     let config = AppConfig::load()?;
 
     match args.command {
-        Command::GenerateData { chunk_size, ref input_path, ref output_path } => {
+        Command::GenerateData { chunk_size, ref input_path, ref output_path, ref previous_embeddings_path } => {
             println!("DEBUG: chunk_size = {}", chunk_size);
             println!("DEBUG: input_path = {:?}", input_path);
             // Pass config to handler

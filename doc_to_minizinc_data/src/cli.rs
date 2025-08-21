@@ -22,6 +22,10 @@ pub enum Command {
         /// Output directory for the generated dataset.
         #[arg(short, long)]
         output_path: std::path::PathBuf,
+
+        /// Optional: Path to a Parquet file containing previously optimized embeddings to fix.
+        #[arg(long)]
+        previous_embeddings_path: Option<std::path::PathBuf>,
     },
     /// Runs the hf-validator binary to analyze a Rust project
     RunHfValidator {

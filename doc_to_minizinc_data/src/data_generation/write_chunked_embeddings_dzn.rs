@@ -3,12 +3,14 @@ use anyhow::Result;
 //use crate::prelude::LogWriter;
 use crate::logger::LogWriter;
 pub fn write_chunked_embeddings_dzn(
-    id_to_word: &HashMap<u32, String>, // Changed to HashMap
+    id_to_word: &HashMap<u32, String>,
     word_to_id: &std::collections::HashMap<String, usize>,
-    embeddings: &HashMap<u32, Vec<f64>>, // Changed to HashMap
+    embeddings: &HashMap<u32, Vec<f64>>,
     all_relations: &Vec<(String, String, f64)>,
     chunk_size: usize,
     minizinc_data_dir: &PathBuf,
+    fixed_id_to_word: &HashMap<u32, String>,
+    fixed_id_to_embedding: &HashMap<u32, Vec<f64>>,
     logger: &mut LogWriter,
 ) -> Result<()> {
     let num_words = id_to_word.len();
@@ -48,6 +50,22 @@ pub fn write_chunked_embeddings_dzn(
             }
         }
         dzn_content.push_str("\n]);\n");
+
+        // Fixed embeddings logic
+        let mut fixed_word_indices_in_chunk = Vec::new();
+        let mut fixed_word_embeddings_values = Vec::new();
+
+        for (local_idx, &global_id) in chunk_ids.iter().enumerate() {
+            if let Some(fixed_embedding_vec) = fixed_id_to_embedding.get(&global_id) {
+                // This word is in the current chunk AND is a fixed word
+                fixed_word_indices_in_chunk.push((local_idx + 1) as u32); // MiniZinc indices are 1-based
+                fixed_word_embeddings_values.extend_from_slice(fixed_embedding_vec);
+            }
+        }
+
+        dzn_content.push_str(&format!("num_fixed_words = {};\n", fixed_word_indices_in_chunk.len()));
+        dzn_content.push_str(&format!("fixed_word_indices = [{}];\n", fixed_word_indices_in_chunk.iter().map(|&x| x.to_string()).collect::<Vec<String>>().join(", ")));
+        dzn_content.push_str(&format!("fixed_word_embeddings = array2d(1..{}, 1..8, [{}]);\n", fixed_word_indices_in_chunk.len(), fixed_word_embeddings_values.iter().map(|f| f.to_string()).collect::<Vec<String>>().join(", ")));
 
         // Filter relations relevant to this chunk and map words to chunk-local IDs
         let mut chunk_relation_pairs = Vec::new();
