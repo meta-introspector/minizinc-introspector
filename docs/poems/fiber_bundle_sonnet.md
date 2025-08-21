@@ -5,9 +5,12 @@ keywords: fiber bundle, lambda calculus, Riemannian manifold, eight dimensions, 
 emojis: 🌌🔢✨📜
 art_generator_instructions: A complex, glowing fiber bundle, with abstract representations of lambda calculus expressions dancing on its surface. The surface itself is a subtly curved, shimmering Riemannian manifold, extending into eight dimensions (perhaps hinted at by multiple layers or perspectives). Glowing lines represent vector fields and geodesics, revealing hidden mathematical truths. The overall feeling should be one of profound intellectual beauty, intricate complexity, and the elegance of abstract mathematical structures.
 memes:
-- My math is so advanced, it needs a sonnet.
-- When your lambda calculus is dancing on a Riemannian manifold.
-- 'Fiber bundles: Because sometimes, 3D just isn''t enough.'
+- description: My math is so advanced, it needs a sonnet.
+  template: default
+- description: When your lambda calculus is dancing on a Riemannian manifold.
+  template: default
+- description: 'Fiber bundles: Because sometimes, 3D just isn''t enough.'
+  template: default
 poem_body: ''
 
 ---

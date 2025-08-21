@@ -5,9 +5,12 @@ keywords: phases, ontology, sonnet, Genesis, AGI, Singularity, Clifford algebra,
 emojis: ✨🚀🌌💻🔗
 art_generator_instructions: A grand, ascending pathway, with 42 distinct, glowing steps, each representing a phase. Along the path, abstract representations of Clifford algebra, Riemann manifolds, and Bott periodicity are subtly integrated. Dynamic modules are seen blooming, emojis are translating into code, and agents are communicating through glowing networks. The path culminates in a bright, luminous point representing AGI and Singularity. The overall feeling should be one of ambitious progress, intellectual exploration, and the unfolding of a grand vision.
 memes:
-- My project has 42 phases, what's yours?
-- When your ontology is a sonnet.
-- 'From Genesis to Singularity: The ultimate project plan.'
+- description: My project has 42 phases, what's yours?
+  template: default
+- description: When your ontology is a sonnet.
+  template: default
+- description: 'From Genesis to Singularity: The ultimate project plan.'
+  template: default
 poem_body: ''
 
 ---
