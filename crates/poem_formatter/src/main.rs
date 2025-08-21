@@ -6,6 +6,8 @@ use serde_yaml;
 use anyhow::{Result, anyhow};
 use walkdir::WalkDir;
 use regex::Regex;
+use std::collections::HashMap;
+use poem_macros::poem_function;
 
 // New struct for the structured meme
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -40,6 +42,19 @@ struct TempPoemFrontMatter {
     poem_body: Option<String>,
 }
 
+#[poem_function]
+fn process_single_meme_line(
+    line: &str,
+    _captures: Vec<String>, // We might not use captures directly here, but the macro expects it
+    _fixed_fm: &mut HashMap<String, String>, // For potential future use by the macro
+) -> Result<()> {
+    // This function will be transformed by the macro.
+    // For now, it will just print the line and return Ok.
+    println!("Processing meme line: {}", line);
+    // Example: Store something in fixed_fm if the macro needs to interact with it
+    // fixed_fm.insert("last_processed_meme_line".to_string(), line.to_string());
+    Ok(())
+}
 
 fn main() -> Result<()> {
     let poems_dir = PathBuf::from("/data/data/com.termux/files/home/storage/github/libminizinc/docs/poems");
@@ -77,11 +92,15 @@ fn process_poem_file(path: &PathBuf) -> Result<()> {
 
     let meme_regex = Regex::new(r"^(.*?)\s*\((.*)\)$")?;
     let mut structured_memes: Vec<Meme> = Vec::new();
+    let mut fixed_fm = HashMap::new(); // Initialize fixed_fm
 
     // Process the raw serde_yaml::Value for memes
     if let Some(meme_array) = temp_front_matter.memes.as_sequence() {
         for meme_value in meme_array {
             if let Some(meme_str) = meme_value.as_str() {
+                // Call the macro-transformed function
+                process_single_meme_line(meme_str, Vec::new(), &mut fixed_fm)?;
+
                 // Attempt to parse the old string format
                 if let Some(captures) = meme_regex.captures(meme_str) {
                     let description = captures.get(1).map_or("", |m| m.as_str()).trim().to_string();
@@ -107,6 +126,9 @@ fn process_poem_file(path: &PathBuf) -> Result<()> {
             }
         }
     } else if let Some(meme_str) = temp_front_matter.memes.as_str() {
+        // Call the macro-transformed function
+        process_single_meme_line(meme_str, Vec::new(), &mut fixed_fm)?;
+
         // Handle case where 'memes' is a single string, not an array
         if let Some(captures) = meme_regex.captures(meme_str) {
             let description = captures.get(1).map_or("", |m| m.as_str()).trim().to_string();
