@@ -1,0 +1,4 @@
+7299  +++ exited with 0 +++
+7300  +++ exited with 0 +++
+7298  --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=7300, si_uid=10417, si_status=0, si_utime=0, si_stime=3 /* 0.03 s */} ---
+7298  +++ exited with 0 +++

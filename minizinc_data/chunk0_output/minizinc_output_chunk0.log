@@ -1,0 +1,43 @@
+DEBUG: MiniZinc::Env constructor called.
+DEBUG: MiniZinc::Env constructor called.
+DEBUG: MiniZinc::Env constructor called.
+Entering parse function...
+  Arguments:
+    filenames: ["/data/data/com.termux/files/home/storage/github/libminizinc/word_embedding_inference.mzn", ]
+    datafiles: ["/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/chunk0_output/word_embeddings_chunk_0.dzn", ]
+    modelString: ""
+    modelStringName: "stdin"
+    ip (includePaths): ["/data/data/com.termux/files/home/storage/github/libminizinc/share/minizinc/std", ]
+    globalInc: ["writes.mzn", "write.mzn", "value_precede_chain.mzn", "tree.mzn", "table.mzn", "symmetric_all_different.mzn", "subcircuit.mzn", "strict_lex2.mzn", "subgraph.mzn", "strictly_increasing.mzn", "strictly_decreasing.mzn", "steiner.mzn", "all_equal.mzn", "sliding_sum.mzn", "roots_fn.mzn", "neural_net.mzn", "regular_nfa.mzn", "sum_set.mzn", "range.mzn", "sort_fn.mzn", "var_perm_sym.mzn", "nvalue.mzn", "network_flow.mzn", "maximum.mzn", "link_set_to_booleans.mzn", "lex2_strict.mzn", "span.mzn", "arg_sort.mzn", "lex_chain_greater.mzn", "lex_chain_greatereq_orbitope.mzn", "seq_precede_chain.mzn", "member.mzn", "lex_chain_lesseq_orbitope.mzn", "global_cardinality_closed_fn.mzn", "lex_chain_greatereq.mzn", "alternative.mzn", "disjoint.mzn", "lex_chain_lesseq.mzn", "lex_less.mzn", "lex_lesseq.mzn", "knapsack.mzn", "weighted_spanning_tree.mzn", "inverse_set.mzn", "at_least.mzn", "inverse_fn.mzn", "increasing.mzn", "cost_regular.mzn", "global_cardinality_low_up_closed.mzn", "mdd_nondet.mzn", "element.mzn", "minimum.mzn", "global_cardinality.mzn", "cumulative_opt.mzn", "disjunctive_opt.mzn", "disjunctive.mzn", "lex_chain_less.mzn", "exactly.mzn", "inverse_in_range.mzn", "global_cardinality_fn.mzn", "connected.mzn", "all_different.mzn", "decreasing.mzn", "disjunctive_strict_opt.mzn", "partition_set.mzn", "global_cardinality_closed.mzn", "diffn_k.mzn", "diffn_nonstrict.mzn", "piecewise_linear.mzn", "regular_regexp.mzn", "lex_greater.mzn", "diffn.mzn", "cumulatives.mzn", "lex_greatereq.mzn", "cumulative.mzn", "diffn_nonstrict_k.mzn", "count.mzn", "range_fn.mzn", "bounded_path.mzn", "all_disjoint.mzn", "circuit_opt.mzn", "reachable.mzn", "nvalue_fn.mzn", "inverse.mzn", "dag.mzn", "geost.mzn", "arg_max.mzn", "circuit.mzn", "bin_packing_load_fn.mzn", "mdd.mzn", "all_different_except_0.mzn", "distribute.mzn", "bin_packing_load.mzn", "lex2.mzn", "at_most.mzn", "sort.mzn", "value_precede.mzn", "among_fn.mzn", "cost_mdd.mzn", "sum_pred.mzn", "arg_val.mzn", "disjunctive_strict.mzn", "piecewise_linear_non_continuous.mzn", "bin_packing.mzn", "distribute_fn.mzn", "regular.mzn", "global_cardinality_low_up.mzn", "arg_min.mzn", "bin_packing_capa.mzn", "writes_seq.mzn", "var_sqr_sym.mzn", "count_fn.mzn", "all_different_except.mzn", "roots.mzn", "int_set_channel.mzn", "among.mzn", "at_most1.mzn", ]
+    isFlatZinc: false
+    ignoreStdlib: false
+    parseDocComments: false
+    verbose: false
+Exiting parse function.
+Entering parse function...
+  Arguments:
+    filenames: []
+    datafiles: []
+    modelString: ""
+    modelStringName: "solution received from solver"
+    ip (includePaths): ["/data/data/com.termux/files/home/storage/github/libminizinc/share/minizinc/std/", ]
+    globalInc: []
+    isFlatZinc: false
+    ignoreStdlib: true
+    parseDocComments: false
+    verbose: false
+Exiting parse function.
+embeddings = 
+[|  0.1646329382410618,  0.5393322219574115,  0.4976836866712508, -0.04998542579282361,   0.3429049230083656,  0.5444608227940044,  -0.9661535780825505,  0.6210447405338497
+ |  0.5191139830074869, -0.2545930205248244,  0.4816162684489882, -0.02952531722760776,   0.2267881904826639,  0.2017501003605355, -0.04035927667710704,  0.8752974625412038
+ |  0.7501915929513925,    0.26133824993512,  0.4137115666275188,   0.1619809278304469,  -0.2359295735040319,  0.3906039407727713,   0.8905551934922946,   0.738186297744817
+ |   0.938544978912176,  0.8069871550082914,  0.6250879618848324,    0.326432810212276,   0.5294383854276665,  0.6781145287464123,   0.8165385732487427, -0.5519203791299709
+ | -0.5852525333501561,  0.4564393103817754, -0.5430648406980816,   -0.601539705721323,     0.12450962382254, -0.3401951905290472,  -0.3204300716417912,  0.3009169364298767
+ |  0.3954284768136165, -0.9520380384236851,  0.2237318842835894,  -0.2818771440145875,   0.5212011594422461,  0.4414584797758097,    0.780424970249737, -0.6848321981040861
+ |  0.6918394619008215, -0.8000798839723666,   0.417622921654683,   0.3124812792930753,  -0.5819756777783223,  0.7402248434460703,   0.5739029372012605,  0.7081918695291289
+ |  0.7498112791967126,  0.6961065009013088,  0.6315556717291479,   0.6482419592099466, -0.08739433222293824, -0.2868519617188716,  -0.9575575770110163,  0.3862477157517166
+ | -0.6049467129501367,  0.1961832696757488,  0.2643680256138139,   0.9314249700403496,   -0.183452148725447, -0.6067188595847171,   0.5281483057692968,  0.4639693123158746
+ |  0.5605881922015308,  0.2393897471451614, -0.6320572282872963,  -0.9986911591100407,   0.1772891448530105, -0.8322008045265119,   0.6924354871194192,  -0.127720932119292
+ |];
+----------
+==========

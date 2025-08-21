@@ -95,3 +95,4 @@ full_analysis.log
 report.txt
 *.json
 /all_terms.txt
+minizinc_data/chunk0_output/*.dzn

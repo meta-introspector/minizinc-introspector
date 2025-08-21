@@ -40,8 +40,8 @@ include "minizinc_models/functions.mzn";
 include "minizinc_models/constraints.mzn";
 
 % Calculate the actual Euclidean distances between the embeddings of related word pairs.
-array[1..num_relations] of float: actual_distances = [
-    euclidean_distance(embeddings[relation_pairs[k].1], embeddings[relation_pairs[k].2])
+array[1..num_relations] of var float: actual_distances = [
+    euclidean_distance(get_embedding(word_map[relation_pairs[k].1]), get_embedding(word_map[relation_pairs[k].2]))
     | k in 1..num_relations
 ];
 
