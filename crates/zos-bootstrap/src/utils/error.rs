@@ -71,3 +71,9 @@ impl From<walkdir::Error> for ZosError {
     }
 }
 
+impl From<anyhow::Error> for ZosError {
+    fn from(err: anyhow::Error) -> Self {
+        ZosError::Unknown(format!("Anyhow error: {}", err))
+    }
+}
+

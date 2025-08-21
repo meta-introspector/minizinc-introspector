@@ -1,5 +1,6 @@
 use std::fs::File;
 use std::sync::Arc;
+use anyhow::Result;
 
 use arrow::array::{ArrayRef, Float64Array, StringArray, ListArray};
 use arrow::buffer::OffsetBuffer;
@@ -14,7 +15,7 @@ pub fn export_embeddings_to_parquet(
     id_to_word: &HashMap<u32, String>,
     embeddings: &HashMap<u32, Vec<f64>>,
     output_dir: &std::path::Path,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<()> {
     println!("📦 Exporting embeddings to Parquet...");
 
     // 1. Define Arrow Schema

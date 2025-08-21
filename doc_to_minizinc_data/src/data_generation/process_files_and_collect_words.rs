@@ -1,5 +1,6 @@
 use std::{collections::HashMap, fs, path::PathBuf};
 use rand::Rng;
+use anyhow::Result;
 use crate::file_processing::collect_files;
 //use crate::prelude::{collect_files, LogWriter};
 use crate::logger::LogWriter;
@@ -11,7 +12,7 @@ pub fn process_files_and_collect_words(
     embeddings: &mut HashMap<u32, Vec<f64>>, // Changed to HashMap
     rng: &mut impl Rng,
     logger: &mut LogWriter,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<()> {
     let files_to_process = collect_files(current_dir, extensions)?;
 
     let mut next_id: u32 = 0; // New counter for IDs

@@ -1,4 +1,5 @@
 use std::{fs, path::PathBuf, collections::HashMap}; // Import HashMap
+use anyhow::Result;
 //use crate::prelude::LogWriter;
 use crate::logger::LogWriter;
 pub fn write_chunked_embeddings_dzn(
@@ -9,7 +10,7 @@ pub fn write_chunked_embeddings_dzn(
     chunk_size: usize,
     minizinc_data_dir: &PathBuf,
     logger: &mut LogWriter,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<()> {
     let num_words = id_to_word.len();
     let num_chunks = (num_words + chunk_size - 1) / chunk_size;
 

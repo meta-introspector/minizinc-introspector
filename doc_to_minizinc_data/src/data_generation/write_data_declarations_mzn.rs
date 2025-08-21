@@ -1,4 +1,5 @@
 use std::{collections::HashMap, fs, path::PathBuf};
+use anyhow::Result;
 use crate::logger::LogWriter;
 //use crate::prelude::LogWriter;
 
@@ -9,7 +10,7 @@ pub fn write_data_declarations_mzn(
     embeddings: &HashMap<u32, Vec<f64>>, // Changed to HashMap
     minizinc_data_dir: &PathBuf,
     logger: &mut LogWriter,
-) -> Result<(), Box<dyn std::error::Error>> {
+) -> Result<()> {
     // Suppress unused variable warnings by printing them (as requested by user)
     println!("DEBUG: id_to_word length: {}", id_to_word.len());
     println!("DEBUG: embeddings length: {}", embeddings.len());
