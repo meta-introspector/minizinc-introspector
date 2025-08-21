@@ -2569,9 +2569,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "poem_macro_impl"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "linkme",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "poem_macros"
 version = "0.1.0"
 dependencies = [
+ "poem_macro_impl",
  "quote",
  "syn",
 ]

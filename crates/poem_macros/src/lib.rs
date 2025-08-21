@@ -1,5 +1,6 @@
 use proc_macro::TokenStream;
 use quote::quote;
+//use proc_macro::quote;
 use syn::{parse_macro_input, ItemFn};
 
 #[proc_macro_attribute]
@@ -7,24 +8,15 @@ pub fn poem_function(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let input_fn = parse_macro_input!(item as ItemFn);
     let fn_name = &input_fn.sig.ident;
 
-    // Generate a helper function that returns the boxed closure
-    let helper_fn_name = quote::format_ident!("__get_fn_{}", fn_name);
-
     let expanded = quote! {
         #input_fn
 
-        #[doc(hidden)]
-        pub fn #helper_fn_name() -> Box<dyn Fn(&str, Vec<String>, &mut poem_yaml_fixer::functions::types::FixedFrontMatter) -> anyhow::Result<()> + Send + Sync + 'static> {
-            Box::new(|line, captures, fixed_fm| {
-                #fn_name(line, captures, fixed_fm)
-            })
-        }
-
-        // Generate a static item that holds the function name and a function pointer to the helper
+        // Generate a static item that holds the function name and a function pointer to the original function.
+        // This static item is placed into a distributed slice using linkme.
         #[linkme::distributed_slice(poem_yaml_fixer::functions::create_function_registry::FUNCTIONS)]
-        static __REGISTER_FN_ #fn_name: &'static (String, fn() -> Box<dyn Fn(&str, Vec<String>, &mut poem_yaml_fixer::functions::types::FixedFrontMatter) -> anyhow::Result<()> + Send + Sync + 'static>)
+        static __REGISTER_FN_ #fn_name: &'static (String, fn(&str, Vec<String>, &mut poem_yaml_fixer::functions::types::FixedFrontMatter) -> anyhow::Result<(), anyhow::Error>)
             = &{
-            (stringify!(#fn_name).to_string(), #helper_fn_name)
+            (stringify!(#fn_name).to_string(), #fn_name)
         };
     };
 
