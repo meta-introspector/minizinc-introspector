@@ -8,3 +8,4 @@ pub mod word_data;
 pub mod minizinc_writer;
 pub mod minizinc_runner;
 pub mod file_processing;
+pub mod utils;

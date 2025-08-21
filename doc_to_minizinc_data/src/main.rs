@@ -19,6 +19,7 @@ mod wordnet_processing; // Declare the wordnet_processing module
 mod data_generation; // Declare the data_generation module
 mod logger; // Declare the logger module
 mod file_processing; // Declare the file_processing module
+mod utils; // Declare the utils module
 use doc_to_minizinc_data::data_generation::AppConfig;
 use crate::commands::run_hf_validator::handle_generate_data_command;
 
@@ -57,25 +58,5 @@ fn main() -> anyhow::Result<()> {
 }
 
 
-// Helper function to recursively print Arrow schema fields (moved from main.rs)
-fn print_arrow_schema_fields(schema: &Schema, indent_level: usize) {
-    let indent = "  ".repeat(indent_level);
-    for field in schema.fields() {
-        println!("{}  - Name: {}, Data Type: {:?}", indent, field.name(), field.data_type());
 
-        match field.data_type() {
-            DataType::List(field_arc) => {
-                println!("{}    List Element:", indent);
-                print_arrow_schema_fields(&Schema::new(vec![field_arc.as_ref().clone()]), indent_level + 1);
-            },
-            DataType::Struct(fields_vec) => {
-                println!("{}    Struct Fields:", indent);
-                print_arrow_schema_fields(&Schema::new(fields_vec.clone()), indent_level + 1);
-            },
-            _ => {
-                // No children for other data types
-            }
-        }
-    }
-}
 

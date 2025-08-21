@@ -28,9 +28,13 @@ use std::path::PathBuf; // Added for AppConfig
 
 #[derive(Debug, Deserialize)]
 pub struct AppConfig {
+    #[allow(dead_code)]
     pub project_root: PathBuf,
+    #[allow(dead_code)]
     pub github_root: PathBuf, // Not currently used in this module, but part of the overall configuration.
+    #[allow(dead_code)]
     pub home_dir: PathBuf, // Not currently used in this module, but part of the overall configuration.
+    #[allow(dead_code)]
     pub build_target: String, // Added build_target
     pub simulated_wordnet_path: PathBuf,
 }

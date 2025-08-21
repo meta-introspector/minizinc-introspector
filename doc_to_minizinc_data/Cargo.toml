@@ -8,8 +8,8 @@ anyhow = "1.0"
 walkdir = "2.5.0"
 rand = "0.8"
 clap = { version = "4.0", features = ["derive"] }
-arrow = { workspace = true }
-parquet = { workspace = true }
+arrow = { version = "56.0.0" }
+parquet = { version = "56.0.0", features = ["arrow"] }
 chrono = "0.4.41" # Added chrono directly
 serde = { version = "1.0", features = ["derive"] }
 toml = "0.8"
