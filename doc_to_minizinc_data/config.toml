@@ -2,3 +2,4 @@ project_root = "/data/data/com.termux/files/home/storage/github/libminizinc"
 github_root = "/data/data/com.termux/files/home/storage/github"
 home_dir = "/data/data/com.termux/files/home"
 build_target = "release" # Added build_target
+simulated_wordnet_path = "/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/simulated_wordnet.txt"

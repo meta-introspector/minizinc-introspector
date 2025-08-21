@@ -13,6 +13,7 @@ pub use arrow::datatypes::{Schema, DataType
 pub use arrow::array::{Array, Float64Array, StringArray, ListArray};
 pub use crate::logger::LogWriter;
 pub use crate::file_processing::collect_files;
+//pub use super::AppConfig; // Re-export AppConfig
 //pub use doc_to_minizinc_data::commands::generate_data::handle_generate_data_command;
 //pub use doc_to_minizinc_data::commands::run_hf_validator::handle_run_hf_validator_command;
 //pub use doc_to_minizinc_data::commands::inspect_parquet::handle_inspect_parquet_command;

@@ -1,23 +1,27 @@
 use clap::Parser;
 use crate::prelude::*; // Use the prelude
+//use serde::Deserialize; // Added for AppConfig
+//use std::path::PathBuf; // Added for AppConfig
+//use std::fs; // Added for AppConfig
 
-// Explicit imports for command handlers and AppConfig
-use crate::commands::generate_data::handle_generate_data_command;
 use crate::commands::run_hf_validator::handle_run_hf_validator_command;
+// Explicit imports for command handlers
+//use crate::commands::generate_data::handle_generate_data_command;
+//use crate::commands::run_hf_validator::handle_run_hf_validator_command;
 use crate::commands::inspect_parquet::handle_inspect_parquet_command;
 use crate::commands::lookup_embedding::handle_lookup_embedding_command;
-use crate::config::AppConfig;
 
 mod commands; // Declare the commands module
-mod config; // Declare the config module
 pub mod prelude; // Declare the prelude module
 mod cli; // Declare the cli module
 mod wordnet_processing; // Declare the wordnet_processing module
 mod data_generation; // Declare the data_generation module
 mod logger; // Declare the logger module
 mod file_processing; // Declare the file_processing module
+use doc_to_minizinc_data::data_generation::AppConfig;
+use crate::commands::run_hf_validator::handle_generate_data_command;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
+fn main() -> anyhow::Result<()> {
     let args = Args::parse();
 
     // Load application configuration
@@ -25,8 +29,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match args.command {
         Command::GenerateData { chunk_size, ref input_path } => {
-            // Pass config to handler if needed, for now, just args
-            handle_generate_data_command(args)?; // Pass the original args
+            // Pass config to handler
+            handle_generate_data_command(args, &config)?; // Pass the original args and config
         },
         Command::RunHfValidator { project_path, output_path } => {
             // Pass config to handler
@@ -44,6 +48,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
+
 
 // Helper function to recursively print Arrow schema fields (moved from main.rs)
 fn print_arrow_schema_fields(schema: &Schema, indent_level: usize) {
@@ -66,3 +71,4 @@ fn print_arrow_schema_fields(schema: &Schema, indent_level: usize) {
         }
     }
 }
+

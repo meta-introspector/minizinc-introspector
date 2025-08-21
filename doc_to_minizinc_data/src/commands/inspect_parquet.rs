@@ -1,7 +1,9 @@
 use crate::prelude::*; // Use the prelude
+use anyhow::Result;
 
-pub fn handle_inspect_parquet_command(file_path: PathBuf) -> Result<(), Box<dyn std::error::Error>> {
+pub fn handle_inspect_parquet_command(file_path: PathBuf) -> Result<()> {
     println!("Inspecting Parquet file: {:?}", file_path);
+    println!("Attempting to open absolute path: {:?}", file_path.canonicalize()?);
     let file = File::open(&file_path)?;
     let builder = ParquetRecordBatchReaderBuilder::try_new(file)?;
     let schema = builder.schema();

@@ -1,6 +1,7 @@
 use std::{fs, io::{BufReader, BufRead}, path::PathBuf};
+use anyhow::Result;
 
-pub fn generate_wordnet_constraints(wordnet_path: &PathBuf) -> Result<Vec<(String, String, f64)>, Box<dyn std::error::Error>> {
+pub fn generate_wordnet_constraints(wordnet_path: &PathBuf) -> Result<Vec<(String, String, f64)>> {
     let file = fs::File::open(wordnet_path)?;
     let reader = BufReader::new(file);
 

@@ -109,7 +109,7 @@ The extraction tools and dataset format are licensed under AGPL-3.0.
 
 ## Generation Details
 
-- **Generated**: 2025-08-20 19:48:21 UTC
+- **Generated**: 2025-08-21 00:27:23 UTC
 - **Source**: .
 - **Tools**: rust-analyzer + cargo2hf + LLVM IR extractor
 - **Coverage**: Complete compilation pipeline analysis

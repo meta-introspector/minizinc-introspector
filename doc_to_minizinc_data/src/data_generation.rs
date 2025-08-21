@@ -1,6 +1,8 @@
 use std::fs;
 use anyhow::Result;
 use crate::cli::{Args, Command}; // Import Command enum
+//use crate::app_config::AppConfig;
+//use crate::AppConfig; // Import AppConfig directly
 //use crate::prelude::LogWriter;
 
 // Declare sub-modules
@@ -19,7 +21,38 @@ pub use write_chunked_embeddings_dzn::write_chunked_embeddings_dzn;
 pub use report_extracted_data::report_extracted_data;
 pub use parquet_export::export_embeddings_to_parquet; // New export
 use crate::logger::LogWriter;
-pub fn generate_data(args: Args, all_relations: Vec<(String, String, f64)>) -> Result<()> {
+use serde::Deserialize; // Added for AppConfig
+use std::path::PathBuf; // Added for AppConfig
+//use std::fs; // Added for AppConfig
+
+
+#[derive(Debug, Deserialize)]
+pub struct AppConfig {
+    pub project_root: PathBuf,
+    pub github_root: PathBuf,
+    pub home_dir: PathBuf,
+    pub build_target: String, // Added build_target
+    pub simulated_wordnet_path: PathBuf,
+}
+
+impl AppConfig {
+    pub fn load() -> anyhow::Result<Self> {
+        let config_path = PathBuf::from("config.toml");
+        let config_content = fs::read_to_string(&config_path)?;
+        let config: AppConfig = toml::from_str(&config_content)?;
+        Ok(config)
+    }
+}
+
+//use crate::app_config::AppConfig;
+//use crate::doc_to_minizinc_data::app_config::AppConfig;
+fn get_all_relations_from_wordnet(config: &AppConfig) -> anyhow::Result<Vec<(String, String, f64)>> {
+    let simulated_wordnet_path = &config.simulated_wordnet_path;
+    let all_relations = crate::wordnet_processing::generate_wordnet_constraints(simulated_wordnet_path)?;
+    Ok(all_relations)
+}
+
+pub fn generate_data(args: Args, config: &AppConfig) -> Result<()> {
     let current_dir = std::env::current_dir()?;
     let minizinc_data_dir = current_dir.join("minizinc_data").join("huggingface");
     fs::create_dir_all(&minizinc_data_dir)?;
@@ -34,6 +67,8 @@ pub fn generate_data(args: Args, all_relations: Vec<(String, String, f64)>) -> R
         Command::GenerateData { chunk_size, input_path } => (chunk_size, input_path),
         _ => return Err(anyhow::anyhow!("Invalid command for generate_data function")), // Should not happen if called correctly from main
     };
+
+    let all_relations = get_all_relations_from_wordnet(config)?; // Get all_relations from new function
 
     logger.log(&format!("Generating data with chunk_size: {} and {} relations", chunk_size, all_relations.len()));
 
