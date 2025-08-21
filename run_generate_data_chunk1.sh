@@ -17,7 +17,10 @@ echo "--- Starting data generation for Chunk 1 with fixed embeddings ---"
 mkdir -p "${OUTPUT_DIR}"
 
 # Run doc_to_minizinc_data with strace for auditing file operations
-strace -o "${OUTPUT_DIR}/strace_output.log" \
+STRACE_WRAPPER="/data/data/com.termux/files/home/storage/github/libminizinc/strace_wrapper.sh"
+
+# Run doc_to_minizinc_data with strace for auditing file operations
+"${STRACE_WRAPPER}" "${OUTPUT_DIR}/strace_output.log" \
     cargo run --package doc_to_minizinc_data -- \
     generate-data \
     --chunk-size "${CHUNK_SIZE}" \

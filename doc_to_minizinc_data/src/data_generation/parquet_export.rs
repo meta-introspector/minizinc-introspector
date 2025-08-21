@@ -2,7 +2,7 @@ use std::fs::File;
 use std::sync::Arc;
 use anyhow::Result;
 
-use arrow::array::{ArrayRef, Float64Array, StringArray, ListArray};
+use arrow::array::{ArrayRef, Float64Array, StringArray, ListArray, UInt32Array};
 use arrow::buffer::OffsetBuffer;
 use arrow::datatypes::{DataType, Field, Schema};
 use arrow::record_batch::RecordBatch;
@@ -20,11 +20,13 @@ pub fn export_embeddings_to_parquet(
 
     // 1. Define Arrow Schema
     let schema = Arc::new(Schema::new(vec![
+        Field::new("id", DataType::UInt32, false),
         Field::new("word", DataType::Utf8, false),
         Field::new("embedding", DataType::List(Arc::new(Field::new("item", DataType::Float64, false))), false),
     ]));
 
     // 2. Prepare data for RecordBatch
+    let mut ids = Vec::new();
     let mut words = Vec::new();
     let mut embedding_values = Vec::new();
     let mut embedding_offsets = vec![0i32];
@@ -34,6 +36,7 @@ pub fn export_embeddings_to_parquet(
     sorted_ids.sort_unstable();
 
     for id in sorted_ids {
+        ids.push(id);
         if let Some(word) = id_to_word.get(&id) {
             words.push(Some(word.as_str()));
             if let Some(embedding) = embeddings.get(&id) {
@@ -47,6 +50,7 @@ pub fn export_embeddings_to_parquet(
         }
     }
 
+    let id_array = UInt32Array::from(ids);
     let word_array = StringArray::from(words);
     let embedding_values_array = Float64Array::from(embedding_values);
     let embedding_list_array = ListArray::new(
@@ -57,6 +61,7 @@ pub fn export_embeddings_to_parquet(
     );
 
     let arrays: Vec<ArrayRef> = vec![
+        Arc::new(id_array),
         Arc::new(word_array),
         Arc::new(embedding_list_array),
     ];

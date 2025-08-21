@@ -14,7 +14,10 @@ OUTPUT_LOG="minizinc_data/chunk0_output/minizinc_output_chunk0.log"
 echo "--- Starting MiniZinc optimization for Chunk 0 ---"
 
 # Run MiniZinc with strace for auditing file operations
-strace -f -e trace=open -o "${OUTPUT_LOG}.strace" \
+STRACE_WRAPPER="/data/data/com.termux/files/home/storage/github/libminizinc/strace_wrapper.sh"
+
+# Run MiniZinc with strace for auditing file operations
+"${STRACE_WRAPPER}" "${OUTPUT_LOG}.strace" \
     "${MINIZINC_EXECUTABLE}" --solver Gecode \
     "${MODEL_PATH}" \
     "${DATA_FILE}" \
