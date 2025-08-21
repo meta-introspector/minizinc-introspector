@@ -1285,9 +1285,9 @@ name = "fix_meme_yaml"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "clap",
  "regex",
  "serde",
- "serde_derive",
  "serde_yaml",
  "walkdir",
 ]
