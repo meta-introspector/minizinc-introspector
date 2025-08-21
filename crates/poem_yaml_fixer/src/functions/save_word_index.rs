@@ -1,10 +1,12 @@
 // This file contains the WordIndex struct and the save_word_index function.
 // It is responsible for managing the word index for poems.
 
-use std::{collections::HashMap, path::PathBuf};
+use std::{
+    //collections::HashMap,
+    path::PathBuf};
 use anyhow::Result;
 use serde_yaml;
-use serde::{Deserialize, Serialize};
+//use serde::{Deserialize, Serialize};
 use crate::functions::types::WordIndex; // Import WordIndex from types module
 
 // Function to save the word index to a file

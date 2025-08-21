@@ -3,7 +3,9 @@
 
 use std::collections::HashMap;
 use anyhow::Result;
-use regex::{Regex, Captures};
+use regex::{Regex,
+	    //Captures
+};
 use crate::functions::types::{FixedFrontMatter, RegexConfig, CallbackFn}; // Import types from the types module
 
 pub fn process_memes_with_workflow(
@@ -21,15 +23,20 @@ pub fn process_memes_with_workflow(
     for line in front_matter_str_for_parsing.lines() {
         for entry in &regex_config.regexes {
             if let Some(regex) = compiled_regexes.get(&entry.name) {
-                if let Some(captures) = regex.captures(line) {
+                if let Some(captures_raw) = regex.captures(line) {
                     if debug_mode {
                         println!("  Matched Regex: {}", entry.name);
                         println!("    Line: {}", line);
-                        println!("    Captures: {:?}", captures);
+                        println!("    Captures: {:?}", captures_raw);
                         println!("    Calling function: {}", entry.callback_function);
                     }
+                    // Convert captures_raw to Vec<String>
+                    let captures: Vec<String> = (0..captures_raw.len())
+                        .map(|i| captures_raw.get(i).map_or("", |m| m.as_str()).to_string())
+                        .collect();
+
                     if let Some(callback) = function_registry.get(&entry.callback_function) {
-                        callback(line, &captures, fixed_fm)?;
+                        callback(line, captures, fixed_fm)?;
                     } else {
                         eprintln!("Warning: Callback function '{}' not found in registry for regex '{}'", entry.callback_function, entry.name);
                     }

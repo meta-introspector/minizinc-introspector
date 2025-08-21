@@ -27,7 +27,7 @@ members = [
     "crates/poem_formatter",
     "crates/meme_site_generator",
     "crates/fix_meme_yaml",
-    "vendor/grex", "crates/poem_meme_formatter", "crates/regex_generator_tool", "crates/poem_yaml_fixer",
+    "vendor/grex", "crates/poem_meme_formatter", "crates/regex_generator_tool", "crates/poem_yaml_fixer", "crates/poem_macros",
 ]
 
 [patch.crates-io]

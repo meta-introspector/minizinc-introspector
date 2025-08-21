@@ -1,5 +1,9 @@
-use std::{fs, path::PathBuf, collections::HashMap};
-use anyhow::{Result, anyhow};
+use std::{fs, path::PathBuf,
+	  //collections::HashMap
+};
+use anyhow::{Result
+	     // ,anyhow
+};
 use walkdir::WalkDir;
 use clap::Parser;
 
@@ -10,7 +14,11 @@ use crate::functions::process_poem_file::process_poem_file;
 use crate::functions::create_function_registry::create_function_registry;
 
 // Import common types from the types module
-use crate::functions::types::{FixedFrontMatter, Meme, RegexConfig, RegexEntry, WordIndex, CallbackFn};
+use crate::functions::types::{
+    //FixedFrontMatter, Meme,
+    RegexConfig,
+    //RegexEntry, WordIndex, CallbackFn
+};
 
 // Add Cli struct
 #[derive(Parser, Debug)]

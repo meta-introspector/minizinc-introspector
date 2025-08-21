@@ -2,7 +2,7 @@
 
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
-use regex::Captures;
+//use regex::Captures;
 use anyhow::Result;
 
 // Struct for the structured meme (same as in poem_meme_formatter)
@@ -57,4 +57,4 @@ pub struct RegexEntry {
 }
 
 // Define the type for our callback functions
-pub type CallbackFn = Box<dyn Fn(&str, &Captures, &mut FixedFrontMatter) -> Result<()>>;
+pub type CallbackFn = Box<dyn Fn(&str, Vec<String>, &mut FixedFrontMatter) -> Result<()> + Send + Sync + 'static>;

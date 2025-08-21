@@ -1,0 +1,15 @@
+my idea is this
+
+1. regex -> function
+   this can match emojis.
+   state can be created and shared between functions.
+2. poem to code compiler.
+3. pure functional main.
+4. feed functions to minizinc
+5. feed to lean4.
+6. ai can insert new functions quickly.
+7. loose coupling.
+8. vibe is the vector.
+9. search all poems.
+10. interpret emojis
+11. poems and memes as code.

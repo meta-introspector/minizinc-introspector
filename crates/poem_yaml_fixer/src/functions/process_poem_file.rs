@@ -6,28 +6,16 @@ use std::{fs, path::PathBuf, collections::HashMap};
 use anyhow::{Result, anyhow};
 use serde_yaml;
 
-use crate::{FixedFrontMatter, Meme}; // Assuming FixedFrontMatter and Meme are accessible
+use crate::functions::types::{FixedFrontMatter,
+			      //Meme,
+			      RegexConfig,
+			      //RegexEntry,
+			      WordIndex, CallbackFn}; // Import types from the types module
 use crate::functions::extract_front_matter::extract_front_matter;
 use crate::functions::parse_front_matter_fields::parse_front_matter_fields;
 use crate::functions::process_memes_with_workflow::process_memes_with_workflow;
 use crate::functions::extract_words_from_text::extract_words_from_text;
-use crate::functions::save_word_index::{save_word_index, WordIndex};
-use crate::functions::create_function_registry::CallbackFn;
-
-// Assuming RegexConfig and RegexEntry are defined in main.rs or a common types module
-// For now, we'll re-declare them here for compilation, but ideally they'd be shared.
-#[derive(Debug, serde::Deserialize)]
-pub struct RegexConfig {
-    pub regexes: Vec<RegexEntry>,
-}
-
-#[derive(Debug, serde::Deserialize)]
-pub struct RegexEntry {
-    pub name: String,
-    pub pattern: String,
-    pub callback_function: String,
-}
-
+use crate::functions::save_word_index::{save_word_index};
 
 pub fn process_poem_file(
     path: &PathBuf,
