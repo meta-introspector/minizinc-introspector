@@ -1,6 +1,7 @@
-use std::{fs, path::PathBuf};
+use std::path::PathBuf;
 use clap::Parser;
 use walkdir::WalkDir;
+use std::fs; // Need fs for checking file existence
 
 poem_macros::poem_header!(); // Call the header macro once
 
@@ -14,7 +15,7 @@ struct Cli {
     #[arg(short, long, value_name = "FILE_PATH")]
     file: Option<PathBuf>,
 
-    /// Maximum allowed percentage of content reduction. Aborts if reduction exceeds this.
+    /// Maximum allowed percentage of content reduction. Aborts if reduction exceeds this. Defaults to 1.0.
     #[arg(long, value_name = "PERCENTAGE")]
     max_change_percentage: Option<f64>,
 
@@ -25,10 +26,6 @@ struct Cli {
     /// Perform a dry run, showing changes without writing to disk.
     #[arg(long)]
     dry_run: bool,
-
-    /// Optional path to a TOML file containing regex configurations for meme processing.
-    #[arg(long, value_name = "FILE_PATH")]
-    regex_config_path: Option<PathBuf>,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -37,12 +34,24 @@ fn main() -> anyhow::Result<()> {
     let current_dir = std::env::current_dir()?;
     let poems_dir = current_dir.join("docs").join("poems");
 
-    let regex_config = if let Some(config_path) = cli.regex_config_path {
-        functions::load_regex_config::load_regex_config(&config_path)?
-    } else {
-        // If no config path is provided, load a default empty config
-        functions::types::RegexConfig { regexes: Vec::new() }
-    };
+    let mut regex_config = get_default_regex_config(); // Get default config from macro
+
+    // Check for an external regex_config.toml in the current directory
+    let external_config_path = current_dir.join("regex_config.toml");
+    if external_config_path.exists() {
+        println!("Loading external regex config from: {:?}", external_config_path);
+        let external_config = functions::load_regex_config::load_regex_config(&external_config_path)?;
+
+        // Merge external config into default config (external overrides defaults by name)
+        for external_entry in external_config.regexes {
+            if let Some(default_entry) = regex_config.regexes.iter_mut().find(|e| e.name == external_entry.name) {
+                *default_entry = external_entry; // Override existing entry
+            } else {
+                regex_config.regexes.push(external_entry); // Add new entry
+            }
+        }
+    }
+
     let function_registry = create_function_registry(); // Call directly as provided by poem_header!
 
     if let Some(file_path) = cli.file {

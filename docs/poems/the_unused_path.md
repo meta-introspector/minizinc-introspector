@@ -3,6 +3,8 @@ title: "The Unused Path"
 summary: "A poem reflecting on the FIXME/TODO items, especially the unused functions and the potential for future features."
 keywords: "FIXME, TODO, unused code, refactoring, future, potential"
 emojis: "🚧🗺️🔮"
+art_generator_instructions: "Generate an image of a winding, overgrown path leading to a glowing, futuristic city in the distance."
+pending_meme_description: "This poem contemplates the presence of unimplemented or unused code and its future potential."
 ---
 
 A path untrodden, code unseen,

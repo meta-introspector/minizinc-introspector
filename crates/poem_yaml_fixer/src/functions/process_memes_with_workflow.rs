@@ -6,13 +6,13 @@ use anyhow::{Result, anyhow};
 use regex::Regex; // Removed unused Captures import
 
 use crate::functions::types::{FixedFrontMatter, RegexConfig}; // Import types from the types module
-use poem_traits::CallbackFn;
+use poem_traits::{CallbackFn, PoemFunctionMetadata}; // Import PoemFunctionMetadata
 
 pub fn process_memes_with_workflow(
     meme_lines: &Vec<String>,
     regex_config: &RegexConfig,
     fixed_fm: &mut FixedFrontMatter,
-    function_registry: &HashMap<String, CallbackFn>,
+    function_registry: &HashMap<String, (PoemFunctionMetadata, CallbackFn)>,
     debug_mode: bool,
 ) -> Result<()> {
     let mut compiled_regexes: HashMap<String, Regex> = HashMap::new();
@@ -37,7 +37,7 @@ pub fn process_memes_with_workflow(
                         .map(|i| captures_raw.get(i).map_or("", |m| m.as_str()).to_string())
                         .collect();
 
-                    if let Some(callback) = function_registry.get(&entry.callback_function) {
+                    if let Some((_metadata, callback)) = function_registry.get(&entry.callback_function) { // Destructure to get callback
                         callback(line, captures, fixed_fm)?;
                     } else {
                         eprintln!("Warning: Callback function '{}' not found in registry for regex '{}'", entry.callback_function, entry.name);

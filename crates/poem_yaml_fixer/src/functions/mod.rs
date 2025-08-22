@@ -8,3 +8,4 @@ pub mod create_function_registry;
 pub mod types;
 pub mod error_handling;
 pub mod load_regex_config;
+pub mod callbacks; // Add this line

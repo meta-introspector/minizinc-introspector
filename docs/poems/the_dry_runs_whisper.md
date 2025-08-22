@@ -3,6 +3,8 @@ title: "The Dry Run's Whisper"
 summary: "A poem about the --dry-run feature, the ability to foresee changes without committing them."
 keywords: "dry-run, testing, safety, code, changes, preview"
 emojis: "👀🛡️💡"
+art_generator_instructions: "Generate an image of a ghost-like hand hovering over a keyboard, with faint lines of code appearing and disappearing."
+pending_meme_description: "This poem explores the concept and utility of a dry run in software development."
 ---
 
 Before the commit, before the write,

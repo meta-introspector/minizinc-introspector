@@ -3,6 +3,8 @@ title: "The Code Review's Eye"
 summary: "A poem about the process of reviewing code line by line, finding hidden issues, and improving clarity."
 keywords: "code review, quality, clarity, refactoring, bugs, attention"
 emojis: "🔍✨✅"
+art_generator_instructions: "Generate an image of a magnifying glass illuminating lines of code, with small, glowing fixes appearing."
+pending_meme_description: "This poem describes the meticulous process and benefits of code review."
 ---
 
 Through lines of logic, deep and vast,

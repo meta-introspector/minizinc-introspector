@@ -4,18 +4,23 @@
 
 use std::{fs, path::PathBuf, collections::HashMap};
 use anyhow::{Result, anyhow};
-use serde_yaml;
+// Removed: use serde_yaml; // No longer directly parsing YAML with serde_yaml
 
 use crate::functions::types::{FixedFrontMatter,
 			      RegexConfig,
 			      WordIndex}; // Import types from the types module
-use poem_traits::{CallbackFn, PoemFrontMatterTrait};
+use poem_traits::{CallbackFn, PoemFrontMatterTrait, PoemFunctionMetadata}; // Import PoemFunctionMetadata
 use crate::functions::extract_front_matter::extract_front_matter;
+// TODO: This function is currently not used. It might be used in future refactoring.
 use crate::functions::parse_front_matter_fields::parse_front_matter_fields;
 use crate::functions::process_memes_with_workflow::process_memes_with_workflow;
+// TODO: These functions are currently not used. They are part of the word indexing feature.
 use crate::functions::extract_words_from_text::extract_words_from_text;
-
 use crate::functions::save_word_index::{save_word_index};
+
+// Import the new root YAML validation function
+use crate::functions::callbacks::handle_regex_driven_yaml_fix::handle_regex_driven_yaml_fix;
+
 
 pub fn process_poem_file(
     path: &PathBuf,
@@ -23,14 +28,16 @@ pub fn process_poem_file(
     debug_mode: bool,
     dry_run: bool, // Add dry_run parameter
     regex_config: &RegexConfig, // Pass regex_config
-    function_registry: &HashMap<String, CallbackFn>, // Pass function_registry
+    function_registry: &HashMap<String, (PoemFunctionMetadata, CallbackFn)>,
 ) -> Result<()> {
     let content = fs::read_to_string(path)?;
     let original_content_len = content.len();
     let mut lines: Vec<&str> = content.lines().collect();
 
-    let (_fm_start, fm_end, front_matter_str_for_parsing, extracted_poem_body_from_fm) = extract_front_matter(&mut lines, &content)?;
-    let poem_body_raw_from_file = lines[(fm_end + 1) as usize ..].join("\n");
+    // The extract_front_matter function still extracts the raw front matter string
+    // and the poem body, but we won't parse it with serde_yaml here.
+    let (_fm_start, _fm_end, _front_matter_str_for_parsing, extracted_poem_body_from_fm) = extract_front_matter(&mut lines, &content)?;
+    let poem_body_raw_from_file = lines[(_fm_end + 1) as usize ..].join("\n");
 
     let final_poem_body = if !extracted_poem_body_from_fm.is_empty() {
         extracted_poem_body_from_fm
@@ -49,48 +56,51 @@ pub fn process_poem_file(
         pending_meme_description: None,
     };
 
-    let parsed_front_matter: serde_yaml::Value = serde_yaml::from_str(&front_matter_str_for_parsing)
-        .map_err(|e| anyhow!("Failed to parse front matter YAML: {}", e))?;
+    // --- NEW LOGIC: Call the regex-driven YAML fixer ---
+    // The handle_regex_driven_yaml_fix function will now populate fixed_fm
+    // based on its regex-driven parsing and state management.
+    handle_regex_driven_yaml_fix(
+        &content, // Pass the full content for the regex parser to work on
+        Vec::new(), // No captures for the root call
+        &mut fixed_fm,
+        regex_config,
+        function_registry,
+    )?;
+    // --- END NEW LOGIC ---
 
-    if let Some(title) = parsed_front_matter.get("title").and_then(|v| v.as_str()) {
-        fixed_fm.set_title(title.to_string());
-    }
-    if let Some(summary) = parsed_front_matter.get("summary").and_then(|v| v.as_str()) {
-        fixed_fm.set_summary(summary.to_string());
-    }
-    if let Some(keywords) = parsed_front_matter.get("keywords").and_then(|v| v.as_str()) {
-        fixed_fm.set_keywords(keywords.to_string());
-    }
-    if let Some(emojis) = parsed_front_matter.get("emojis").and_then(|v| v.as_str()) {
-        fixed_fm.set_emojis(emojis.to_string());
-    }
-    if let Some(art_generator_instructions) = parsed_front_matter.get("art_generator_instructions").and_then(|v| v.as_str()) {
-        fixed_fm.set_art_generator_instructions(art_generator_instructions.to_string());
-    }
+    // Removed: serde_yaml parsing and direct field setting from parsed_front_matter
+    // Removed: raw_meme_lines extraction and process_memes_with_workflow call here.
+    // The meme processing should now be orchestrated within handle_regex_driven_yaml_fix
+    // or its sub-functions.
 
-    // Extract raw meme lines for processing by workflow
-    let mut raw_meme_lines: Vec<String> = Vec::new();
-    if let Some(memes_value) = parsed_front_matter.get("memes") {
-        if let Some(memes_seq) = memes_value.as_sequence() {
-            for meme_item in memes_seq {
-                if let Ok(meme_str) = serde_yaml::to_string(meme_item) {
-                    raw_meme_lines.push(meme_str.trim().to_string());
-                }
+    // After processing, populate fixed_fm with metadata from PoemFunctionMetadata
+    // if the fields are still None (i.e., not set by parsed YAML or meme processing).
+    for entry in &regex_config.regexes {
+        if let Some((metadata, _callback_fn)) = function_registry.get(&entry.name) {
+            if fixed_fm.title.is_none() {
+                fixed_fm.title = metadata.title.clone();
+            }
+            if fixed_fm.summary.is_none() {
+                fixed_fm.summary = metadata.summary.clone();
+            }
+            if fixed_fm.keywords.is_none() {
+                fixed_fm.keywords = metadata.keywords.clone();
+            }
+            if fixed_fm.emojis.is_none() {
+                fixed_fm.emojis = metadata.emojis.clone();
+            }
+            if fixed_fm.art_generator_instructions.is_none() {
+                fixed_fm.art_generator_instructions = metadata.art_generator_instructions.clone();
+            }
+            if fixed_fm.pending_meme_description.is_none() {
+                fixed_fm.pending_meme_description = metadata.pending_meme_description.clone();
             }
         }
     }
 
-    // Process memes with workflow
-    process_memes_with_workflow(
-        &raw_meme_lines,
-        regex_config,
-        &mut fixed_fm,
-        function_registry,
-        debug_mode,
-    )?;
-
     let mut new_content_parts = Vec::new();
     new_content_parts.push("---".to_string());
+    // Use serde_yaml to serialize the fixed_fm back to YAML
     new_content_parts.push(serde_yaml::to_string(&fixed_fm)?);
 
     // Handle poem_body formatting
@@ -129,7 +139,8 @@ pub fn process_poem_file(
         } else {
             println!("  No changes needed for: {:?}", path);
         }
-    } else {
+    }
+    else {
         if new_content != content {
             println!("  Dry run: Would apply changes to: {:?}", path);
         } else {

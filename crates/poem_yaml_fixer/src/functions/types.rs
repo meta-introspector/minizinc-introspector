@@ -1,17 +1,5 @@
 use std::collections::HashMap;
-use poem_traits::{PoemFrontMatterTrait, Meme};
-
-#[derive(serde::Deserialize, Debug, Clone)]
-pub struct RegexEntry {
-    pub name: String,
-    pub pattern: String,
-    pub callback_function: String,
-}
-
-#[derive(serde::Deserialize, Debug, Clone)]
-pub struct RegexConfig {
-    pub regexes: Vec<RegexEntry>,
-}
+use poem_traits::{PoemFrontMatterTrait, Meme, RegexEntry, RegexConfig}; // Import RegexEntry and RegexConfig
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
 pub struct FixedFrontMatter {
