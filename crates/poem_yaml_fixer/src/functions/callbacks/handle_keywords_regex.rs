@@ -12,6 +12,6 @@ use poem_traits::PoemFrontMatterTrait;
 )]
 #[allow(dead_code)] // This function is called dynamically via the function registry
 pub fn handle_keywords_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> anyhow::Result<()> {
-    fixed_fm.set_keywords(captures[1].trim().to_string());
+    fixed_fm.set_keywords(vec![captures[1].trim().to_string()]);
     Ok(())
 }

@@ -45,9 +45,8 @@ impl PoemFrontMatterTrait for FixedFrontMatter {
         self.summary = Some(summary);
     }
     // Re-added set_keywords
-    fn set_keywords(&mut self, keywords: String) {
-        // This will convert the single string into a Vec<String>
-        self.keywords = Some(vec![keywords]);
+    fn set_keywords(&mut self, keywords: Vec<String>) {
+        self.keywords = Some(keywords);
     }
     fn set_emojis(&mut self, emojis: String) {
         self.emojis = Some(emojis);

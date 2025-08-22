@@ -1,5 +1,5 @@
 use crate::FixedFrontMatter;
-//use anyhow::{Result, anyhow};
+use anyhow::Result;
 //use poem_traits::PoemFrontMatterTrait;
 use poem_traits::{RegexConfig, FunctionRegistry};
 use std::path::PathBuf;
@@ -11,11 +11,11 @@ use std::collections::HashMap;
 use crate::functions::regex_patterns::DOCUMENT_SEPARATOR_REGEX_PATTERN;
 
 pub fn process_document_with_regex(
-    file_path: &PathBuf,
+    _file_path: &PathBuf,
     full_content: &str,
     regex_config: &RegexConfig,
     function_registry: &FunctionRegistry,
-    debug_mode: bool,
+    _debug_mode: bool,
 ) -> Result<FixedFrontMatter> {
     let mut stack: Vec<FixedFrontMatter> = vec![FixedFrontMatter::default()];
 

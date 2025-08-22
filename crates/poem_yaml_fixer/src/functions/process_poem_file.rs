@@ -60,7 +60,7 @@ pub fn process_poem_file(
                     fixed_fm.summary = fm.summary;
                 }
                 if fixed_fm.keywords.is_none() {
-                    fixed_fm.keywords = fm.keywords.map(|s| vec![s]);
+                    fixed_fm.keywords = fm.keywords;
                 }
                 if fixed_fm.emojis.is_none() {
                     fixed_fm.emojis = fm.emojis;

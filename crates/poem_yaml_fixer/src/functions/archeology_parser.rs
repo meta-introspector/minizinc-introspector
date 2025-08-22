@@ -1,3 +1,5 @@
+use crate::functions::types::FixedFrontMatter;
+use crate::functions::parse_front_matter_fields::parse_front_matter_fields;
 // This module contains the logic for parsing .archeology.md files.
 
 //use crate::functions::types::RawFrontMatter;
@@ -5,16 +7,16 @@ use anyhow::Result;
 use std::fs;
 use std::path::Path;
 #[cfg(test)]
-use crate::functions::types::{FixedFrontMatter, RawFrontMatter};
+use crate::functions::types::FixedFrontMatter;
 use crate::functions::extract_front_matter::extract_front_matter;
-use crate::functions::parse_front_matter_with_regex::parse_front_matter_with_regex;
+
 use poem_traits::{RegexConfig, FunctionRegistry};
 //use crate::functions::types::RawFrontMatter;
 pub fn parse_archeology_file(
     path: &Path,
     regex_config: &RegexConfig,
     function_registry: &FunctionRegistry,
-) -> Result<Vec<RawFrontMatter>> {
+) -> Result<Vec<FixedFrontMatter>> {
     let content = fs::read_to_string(path)?;
     let revisions: Vec<&str> = content.split("\n\n---\n\n").collect();
 
@@ -39,11 +41,15 @@ pub fn parse_archeology_file(
 
         let (_fm_start, fm_end, front_matter_str, poem_body_from_fm) = extract_front_matter(&mut revision_lines, &revision_content)?;
 
-        let mut raw_fm = if !front_matter_str.is_empty() {
-            parse_front_matter_with_regex(&front_matter_str, regex_config, function_registry)?
-        } else {
-            RawFrontMatter::default()
-        };
+        let mut fixed_fm = FixedFrontMatter::default();
+        if !front_matter_str.is_empty() {
+            parse_front_matter_fields(
+                &front_matter_str,
+                &mut fixed_fm,
+                regex_config,
+                function_registry,
+            )?;
+        }
 
         let poem_body = if !poem_body_from_fm.is_empty() {
             poem_body_from_fm
@@ -54,12 +60,12 @@ pub fn parse_archeology_file(
         };
 
         if front_matter_str.is_empty() {
-            raw_fm.poem_body = Some(revision_content);
+            fixed_fm.poem_body = Some(revision_content);
         } else {
-            raw_fm.poem_body = Some(poem_body);
+            fixed_fm.poem_body = Some(poem_body);
         }
 
-        recovered_front_matters.push(raw_fm);
+        recovered_front_matters.push(fixed_fm);
     }
 
     Ok(recovered_front_matters)

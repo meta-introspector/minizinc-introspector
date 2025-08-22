@@ -38,7 +38,7 @@ pub trait PoemFrontMatterTrait: Any {
 
     fn set_title(&mut self, title: String);
     fn set_summary(&mut self, summary: String);
-    fn set_keywords(&mut self, keywords: String);
+    fn set_keywords(&mut self, keywords: Vec<String>);
     fn set_emojis(&mut self, emojis: String);
     fn set_art_generator_instructions(&mut self, instructions: String);
     fn add_meme(&mut self, meme: Meme);

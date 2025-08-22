@@ -2,7 +2,7 @@
 // It is responsible for parsing basic front matter fields (title, summary, etc.)
 // from a YAML string and updating the FixedFrontMatter struct.
 
-//use anyhow::{Result, anyhow};
+use anyhow::Result;
 use crate::functions::types::FixedFrontMatter; // Import FixedFrontMatter from types module
 use regex::Regex;
 use std::collections::HashMap;
@@ -14,7 +14,7 @@ pub fn parse_front_matter_fields(
     front_matter_str_for_parsing: &str,
     fixed_fm: &mut FixedFrontMatter,
     regex_config: &RegexConfig, // Add regex_config
-    function_registry: &FunctionRegistry, // Add function_registry
+    _function_registry: &FunctionRegistry, // Add function_registry
 ) -> Result<()> {
     let lines: Vec<&str> = front_matter_str_for_parsing.lines().collect();
 
