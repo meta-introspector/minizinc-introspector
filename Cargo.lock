@@ -2650,6 +2650,7 @@ dependencies = [
  "poem_traits",
  "regex",
  "serde",
+ "serde_json",
  "serde_yaml",
  "tempfile",
  "toml 0.5.11",

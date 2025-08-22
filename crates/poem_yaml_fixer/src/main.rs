@@ -1,16 +1,14 @@
 use std::path::PathBuf;
 use clap::Parser;
 use walkdir::WalkDir;
- // Updated import
- // Add this import
-use crate::functions::process_single_poem_file_for_report::process_single_poem_file_for_report; // Add this import
+use serde::{Serialize, Deserialize};
 
+use crate::functions::process_single_poem_file_for_report::process_single_poem_file_for_report;
 
-poem_macros::poem_header!(); // Call the header macro once
+poem_macros::poem_header!();
 
-mod functions; // Declare the functions module once
+mod functions;
 
-// Add Cli struct
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Cli {
@@ -35,55 +33,111 @@ struct Cli {
     fast_parse: bool,
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+struct PoemReportEntry {
+    file_path: String,
+    status: String,
+    matched_patterns: Option<Vec<String>>,
+    error_message: Option<String>,
+    extracted_words_count: Option<usize>,
+    dry_run_changes_applied: bool,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct PoemReport {
+    files: Vec<PoemReportEntry>,
+}
+
 fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
 
     let current_dir = std::env::current_dir()?;
     let poems_dir = current_dir.join("docs").join("poems");
 
-    let mut regex_config = get_default_regex_config(); // Get default config from macro
+    let mut regex_config = get_default_regex_config();
 
-    // Check for an external regex_config.toml in the current directory
     let external_config_path = current_dir.join("regex_config.toml");
     if external_config_path.exists() {
         println!("Loading external regex config from: {external_config_path:?}");
         let external_config = functions::load_regex_config::load_regex_config(&external_config_path)?;
 
-        // Merge external config into default config (external overrides defaults by name)
         for external_entry in external_config.regexes {
             if let Some(default_entry) = regex_config.regexes.iter_mut().find(|e| e.name == external_entry.name) {
-                *default_entry = external_entry; // Override existing entry
+                *default_entry = external_entry;
             } else {
-                regex_config.regexes.push(external_entry); // Add new entry
+                regex_config.regexes.push(external_entry);
             }
         }
     }
 
-    use crate::functions::types::PoemFunctionRegistry; // Import PoemFunctionRegistry
-    let function_registry: PoemFunctionRegistry = create_function_registry(); // Use PoemFunctionRegistry
+    use crate::functions::types::PoemFunctionRegistry;
+    let function_registry: PoemFunctionRegistry = create_function_registry();
+
+    let mut report_entries: Vec<PoemReportEntry> = Vec::new();
 
     if cli.fast_parse {
         let file_path = cli.file.ok_or_else(|| anyhow::anyhow!("A file path must be provided for fast parsing."))?;
-        let matched_regexes = process_single_poem_file_for_report(
+        match process_single_poem_file_for_report(
             &file_path,
             &regex_config,
             &function_registry,
             cli.debug,
-        )?;
-        println!("Report for {file_path:?}: Matched Regexes: {matched_regexes:?}");
+        ) {
+            Ok(matched_regexes) => {
+                report_entries.push(PoemReportEntry {
+                    file_path: file_path.to_string_lossy().into_owned(),
+                    status: "Success".to_string(),
+                    matched_patterns: Some(matched_regexes),
+                    error_message: None,
+                    extracted_words_count: None, // Not directly available from this function
+                    dry_run_changes_applied: true,
+                });
+            }
+            Err(e) => {
+                report_entries.push(PoemReportEntry {
+                    file_path: file_path.to_string_lossy().into_owned(),
+                    status: "Failed".to_string(),
+                    matched_patterns: None,
+                    error_message: Some(format!("{}", e)),
+                    extracted_words_count: None,
+                    dry_run_changes_applied: false,
+                });
+            }
+        }
     } else if let Some(file_path) = cli.file {
-        functions::process_poem_file::process_poem_file(
+        // This branch calls process_poem_file which doesn't return matched regexes directly
+        // For now, we'll just report success/failure based on the function's result
+        let result = functions::process_poem_file::process_poem_file(
             &file_path,
             cli.max_change_percentage,
             cli.debug,
-            cli.dry_run, // Pass dry_run
+            cli.dry_run,
             &regex_config,
             &function_registry,
-        )?;
+        );
+        match result {
+            Ok(_) => {
+                report_entries.push(PoemReportEntry {
+                    file_path: file_path.to_string_lossy().into_owned(),
+                    status: "Success".to_string(),
+                    matched_patterns: None,
+                    error_message: None,
+                    extracted_words_count: None,
+                    dry_run_changes_applied: cli.dry_run,
+                });
+            }
+            Err(e) => {
+                report_entries.push(PoemReportEntry {
+                    file_path: file_path.to_string_lossy().into_owned(),
+                    status: "Failed".to_string(),
+                    matched_patterns: None,
+                    error_message: Some(format!("{}", e)),
+                    extracted_words_count: None,
+                    dry_run_changes_applied: cli.dry_run,
+                });
+            }
+        }
     } else {
-        let mut all_matched_regexes: std::collections::HashMap<PathBuf, Vec<String>> = std::collections::HashMap::new();
-        let mut failed_files: std::collections::HashMap<PathBuf, String> = std::collections::HashMap::new(); // To store files that failed processing
-
         for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
             let path = entry.path();
             if path.is_file() && path.extension().is_some_and(|ext| ext == "md") {
@@ -98,35 +152,36 @@ fn main() -> anyhow::Result<()> {
                     cli.debug,
                 ) {
                     Ok(matched_regexes) => {
-                        all_matched_regexes.insert(path.to_path_buf(), matched_regexes);
+                        report_entries.push(PoemReportEntry {
+                            file_path: path.to_string_lossy().into_owned(),
+                            status: "Success".to_string(),
+                            matched_patterns: Some(matched_regexes),
+                            error_message: None,
+                            extracted_words_count: None, // Not directly available from this function
+                            dry_run_changes_applied: true,
+                        });
                     }
                     Err(e) => {
-                        failed_files.insert(path.to_path_buf(), format!("{}", e));
+                        report_entries.push(PoemReportEntry {
+                            file_path: path.to_string_lossy().into_owned(),
+                            status: "Failed".to_string(),
+                            matched_patterns: None,
+                            error_message: Some(format!("{}", e)),
+                            extracted_words_count: None,
+                            dry_run_changes_applied: false,
+                        });
                     }
                 }
             }
         }
-
-        // Generate summary report
-        println!("\n--- Summary Report ---");
-        for (file_path, matched_regexes) in all_matched_regexes {
-            println!("File: {:?}", file_path);
-            if matched_regexes.is_empty() {
-                println!("  No regexes matched.");
-            } else {
-                println!("  Matched Regexes: {:?}", matched_regexes);
-            }
-        }
-
-        if !failed_files.is_empty() {
-            println!("\n--- Files that Failed Processing ---");
-            for (file_path, error_msg) in failed_files {
-                println!("File: {:?}", file_path);
-                println!("  Error: {}", error_msg);
-            }
-        }
-        println!("----------------------");
     }
+
+    let report = PoemReport { files: report_entries };
+    let report_yaml = serde_yaml::to_string(&report)?;
+    let report_path = current_dir.join("poem_processing_report.yaml");
+    std::fs::write(&report_path, report_yaml)?;
+
+    println!("Report generated at: {:?}", report_path);
 
     Ok(())
 }

@@ -5,9 +5,12 @@ keywords: version control, sonnet, changes, collaboration, history, commits, con
 emojis: 🌳📜✨✅
 art_generator_instructions: A stylized, glowing tree (representing version control) with branches extending outwards, each branch representing a different version or commit. Hands (representing collaborators) are seen contributing to the tree, and conflicts are resolved as tangled branches gracefully untangle and merge. The overall feeling should be one of order, collaboration, and the continuous growth of a robust system.
 memes:
-  - "My version control is so good, it's poetic." (Success Kid meme)
-  - "When your `git` history is a work of art." (Doge meme)
-  - "Version control: The ultimate time machine for your code." (Expanding Brain meme)
+  - description: "My version control is so good, it's poetic."
+    template: Success Kid meme
+  - description: "When your `git` history is a work of art."
+    template: Doge meme
+  - description: "Version control: The ultimate time machine for your code."
+    template: Expanding Brain meme
 ---
 ## The Version's Steady Hand
 

@@ -30,6 +30,7 @@ pub fn process_single_poem_file_for_report(
     // Call process_memes_with_workflow
     let meme_lines: Vec<String> = poem_body.lines().map(|s| s.to_string()).collect();
     let process_memes_result = process_memes_with_workflow::process_memes_with_workflow(
+        file_path,
         &meme_lines,
         regex_config,
         &mut fixed_fm,
@@ -40,9 +41,9 @@ pub fn process_single_poem_file_for_report(
     let matched_regexes = if let Ok(m) = process_memes_result {
         m
     } else if let Err(e) = process_memes_result {
-        let error_msg = format!("Error processing memes: {}", e);
-        handle_unmatched_regex_error(file_path, &error_msg)?;
-        Vec::new()
+        // The error from process_memes_with_workflow is already a rich context error
+        // We just need to propagate it.
+        return Err(e);
     } else {
         Vec::new()
     };
