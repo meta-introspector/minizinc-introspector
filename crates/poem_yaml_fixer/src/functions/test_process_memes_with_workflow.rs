@@ -1,9 +1,12 @@
-#![allow(unused_imports)]
 use anyhow::Result;
 use std::collections::HashMap;
 use regex::Regex;
+use std::path::PathBuf; // Added PathBuf import
 
-use crate::functions::types::{FixedFrontMatter, PoemFunctionRegistry, PoemFunctionEntry, PoemCallbackFn}; // Import from local types
+use crate::functions::types::{
+    FixedFrontMatter, PoemFunctionRegistry, PoemFunctionEntry,
+    PoemCallbackFn
+}; // Import from local types
 use poem_traits::{RegexConfig, PoemFrontMatterTrait}; // Import trait from poem_traits
 
 // Dummy callback function for testing
@@ -68,7 +71,9 @@ fn test_process_memes_with_workflow() -> Result<()> {
     let debug_mode = true;
 
     // This call should not panic or return an error if the dummy setup is correct
+    let dummy_path = PathBuf::from("dummy_path.md"); // Create a dummy PathBuf
     let result = super::process_memes_with_workflow::process_memes_with_workflow(
+        &dummy_path, // Added dummy path
         &meme_lines,
         &regex_config,
         &mut fixed_fm,

@@ -1,8 +1,9 @@
-"// tests/front_matter_fixes.rs
+// tests/front_matter_fixes.rs
 
-use poem_yaml_fixer::functions::types::FixedFrontMatter;
+//use poem_yaml_fixer::functions::types::FixedFrontMatter;
 use poem_traits::Meme; // Assuming Meme is accessible
 use anyhow::Result; // For error handling tests
+use crate::functions::types::FixedFrontMatter; // Added import
 
 // Helper function to simulate front matter processing
 // In a real test, this would call the actual processing logic of poem_yaml_fixer
@@ -34,7 +35,7 @@ fn simulate_front_matter_processing(input_yaml: &str) -> Result<FixedFrontMatter
     for line in lines.iter() {
         if line.trim().starts_with("- \"") && line.contains("(") && line.contains(")") {
             // Regex: r"^- \"([^\"]+)\" \(([^)]+)\""
-            let re = regex::Regex::new(r"^- \"([^\"]+)\" \(([^)]+)\""").unwrap();
+            let re = regex::Regex::new(r#"^- "([^\"]+)" \(([^)]+)""#).unwrap();
             if let Some(caps) = re.captures(line) {
                 let description = caps.get(1).map_or("", |m| m.as_str()).to_string();
                 let template_raw = caps.get(2).map_or("", |m| m.as_str()).to_string();
@@ -141,4 +142,3 @@ poem body
     let error_message = result.unwrap_err().to_string();
     assert!(error_message.contains("YAML parsing error: Unquoted colon in meme description. Problematic content: \"This is a problem: with a colon\"."));
 }
-"

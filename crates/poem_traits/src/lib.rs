@@ -1,6 +1,7 @@
 use anyhow::Result;
 use std::collections::HashMap;
 use serde::{Deserialize, Serialize};
+use std::any::Any; // New import
 
 // Moved from poem_yaml_fixer/src/functions/types.rs
 #[derive(serde::Deserialize, Debug, Clone)]
@@ -31,7 +32,7 @@ pub struct PoemFunctionMetadata {
 }
 
 
-pub trait PoemFrontMatterTrait {
+pub trait PoemFrontMatterTrait: Any {
     fn get_memes_mut(&mut self) -> &mut Vec<Meme>;
     fn get_pending_meme_description_mut(&mut self) -> &mut Option<String>;
 

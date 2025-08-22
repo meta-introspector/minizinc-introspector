@@ -5,6 +5,7 @@ use crate::functions::types::FixedFrontMatter;
 use poem_traits::{RegexConfig, FunctionRegistry};
 use std::collections::HashMap;
 use regex::Regex;
+use crate::functions::utils::initialize_memes::initialize_memes_option;
 
 pub fn parse_front_matter_with_regex(
     front_matter: &str,
@@ -17,7 +18,7 @@ pub fn parse_front_matter_with_regex(
         keywords: None,
         emojis: None,
         art_generator_instructions: None,
-        memes: Vec::new(),
+        memes: initialize_memes_option(),
         poem_body: None,
         pending_meme_description: None,
     };

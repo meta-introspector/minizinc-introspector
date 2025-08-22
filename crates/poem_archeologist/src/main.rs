@@ -2,7 +2,9 @@ use anyhow::Result;
 use git2::{Repository, Oid};
 use std::collections::HashSet;
 use std::fs;
-use std::path::{Path, PathBuf};
+use std::path::{Path,
+		//PathBuf
+};
 use walkdir::WalkDir;
 
 fn main() -> Result<()> {

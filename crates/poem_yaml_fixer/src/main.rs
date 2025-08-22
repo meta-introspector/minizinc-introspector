@@ -4,6 +4,7 @@ use walkdir::WalkDir;
 use serde::{Serialize, Deserialize};
 use crate::functions::types::{FixedFrontMatter, PoemFunctionRegistry};
 use regex::Regex;
+use crate::functions::utils::option_vec_helpers::{is_option_vec_empty, extend_option_vec};
 
 poem_macros::poem_header!();
 
@@ -197,8 +198,8 @@ fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: &Poe
                 if main_fm.art_generator_instructions.is_none() {
                     main_fm.art_generator_instructions = recovered_fm.art_generator_instructions;
                 }
-                if !recovered_fm.memes.is_empty() {
-                    main_fm.memes.extend(recovered_fm.memes);
+                if !is_option_vec_empty(&recovered_fm.memes) {
+                    extend_option_vec(&mut main_fm.memes, recovered_fm.memes);
                 }
                 if let Some(pb) = recovered_fm.poem_body.take() {
                     let mut body = main_fm.poem_body.take().unwrap_or_default();
