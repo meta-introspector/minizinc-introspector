@@ -1,15 +1,9 @@
 use anyhow::Result;
+use std::collections::HashMap;
+use regex::Regex;
 
-
- // Import from local types
-use poem_traits::PoemFrontMatterTrait; // Import trait from poem_traits
-
-//use std::collections::HashMap;
-//use regex::Regex;
-
-//use crate::functions::types::{FixedFrontMatter, PoemFunctionRegistry, PoemFunctionEntry, PoemCallbackFn}; // Import from local types
-//use poem_traits::{RegexConfig}; // Import trait from poem_traits
-//use anyhow::Result; // Import Result from anyhow
+use crate::functions::types::{FixedFrontMatter, PoemFunctionRegistry, PoemFunctionEntry, PoemCallbackFn}; // Import from local types
+use poem_traits::{RegexConfig, PoemFrontMatterTrait}; // Import trait from poem_traits
 
 // Dummy callback function for testing
 fn dummy_callback(

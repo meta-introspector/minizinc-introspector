@@ -3,9 +3,12 @@
 
 //use std::collections::HashMap;
 //use std::path::PathBuf;
-///use std::fs;
-//use crate::functions::save_word_index::save_word_index;
-//use crate::functions::types::WordIndex;
+
+use std::collections::HashMap;
+use std::path::PathBuf;
+use std::fs;
+use crate::functions::save_word_index::save_word_index;
+use crate::functions::types::WordIndex;
 
 #[test]
 fn test_save_word_index() -> anyhow::Result<()> {
