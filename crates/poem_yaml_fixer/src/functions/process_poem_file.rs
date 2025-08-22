@@ -31,14 +31,7 @@ pub fn process_poem_file(
 
     // The extract_front_matter function still extracts the raw front matter string
     // and the poem body, but we won't parse it with serde_yaml here.
-    let (_fm_start, _fm_end, _front_matter_str_for_parsing, extracted_poem_body_from_fm) = extract_front_matter(&mut lines, &content)?;
-    let poem_body_raw_from_file = lines[(_fm_end + 1) as usize ..].join("\n");
-
-    let mut final_poem_body = if !extracted_poem_body_from_fm.is_empty() {
-        extracted_poem_body_from_fm
-    } else {
-        poem_body_raw_from_file
-    };
+    let mut final_poem_body = String::new();
 
     let mut fixed_fm = FixedFrontMatter {
         title: None,
@@ -49,6 +42,7 @@ pub fn process_poem_file(
         memes: Some(Vec::new()),
         poem_body: None,
         pending_meme_description: None,
+	raw_meme_lines : None,
     };
 
     if final_poem_body.trim().is_empty() {
@@ -91,15 +85,14 @@ pub fn process_poem_file(
     // --- NEW LOGIC: Call the regex-driven YAML fixer ---
     // The handle_regex_driven_yaml_fix function will now populate fixed_fm
     // based on its regex-driven parsing and state management.
-    if !_front_matter_str_for_parsing.is_empty() {
-        handle_regex_driven_yaml_fix::handle_regex_driven_yaml_fix(
-            &content, // Pass the full content for the regex parser to work on
-            Vec::new(), // No captures for the root call
-            &mut fixed_fm,
-            regex_config,
-            function_registry,
-        )?;
-    }
+    handle_regex_driven_yaml_fix::handle_regex_driven_yaml_fix(
+        path, // Pass the file_path
+        &content, // Pass the full content for the regex parser to work on
+        Vec::new(), // No captures for the root call
+        &mut fixed_fm,
+        regex_config,
+        function_registry,
+    )?;
     // --- END NEW LOGIC ---
 
     // After processing, populate fixed_fm with metadata from PoemFunctionMetadata

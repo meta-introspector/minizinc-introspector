@@ -16,7 +16,7 @@ pub fn process_memes_with_workflow(
     file_path: &PathBuf,
     meme_lines: &Vec<String>,
     regex_config: &RegexConfig,
-    fixed_fm: &mut FixedFrontMatter,
+    fixed_fm: &mut dyn poem_traits::PoemFrontMatterTrait,
     function_registry: &PoemFunctionRegistry,
     debug_mode: bool,
 ) -> Result<Vec<String>> {

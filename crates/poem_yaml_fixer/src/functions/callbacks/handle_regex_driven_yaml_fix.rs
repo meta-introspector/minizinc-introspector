@@ -2,12 +2,15 @@ use anyhow::{Result, anyhow};
 use poem_traits::PoemFrontMatterTrait;
 use crate::functions::parse_front_matter_with_regex::parse_front_matter_with_regex;
 use poem_traits::{RegexConfig, FunctionRegistry}; // Import FunctionRegistry
+use std::path::PathBuf;
+use crate::functions::process_memes_with_workflow::process_memes_with_workflow;
 
 // This function represents the root of the regex-driven YAML fixing process.
 // It will use regex matches to determine the state of the parsing/fixing and guide further actions.
 // Removed #[poem_macros::poem_function(...)]
 #[allow(dead_code)] // This function will be called dynamically
 pub fn handle_regex_driven_yaml_fix(
+    file_path: &PathBuf, // Added file_path
     full_content: &str, // Changed from _line to full_content
     _captures: Vec<String>,
     fixed_fm: &mut dyn PoemFrontMatterTrait,
@@ -26,6 +29,38 @@ pub fn handle_regex_driven_yaml_fix(
     let front_matter_str = lines.iter().skip(1).take_while(|l| l.trim() != "---").cloned().collect::<Vec<&str>>().join("\n");
 
     let parsed_fm = parse_front_matter_with_regex(&front_matter_str, regex_config, function_registry)?;
+
+    // --- Meme Processing ---
+    let mut meme_lines_vec: Vec<String> = Vec::new();
+    let mut in_memes_block = false;
+    for line in front_matter_str.lines() {
+        if line.trim() == "memes:" {
+            in_memes_block = true;
+            continue;
+        }
+        if in_memes_block {
+            if line.starts_with(" ") || line.starts_with("\t") || line.trim().is_empty() {
+                meme_lines_vec.push(line.to_string());
+            } else {
+                in_memes_block = false; // End of memes block
+            }
+        }
+    }
+
+    if !meme_lines_vec.is_empty() {
+        // Need to pass a dummy PathBuf for file_path, or refactor process_memes_with_workflow
+        // to not require it if it's not used for file operations.
+        // For now, I'll pass a dummy.
+        let _processed_meme_lines = process_memes_with_workflow(
+            file_path, // Use the actual file_path
+            &meme_lines_vec,
+            regex_config,
+            fixed_fm,
+            function_registry,
+            false, // debug_mode, assuming false for now
+        )?;
+    }
+    // --- End Meme Processing ---
 
     if let Some(title) = parsed_fm.title {
         fixed_fm.set_title(title);

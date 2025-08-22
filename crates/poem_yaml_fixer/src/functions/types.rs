@@ -12,6 +12,7 @@ pub struct FixedFrontMatter {
     pub memes: Option<Vec<Meme>>, // Changed from Vec<Meme> to Option<Vec<Meme>>
     pub poem_body: Option<String>,
     pub pending_meme_description: Option<String>,
+    pub raw_meme_lines: Option<Vec<String>>,
 }
 
 #[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]

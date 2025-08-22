@@ -20,3 +20,4 @@ pub mod utils; // New line
 pub mod report_generator;
 pub mod regex_patterns;
 pub mod load_regex_config;
+pub mod report_processing;

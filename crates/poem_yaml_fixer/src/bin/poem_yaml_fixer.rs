@@ -4,9 +4,11 @@ use walkdir::WalkDir;
 use poem_yaml_fixer::functions::types::{FixedFrontMatter, PoemFunctionRegistry};
 use regex::Regex;
 use poem_yaml_fixer::functions::utils::option_vec_helpers::{is_option_vec_empty, extend_option_vec};
+use poem_yaml_fixer::functions::process_single_poem_file_for_report::process_single_poem_file_for_report;
+use poem_yaml_fixer::functions::report_processing::process_poems_for_report;
+use poem_yaml_fixer::functions::load_regex_config::get_default_regex_config;
+use poem_yaml_fixer::create_function_registry;
 use poem_yaml_fixer::process_file;
-
-poem_macros::poem_header!();
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -60,24 +62,34 @@ fn main() -> anyhow::Result<()> {
 
     let function_registry: PoemFunctionRegistry = create_function_registry();
 
-    let mut report_entries: Vec<poem_yaml_fixer::functions::report_generator::PoemReportEntry> = Vec::new();
-
-    if let Some(file_path) = cli.file {
-        process_file(&file_path, &regex_config, &function_registry, &mut report_entries, cli.debug, cli.dry_run)?;
+    if cli.report {
+        process_poems_for_report(
+            &poems_dir,
+            &cli.file,
+            &regex_config,
+            &function_registry,
+            cli.debug,
+        )?;
     } else {
-        for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
-            let path = entry.path();
-            if path.is_file() && path.extension().is_some_and(|ext| ext == "md") {
-                if path.file_name().is_some_and(|name| name.to_str().unwrap_or("").ends_with(".archeology.md")) {
-                    continue;
+        let mut report_entries: Vec<poem_yaml_fixer::functions::report_generator::PoemReportEntry> = Vec::new();
+        if let Some(file_path) = cli.file {
+            process_file(&file_path, &regex_config, &function_registry, &mut report_entries, cli.debug, cli.dry_run)?;
+        } else {
+            for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
+                let path = entry.path();
+                if path.is_file() && path.extension().is_some_and(|ext| ext == "md") {
+                    if path.file_name().is_some_and(|name| name.to_str().unwrap_or("").ends_with(".archeology.md")) {
+                        continue;
+                    }
+                    process_file(path, &regex_config, &function_registry, &mut report_entries, cli.debug, cli.dry_run)?;
                 }
-                process_file(path, &regex_config, &function_registry, &mut report_entries, cli.debug, cli.dry_run)?;
             }
         }
-    }
 
-    if cli.report {
-        poem_yaml_fixer::functions::report_generator::generate_and_save_report(report_entries, &current_dir)?;
+        // This block is only executed if cli.report is false
+        if cli.report {
+            poem_yaml_fixer::functions::report_generator::generate_and_save_report(report_entries, &current_dir)?;
+        }
     }
 
     Ok(())
