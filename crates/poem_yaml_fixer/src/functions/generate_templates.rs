@@ -52,7 +52,7 @@ use regex::Regex;
 use std::collections::HashMap;
 
 pub fn {}() -> (Regex, HashMap<String, String>) {{
-    let regex = Regex::new(r"{}").unwrap();
+    let regex = Regex::new(r\#"{}"\#).unwrap();
     let mut captures = HashMap::new();
     // TODO: Populate captures based on the regex groups if any
     (regex, captures)
