@@ -6,7 +6,7 @@ use crate::functions::types::{WordIndex, PoemFunctionRegistry};
 use crate::functions::parse_poem_file_direct;
 use crate::functions::process_memes_with_workflow;
 use crate::functions::save_word_index;
-use crate::functions::error_handling::handle_unmatched_regex_error::handle_unmatched_regex_error;
+
 use crate::functions::extract_words_from_text::extract_words_from_text; // Add this import
 use crate::functions::process_poem_file::process_poem_file; // Add this import
 use poem_traits::RegexConfig;

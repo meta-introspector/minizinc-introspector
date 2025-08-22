@@ -1,7 +1,6 @@
 use anyhow::{Result, anyhow};
 use poem_traits::PoemFrontMatterTrait;
-use std::collections::HashMap;
-use regex::Regex; // For regex matching
+use crate::functions::parse_front_matter_with_regex::parse_front_matter_with_regex;
 use poem_traits::{RegexConfig, FunctionRegistry}; // Import FunctionRegistry
 
 // This function represents the root of the regex-driven YAML fixing process.
@@ -18,71 +17,34 @@ pub fn handle_regex_driven_yaml_fix(
     println!("--- Entering Regex-Driven YAML Fixer ---");
 
     let lines: Vec<&str> = full_content.lines().collect();
-    let mut current_line_idx = 0;
 
     // Skip the initial "---"
-    if lines.get(current_line_idx).is_some_and(|l| l.trim() == "---") {
-        current_line_idx += 1;
-    } else {
+    if !lines.get(0).is_some_and(|l| l.trim() == "---") {
         return Err(anyhow!("Expected '---' at the beginning of the file."));
     }
 
-    // Define the expected order of fields and their corresponding regex names
-    let expected_fields_order = vec![
-        "title_field",
-        "summary_field",
-        "keywords_field",
-        "emojis_field",
-        "art_generator_instructions_field",
-        // "memes_field", // Memes will be handled specially
-        "poem_body_start", // Marks the start of poem_body within YAML
-        // "pending_meme_description", // This is handled by meme processing
-    ];
+    let front_matter_str = lines.iter().skip(1).take_while(|l| l.trim() != "---").cloned().collect::<Vec<&str>>().join("\n");
 
-    let mut compiled_regexes: HashMap<String, Regex> = HashMap::new();
-    for entry in &regex_config.regexes {
-        compiled_regexes.insert(entry.name.clone(), Regex::new(&entry.pattern)?);
+    let parsed_fm = parse_front_matter_with_regex(&front_matter_str, regex_config, function_registry)?;
+
+    if let Some(title) = parsed_fm.title {
+        fixed_fm.set_title(title);
     }
-
-    // Simulate processing each field in order
-    for field_name in expected_fields_order {
-        if let Some(regex_entry) = regex_config.regexes.iter().find(|e| e.name == field_name) {
-            if let Some(regex) = compiled_regexes.get(&regex_entry.name) {
-                // Find the next line that matches this regex
-                let mut matched_this_field = false;
-                while current_line_idx < lines.len() {
-                    let line = lines[current_line_idx];
-                    if let Some(captures_raw) = regex.captures(line) {
-                        matched_this_field = true;
-                        println!("  Matched field: {field_name} with line: {line}");
-
-                        let captures: Vec<String> = (0..captures_raw.len())
-                            .map(|i| captures_raw.get(i).map_or("", |m| m.as_str()).to_string())
-                            .collect();
-
-                        if let Some((_metadata, callback)) = function_registry.get(&regex_entry.callback_function) {
-                            (*callback)(line, captures, fixed_fm)?;
-                        } else {
-                            eprintln!("Warning: Callback function '{}' not found for regex '{}'", regex_entry.callback_function, regex_entry.name);
-                        }
-                        current_line_idx += 1; // Move to the next line after matching
-                        break; // Move to the next expected field
-                    }
-                    current_line_idx += 1; // Move to the next line if no match
-                }
-                if !matched_this_field {
-                    println!("  Warning: Field '{field_name}' not found or did not match in expected sequence.");
-                    // TODO: Handle missing fields based on schema (e.g., optional vs. required)
-                }
-            }
-        }
+    if let Some(summary) = parsed_fm.summary {
+        fixed_fm.set_summary(summary);
     }
-
-    // TODO: Handle memes block and poem_body block after fixed fields
-    // This would involve more complex state management and iteration until the closing "---"
-
-    // For demonstration, let's just set a flag or print something
-    fixed_fm.set_summary("Regex-driven YAML fixing initiated and conceptual fields processed.".to_string());
+    if let Some(keywords) = parsed_fm.keywords {
+        fixed_fm.set_keywords(keywords);
+    }
+    if let Some(emojis) = parsed_fm.emojis {
+        fixed_fm.set_emojis(emojis);
+    }
+    if let Some(art_generator_instructions) = parsed_fm.art_generator_instructions {
+        fixed_fm.set_art_generator_instructions(art_generator_instructions);
+    }
+    if !parsed_fm.memes.is_empty() {
+        fixed_fm.get_memes_mut().extend(parsed_fm.memes);
+    }
 
     println!("--- Exiting Regex-Driven YAML Fixer ---");
     Ok(())

@@ -2,8 +2,7 @@
 // It is responsible for parsing the YAML front matter delimiters and extracting
 // the front matter content and the raw poem body from the input text.
 
-use anyhow::{Result, anyhow};
-use crate::functions::types::FixedFrontMatter;
+use anyhow::Result;
 
 pub fn extract_front_matter(lines: &mut Vec<&str>, content: &str) -> Result<(isize, isize, String, String)> {
     let mut fm_start = -1;
@@ -25,7 +24,8 @@ pub fn extract_front_matter(lines: &mut Vec<&str>, content: &str) -> Result<(isi
     }
 
     if fm_start != 0 {
-        return Err(anyhow!("Invalid Markdown file format (missing or malformed front matter delimiters).\nContent:\n{}", content));
+        // If the first --- is not on the first line, treat the whole file as body
+        return Ok((-1, -1, String::new(), content.to_string()));
     }
 
     let front_matter_str_for_parsing: String;

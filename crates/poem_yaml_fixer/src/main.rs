@@ -1,9 +1,9 @@
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use clap::Parser;
 use walkdir::WalkDir;
 use serde::{Serialize, Deserialize};
-
-use crate::functions::process_single_poem_file_for_report::process_single_poem_file_for_report;
+use crate::functions::types::{FixedFrontMatter, PoemFunctionRegistry};
+use regex::Regex;
 
 poem_macros::poem_header!();
 
@@ -58,7 +58,7 @@ fn main() -> anyhow::Result<()> {
 
     let external_config_path = current_dir.join("regex_config.toml");
     if external_config_path.exists() {
-        println!("Loading external regex config from: {external_config_path:?}");
+        println!("Loading external regex config from: {:?}", external_config_path);
         let external_config = functions::load_regex_config::load_regex_config(&external_config_path)?;
 
         for external_entry in external_config.regexes {
@@ -70,108 +70,20 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
-    use crate::functions::types::PoemFunctionRegistry;
     let function_registry: PoemFunctionRegistry = create_function_registry();
 
     let mut report_entries: Vec<PoemReportEntry> = Vec::new();
 
-    if cli.fast_parse {
-        let file_path = cli.file.ok_or_else(|| anyhow::anyhow!("A file path must be provided for fast parsing."))?;
-        match process_single_poem_file_for_report(
-            &file_path,
-            &regex_config,
-            &function_registry,
-            cli.debug,
-        ) {
-            Ok(matched_regexes) => {
-                report_entries.push(PoemReportEntry {
-                    file_path: file_path.to_string_lossy().into_owned(),
-                    status: "Success".to_string(),
-                    matched_patterns: Some(matched_regexes),
-                    error_message: None,
-                    extracted_words_count: None, // Not directly available from this function
-                    dry_run_changes_applied: true,
-                });
-            }
-            Err(e) => {
-                report_entries.push(PoemReportEntry {
-                    file_path: file_path.to_string_lossy().into_owned(),
-                    status: "Failed".to_string(),
-                    matched_patterns: None,
-                    error_message: Some(format!("{}", e)),
-                    extracted_words_count: None,
-                    dry_run_changes_applied: false,
-                });
-            }
-        }
-    } else if let Some(file_path) = cli.file {
-        // This branch calls process_poem_file which doesn't return matched regexes directly
-        // For now, we'll just report success/failure based on the function's result
-        let result = functions::process_poem_file::process_poem_file(
-            &file_path,
-            cli.max_change_percentage,
-            cli.debug,
-            cli.dry_run,
-            &regex_config,
-            &function_registry,
-        );
-        match result {
-            Ok(_) => {
-                report_entries.push(PoemReportEntry {
-                    file_path: file_path.to_string_lossy().into_owned(),
-                    status: "Success".to_string(),
-                    matched_patterns: None,
-                    error_message: None,
-                    extracted_words_count: None,
-                    dry_run_changes_applied: cli.dry_run,
-                });
-            }
-            Err(e) => {
-                report_entries.push(PoemReportEntry {
-                    file_path: file_path.to_string_lossy().into_owned(),
-                    status: "Failed".to_string(),
-                    matched_patterns: None,
-                    error_message: Some(format!("{}", e)),
-                    extracted_words_count: None,
-                    dry_run_changes_applied: cli.dry_run,
-                });
-            }
-        }
+    if let Some(file_path) = cli.file {
+        process_file(&file_path, &regex_config, &function_registry, &mut report_entries, cli.debug, cli.dry_run)?;
     } else {
         for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
             let path = entry.path();
             if path.is_file() && path.extension().is_some_and(|ext| ext == "md") {
-                if path.file_name().is_some_and(|name| name == "index.md") {
+                if path.file_name().is_some_and(|name| name.to_str().unwrap_or("").ends_with(".archeology.md")) {
                     continue;
                 }
-
-                match process_single_poem_file_for_report(
-                    &path.to_path_buf(),
-                    &regex_config,
-                    &function_registry,
-                    cli.debug,
-                ) {
-                    Ok(matched_regexes) => {
-                        report_entries.push(PoemReportEntry {
-                            file_path: path.to_string_lossy().into_owned(),
-                            status: "Success".to_string(),
-                            matched_patterns: Some(matched_regexes),
-                            error_message: None,
-                            extracted_words_count: None, // Not directly available from this function
-                            dry_run_changes_applied: true,
-                        });
-                    }
-                    Err(e) => {
-                        report_entries.push(PoemReportEntry {
-                            file_path: path.to_string_lossy().into_owned(),
-                            status: "Failed".to_string(),
-                            matched_patterns: None,
-                            error_message: Some(format!("{}", e)),
-                            extracted_words_count: None,
-                            dry_run_changes_applied: false,
-                        });
-                    }
-                }
+                process_file(path, &regex_config, &function_registry, &mut report_entries, cli.debug, cli.dry_run)?;
             }
         }
     }
@@ -182,6 +94,150 @@ fn main() -> anyhow::Result<()> {
     std::fs::write(&report_path, report_yaml)?;
 
     println!("Report generated at: {:?}", report_path);
+
+    Ok(())
+}
+
+fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: &PoemFunctionRegistry, report_entries: &mut Vec<PoemReportEntry>, debug: bool, dry_run: bool) -> Result<()> {
+    println!("Processing file: {:?}", path);
+    let content = std::fs::read_to_string(path)?;
+
+    let mut stack: Vec<FixedFrontMatter> = vec![FixedFrontMatter::default()];
+
+    let compiled_regexes: HashMap<String, Regex> = regex_config
+        .regexes
+        .iter()
+        .map(|entry| (entry.name.clone(), Regex::new(&entry.pattern).unwrap()))
+        .collect();
+
+    for line in content.lines() {
+        let mut matched = false;
+        for regex_entry in &regex_config.regexes {
+            if let Some(regex) = compiled_regexes.get(&regex_entry.name) {
+                if regex.is_match(line) {
+                    let captures: Vec<String> = regex.captures(line).map_or(vec![], |caps| {
+                        caps.iter().map(|m| m.map_or("".to_string(), |m| m.as_str().to_string())).collect()
+                    });
+
+                    if regex_entry.callback_function == "handle_new_document" {
+                        stack.push(FixedFrontMatter::default());
+                    } else {
+                        if let Some(current_fm) = stack.last_mut() {
+                            if let Some((_metadata, callback)) = function_registry.get(&regex_entry.callback_function) {
+                                (*callback)(line, captures, current_fm)?;
+                            }
+                        }
+                    }
+                    matched = true;
+                    break;
+                }
+            }
+        }
+        if !matched {
+            if let Some(current_fm) = stack.last_mut() {
+                let mut body = current_fm.poem_body.take().unwrap_or_default();
+                body.push_str(line);
+                body.push('\n');
+                current_fm.poem_body = Some(body);
+            }
+        }
+    }
+
+    let archeology_file_path = path.with_extension("md.archeology.md");
+    if archeology_file_path.exists() {
+        let archeology_content = std::fs::read_to_string(&archeology_file_path)?;
+        let mut archeology_stack: Vec<FixedFrontMatter> = vec![FixedFrontMatter::default()];
+        for line in archeology_content.lines() {
+            let mut matched = false;
+            for regex_entry in &regex_config.regexes {
+                if let Some(regex) = compiled_regexes.get(&regex_entry.name) {
+                    if regex.is_match(line) {
+                        let captures: Vec<String> = regex.captures(line).map_or(vec![], |caps| {
+                            caps.iter().map(|m| m.map_or("".to_string(), |m| m.as_str().to_string())).collect()
+                        });
+
+                        if regex_entry.callback_function == "handle_new_document" {
+                            archeology_stack.push(FixedFrontMatter::default());
+                        } else {
+                            if let Some(current_fm) = archeology_stack.last_mut() {
+                                if let Some((_metadata, callback)) = function_registry.get(&regex_entry.callback_function) {
+                                    (*callback)(line, captures, current_fm)?;
+                                }
+                            }
+                        }
+                        matched = true;
+                        break;
+                    }
+                }
+            }
+            if !matched {
+                if let Some(current_fm) = archeology_stack.last_mut() {
+                    let mut body = current_fm.poem_body.take().unwrap_or_default();
+                    body.push_str(line);
+                    body.push('\n');
+                    current_fm.poem_body = Some(body);
+                }
+            }
+        }
+
+        if let Some(main_fm) = stack.first_mut() {
+            for mut recovered_fm in archeology_stack.into_iter() {
+                if main_fm.title.is_none() {
+                    main_fm.title = recovered_fm.title;
+                }
+                if main_fm.summary.is_none() {
+                    main_fm.summary = recovered_fm.summary;
+                }
+                if main_fm.keywords.is_none() {
+                    main_fm.keywords = recovered_fm.keywords;
+                }
+                if main_fm.emojis.is_none() {
+                    main_fm.emojis = recovered_fm.emojis;
+                }
+                if main_fm.art_generator_instructions.is_none() {
+                    main_fm.art_generator_instructions = recovered_fm.art_generator_instructions;
+                }
+                if !recovered_fm.memes.is_empty() {
+                    main_fm.memes.extend(recovered_fm.memes);
+                }
+                if let Some(pb) = recovered_fm.poem_body.take() {
+                    let mut body = main_fm.poem_body.take().unwrap_or_default();
+                    body.push_str("\n");
+                    body.push_str(&pb);
+                    main_fm.poem_body = Some(body);
+                }
+            }
+        }
+    }
+
+    let mut final_content = String::new();
+    for fm in stack {
+        final_content.push_str("---");
+        final_content.push_str(&serde_yaml::to_string(&fm)?);
+        if let Some(body) = fm.poem_body {
+            final_content.push_str(&body);
+        }
+    }
+
+    if dry_run {
+        println!("Dry run: Would write to {:?}", path);
+        if debug {
+            println!("--- New Content ---");
+            println!("{}", final_content);
+        }
+    } else {
+        std::fs::write(path, &final_content)?;
+        println!("Applied changes to: {:?}", path);
+    }
+
+    report_entries.push(PoemReportEntry {
+        file_path: path.to_string_lossy().into_owned(),
+        status: "Success".to_string(),
+        matched_patterns: None,
+        error_message: None,
+        extracted_words_count: None,
+        dry_run_changes_applied: dry_run,
+    });
 
     Ok(())
 }

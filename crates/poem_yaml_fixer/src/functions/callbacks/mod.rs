@@ -8,3 +8,4 @@ pub mod handle_emojis_regex;
 pub mod handle_art_generator_instructions_regex;
 pub mod handle_poem_body_start_regex;
 pub mod handle_regex_driven_yaml_fix;
+pub mod handle_new_document;

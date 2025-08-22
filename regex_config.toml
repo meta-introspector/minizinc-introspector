@@ -1,0 +1,4 @@
+[[regexes]]
+name = "document_separator"
+pattern = "^---$"
+callback_function = "handle_new_document"

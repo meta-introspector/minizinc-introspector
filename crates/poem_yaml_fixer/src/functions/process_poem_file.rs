@@ -34,7 +34,7 @@ pub fn process_poem_file(
     let (_fm_start, _fm_end, _front_matter_str_for_parsing, extracted_poem_body_from_fm) = extract_front_matter(&mut lines, &content)?;
     let poem_body_raw_from_file = lines[(_fm_end + 1) as usize ..].join("\n");
 
-    let final_poem_body = if !extracted_poem_body_from_fm.is_empty() {
+    let mut final_poem_body = if !extracted_poem_body_from_fm.is_empty() {
         extracted_poem_body_from_fm
     } else {
         poem_body_raw_from_file
@@ -51,16 +51,53 @@ pub fn process_poem_file(
         pending_meme_description: None,
     };
 
+    if final_poem_body.trim().is_empty() {
+        let archeology_file_path = path.with_extension("md.archeology.md");
+        if archeology_file_path.exists() {
+            println!("  Found archeology file, parsing for lost revisions: {:?}", archeology_file_path);
+            let recovered_fms = crate::functions::archeology_parser::parse_archeology_file(&archeology_file_path, regex_config, function_registry)?;
+
+            let mut recovered_poem_body = String::new();
+            for mut fm in recovered_fms.into_iter().rev() {
+                if fixed_fm.title.is_none() {
+                    fixed_fm.title = fm.title;
+                }
+                if fixed_fm.summary.is_none() {
+                    fixed_fm.summary = fm.summary;
+                }
+                if fixed_fm.keywords.is_none() {
+                    fixed_fm.keywords = fm.keywords;
+                }
+                if fixed_fm.emojis.is_none() {
+                    fixed_fm.emojis = fm.emojis;
+                }
+                if fixed_fm.art_generator_instructions.is_none() {
+                    fixed_fm.art_generator_instructions = fm.art_generator_instructions;
+                }
+                if !fm.memes.is_empty() {
+                    fixed_fm.memes.extend(fm.memes);
+                }
+                if let Some(pb) = fm.poem_body.take() {
+                    recovered_poem_body.push_str(&pb);
+                    recovered_poem_body.push_str("\n");
+                }
+            }
+            final_poem_body = recovered_poem_body;
+        }
+    }
+
     // --- NEW LOGIC: Call the regex-driven YAML fixer ---
     // The handle_regex_driven_yaml_fix function will now populate fixed_fm
     // based on its regex-driven parsing and state management.
-    handle_regex_driven_yaml_fix::handle_regex_driven_yaml_fix(
-        &content, // Pass the full content for the regex parser to work on
-        Vec::new(), // No captures for the root call
-        &mut fixed_fm,
-        regex_config,
-        function_registry,
-    )?;
+    if !_front_matter_str_for_parsing.is_empty() {
+        handle_regex_driven_yaml_fix::handle_regex_driven_yaml_fix(
+            &content, // Pass the full content for the regex parser to work on
+            Vec::new(), // No captures for the root call
+            &mut fixed_fm,
+            regex_config,
+            function_registry,
+        )?;
+    }
     // --- END NEW LOGIC ---
 
     // After processing, populate fixed_fm with metadata from PoemFunctionMetadata
@@ -97,15 +134,18 @@ pub fn process_poem_file(
     if let Some(pb) = fixed_fm.poem_body.take() {
         new_content_parts.push("poem_body: |\n".to_string());
         for line in pb.lines() {
-            new_content_parts.push(format!("  {line}\n")); // Indent each line
+            new_content_parts.push(format!("  {line}"));
         }
-    } else {
-        new_content_parts.push(final_poem_body);
+    } else if !final_poem_body.is_empty() {
+        new_content_parts.push("poem_body: |\n".to_string());
+        for line in final_poem_body.lines() {
+            new_content_parts.push(format!("  {line}"));
+        }
     }
 
     new_content_parts.push("---".to_string());
 
-    let new_content = new_content_parts.join("\n");
+    let new_content = new_content_parts.join("\n") + "\n";
     let new_content_len = new_content.len();
 
     let change_percentage = (original_content_len as f64 - new_content_len as f64).abs() / original_content_len as f64 * 100.0;

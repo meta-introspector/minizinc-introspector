@@ -14,3 +14,5 @@ pub mod test_save_word_index;
 pub mod test_process_memes_with_workflow;
 pub mod test_handle_unmatched_regex_error;
 pub mod process_single_poem_file_for_report;
+pub mod archeology_parser;
+pub mod parse_front_matter_with_regex;
