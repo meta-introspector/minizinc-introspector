@@ -2562,6 +2562,7 @@ name = "poem_formatter"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "poem_macros",
  "regex",
  "serde",
  "serde_yaml",
@@ -2574,6 +2575,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "linkme",
+ "poem_traits",
  "proc-macro2",
  "quote",
  "syn",
@@ -2584,9 +2586,10 @@ name = "poem_macro_impl_test"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "linkme",
  "poem_macro_impl",
+ "quote",
  "syn",
+ "tempfile",
 ]
 
 [[package]]
@@ -2595,6 +2598,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "poem_macros",
+ "tempfile",
 ]
 
 [[package]]
@@ -2618,14 +2622,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "poem_traits"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "serde",
+]
+
+[[package]]
 name = "poem_yaml_fixer"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "clap",
+ "grex",
  "linkme",
  "once_cell",
  "poem_macros",
+ "poem_traits",
  "regex",
  "serde",
  "serde_yaml",

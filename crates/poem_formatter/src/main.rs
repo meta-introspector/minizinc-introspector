@@ -8,6 +8,7 @@ use walkdir::WalkDir;
 use regex::Regex;
 use std::collections::HashMap;
 use poem_macros::poem_function;
+use poem_traits::PoemFrontMatterTrait; // Changed import
 
 // New struct for the structured meme
 #[derive(Debug, PartialEq, Serialize, Deserialize)]

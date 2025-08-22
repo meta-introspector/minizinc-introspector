@@ -2,7 +2,7 @@
 // It processes meme entries in the front matter using a workflow defined by regexes and callbacks.
 
 use std::collections::HashMap;
-use anyhow::Result;
+use anyhow::{Result, anyhow};
 use regex::{Regex,
 	    //Captures
 };
@@ -21,9 +21,11 @@ pub fn process_memes_with_workflow(
     }
 
     for line in front_matter_str_for_parsing.lines() {
+        let mut matched_any_regex = false;
         for entry in &regex_config.regexes {
             if let Some(regex) = compiled_regexes.get(&entry.name) {
                 if let Some(captures_raw) = regex.captures(line) {
+                    matched_any_regex = true;
                     if debug_mode {
                         println!("  Matched Regex: {}", entry.name);
                         println!("    Line: {}", line);
@@ -44,6 +46,9 @@ pub fn process_memes_with_workflow(
                     break;
                 }
             }
+        }
+        if !matched_any_regex {
+            return Err(anyhow!("No regex matched line: {}", line));
         }
     }
     Ok(())

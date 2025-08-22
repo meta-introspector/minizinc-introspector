@@ -33,7 +33,7 @@ members = [
     "crates/poem_yaml_fixer",
     "crates/poem_macros",
     "crates/poem_macro_impl",
-    "crates/poem_macro_impl_test", "crates/poem_macro_test_crate",
+    "crates/poem_macro_impl_test", "crates/poem_macro_test_crate", "crates/poem_traits",
 ]
 
 [patch.crates-io]

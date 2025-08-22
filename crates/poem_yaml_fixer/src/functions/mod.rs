@@ -6,3 +6,4 @@ pub mod save_word_index;
 pub mod process_poem_file;
 pub mod create_function_registry;
 pub mod types;
+pub mod error_handling; // New line

@@ -9,3 +9,4 @@ quote = "1.0"
 proc-macro2 = "1.0"
 anyhow = "1.0"
 linkme = "0.3"
+poem_traits = { path = "../poem_traits" }
