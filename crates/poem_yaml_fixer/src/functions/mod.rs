@@ -26,3 +26,4 @@ pub mod report_printer;
 pub mod initialize_config;
 pub mod process_files;
 pub mod run_app;
+pub mod generate_regex;

@@ -8,6 +8,7 @@ use crate::process_file;
 use crate::functions::report_generator::PoemReportEntry;
 use crate::functions::report_printer::print_detailed_regex_report;
 use crate::functions::report_processing::process_poems_for_report;
+use crate::functions::generate_regex::generate_generalized_regex;
 
 pub fn process_files(
     cli_file: &Option<PathBuf>,
@@ -60,6 +61,32 @@ pub fn process_files(
     // After processing all files, conditionally generate the report
     if cli_report {
         print_detailed_regex_report(&report_entries, current_dir)?;
+
+        let mut all_unmatched_lines: Vec<String> = Vec::new();
+        for entry in &report_entries {
+            if let Some(unmatched) = &entry.unmatched_lines {
+                all_unmatched_lines.extend_from_slice(unmatched);
+            }
+        }
+
+        if !all_unmatched_lines.is_empty() {
+            let generated_regex = generate_generalized_regex(&all_unmatched_lines);
+            let mut detailed_report_content = String::new();
+            detailed_report_content.push_str(&format!("\n--- Generated Regex from Unmatched Lines ---\n"));
+            detailed_report_content.push_str(&format!("{}\n", generated_regex));
+            detailed_report_content.push_str(&format!("-------------------------------------------\n"));
+
+            let detailed_report_path = current_dir.join("regex_match_details.txt");
+            // Append to the file
+            use std::io::Write;
+            let mut file = std::fs::OpenOptions::new()
+                .append(true)
+                .create(true)
+                .open(&detailed_report_path)?;
+            file.write_all(detailed_report_content.as_bytes())?;
+            println!("Generated regex appended to: {:?}\n", detailed_report_path);
+        }
+
         crate::functions::report_generator::generate_and_save_report(report_entries, current_dir)?;
     }
 
