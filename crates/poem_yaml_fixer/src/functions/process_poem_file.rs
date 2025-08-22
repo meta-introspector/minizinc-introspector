@@ -4,22 +4,21 @@
 
 use std::{fs, path::PathBuf, collections::HashMap};
 use anyhow::{Result, anyhow};
-// Removed: use serde_yaml; // No longer directly parsing YAML with serde_yaml
+use serde_yaml; // Re-added: use serde_yaml;
 
 use crate::functions::types::{FixedFrontMatter,
-			      RegexConfig,
 			      WordIndex}; // Import types from the types module
-use poem_traits::{CallbackFn, PoemFrontMatterTrait, PoemFunctionMetadata}; // Import PoemFunctionMetadata
+use poem_traits::{CallbackFn, PoemFrontMatterTrait, PoemFunctionMetadata, RegexConfig, PoemFunctionEntry, FunctionRegistry}; // Import FunctionRegistry
 use crate::functions::extract_front_matter::extract_front_matter;
 // TODO: This function is currently not used. It might be used in future refactoring.
 use crate::functions::parse_front_matter_fields::parse_front_matter_fields;
-use crate::functions::process_memes_with_workflow::process_memes_with_workflow;
+// Removed: use crate::functions::process_memes_with_workflow::process_memes_with_workflow;
 // TODO: These functions are currently not used. They are part of the word indexing feature.
 use crate::functions::extract_words_from_text::extract_words_from_text;
 use crate::functions::save_word_index::{save_word_index};
 
 // Import the new root YAML validation function
-use crate::functions::callbacks::handle_regex_driven_yaml_fix::handle_regex_driven_yaml_fix;
+use crate::functions::callbacks::handle_regex_driven_yaml_fix; // Import directly
 
 
 pub fn process_poem_file(
@@ -28,7 +27,7 @@ pub fn process_poem_file(
     debug_mode: bool,
     dry_run: bool, // Add dry_run parameter
     regex_config: &RegexConfig, // Pass regex_config
-    function_registry: &HashMap<String, (PoemFunctionMetadata, CallbackFn)>,
+    function_registry: &FunctionRegistry,
 ) -> Result<()> {
     let content = fs::read_to_string(path)?;
     let original_content_len = content.len();
@@ -59,7 +58,7 @@ pub fn process_poem_file(
     // --- NEW LOGIC: Call the regex-driven YAML fixer ---
     // The handle_regex_driven_yaml_fix function will now populate fixed_fm
     // based on its regex-driven parsing and state management.
-    handle_regex_driven_yaml_fix(
+    handle_regex_driven_yaml_fix::handle_regex_driven_yaml_fix(
         &content, // Pass the full content for the regex parser to work on
         Vec::new(), // No captures for the root call
         &mut fixed_fm,
@@ -67,11 +66,6 @@ pub fn process_poem_file(
         function_registry,
     )?;
     // --- END NEW LOGIC ---
-
-    // Removed: serde_yaml parsing and direct field setting from parsed_front_matter
-    // Removed: raw_meme_lines extraction and process_memes_with_workflow call here.
-    // The meme processing should now be orchestrated within handle_regex_driven_yaml_fix
-    // or its sub-functions.
 
     // After processing, populate fixed_fm with metadata from PoemFunctionMetadata
     // if the fields are still None (i.e., not set by parsed YAML or meme processing).

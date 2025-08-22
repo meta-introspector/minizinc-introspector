@@ -60,4 +60,11 @@ pub struct Meme {
     pub numerology: Option<String>,
 }
 
+// Type alias for the callback function pointer
 pub type CallbackFn = Box<dyn Fn(&str, Vec<String>, &mut dyn PoemFrontMatterTrait) -> Result<(), anyhow::Error> + Send + Sync + 'static>;
+
+// Type alias for the entry in the distributed slice and function registry
+pub type PoemFunctionEntry = (PoemFunctionMetadata, CallbackFn);
+
+// Type alias for the function registry HashMap
+pub type FunctionRegistry = HashMap<String, &'static PoemFunctionEntry>;

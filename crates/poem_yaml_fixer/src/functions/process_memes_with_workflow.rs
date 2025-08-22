@@ -5,14 +5,14 @@ use std::collections::HashMap;
 use anyhow::{Result, anyhow};
 use regex::Regex; // Removed unused Captures import
 
-use crate::functions::types::{FixedFrontMatter, RegexConfig}; // Import types from the types module
-use poem_traits::{CallbackFn, PoemFunctionMetadata}; // Import PoemFunctionMetadata
+use crate::functions::types::FixedFrontMatter; // Import FixedFrontMatter from the types module
+use poem_traits::{CallbackFn, PoemFunctionMetadata, RegexConfig, FunctionRegistry}; // Import FunctionRegistry
 
 pub fn process_memes_with_workflow(
     meme_lines: &Vec<String>,
     regex_config: &RegexConfig,
     fixed_fm: &mut FixedFrontMatter,
-    function_registry: &HashMap<String, (PoemFunctionMetadata, CallbackFn)>,
+    function_registry: &FunctionRegistry,
     debug_mode: bool,
 ) -> Result<()> {
     let mut compiled_regexes: HashMap<String, Regex> = HashMap::new();

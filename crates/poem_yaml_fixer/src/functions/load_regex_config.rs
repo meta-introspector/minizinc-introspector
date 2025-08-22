@@ -1,6 +1,6 @@
 use anyhow::{Result, anyhow};
 use std::{fs, path::PathBuf};
-use crate::functions::types::RegexConfig;
+use poem_traits::RegexConfig; // Import RegexConfig directly
 
 pub fn load_regex_config(config_path: &PathBuf) -> Result<RegexConfig> {
     println!("Loading regex config from: {:?}", config_path);

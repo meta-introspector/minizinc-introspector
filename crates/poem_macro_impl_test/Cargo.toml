@@ -9,3 +9,4 @@ poem_macro_impl = { path = "../poem_macro_impl" }
 syn = { version = "2.0", features = ["full", "extra-traits"] }
 quote = "1.0"
 tempfile = "3.10.1"
+proc-macro2 = "1.0"

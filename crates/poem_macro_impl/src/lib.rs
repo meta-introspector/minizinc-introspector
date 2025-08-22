@@ -1,11 +1,11 @@
 use proc_macro2::TokenStream;
 use quote::quote;
-use syn::{parse_macro_input, ItemFn, Attribute, LitStr};
+use syn::{ItemFn, LitStr};
 use syn::parse::{Parse, ParseStream};
 use syn::punctuated::Punctuated;
 use syn::token::Comma;
 
-use poem_traits::{RegexEntry, CallbackFn, PoemFunctionMetadata}; // Import PoemFunctionMetadata
+use poem_traits::{RegexEntry, CallbackFn, PoemFunctionMetadata, PoemFunctionEntry}; // Import PoemFunctionEntry
 
 // Struct to parse the attributes for #[poem_function]
 struct PoemFunctionAttrs {
@@ -93,11 +93,12 @@ impl Parse for PoemFunctionAttrs {
 }
 
 #[allow(non_upper_case_globals)]
-pub fn poem_function_impl(attr: TokenStream, input_fn: ItemFn) -> TokenStream {
+pub fn poem_function_impl(attr: proc_macro2::TokenStream, input_fn: ItemFn) -> TokenStream {
     let fn_name = &input_fn.sig.ident;
 
     // Parse the attributes
-    let attrs = parse_macro_input!(attr as PoemFunctionAttrs);
+    let attrs = syn::parse::Parser::parse2(PoemFunctionAttrs::parse, attr).unwrap();
+
     let default_name = fn_name.to_string();
     let default_pattern = format!("^{}$", fn_name.to_string()); // Default pattern based on function name
 
@@ -116,7 +117,7 @@ pub fn poem_function_impl(attr: TokenStream, input_fn: ItemFn) -> TokenStream {
     let helper_fn_name = quote::format_ident!("__get_fn_{}", fn_name);
 
     // Define static_name here, outside the expanded quote! block
-    let static_name = quote::format_ident!("__REGISTER_FN_{}", fn_name);
+    let static_name = quote::format_ident!("__REGISTER_FN_{}", fn_name.to_string().to_uppercase());
 
     let expanded = quote! {
         #input_fn
@@ -128,7 +129,7 @@ pub fn poem_function_impl(attr: TokenStream, input_fn: ItemFn) -> TokenStream {
             })
         }
 
-        pub static #static_name: std::sync::LazyLock<(poem_traits::PoemFunctionMetadata, poem_traits::CallbackFn)> = std::sync::LazyLock::new(|| {
+        pub static #static_name: std::sync::LazyLock<poem_traits::PoemFunctionEntry> = std::sync::LazyLock::new(|| {
             (
                 poem_traits::PoemFunctionMetadata {
                     regex_entry: poem_traits::RegexEntry {
@@ -156,23 +157,23 @@ pub fn poem_header_impl() -> TokenStream {
         use std::collections::HashMap;
         use anyhow::Result;
         use linkme::distributed_slice;
-        use poem_traits::{PoemFrontMatterTrait, Meme, RegexEntry, RegexConfig, CallbackFn, PoemFunctionMetadata}; // Import PoemFunctionMetadata
+        use poem_traits::{PoemFrontMatterTrait, Meme, RegexEntry, RegexConfig, CallbackFn, PoemFunctionMetadata, PoemFunctionEntry, FunctionRegistry}; // Import FunctionRegistry
 
         #[distributed_slice]
         #[allow(non_upper_case_globals)] // Suppress warnings for macro-generated static variables
-        pub static FUNCTIONS: [&'static (PoemFunctionMetadata, CallbackFn)]; // Changed to store (PoemFunctionMetadata, CallbackFn)
+        pub static FUNCTIONS: [&'static PoemFunctionEntry]; // Use PoemFunctionEntry
 
-        pub fn create_function_registry() -> HashMap<String, CallbackFn> {
+        pub fn create_function_registry() -> FunctionRegistry { // Use FunctionRegistry as return type
             let mut registry = HashMap::new();
-            for (metadata, callback_fn) in FUNCTIONS { // Iterate over (PoemFunctionMetadata, CallbackFn)
-                registry.insert(metadata.regex_entry.name.clone(), callback_fn.clone()); // Use regex_entry.name
+            for entry in FUNCTIONS { // Iterate over PoemFunctionEntry
+                registry.insert(entry.0.regex_entry.name.clone(), (*entry).clone()); // Insert the whole PoemFunctionEntry
             }
             registry
         }
 
         pub fn get_default_regex_config() -> RegexConfig {
             let mut regexes = Vec::new();
-            for (metadata, _callback_fn) in FUNCTIONS {
+            for (metadata, _callback_fn) in FUNCTIONS { // Iterate over PoemFunctionEntry
                 regexes.push(metadata.regex_entry.clone()); // Clone the RegexEntry from metadata
             }
             RegexConfig { regexes }

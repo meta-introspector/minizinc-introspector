@@ -2,27 +2,18 @@ use anyhow::{Result, anyhow};
 use poem_traits::PoemFrontMatterTrait;
 use std::collections::HashMap;
 use regex::Regex; // For regex matching
-use poem_traits::{RegexConfig, PoemFunctionMetadata, CallbackFn}; // Import necessary traits and structs
+use poem_traits::{RegexConfig, PoemFunctionMetadata, CallbackFn, FunctionRegistry}; // Import FunctionRegistry
 
 // This function represents the root of the regex-driven YAML fixing process.
 // It will use regex matches to determine the state of the parsing/fixing and guide further actions.
-#[poem_macros::poem_function(
-    name = "regex_driven_yaml_fix",
-    pattern = r"^(---)$", // Matches the start of the YAML block
-    title = "Regex-Driven YAML Fixer",
-    summary = "Fixes YAML using a regex-driven state machine, evaluating poem content.",
-    keywords = "YAML, regex, state_machine, fix, parser, LLM, continuous",
-    emojis = "⚙️🌳",
-    art_generator_instructions = "Generate an image of gears turning within a tree structure, with regex patterns flowing through.",
-    pending_meme_description = "This function is the new root for regex-driven YAML fixing."
-)]
+// Removed #[poem_macros::poem_function(...)]
 #[allow(dead_code)] // This function will be called dynamically
 pub fn handle_regex_driven_yaml_fix(
     full_content: &str, // Changed from _line to full_content
     _captures: Vec<String>,
     fixed_fm: &mut dyn PoemFrontMatterTrait,
     regex_config: &RegexConfig, // Pass regex_config
-    function_registry: &HashMap<String, (PoemFunctionMetadata, CallbackFn)>,
+    function_registry: &FunctionRegistry,
 ) -> Result<(), anyhow::Error> {
     println!("--- Entering Regex-Driven YAML Fixer ---");
 
@@ -70,7 +61,7 @@ pub fn handle_regex_driven_yaml_fix(
                             .collect();
 
                         if let Some((_metadata, callback)) = function_registry.get(&regex_entry.callback_function) {
-                            callback(line, captures, fixed_fm)?;
+                            (*callback)(line, captures, fixed_fm)?;
                         } else {
                             eprintln!("Warning: Callback function '{}' not found for regex '{}'", regex_entry.callback_function, regex_entry.name);
                         }

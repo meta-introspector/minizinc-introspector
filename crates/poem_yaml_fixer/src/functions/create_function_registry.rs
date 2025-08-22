@@ -9,5 +9,4 @@ use poem_traits::{PoemFrontMatterTrait, Meme}; // Import Meme from poem_traits
 #[allow(non_upper_case_globals)] // Suppress warnings for macro-generated static variables
 pub static FUNCTIONS2: [&'static (String, fn() -> Box<dyn Fn(&str, Vec<String>, &mut dyn PoemFrontMatterTrait) -> Result<(), anyhow::Error> + Send + Sync + 'static>)];
 
-// Declare callback modules
-pub mod callbacks;
+// Removed: pub mod callbacks;

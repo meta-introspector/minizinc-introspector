@@ -5,7 +5,8 @@ use poem_macro_impl::{poem_function_impl, poem_header_impl}; // Added poem_heade
 #[proc_macro_attribute]
 pub fn poem_function(attr: TokenStream, item: TokenStream) -> TokenStream {
     let input_fn = parse_macro_input!(item as ItemFn);
-    poem_function_impl(attr.into(), input_fn).into() // Pass attr.into()
+    // Convert proc_macro::TokenStream to proc_macro2::TokenStream for the helper crate
+    poem_function_impl(attr.into(), input_fn).into() // Correct conversion
 }
 
 #[proc_macro]

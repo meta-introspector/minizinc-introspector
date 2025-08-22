@@ -3,6 +3,7 @@ use syn::{parse_quote, ItemFn};
 use poem_macro_impl::poem_function_impl;
 use std::fs;
 use std::process::Command;
+use proc_macro2::TokenStream;
 
 fn main() -> Result<()> {
     // Define a dummy function as if it were input to the macro
@@ -19,8 +20,10 @@ fn main() -> Result<()> {
         }
     };
 
+    let attr_tokens: TokenStream = TokenStream::new();
+
     // Call the macro implementation function directly
-    let expanded_tokens = poem_function_impl(input_fn);
+    let expanded_tokens = poem_function_impl(attr_tokens, input_fn);
 
     // Convert TokenStream to String for writing to file
     let expanded_code_string = expanded_tokens.to_string();

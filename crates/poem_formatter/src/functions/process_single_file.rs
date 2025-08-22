@@ -9,7 +9,7 @@ pub fn process_single_file(
     _max_change_percentage: Option<f64>,
     _debug: bool,
     _regex_config: &RegexConfig,
-    _function_registry: &HashMap<String, Box<dyn for<'a, 'b> Fn(&'a str, Vec<String>, &'b mut (dyn PoemFrontMatterTrait + 'b)) -> Result<(), anyhow::Error> + Send + Sync>>,
+    _function_registry: &poem_traits::FunctionRegistry,
 ) -> Result<()> {
     // Dummy implementation for now
     println!("Processing single file: {:?}", file_path);

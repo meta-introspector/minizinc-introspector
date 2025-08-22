@@ -2593,6 +2593,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "poem_macro_impl",
+ "proc-macro2",
  "quote",
  "syn",
  "tempfile",

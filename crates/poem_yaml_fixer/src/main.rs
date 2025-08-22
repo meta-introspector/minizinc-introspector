@@ -52,7 +52,8 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
-    let function_registry = create_function_registry(); // Call directly as provided by poem_header!
+    use poem_traits::FunctionRegistry; // Import FunctionRegistry
+    let function_registry: FunctionRegistry = create_function_registry(); // Use FunctionRegistry
 
     if let Some(file_path) = cli.file {
         functions::process_poem_file::process_poem_file(
