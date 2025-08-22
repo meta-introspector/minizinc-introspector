@@ -5,7 +5,7 @@ pub fn handle_lookup_embedding_command(word: String) -> Result<()> {
     let parquet_file_path = PathBuf::from("/data/data/com.termux/files/home/storage/github/libminizinc/minizinc_data/huggingface/word_embeddings.parquet");
     let file = File::open(&parquet_file_path)?;
     let builder = ParquetRecordBatchReaderBuilder::try_new(file)?;
-    let mut reader = builder.build()?;
+    let reader = builder.build()?;
 
     let mut found_embedding = false;
     for batch_result in reader {

@@ -18,6 +18,15 @@ pub struct WordIndex {
     pub poems: HashMap<String, HashMap<String, usize>>,
 }
 
+/// A type alias for the function registry, mapping function names to their entries.
+pub type PoemFunctionRegistry = poem_traits::FunctionRegistry;
+
+/// A type alias for the callback function signature used in the registry.
+pub type PoemCallbackFn = poem_traits::CallbackFn;
+
+/// A type alias for a registered poem function entry, consisting of metadata and a callback.
+pub type PoemFunctionEntry = poem_traits::PoemFunctionEntry;
+
 impl PoemFrontMatterTrait for FixedFrontMatter {
     fn get_memes_mut(&mut self) -> &mut Vec<Meme> {
         &mut self.memes

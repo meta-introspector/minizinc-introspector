@@ -1,8 +1,10 @@
 use std::path::PathBuf;
 use clap::Parser;
 use walkdir::WalkDir;
-use anyhow::anyhow; // Add this line
- // Need fs for checking file existence
+ // Updated import
+ // Add this import
+use crate::functions::process_single_poem_file_for_report::process_single_poem_file_for_report; // Add this import
+
 
 poem_macros::poem_header!(); // Call the header macro once
 
@@ -57,14 +59,18 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
-    use poem_traits::FunctionRegistry; // Import FunctionRegistry
-    let function_registry: FunctionRegistry = create_function_registry(); // Use FunctionRegistry
+    use crate::functions::types::PoemFunctionRegistry; // Import PoemFunctionRegistry
+    let function_registry: PoemFunctionRegistry = create_function_registry(); // Use PoemFunctionRegistry
 
     if cli.fast_parse {
         let file_path = cli.file.ok_or_else(|| anyhow::anyhow!("A file path must be provided for fast parsing."))?;
-        println!("Performing fast parse for: {file_path:?}\n");
-        let (fixed_fm, poem_body) = functions::parse_poem_file_direct::parse_poem_file_direct(&file_path)?;
-        println!("Parsed Front Matter: {fixed_fm:#?}\nExtracted Poem Body: {poem_body}");
+        let matched_regexes = process_single_poem_file_for_report(
+            &file_path,
+            &regex_config,
+            &function_registry,
+            cli.debug,
+        )?;
+        println!("Report for {file_path:?}: Matched Regexes: {matched_regexes:?}");
     } else if let Some(file_path) = cli.file {
         functions::process_poem_file::process_poem_file(
             &file_path,
@@ -75,6 +81,7 @@ fn main() -> anyhow::Result<()> {
             &function_registry,
         )?;
     } else {
+        let mut all_matched_regexes: std::collections::HashMap<PathBuf, Vec<String>> = std::collections::HashMap::new();
         for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
             let path = entry.path();
             if path.is_file() && path.extension().is_some_and(|ext| ext == "md") {
@@ -82,19 +89,27 @@ fn main() -> anyhow::Result<()> {
                     continue;
                 }
 
-                println!("Processing: {path:?}
-");
-                let path_buf = path.to_path_buf();
-                functions::process_poem_file::process_poem_file(
-                    &path_buf,
-                    cli.max_change_percentage,
-                    cli.debug,
-                    cli.dry_run, // Pass dry_run
+                let matched_regexes = process_single_poem_file_for_report(
+                    &path.to_path_buf(),
                     &regex_config,
                     &function_registry,
+                    cli.debug,
                 )?;
+                all_matched_regexes.insert(path.to_path_buf(), matched_regexes);
             }
         }
+
+        // Generate summary report
+        println!("\n--- Summary Report ---");
+        for (file_path, matched_regexes) in all_matched_regexes {
+            println!("File: {file_path:?}");
+            if matched_regexes.is_empty() {
+                println!("  No regexes matched.");
+            } else {
+                println!("  Matched Regexes: {matched_regexes:?}");
+            }
+        }
+        println!("----------------------");
     }
 
     Ok(())

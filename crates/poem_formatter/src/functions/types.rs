@@ -1,4 +1,6 @@
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize
+	    //, Serialize
+};
 
 #[derive(Deserialize, Debug, Clone)]
 pub struct RegexEntry {

@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Result, anyhow};
 use grex::RegExpBuilder;
 
 pub fn handle_unmatched_regex_error(file_path: &std::path::PathBuf, error_message: &str) -> Result<()> {
@@ -20,5 +20,8 @@ pub fn handle_unmatched_regex_error(file_path: &std::path::PathBuf, error_messag
     eprintln!("callback_function = \"handle_new_generated_regex\"");
     eprintln!("```");
 
-    Ok(())
+    eprintln!("```");
+
+    // Return an error to indicate that an unmatched regex occurred
+    Err(anyhow!("Unmatched regex error for file: {:?}, message: {}", file_path, error_message))
 }

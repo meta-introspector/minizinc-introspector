@@ -6,15 +6,17 @@ use anyhow::{Result, anyhow};
 use regex::Regex; // Removed unused Captures import
 
 use crate::functions::types::FixedFrontMatter; // Import FixedFrontMatter from the types module
-use poem_traits::{RegexConfig, FunctionRegistry}; // Import FunctionRegistry
+use poem_traits::RegexConfig;
+use crate::functions::types::PoemFunctionRegistry; // Import FunctionRegistry
 
 pub fn process_memes_with_workflow(
     meme_lines: &Vec<String>,
     regex_config: &RegexConfig,
     fixed_fm: &mut FixedFrontMatter,
-    function_registry: &FunctionRegistry,
+    function_registry: &PoemFunctionRegistry,
     debug_mode: bool,
-) -> Result<()> {
+) -> Result<Vec<String>> {
+    let mut matched_regexes: Vec<String> = Vec::new();
     let mut compiled_regexes: HashMap<String, Regex> = HashMap::new();
     for entry in &regex_config.regexes {
         compiled_regexes.insert(entry.name.clone(), Regex::new(&entry.pattern)?);
@@ -32,13 +34,14 @@ pub fn process_memes_with_workflow(
                         println!("    Captures: {captures_raw:?}");
                         println!("    Calling function: {}", entry.callback_function);
                     }
+                    matched_regexes.push(entry.name.clone()); // Add matched regex name to report
                     // Convert captures_raw to Vec<String>
                     let captures: Vec<String> = (0..captures_raw.len())
                         .map(|i| captures_raw.get(i).map_or("", |m| m.as_str()).to_string())
                         .collect();
 
-                    if let Some((_metadata, callback)) = function_registry.get(&entry.callback_function) { // Destructure to get callback
-                        callback(line, captures, fixed_fm)?;
+                    if let Some((_metadata, callback)) = function_registry.get(&entry.callback_function) {
+                        (callback)(line, captures, fixed_fm)?;
                     } else {
                         eprintln!("Warning: Callback function '{}' not found in registry for regex '{}'", entry.callback_function, entry.name);
                     }
@@ -52,5 +55,5 @@ pub fn process_memes_with_workflow(
             return Err(anyhow!("No regex matched line: {}", line));
         }
     }
-    Ok(())
+    Ok(matched_regexes)
 }
