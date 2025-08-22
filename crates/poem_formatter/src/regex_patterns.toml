@@ -1,0 +1,4 @@
+[[regexes]]
+name = "dummy_regex"
+pattern = ".*"
+callback_function = "my_poem_function"
