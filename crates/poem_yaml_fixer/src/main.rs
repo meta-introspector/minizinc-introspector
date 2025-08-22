@@ -82,6 +82,8 @@ fn main() -> anyhow::Result<()> {
         )?;
     } else {
         let mut all_matched_regexes: std::collections::HashMap<PathBuf, Vec<String>> = std::collections::HashMap::new();
+        let mut failed_files: std::collections::HashMap<PathBuf, String> = std::collections::HashMap::new(); // To store files that failed processing
+
         for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
             let path = entry.path();
             if path.is_file() && path.extension().is_some_and(|ext| ext == "md") {
@@ -89,24 +91,38 @@ fn main() -> anyhow::Result<()> {
                     continue;
                 }
 
-                let matched_regexes = process_single_poem_file_for_report(
+                match process_single_poem_file_for_report(
                     &path.to_path_buf(),
                     &regex_config,
                     &function_registry,
                     cli.debug,
-                )?;
-                all_matched_regexes.insert(path.to_path_buf(), matched_regexes);
+                ) {
+                    Ok(matched_regexes) => {
+                        all_matched_regexes.insert(path.to_path_buf(), matched_regexes);
+                    }
+                    Err(e) => {
+                        failed_files.insert(path.to_path_buf(), format!("{}", e));
+                    }
+                }
             }
         }
 
         // Generate summary report
         println!("\n--- Summary Report ---");
         for (file_path, matched_regexes) in all_matched_regexes {
-            println!("File: {file_path:?}");
+            println!("File: {{file_path:?}}");
             if matched_regexes.is_empty() {
                 println!("  No regexes matched.");
             } else {
-                println!("  Matched Regexes: {matched_regexes:?}");
+                println!("  Matched Regexes: {{matched_regexes:?}}");
+            }
+        }
+
+        if !failed_files.is_empty() {
+            println!("\n--- Files that Failed Processing ---");
+            for (file_path, error_msg) in failed_files {
+                println!("File: {{file_path:?}}");
+                println!("  Error: {{error_msg}}");
             }
         }
         println!("----------------------");

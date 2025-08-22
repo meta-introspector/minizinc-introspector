@@ -51,7 +51,7 @@ pub fn process_single_poem_file_for_report(
     // Run in dry-run mode to avoid actual file changes during reporting
     let process_poem_file_result = process_poem_file(
         file_path,
-        None, // max_change_percentage (use default)
+        Some(90.0), // max_change_percentage (allow large changes for reporting)
         debug_mode,
         true, // dry_run = true
         regex_config,
