@@ -4,10 +4,10 @@ pub mod process_memes_with_workflow;
 pub mod extract_words_from_text;
 pub mod save_word_index;
 pub mod process_poem_file;
-pub mod create_function_registry;
+
 pub mod types;
 pub mod error_handling;
-pub mod load_regex_config;
+
 pub mod callbacks; // Add this line
 pub mod parse_poem_file_direct;
 pub mod test_save_word_index;
@@ -17,4 +17,5 @@ pub mod process_single_poem_file_for_report;
 pub mod archeology_parser;
 pub mod parse_front_matter_with_regex;
 pub mod utils; // New line
-//pub mod regex_patterns; // New line
+pub mod report_generator;
+pub mod regex_patterns;

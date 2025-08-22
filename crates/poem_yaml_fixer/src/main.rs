@@ -1,14 +1,13 @@
 use std::path::{Path, PathBuf};
 use clap::Parser;
 use walkdir::WalkDir;
-use serde::{Serialize, Deserialize};
 use crate::functions::types::{FixedFrontMatter, PoemFunctionRegistry};
 use regex::Regex;
 use crate::functions::utils::option_vec_helpers::{is_option_vec_empty, extend_option_vec};
 
 poem_macros::poem_header!();
 
-mod functions;
+pub mod functions;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -32,21 +31,10 @@ struct Cli {
     /// Use direct YAML parsing fast path.
     #[arg(long)]
     fast_parse: bool,
-}
 
-#[derive(Debug, Serialize, Deserialize)]
-struct PoemReportEntry {
-    file_path: String,
-    status: String,
-    matched_patterns: Option<Vec<String>>,
-    error_message: Option<String>,
-    extracted_words_count: Option<usize>,
-    dry_run_changes_applied: bool,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct PoemReport {
-    files: Vec<PoemReportEntry>,
+    /// Generate a report of processed files and matched patterns.
+    #[arg(long)]
+    report: bool,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -73,7 +61,7 @@ fn main() -> anyhow::Result<()> {
 
     let function_registry: PoemFunctionRegistry = create_function_registry();
 
-    let mut report_entries: Vec<PoemReportEntry> = Vec::new();
+    let mut report_entries: Vec<functions::report_generator::PoemReportEntry> = Vec::new();
 
     if let Some(file_path) = cli.file {
         process_file(&file_path, &regex_config, &function_registry, &mut report_entries, cli.debug, cli.dry_run)?;
@@ -89,21 +77,19 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
-    let report = PoemReport { files: report_entries };
-    let report_yaml = serde_yaml::to_string(&report)?;
-    let report_path = current_dir.join("poem_processing_report.yaml");
-    std::fs::write(&report_path, report_yaml)?;
-
-    println!("Report generated at: {:?}", report_path);
+    if cli.report {
+        functions::report_generator::generate_and_save_report(report_entries, &current_dir)?;
+    }
 
     Ok(())
 }
 
-fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: &PoemFunctionRegistry, report_entries: &mut Vec<PoemReportEntry>, debug: bool, dry_run: bool) -> Result<()> {
+fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: &PoemFunctionRegistry, report_entries: &mut Vec<functions::report_generator::PoemReportEntry>, debug: bool, dry_run: bool) -> anyhow::Result<()> {
     println!("Processing file: {:?}", path);
     let content = std::fs::read_to_string(path)?;
 
     let mut stack: Vec<FixedFrontMatter> = vec![FixedFrontMatter::default()];
+    let mut matched_patterns_for_report: Vec<String> = Vec::new();
 
     let compiled_regexes: HashMap<String, Regex> = regex_config
         .regexes
@@ -116,6 +102,7 @@ fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: &Poe
         for regex_entry in &regex_config.regexes {
             if let Some(regex) = compiled_regexes.get(&regex_entry.name) {
                 if regex.is_match(line) {
+                    matched_patterns_for_report.push(regex_entry.name.clone());
                     let captures: Vec<String> = regex.captures(line).map_or(vec![], |caps| {
                         caps.iter().map(|m| m.map_or("".to_string(), |m| m.as_str().to_string())).collect()
                     });
@@ -153,6 +140,7 @@ fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: &Poe
             for regex_entry in &regex_config.regexes {
                 if let Some(regex) = compiled_regexes.get(&regex_entry.name) {
                     if regex.is_match(line) {
+                        matched_patterns_for_report.push(regex_entry.name.clone());
                         let captures: Vec<String> = regex.captures(line).map_or(vec![], |caps| {
                             caps.iter().map(|m| m.map_or("".to_string(), |m| m.as_str().to_string())).collect()
                         });
@@ -231,10 +219,10 @@ fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: &Poe
         println!("Applied changes to: {:?}", path);
     }
 
-    report_entries.push(PoemReportEntry {
+    report_entries.push(functions::report_generator::PoemReportEntry {
         file_path: path.to_string_lossy().into_owned(),
         status: "Success".to_string(),
-        matched_patterns: None,
+        matched_patterns: Some(matched_patterns_for_report),
         error_message: None,
         extracted_words_count: None,
         dry_run_changes_applied: dry_run,

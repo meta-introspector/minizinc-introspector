@@ -1,0 +1,9 @@
+[package]
+name = "regex_extractor"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+regex = "1.5"
+walkdir = "2.3"
+anyhow = "1.0"

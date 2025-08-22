@@ -1,6 +1,6 @@
 // tests/front_matter_fixes.rs
 
-//use crate::functions::types::FixedFrontMatter;
+use crate::functions::types::FixedFrontMatter;
 use poem_traits::Meme; // Assuming Meme is accessible
 use anyhow::Result; // For error handling tests
 

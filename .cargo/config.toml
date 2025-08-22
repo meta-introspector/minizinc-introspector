@@ -1,2 +1,5 @@
 [build]
 rustflags = ["-C", "link-arg=-Wl,-z,nostart-stop-gc"]
+
+[env]
+SKIP_ZOS_FAST_QUERY_BUILD = { value = "1", force = true }
