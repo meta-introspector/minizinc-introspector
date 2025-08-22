@@ -6,6 +6,7 @@ use anyhow::{Result, anyhow};
 use serde_yaml;
 use crate::functions::types::FixedFrontMatter; // Import FixedFrontMatter from types module
 
+#[allow(dead_code)]
 pub fn parse_front_matter_fields(
     front_matter_str_for_parsing: &str,
     fixed_fm: &mut FixedFrontMatter,

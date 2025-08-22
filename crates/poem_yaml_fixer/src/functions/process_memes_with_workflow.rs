@@ -6,8 +6,10 @@ use anyhow::{Result, anyhow};
 use regex::{Regex,
 	    //Captures
 };
-use crate::functions::types::{FixedFrontMatter, RegexConfig, CallbackFn}; // Import types from the types module
+use crate::functions::types::{FixedFrontMatter, RegexConfig}; // Import types from the types module
+use poem_traits::CallbackFn;
 
+#[allow(dead_code)]
 pub fn process_memes_with_workflow(
     front_matter_str_for_parsing: &str,
     regex_config: &RegexConfig,

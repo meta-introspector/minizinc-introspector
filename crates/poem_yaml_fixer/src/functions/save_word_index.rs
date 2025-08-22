@@ -10,6 +10,7 @@ use serde_yaml;
 use crate::functions::types::WordIndex; // Import WordIndex from types module
 
 // Function to save the word index to a file
+#[allow(dead_code)]
 pub fn save_word_index(word_index: &WordIndex, path: &PathBuf) -> Result<()> {
     let yaml_content = serde_yaml::to_string(word_index)?;
     std::fs::write(path, yaml_content)?;

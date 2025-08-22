@@ -2562,10 +2562,16 @@ name = "poem_formatter"
 version = "0.1.0"
 dependencies = [
  "anyhow",
+ "clap",
+ "grex",
+ "linkme",
+ "once_cell",
  "poem_macros",
+ "poem_traits",
  "regex",
  "serde",
  "serde_yaml",
+ "toml 0.5.11",
  "walkdir",
 ]
 
@@ -2598,6 +2604,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "poem_macros",
+ "poem_traits",
  "tempfile",
 ]
 

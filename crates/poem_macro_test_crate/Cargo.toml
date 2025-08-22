@@ -6,6 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-poem_macros = { path = "/data/data/com.termux/files/home/storage/github/libminizinc/crates/poem_macros" }
+poem_macros = { path = "../poem_macros" } # Corrected path
 anyhow = "1.0"
 tempfile = "3.10.1"
+poem_traits = { path = "../poem_traits" }

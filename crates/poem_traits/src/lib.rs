@@ -8,7 +8,7 @@ pub trait PoemFrontMatterTrait {
 }
 
 // Define Meme struct here, as it's part of the trait's interface
-#[derive(Debug, PartialEq, Serialize, Deserialize)] // Add necessary derives
+#[derive(Debug, PartialEq, Serialize, Deserialize, Clone)] // Add necessary derives
 pub struct Meme {
     pub description: String,
     pub template: String,

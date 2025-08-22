@@ -1,8 +1,9 @@
 use proc_macro2::TokenStream;
 use quote::quote;
 use syn::ItemFn;
-//use poem_traits::PoemFrontMatterTrait; // Changed import
 
+
+#[allow(non_upper_case_globals)]
 pub fn poem_function_impl(input_fn: ItemFn) -> TokenStream {
     let fn_name = &input_fn.sig.ident;
 
@@ -34,7 +35,7 @@ pub fn poem_header_impl() -> TokenStream {
     quote! {
         use std::collections::HashMap;
         use anyhow::Result;
-        use once_cell::sync::LazyLock;
+        // Removed: use once_cell::sync::LazyLock;
         use linkme::distributed_slice;
         use poem_traits::{PoemFrontMatterTrait, Meme}; // Import Meme from poem_traits
 
@@ -44,7 +45,7 @@ pub fn poem_header_impl() -> TokenStream {
         pub static FUNCTIONS: [&'static (String, fn() -> PoemFnPtr)];
 
         pub fn create_function_registry() -> &'static HashMap<String, PoemFnPtr> {
-            static REGISTRY: LazyLock<HashMap<String, PoemFnPtr>> = LazyLock::new(|| {
+            static REGISTRY: std::sync::LazyLock<HashMap<String, PoemFnPtr>> = std::sync::LazyLock::new(|| {
                 let mut registry = HashMap::new();
                 for (name, callback_fn_getter) in FUNCTIONS {
                     registry.insert(name.clone(), callback_fn_getter());

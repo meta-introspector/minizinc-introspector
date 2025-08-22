@@ -7,16 +7,17 @@ use anyhow::{Result, anyhow};
 use serde_yaml;
 
 use crate::functions::types::{FixedFrontMatter,
-			      //Meme,
 			      RegexConfig,
-			      //RegexEntry,
-			      WordIndex, CallbackFn}; // Import types from the types module
+			      WordIndex}; // Import types from the types module
+use poem_traits::CallbackFn;
 use crate::functions::extract_front_matter::extract_front_matter;
 use crate::functions::parse_front_matter_fields::parse_front_matter_fields;
 use crate::functions::process_memes_with_workflow::process_memes_with_workflow;
 use crate::functions::extract_words_from_text::extract_words_from_text;
+
 use crate::functions::save_word_index::{save_word_index};
 
+#[allow(dead_code)]
 pub fn process_poem_file(
     path: &PathBuf,
     max_change_percentage: Option<f64>,
@@ -53,9 +54,11 @@ pub fn process_poem_file(
 
     let extracted_words = extract_words_from_text(&final_poem_body);
 
+    let extracted_words_map: HashMap<String, usize> = extracted_words.into_iter().map(|word| (word, 1)).collect();
+
     if debug_mode {
-        println!("\n--- Extracted Words ---");
-        println!("{:?}", extracted_words);
+        println!("\n--- Extracted Words Map ---");
+        println!("{:?}", extracted_words_map);
         println!("-----------------------");
     }
 
@@ -69,7 +72,7 @@ pub fn process_poem_file(
         WordIndex { poems: HashMap::new() }
     };
 
-    word_index.poems.insert(poem_key, extracted_words);
+    word_index.poems.insert(poem_key, extracted_words_map);
     save_word_index(&word_index, &word_index_path)?;
 
     if debug_mode {

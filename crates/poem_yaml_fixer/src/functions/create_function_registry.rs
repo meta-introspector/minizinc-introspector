@@ -24,6 +24,7 @@ pub static FUNCTIONS2: [&'static (String, fn() -> Box<dyn Fn(&str, Vec<String>, 
 
 // Extracted callback functions with #[poem_function] attribute
 #[poem_macros::poem_function]
+#[allow(non_snake_case)]
 pub fn _handle_old_meme_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> Result<(), anyhow::Error> {
     let description = captures[1].trim().to_string();
     let template = captures[2].trim().to_string();
@@ -39,12 +40,14 @@ pub fn _handle_old_meme_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut
 }
 
 #[poem_macros::poem_function]
+#[allow(non_snake_case)]
 pub fn _handle_new_meme_desc_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> Result<(), anyhow::Error> {
     *fixed_fm.get_pending_meme_description_mut() = Some(captures[1].trim().to_string());
     Ok(())
 }
 
 #[poem_macros::poem_function]
+#[allow(non_snake_case)]
 pub fn _handle_new_meme_template_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> Result<(), anyhow::Error> {
     if let Some(description) = fixed_fm.get_pending_meme_description_mut().take() {
         let template = captures[1].trim().to_string();

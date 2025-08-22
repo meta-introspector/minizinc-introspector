@@ -1,26 +1,11 @@
-use std::{fs, path::PathBuf,
-	  //collections::HashMap
-};
-//use anyhow::anyhow; // Removed Result
-use walkdir::WalkDir;
+use std::path::PathBuf;
 use clap::Parser;
 
-//poem_macros::poem_header!(); // Call the header macro
+poem_macros::poem_header!(); // Call the header macro
 
 mod functions; // Declare the functions module
 
-// Import all functions from the functions module
-use crate::functions::process_poem_file::process_poem_file;
-// Removed: use crate::functions::create_function_registry::create_function_registry;
-use crate::functions::error_handling::handle_unmatched_regex_error::handle_unmatched_regex_error; // New import
 
-// Import common types from the types module
-use crate::functions::types::{
-    //FixedFrontMatter, Meme,
-    RegexConfig,
-    //RegexEntry,
-    //WordIndex, CallbackFn
-};
 
 // Add Cli struct
 #[derive(Parser, Debug)]
@@ -40,63 +25,11 @@ struct Cli {
 }
 
 fn main() -> anyhow::Result<()> {
-    let cli = Cli::parse();
+    let _cli = Cli::parse();
 
-    let current_dir = std::env::current_dir()?;
-    let poems_dir = current_dir.join("docs").join("poems");
+    let _regex_config = functions::load_regex_config::load_regex_config()?; // Load regex patterns
 
-    // Load regex patterns from TOML once
-    let regex_config_str = fs::read_to_string("crates/poem_yaml_fixer/src/regex_patterns.toml")?;
-    let regex_config: RegexConfig = toml::from_str(&regex_config_str)?;
-
-    // Create the function registry once
-//    let function_registry = create_function_registry();
-
-    if let Some(file_path) = cli.file {
-        println!("Processing single file: {:?}\n", file_path);
-        match process_poem_file(
-            &file_path,
-            cli.max_change_percentage,
-            cli.debug,
-            &regex_config,
-            function_registry,
-        ) {
-            Ok(_) => println!("Successfully fixed: {:?}\n", file_path),
-            Err(e) => {
-                if e.to_string().contains("No regex matched line:") {
-                    handle_unmatched_regex_error(&file_path, &e.to_string())?;
-                } else {
-                    eprintln!("Error fixing {:?}: {}\n", file_path, e);
-                }
-            }
-        }
-    } else {
-        for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
-            let path = entry.path();
-            if path.is_file() && path.extension().map_or(false, |ext| ext == "md") {
-                if path.file_name().map_or(false, |name| name == "index.md") {
-                    continue;
-                }
-
-                println!("Processing: {:?}\n", path);
-                let path_buf = path.to_path_buf();
-                match process_poem_file(
-                    &path_buf,
-                    cli.max_change_percentage,
-                    cli.debug,
-                    &regex_config,
-                    function_registry,
-                ) {
-                    Ok(_) => println!("Successfully fixed: {:?}\n", path_buf),
-                    Err(e) => {
-                        if e.to_string().contains("No regex matched line:") {
-                            handle_unmatched_regex_error(&path_buf, &e.to_string())?;
-                        }
-                    }
-                }
-            }
-        }
-    }
+    // TODO: Add actual logic for poem_yaml_fixer
 
     Ok(())
 }
