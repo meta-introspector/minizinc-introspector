@@ -1,5 +1,7 @@
 use anyhow::Result;
 use serde::{Serialize, Deserialize};
+use std::path::Path;
+#[cfg(test)]
 use std::path::{Path, PathBuf};
 
 #[derive(Debug, Serialize, Deserialize)]

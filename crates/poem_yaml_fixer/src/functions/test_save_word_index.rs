@@ -1,8 +1,12 @@
 
 
+#[cfg(test)]
 use crate::functions::types::WordIndex;
+#[cfg(test)]
 use std::collections::HashMap;
+#[cfg(test)]
 use std::fs;
+#[cfg(test)]
 use crate::functions::save_word_index::save_word_index;
 
 

@@ -4,6 +4,7 @@ use crate::functions::parse_front_matter_with_regex::parse_front_matter_with_reg
 use poem_traits::{RegexConfig, FunctionRegistry}; // Import FunctionRegistry
 use std::path::PathBuf;
 use crate::functions::process_memes_with_workflow::process_memes_with_workflow;
+//use crate::functions::types::RawFrontMatter; // Import RawFrontMatter
 
 // This function represents the root of the regex-driven YAML fixing process.
 // It will use regex matches to determine the state of the parsing/fixing and guide further actions.
@@ -28,57 +29,39 @@ pub fn handle_regex_driven_yaml_fix(
 
     let front_matter_str = lines.iter().skip(1).take_while(|l| l.trim() != "---").cloned().collect::<Vec<&str>>().join("\n");
 
-    let parsed_fm = parse_front_matter_with_regex(&front_matter_str, regex_config, function_registry)?;
+    let raw_fm = parse_front_matter_with_regex(&front_matter_str, regex_config, function_registry)?;
 
-    // --- Meme Processing ---
-    let mut meme_lines_vec: Vec<String> = Vec::new();
-    let mut in_memes_block = false;
-    for line in front_matter_str.lines() {
-        if line.trim() == "memes:" {
-            in_memes_block = true;
-            continue;
-        }
-        if in_memes_block {
-            if line.starts_with(" ") || line.starts_with("\t") || line.trim().is_empty() {
-                meme_lines_vec.push(line.to_string());
-            } else {
-                in_memes_block = false; // End of memes block
-            }
-        }
+    if let Some(title) = raw_fm.title {
+        fixed_fm.set_title(title);
+    }
+    if let Some(summary) = raw_fm.summary {
+        fixed_fm.set_summary(summary);
+    }
+    if let Some(keywords) = raw_fm.keywords {
+        fixed_fm.set_keywords(keywords);
+    }
+    if let Some(emojis) = raw_fm.emojis {
+        fixed_fm.set_emojis(emojis);
+    }
+    if let Some(art_generator_instructions) = raw_fm.art_generator_instructions {
+        fixed_fm.set_art_generator_instructions(art_generator_instructions);
+    }
+    if let Some(poem_body) = raw_fm.poem_body {
+        fixed_fm.set_poem_body(poem_body);
+    }
+    if let Some(pending_meme_description) = raw_fm.pending_meme_description {
+        fixed_fm.set_pending_meme_description(pending_meme_description);
     }
 
-    if !meme_lines_vec.is_empty() {
-        // Need to pass a dummy PathBuf for file_path, or refactor process_memes_with_workflow
-        // to not require it if it's not used for file operations.
-        // For now, I'll pass a dummy.
+    if let Some(raw_meme_lines) = raw_fm.raw_meme_lines {
         let _processed_meme_lines = process_memes_with_workflow(
-            file_path, // Use the actual file_path
-            &meme_lines_vec,
+            file_path,
+            &raw_meme_lines,
             regex_config,
             fixed_fm,
             function_registry,
             false, // debug_mode, assuming false for now
         )?;
-    }
-    // --- End Meme Processing ---
-
-    if let Some(title) = parsed_fm.title {
-        fixed_fm.set_title(title);
-    }
-    if let Some(summary) = parsed_fm.summary {
-        fixed_fm.set_summary(summary);
-    }
-    // if let Some(keywords) = parsed_fm.keywords { // Commented out: Handled by callback
-    //     fixed_fm.set_keywords(keywords);
-    // }
-    if let Some(emojis) = parsed_fm.emojis {
-        fixed_fm.set_emojis(emojis);
-    }
-    if let Some(art_generator_instructions) = parsed_fm.art_generator_instructions {
-        fixed_fm.set_art_generator_instructions(art_generator_instructions);
-    }
-    if let Some(parsed_memes) = parsed_fm.memes {
-        fixed_fm.get_memes_mut().extend(parsed_memes);
     }
 
     println!("--- Exiting Regex-Driven YAML Fixer ---");

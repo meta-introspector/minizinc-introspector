@@ -1,8 +1,12 @@
 
 
+#[cfg(test)]
 use anyhow::Result;
+#[cfg(test)]
 use crate::functions::error_handling::handle_unmatched_regex_error::handle_unmatched_regex_error;
+#[cfg(test)]
 use crate::functions::error_handling::handle_unmatched_regex_error::RegexMatchErrorContext; // Added import
+#[cfg(test)]
 use std::path::PathBuf;
 
 #[test]

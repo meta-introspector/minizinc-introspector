@@ -30,6 +30,18 @@ pub type PoemCallbackFn = poem_traits::CallbackFn;
 #[allow(dead_code)]
 pub type PoemFunctionEntry = poem_traits::PoemFunctionEntry;
 
+#[derive(Debug, Clone, Default)]
+pub struct RawFrontMatter {
+    pub title: Option<String>,
+    pub summary: Option<String>,
+    pub keywords: Option<String>,
+    pub emojis: Option<String>,
+    pub art_generator_instructions: Option<String>,
+    pub raw_meme_lines: Option<Vec<String>>,
+    pub poem_body: Option<String>,
+    pub pending_meme_description: Option<String>,
+}
+
 impl PoemFrontMatterTrait for FixedFrontMatter {
     fn get_memes_mut(&mut self) -> &mut Vec<Meme> {
         self.memes.get_or_insert_with(Vec::new)

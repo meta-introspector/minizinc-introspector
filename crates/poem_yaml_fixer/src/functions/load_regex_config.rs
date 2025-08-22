@@ -1,3 +1,4 @@
+#[cfg(test)]
 use anyhow::{Result, anyhow};
 use std::{fs, path::PathBuf};
 use poem_traits::{RegexConfig, RegexEntry}; // Import RegexConfig and RegexEntry

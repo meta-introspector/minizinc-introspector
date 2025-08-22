@@ -6,7 +6,7 @@ use anyhow::Result;
 use regex::Regex;
 use std::path::PathBuf;
 
-use crate::functions::types::FixedFrontMatter;
+//use crate::functions::types::FixedFrontMatter;
 use poem_traits::RegexConfig;
 use crate::functions::types::PoemFunctionRegistry;
 use crate::functions::error_handling::handle_unmatched_regex_error::RegexMatchErrorContext;

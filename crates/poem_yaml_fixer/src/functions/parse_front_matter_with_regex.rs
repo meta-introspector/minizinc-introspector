@@ -1,27 +1,28 @@
 // This module contains the logic for parsing front matter with regex.
 
 use anyhow::Result;
-use crate::functions::types::FixedFrontMatter;
+#[cfg(test)]
+use crate::functions::types::{FixedFrontMatter, RawFrontMatter};
 use poem_traits::{RegexConfig, FunctionRegistry};
 use std::collections::HashMap;
 use regex::Regex;
+#[cfg(test)]
 use crate::functions::utils::initialize_memes::initialize_memes_option;
-
+use crate::functions::types::RawFrontMatter;
 pub fn parse_front_matter_with_regex(
     front_matter: &str,
     regex_config: &RegexConfig,
     function_registry: &FunctionRegistry,
-) -> Result<FixedFrontMatter> {
-    let mut fixed_fm = FixedFrontMatter {
+) -> Result<RawFrontMatter> {
+    let mut raw_fm = RawFrontMatter {
         title: None,
         summary: None,
         keywords: None,
         emojis: None,
         art_generator_instructions: None,
-        memes: initialize_memes_option(),
+        raw_meme_lines: None,
         poem_body: None,
         pending_meme_description: None,
-        raw_meme_lines: None,
     };
 
     let lines: Vec<&str> = front_matter.lines().collect();
@@ -46,6 +47,7 @@ pub fn parse_front_matter_with_regex(
 
     // Simulate processing each field in order
     for field_name in expected_fields_order {
+        let mut matched_this_field = false; // Declare here
         if let Some(regex_entry) = regex_config.regexes.iter().find(|e| e.name == field_name) {
             if let Some(regex) = compiled_regexes.get(&regex_entry.name) {
                 if field_name == "memes_field" {
@@ -68,9 +70,9 @@ pub fn parse_front_matter_with_regex(
                             }
                             temp_idx += 1;
                         }
-                        fixed_fm.raw_meme_lines = Some(meme_lines_buffer);
-                        //current_line_idx = temp_idx; // Update current_line_idx to after the memes block
-                        //matched_this_field = true;
+                        raw_fm.raw_meme_lines = Some(meme_lines_buffer);
+                        current_line_idx = temp_idx; // Update current_line_idx to after the memes block
+                        matched_this_field = true;
                         println!("  Extracted raw meme lines.");
                         break; // Move to the next expected field
                     }
@@ -83,15 +85,19 @@ pub fn parse_front_matter_with_regex(
                         matched_this_field = true;
                         println!("  Matched field: {field_name} with line: {line}");
 
-                        let captures: Vec<String> = (0..captures_raw.len())
-                            .map(|i| captures_raw.get(i).map_or("", |m| m.as_str()).to_string())
-                            .collect();
+                        let captured_value = captures_raw.get(1).map_or("", |m| m.as_str()).to_string();
 
-                        if let Some((_metadata, callback)) = function_registry.get(&regex_entry.callback_function) {
-                            (*callback)(line, captures, &mut fixed_fm)?;
-                        } else {
-                            eprintln!("Warning: Callback function '{}' not found for regex '{}'", regex_entry.callback_function, regex_entry.name);
+                        match field_name {
+                            "title_field" => raw_fm.title = Some(captured_value),
+                            "summary_field" => raw_fm.summary = Some(captured_value),
+                            "keywords_field" => raw_fm.keywords = Some(captured_value),
+                            "emojis_field" => raw_fm.emojis = Some(captured_value),
+                            "art_generator_instructions_field" => raw_fm.art_generator_instructions = Some(captured_value),
+                            "poem_body_start" => raw_fm.poem_body = Some(captured_value), // This might need adjustment later for full body
+                            "pending_meme_description" => raw_fm.pending_meme_description = Some(captured_value),
+                            _ => {},
                         }
+
                         current_line_idx += 1; // Move to the next line after matching
                         break; // Move to the next expected field
                     }
@@ -105,5 +111,5 @@ pub fn parse_front_matter_with_regex(
         }
     }
 
-    Ok(fixed_fm)
+    Ok(raw_fm)
 }

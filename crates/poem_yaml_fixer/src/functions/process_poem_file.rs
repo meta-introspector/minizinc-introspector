@@ -8,7 +8,7 @@ use serde_yaml; // Re-added: use serde_yaml;
 
 use crate::functions::types::FixedFrontMatter; // Import types from the types module
 use poem_traits::{RegexConfig, FunctionRegistry}; // Import FunctionRegistry
-use crate::functions::extract_front_matter::extract_front_matter;
+//use crate::functions::extract_front_matter::extract_front_matter;
 // TODO: This function is currently not used. It might be used in future refactoring.
 // Removed: use crate::functions::process_memes_with_workflow::process_memes_with_workflow;
 // TODO: These functions are currently not used. They are part of the word indexing feature.
@@ -60,7 +60,7 @@ pub fn process_poem_file(
                     fixed_fm.summary = fm.summary;
                 }
                 if fixed_fm.keywords.is_none() {
-                    fixed_fm.keywords = fm.keywords;
+                    fixed_fm.keywords = fm.keywords.map(|s| vec![s]);
                 }
                 if fixed_fm.emojis.is_none() {
                     fixed_fm.emojis = fm.emojis;
