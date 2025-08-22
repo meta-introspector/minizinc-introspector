@@ -7,6 +7,8 @@ use crate::functions::parse_poem_file_direct;
 use crate::functions::process_memes_with_workflow;
 use crate::functions::save_word_index;
 use crate::functions::error_handling::handle_unmatched_regex_error::handle_unmatched_regex_error;
+use crate::functions::extract_words_from_text::extract_words_from_text; // Add this import
+use crate::functions::process_poem_file::process_poem_file; // Add this import
 use poem_traits::RegexConfig;
 
 pub fn process_single_poem_file_for_report(
@@ -17,6 +19,13 @@ pub fn process_single_poem_file_for_report(
 ) -> Result<Vec<String>> {
     println!("Processing for report: {:?}\n", file_path);
     let (mut fixed_fm, poem_body) = parse_poem_file_direct::parse_poem_file_direct(file_path)?;
+
+    // Call extract_words_from_text
+    let extracted_words = extract_words_from_text(&poem_body);
+    println!("Extracted Words Count: {}", extracted_words.len());
+    if debug_mode {
+        println!("Extracted Words: {:?}", extracted_words);
+    }
 
     // Call process_memes_with_workflow
     let meme_lines: Vec<String> = poem_body.lines().map(|s| s.to_string()).collect();
@@ -37,6 +46,23 @@ pub fn process_single_poem_file_for_report(
     } else {
         Vec::new()
     };
+
+    // Call process_poem_file (original regex-driven fixer)
+    // Run in dry-run mode to avoid actual file changes during reporting
+    let process_poem_file_result = process_poem_file(
+        file_path,
+        None, // max_change_percentage (use default)
+        debug_mode,
+        true, // dry_run = true
+        regex_config,
+        function_registry,
+    );
+
+    if let Err(e) = process_poem_file_result {
+        println!("Warning: Original process_poem_file failed for {:?}: {}", file_path, e);
+    } else {
+        println!("Original process_poem_file (dry-run) succeeded for {:?}", file_path);
+    }
 
     // Call save_word_index (dummy for now)
     let dummy_word_index = WordIndex {
