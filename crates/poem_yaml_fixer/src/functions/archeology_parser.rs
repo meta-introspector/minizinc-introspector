@@ -1,6 +1,6 @@
 // This module contains the logic for parsing .archeology.md files.
 
-use crate::functions::types::RawFrontMatter;
+//use crate::functions::types::RawFrontMatter;
 use anyhow::Result;
 use std::fs;
 use std::path::Path;

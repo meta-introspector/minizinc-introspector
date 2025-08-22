@@ -5,8 +5,13 @@ use std::fs;
 use crate::functions::extract_front_matter::extract_front_matter;
 use crate::functions::parse_front_matter_fields::parse_front_matter_fields;
 use crate::functions::types::FixedFrontMatter;
+use poem_traits::{RegexConfig, FunctionRegistry};
 
-pub fn parse_poem_file_direct(file_path: &PathBuf) -> Result<(FixedFrontMatter, String)> {
+pub fn parse_poem_file_direct(
+    file_path: &PathBuf,
+    regex_config: &RegexConfig,
+    function_registry: &FunctionRegistry,
+) -> Result<(FixedFrontMatter, String)> {
     let content = fs::read_to_string(file_path)
         .map_err(|e| anyhow!("Failed to read file {}: {}", file_path.display(), e))?;
 
@@ -15,7 +20,7 @@ pub fn parse_poem_file_direct(file_path: &PathBuf) -> Result<(FixedFrontMatter, 
         extract_front_matter(&mut lines, &content)?;
 
     let mut fixed_fm = FixedFrontMatter::default(); // FixedFrontMatter needs to derive Default
-    parse_front_matter_fields(&front_matter_str_for_parsing, &mut fixed_fm)?;
+    parse_front_matter_fields(&front_matter_str_for_parsing, &mut fixed_fm, regex_config, function_registry)?;
 
     Ok((fixed_fm, extracted_poem_body_from_fm))
 }

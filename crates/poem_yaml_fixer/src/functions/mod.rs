@@ -15,9 +15,10 @@ pub mod test_process_memes_with_workflow;
 pub mod test_handle_unmatched_regex_error;
 pub mod process_single_poem_file_for_report;
 pub mod archeology_parser;
-pub mod parse_front_matter_with_regex;
+//pub mod parse_front_matter_with_regex;
 pub mod utils; // New line
 pub mod report_generator;
 pub mod regex_patterns;
 pub mod load_regex_config;
 pub mod report_processing;
+pub mod process_document_with_regex;

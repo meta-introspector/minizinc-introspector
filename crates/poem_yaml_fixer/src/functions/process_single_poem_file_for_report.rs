@@ -18,7 +18,7 @@ pub fn process_single_poem_file_for_report(
     debug_mode: bool,
 ) -> Result<Vec<String>> {
     println!("Processing for report: {:?}\n", file_path);
-    let (mut fixed_fm, poem_body) = parse_poem_file_direct::parse_poem_file_direct(file_path)?;
+    let (mut fixed_fm, poem_body) = parse_poem_file_direct::parse_poem_file_direct(file_path, regex_config, function_registry)?;
 
     // Call extract_words_from_text
     let extracted_words = extract_words_from_text(&poem_body);
