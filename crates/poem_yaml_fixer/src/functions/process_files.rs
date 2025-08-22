@@ -9,6 +9,7 @@ use crate::functions::report_generator::PoemReportEntry;
 use crate::functions::report_printer::print_detailed_regex_report;
 use crate::functions::report_processing::process_poems_for_report;
 use crate::functions::generate_regex::generate_generalized_regex;
+use crate::functions::generate_templates::generate_and_save_new_regex_templates;
 
 pub fn process_files(
     cli_file: &Option<PathBuf>,
@@ -70,21 +71,8 @@ pub fn process_files(
         }
 
         if !all_unmatched_lines.is_empty() {
-            let generated_regex = generate_generalized_regex(&all_unmatched_lines);
-            let mut detailed_report_content = String::new();
-            detailed_report_content.push_str(&format!("\n--- Generated Regex from Unmatched Lines ---\n"));
-            detailed_report_content.push_str(&format!("{}\n", generated_regex));
-            detailed_report_content.push_str(&format!("-------------------------------------------\n"));
-
-            let detailed_report_path = current_dir.join("regex_match_details.txt");
-            // Append to the file
-            use std::io::Write;
-            let mut file = std::fs::OpenOptions::new()
-                .append(true)
-                .create(true)
-                .open(&detailed_report_path)?;
-            file.write_all(detailed_report_content.as_bytes())?;
-            println!("Generated regex appended to: {:?}\n", detailed_report_path);
+            // Call the new function to generate and save regex templates
+            generate_and_save_new_regex_templates(&all_unmatched_lines, current_dir)?;
         }
 
         crate::functions::report_generator::generate_and_save_report(report_entries, current_dir)?;
