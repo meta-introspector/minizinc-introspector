@@ -1,7 +1,7 @@
 use std::path::{PathBuf};
 use clap::Parser;
 use walkdir::WalkDir;
-use poem_yaml_fixer::functions::callbacks::handle_title_regex::handle_title_regex;
+//use poem_yaml_fixer::functions::callbacks::handle_title_regex::handle_title_regex;
 //use poem_yaml_fixer::functions::types::{FixedFrontMatter, PoemFunctionRegistry};
 //use regex::Regex;
 //use poem_yaml_fixer::functions::utils::option_vec_helpers::{is_option_vec_empty, extend_option_vec};

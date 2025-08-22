@@ -1312,18 +1312,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "fix_meme_yaml"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "clap",
- "regex",
- "serde",
- "serde_yaml",
- "walkdir",
-]
-
-[[package]]
 name = "fixedbitset"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2639,10 +2627,6 @@ dependencies = [
  "git2",
  "walkdir",
 ]
-
-[[package]]
-name = "poem_fixer_orchestrator"
-version = "0.1.0"
 
 [[package]]
 name = "poem_formatter"
