@@ -6,6 +6,7 @@ use crate::functions::types::{FixedFrontMatter, PoemFunctionRegistry, PoemFuncti
 use poem_traits::{RegexConfig, PoemFrontMatterTrait}; // Import trait from poem_traits
 
 // Dummy callback function for testing
+#[allow(dead_code)]
 fn dummy_callback(
     _line: &str,
     _captures: Vec<String>,

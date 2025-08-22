@@ -110,19 +110,19 @@ fn main() -> anyhow::Result<()> {
         // Generate summary report
         println!("\n--- Summary Report ---");
         for (file_path, matched_regexes) in all_matched_regexes {
-            println!("File: {{file_path:?}}");
+            println!("File: {:?}", file_path);
             if matched_regexes.is_empty() {
                 println!("  No regexes matched.");
             } else {
-                println!("  Matched Regexes: {{matched_regexes:?}}");
+                println!("  Matched Regexes: {:?}", matched_regexes);
             }
         }
 
         if !failed_files.is_empty() {
             println!("\n--- Files that Failed Processing ---");
             for (file_path, error_msg) in failed_files {
-                println!("File: {{file_path:?}}");
-                println!("  Error: {{error_msg}}");
+                println!("File: {:?}", file_path);
+                println!("  Error: {}", error_msg);
             }
         }
         println!("----------------------");

@@ -25,6 +25,7 @@ pub type PoemFunctionRegistry = poem_traits::FunctionRegistry;
 pub type PoemCallbackFn = poem_traits::CallbackFn;
 
 /// A type alias for a registered poem function entry, consisting of metadata and a callback.
+#[allow(dead_code)]
 pub type PoemFunctionEntry = poem_traits::PoemFunctionEntry;
 
 impl PoemFrontMatterTrait for FixedFrontMatter {
