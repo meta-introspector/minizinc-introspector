@@ -20,7 +20,7 @@ pub fn parse_front_matter_fields(
     if let Some(summary) = parsed_front_matter.get("summary").and_then(|v| v.as_str()) {
         fixed_fm.summary = Some(summary.to_string());
     }
-    if let Some(keywords) = parsed_front_matter.get("keywords").and_then(|v| v.as_str()) {
+    if let Some(_keywords) = parsed_front_matter.get("keywords").and_then(|v| v.as_str()) {
         // fixed_fm.keywords = Some(keywords.to_string()); // Commented out: Handled by callback
     }
     if let Some(emojis) = parsed_front_matter.get("emojis").and_then(|v| v.as_str()) {

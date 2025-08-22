@@ -56,7 +56,7 @@ pub fn get_default_regex_config() -> RegexConfig {
     }
 }
 
-pub fn load_regex_config(path: &PathBuf) -> Result<RegexConfig> {
+pub fn load_regex_config(path: &PathBuf) -> anyhow::Result<RegexConfig> {
     let toml_content = fs::read_to_string(path)?;
     let config: RegexConfig = toml::from_str(&toml_content)?;
     Ok(config)

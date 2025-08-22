@@ -12,7 +12,7 @@ use crate::functions::types::RawFrontMatter;
 pub fn parse_front_matter_with_regex(
     front_matter: &str,
     regex_config: &RegexConfig,
-    function_registry: &FunctionRegistry,
+    _function_registry: &FunctionRegistry,
 ) -> Result<RawFrontMatter> {
     let mut raw_fm = RawFrontMatter {
         title: None,
@@ -71,14 +71,13 @@ pub fn parse_front_matter_with_regex(
                             temp_idx += 1;
                         }
                         raw_fm.raw_meme_lines = Some(meme_lines_buffer);
-                        current_line_idx = temp_idx; // Update current_line_idx to after the memes block
-                        matched_this_field = true;
+                        //_current_line_idx = temp_idx; // Update current_line_idx to after the memes block
+                        //_matched_this_field = true;
                         println!("  Extracted raw meme lines.");
                         break; // Move to the next expected field
                     }
                 }
                 // Find the next line that matches this regex
-                let mut matched_this_field = false;
                 while current_line_idx < lines.len() {
                     let line = lines[current_line_idx];
                     if let Some(captures_raw) = regex.captures(line) {
