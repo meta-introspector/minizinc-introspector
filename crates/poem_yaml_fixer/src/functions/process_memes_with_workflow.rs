@@ -46,7 +46,7 @@ pub fn process_memes_with_workflow(
                     if let Some((_metadata, callback)) = function_registry.get(&entry.callback_function) {
                         (callback)(line, captures, fixed_fm)?;
                     } else {
-                        eprintln!("Warning: Callback function '{}' not found in registry for regex '{}'", entry.callback_function, entry.name);
+                        // eprintln!("Warning: Callback function '{}' not found in registry for regex '{}'", entry.callback_function, entry.name);
                     }
                     break;
                 }

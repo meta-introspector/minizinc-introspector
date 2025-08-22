@@ -14,6 +14,8 @@ use poem_yaml_fixer::functions::load_regex_config::get_default_regex_config;
 use poem_yaml_fixer::create_function_registry;
 use poem_yaml_fixer::process_file;
 
+use poem_yaml_fixer::functions::report_printer::print_detailed_regex_report;
+
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Cli {
@@ -123,6 +125,7 @@ fn main() -> anyhow::Result<()> {
 
         // This block is only executed if cli.report is false
         if cli.report {
+            print_detailed_regex_report(&report_entries, &current_dir)?;
             poem_yaml_fixer::functions::report_generator::generate_and_save_report(report_entries, &current_dir)?;
         }
     }

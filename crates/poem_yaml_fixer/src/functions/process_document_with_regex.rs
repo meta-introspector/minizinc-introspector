@@ -50,7 +50,7 @@ pub fn process_document_with_regex(
                             if let Some((_metadata, callback)) = function_registry.get(&regex_entry.callback_function) {
                                 (*callback)(line, captures, current_fm)?;
                             } else {
-                                eprintln!("Warning: Callback function '{}' not found for regex '{}'", regex_entry.callback_function, regex_entry.name);
+                                // eprintln!("Warning: Callback function '{}' not found for regex '{}'", regex_entry.callback_function, regex_entry.name);
                             }
                         }
                         break; // Only match one regex per line

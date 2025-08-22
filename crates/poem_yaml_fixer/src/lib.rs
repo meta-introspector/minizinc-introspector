@@ -5,7 +5,6 @@ use regex::Regex;
 use crate::functions::types::{FixedFrontMatter, PoemFunctionRegistry};
 use crate::functions::utils::option_vec_helpers::{is_option_vec_empty, extend_option_vec};
 
-
 poem_macros::poem_header!();
 
 pub mod functions;
@@ -16,7 +15,8 @@ pub fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: 
     let content = std::fs::read_to_string(path)?;
 
     let mut stack: Vec<FixedFrontMatter> = vec![FixedFrontMatter::default()];
-    let mut matched_patterns_for_report: Vec<String> = Vec::new();
+    let mut matched_lines_by_regex_for_report: HashMap<String, HashMap<String, usize>> = HashMap::new();
+    let mut unmatched_lines_for_report: Vec<String> = Vec::new();
 
     let compiled_regexes: HashMap<String, Regex> = regex_config
         .regexes
@@ -29,7 +29,16 @@ pub fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: 
         for regex_entry in &regex_config.regexes {
             if let Some(regex) = compiled_regexes.get(&regex_entry.name) {
                 if regex.is_match(line) {
-                    matched_patterns_for_report.push(regex_entry.name.clone());
+                    matched_lines_by_regex_for_report
+                        .entry(regex_entry.name.clone())
+                        .and_modify(|lines_map| {
+                            *lines_map.entry(line.to_string()).or_insert(0) += 1;
+                        })
+                        .or_insert_with(|| {
+                            let mut lines_map = HashMap::new();
+                            lines_map.insert(line.to_string(), 1);
+                            lines_map
+                        });
                     let captures: Vec<String> = regex.captures(line).map_or(vec![], |caps| {
                         caps.iter().map(|m| m.map_or("".to_string(), |m| m.as_str().to_string())).collect()
                     });
@@ -40,6 +49,8 @@ pub fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: 
                         if let Some(current_fm) = stack.last_mut() {
                             if let Some((_metadata, callback)) = function_registry.get(&regex_entry.callback_function) {
                                 (*callback)(line, captures, current_fm)?;
+                            } else {
+                                // eprintln!("Warning: Callback function '{}' not found for regex '{}'", regex_entry.callback_function, regex_entry.name);
                             }
                         }
                     }
@@ -55,6 +66,7 @@ pub fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: 
                 body.push('\n');
                 current_fm.poem_body = Some(body);
             }
+            unmatched_lines_for_report.push(line.to_string());
         }
     }
 
@@ -67,7 +79,16 @@ pub fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: 
             for regex_entry in &regex_config.regexes {
                 if let Some(regex) = compiled_regexes.get(&regex_entry.name) {
                     if regex.is_match(line) {
-                        matched_patterns_for_report.push(regex_entry.name.clone());
+                        matched_lines_by_regex_for_report
+                            .entry(regex_entry.name.clone())
+                            .and_modify(|lines_map| {
+                                *lines_map.entry(line.to_string()).or_insert(0) += 1;
+                            })
+                            .or_insert_with(|| {
+                                let mut lines_map = HashMap::new();
+                                lines_map.insert(line.to_string(), 1);
+                                lines_map
+                            });
                         let captures: Vec<String> = regex.captures(line).map_or(vec![], |caps| {
                             caps.iter().map(|m| m.map_or("".to_string(), |m| m.as_str().to_string())).collect()
                         });
@@ -78,6 +99,8 @@ pub fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: 
                             if let Some(current_fm) = archeology_stack.last_mut() {
                                 if let Some((_metadata, callback)) = function_registry.get(&regex_entry.callback_function) {
                                     (*callback)(line, captures, current_fm)?;
+                                } else {
+                                    // eprintln!("Warning: Callback function '{}' not found for regex '{}'", regex_entry.callback_function, regex_entry.name);
                                 }
                             }
                         }
@@ -93,8 +116,10 @@ pub fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: 
                     body.push('\n');
                     current_fm.poem_body = Some(body);
                 }
+                unmatched_lines_for_report.push(line.to_string());
             }
         }
+        
 
         if let Some(main_fm) = stack.first_mut() {
             for mut recovered_fm in archeology_stack.into_iter() {
@@ -149,10 +174,11 @@ pub fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: 
     report_entries.push(functions::report_generator::PoemReportEntry {
         file_path: path.to_string_lossy().into_owned(),
         status: "Success".to_string(),
-        matched_patterns: Some(matched_patterns_for_report),
+        matched_lines_by_regex: Some(matched_lines_by_regex_for_report),
         error_message: None,
         extracted_words_count: None,
         dry_run_changes_applied: dry_run,
+        unmatched_lines: Some(unmatched_lines_for_report),
     });
 
     Ok(())
