@@ -55,7 +55,7 @@ pub fn handle_unquoted_colon_in_description(
 ) -> Result<()> {
     let problematic_description = captures.get(1).map_or("".to_string(), |s| s.clone());
     Err(anyhow!(
-        "YAML parsing error: Unquoted colon in meme description. Problematic content: \"{}\". Requires manual fix or advanced YAML parsing logic.",
+        "YAML parsing error: Unquoted colon in meme description. Problematic content: \"{}.\" Requires manual fix or advanced YAML parsing logic.",
         problematic_description
     ))
 }

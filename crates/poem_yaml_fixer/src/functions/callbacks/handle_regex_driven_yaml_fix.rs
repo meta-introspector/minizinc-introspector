@@ -33,17 +33,17 @@ pub fn handle_regex_driven_yaml_fix(
     if let Some(summary) = parsed_fm.summary {
         fixed_fm.set_summary(summary);
     }
-    if let Some(keywords) = parsed_fm.keywords {
-        fixed_fm.set_keywords(keywords);
-    }
+    // if let Some(keywords) = parsed_fm.keywords { // Commented out: Handled by callback
+    //     fixed_fm.set_keywords(keywords);
+    // }
     if let Some(emojis) = parsed_fm.emojis {
         fixed_fm.set_emojis(emojis);
     }
     if let Some(art_generator_instructions) = parsed_fm.art_generator_instructions {
         fixed_fm.set_art_generator_instructions(art_generator_instructions);
     }
-    if !parsed_fm.memes.is_empty() {
-        fixed_fm.get_memes_mut().extend(parsed_fm.memes);
+    if let Some(parsed_memes) = parsed_fm.memes {
+        fixed_fm.get_memes_mut().extend(parsed_memes);
     }
 
     println!("--- Exiting Regex-Driven YAML Fixer ---");

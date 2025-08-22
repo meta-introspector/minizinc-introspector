@@ -1,7 +1,8 @@
 use std::collections::HashMap;
+use std::any::Any; // New import
 use poem_traits::{PoemFrontMatterTrait, Meme}; // Import RegexEntry and RegexConfig
 
-#[derive(serde::Deserialize, serde::Serialize, Debug, Clone, Default)]
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone, Default, Any)] // Added Any
 pub struct FixedFrontMatter {
     pub title: Option<String>,
     pub summary: Option<String>,
@@ -29,8 +30,8 @@ pub type PoemCallbackFn = poem_traits::CallbackFn;
 pub type PoemFunctionEntry = poem_traits::PoemFunctionEntry;
 
 impl PoemFrontMatterTrait for FixedFrontMatter {
-    fn get_memes_mut(&mut self) -> &mut Option<Vec<Meme>> {
-        &mut self.memes
+    fn get_memes_mut(&mut self) -> &mut Vec<Meme> {
+        self.memes.get_or_insert_with(Vec::new)
     }
     fn get_pending_meme_description_mut(&mut self) -> &mut Option<String> {
         &mut self.pending_meme_description
@@ -42,14 +43,21 @@ impl PoemFrontMatterTrait for FixedFrontMatter {
     fn set_summary(&mut self, summary: String) {
         self.summary = Some(summary);
     }
-    // Removed set_keywords as it's handled by the callback directly
+    // Re-added set_keywords
+    fn set_keywords(&mut self, keywords: String) {
+        // This will convert the single string into a Vec<String>
+        self.keywords = Some(vec![keywords]);
+    }
     fn set_emojis(&mut self, emojis: String) {
         self.emojis = Some(emojis);
     }
     fn set_art_generator_instructions(&mut self, instructions: String) {
         self.art_generator_instructions = Some(instructions);
     }
-    // Removed add_meme as it's handled by the callback directly
+    // Re-added add_meme
+    fn add_meme(&mut self, meme: Meme) {
+        self.memes.get_or_insert_with(Vec::new).push(meme);
+    }
     fn set_poem_body(&mut self, body: String) {
         self.poem_body = Some(body);
     }

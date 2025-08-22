@@ -46,7 +46,7 @@ pub fn process_poem_file(
         keywords: None,
         emojis: None,
         art_generator_instructions: None,
-        memes: Vec::new(),
+        memes: Some(Vec::new()),
         poem_body: None,
         pending_meme_description: None,
     };
@@ -74,8 +74,10 @@ pub fn process_poem_file(
                 if fixed_fm.art_generator_instructions.is_none() {
                     fixed_fm.art_generator_instructions = fm.art_generator_instructions;
                 }
-                if !fm.memes.is_empty() {
-                    fixed_fm.memes.extend(fm.memes);
+                if let Some(memes) = fm.memes { // fm.memes is Option<Vec<Meme>>, so we need to unwrap
+                    if !memes.is_empty() {
+                        fixed_fm.memes.get_or_insert_with(Vec::new).extend(memes);
+                    }
                 }
                 if let Some(pb) = fm.poem_body.take() {
                     recovered_poem_body.push_str(&pb);
@@ -111,7 +113,7 @@ pub fn process_poem_file(
                 fixed_fm.summary = metadata.summary.clone();
             }
             if fixed_fm.keywords.is_none() {
-                fixed_fm.keywords = metadata.keywords.clone();
+                // fixed_fm.keywords = metadata.keywords.clone(); // Commented out: Handled by callback
             }
             if fixed_fm.emojis.is_none() {
                 fixed_fm.emojis = metadata.emojis.clone();

@@ -211,3 +211,6 @@ This phase focuses on converting comma-separated `keywords` strings into proper 
         let static_poem_function_entry_keywords: &'static PoemFunctionEntry = Box::leak(Box::new((metadata_keywords, callback_keywords)));
         registry.insert("handle_comma_separated_keywords".to_string(), static_poem_function_entry_keywords);
         ```
+
+---
+**Implementation Status:** Implemented in commit `1903c331be7903ead77c74f5d3fb15ea7dc049ac`.
