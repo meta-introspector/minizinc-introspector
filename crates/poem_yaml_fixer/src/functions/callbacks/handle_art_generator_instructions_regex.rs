@@ -15,3 +15,4 @@ pub fn handle_art_generator_instructions_regex(_line: &str, captures: Vec<String
     fixed_fm.set_art_generator_instructions(captures[1].trim().to_string());
     Ok(())
 }
+

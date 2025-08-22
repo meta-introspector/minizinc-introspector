@@ -76,7 +76,7 @@ fn main() -> anyhow::Result<()> {
     };
 
 
-    if cli.report {
+    if cli.report && !cli.manual_parse {
         process_poems_for_report(
             &poems_dir,
             &cli.file,
