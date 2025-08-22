@@ -7,7 +7,7 @@ use std::collections::HashSet;
 fn extract_old_regexes(file_path: &PathBuf) -> anyhow::Result<HashSet<String>> {
     let mut old_regexes = HashSet::new();
     let content = fs::read_to_string(file_path)?;
-    let re = Regex::new(r"pub const \w+: &str = (.*);").?;
+    let re = Regex::new(r"pub const \w+: &str = (.*);").unwrap();
 
     for line in content.lines() {
         if let Some(caps) = re.captures(line) {
@@ -33,9 +33,9 @@ fn main() -> anyhow::Result<()> {
     let mut new_regexes: HashSet<String> = HashSet::new();
 
     // Regex to find any string literal (content within "..." or r#"..."#)
-    let string_literal_regex = Regex::new(r#"(?:r#"(.*?)"|"(.*?)")"#)?;
+    let string_literal_regex = Regex::new(r#"(?:r#"(.*?)"|"(.*?)")"#).unwrap();
     // Regex to check if a string contains common regex metacharacters
-    let metachar_check_regex = Regex::new(r".*[.*+?|(){}\[\]^$\\]+.*")?;
+    let metachar_check_regex = Regex::new(r".*[.*+?|(){}\[\]^$\\]+.*\").unwrap();
 
     for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
         let path = entry.path();

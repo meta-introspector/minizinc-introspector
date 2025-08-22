@@ -38,8 +38,8 @@ mod chunk_generator;
 mod index_writer;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    if env::var("SKIP_ZOS_FAST_QUERY_BUILD").is_ok() {
-        println!("cargo:warning=Skipping ZOS Fast Query build due to SKIP_ZOS_FAST_QUERY_BUILD environment variable.");
+    if cfg!(feature = "skip_build_script") {
+        println!("cargo:warning=Skipping ZOS Fast Query build due to 'skip_build_script' feature.");
         return Ok(());
     }
 

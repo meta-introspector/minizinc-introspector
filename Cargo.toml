@@ -6,7 +6,7 @@ members = [
     "crates/zos-bootstrap",
     "crates/constant_analyzer",
     "crates/constant_analyzer_macros",
-    "crates/minizinc_introspector",
+#    "crates/minizinc_introspector", needs clang
     "crates/minizinc_macro",
     "crates/minizinc_macro_test",
     "doc_organizer",
@@ -16,7 +16,7 @@ members = [
     "crates/minizinc_output_parser",
     "rust_lattice_project",
     "crates/rust_file_finder",
-    "crates/zos-fast-query",
+    #    "crates/zos-fast-query",
     "crates/ragit-string-utils",
     # "crates/vocabulary_dfa_generator",
     # "crates/vocabulary_dfa_lib",

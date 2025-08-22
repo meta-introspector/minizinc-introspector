@@ -6,7 +6,7 @@
 //! It is a simple demonstration of how to use `clang-rs` to perform
 //! basic C++ code analysis.
 
-use clang::*;
+//use clang::*;
 use std::path::Path;
 
 fn main() {

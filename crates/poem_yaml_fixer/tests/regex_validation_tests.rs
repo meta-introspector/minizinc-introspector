@@ -2,7 +2,7 @@ use anyhow::Result;
 use regex::Regex;
 use std::fs;
 use poem_traits::RegexConfig;
-use crate::functions::regex_patterns::{KEYWORDS_REGEX, MALFORMED_MEME_REGEX, UNQUOTED_COLON_REGEX, DOCUMENT_SEPARATOR_REGEX}; // New import
+use poem_yaml_fixer::functions::regex_patterns::{KEYWORDS_REGEX, MALFORMED_MEME_REGEX, UNQUOTED_COLON_REGEX, DOCUMENT_SEPARATOR_REGEX};
 
 #[test]
 fn test_all_configured_regexes_compile() -> Result<()> {

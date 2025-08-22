@@ -19,3 +19,4 @@ pub mod parse_front_matter_with_regex;
 pub mod utils; // New line
 pub mod report_generator;
 pub mod regex_patterns;
+pub mod load_regex_config;
