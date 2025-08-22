@@ -9,7 +9,7 @@ use serde_yaml;
 use crate::functions::types::{FixedFrontMatter,
 			      RegexConfig,
 			      WordIndex}; // Import types from the types module
-use poem_traits::CallbackFn;
+use poem_traits::{CallbackFn, PoemFrontMatterTrait};
 use crate::functions::extract_front_matter::extract_front_matter;
 use crate::functions::parse_front_matter_fields::parse_front_matter_fields;
 use crate::functions::process_memes_with_workflow::process_memes_with_workflow;
@@ -17,7 +17,6 @@ use crate::functions::extract_words_from_text::extract_words_from_text;
 
 use crate::functions::save_word_index::{save_word_index};
 
-#[allow(dead_code)]
 pub fn process_poem_file(
     path: &PathBuf,
     max_change_percentage: Option<f64>,
@@ -49,48 +48,39 @@ pub fn process_poem_file(
         pending_meme_description: None,
     };
 
-    parse_front_matter_fields(&front_matter_str_for_parsing, &mut fixed_fm)?;
-    process_memes_with_workflow(&front_matter_str_for_parsing, regex_config, &mut fixed_fm, function_registry, debug_mode)?;
+    let parsed_front_matter: serde_yaml::Value = serde_yaml::from_str(&front_matter_str_for_parsing)
+        .map_err(|e| anyhow!("Failed to parse front matter YAML: {}", e))?;
 
-    let extracted_words = extract_words_from_text(&final_poem_body);
-
-    let extracted_words_map: HashMap<String, usize> = extracted_words.into_iter().map(|word| (word, 1)).collect();
-
-    if debug_mode {
-        println!("\n--- Extracted Words Map ---");
-        println!("{:?}", extracted_words_map);
-        println!("-----------------------");
+    if let Some(title) = parsed_front_matter.get("title").and_then(|v| v.as_str()) {
+        fixed_fm.set_title(title.to_string());
     }
-
-    let poem_key = fixed_fm.title.clone().unwrap_or_else(|| path.file_stem().unwrap().to_string_lossy().into_owned());
-
-    let word_index_path = PathBuf::from("docs/word_index.yaml");
-    let mut word_index: WordIndex = if word_index_path.exists() {
-        let content = fs::read_to_string(&word_index_path)?;
-        serde_yaml::from_str(&content)?
-    } else {
-        WordIndex { poems: HashMap::new() }
-    };
-
-    word_index.poems.insert(poem_key, extracted_words_map);
-    save_word_index(&word_index, &word_index_path)?;
-
-    if debug_mode {
-        println!("\n--- Updated Word Index ---");
-        println!("{:?}", word_index);
-        println!("--------------------------");
+    if let Some(summary) = parsed_front_matter.get("summary").and_then(|v| v.as_str()) {
+        fixed_fm.set_summary(summary.to_string());
     }
-
+    if let Some(keywords) = parsed_front_matter.get("keywords").and_then(|v| v.as_str()) {
+        fixed_fm.set_keywords(keywords.to_string());
+    }
+    if let Some(emojis) = parsed_front_matter.get("emojis").and_then(|v| v.as_str()) {
+        fixed_fm.set_emojis(emojis.to_string());
+    }
+    if let Some(art_generator_instructions) = parsed_front_matter.get("art_generator_instructions").and_then(|v| v.as_str()) {
+        fixed_fm.set_art_generator_instructions(art_generator_instructions.to_string());
+    }
     let mut new_content_parts = Vec::new();
     new_content_parts.push("---".to_string());
     new_content_parts.push(serde_yaml::to_string(&fixed_fm)?);
-    new_content_parts.push("---".to_string());
 
-    if let Some(ref pb) = fixed_fm.poem_body {
-        new_content_parts.push(pb.clone());
+    // Handle poem_body formatting
+    if let Some(pb) = fixed_fm.poem_body.take() {
+        new_content_parts.push("poem_body: |".to_string());
+        for line in pb.lines() {
+            new_content_parts.push(format!("  {}", line)); // Indent each line
+        }
     } else {
         new_content_parts.push(final_poem_body);
     }
+
+    new_content_parts.push("---".to_string());
 
     let new_content = new_content_parts.join("\n");
     let new_content_len = new_content.len();

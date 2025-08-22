@@ -5,6 +5,15 @@ use serde::{Deserialize, Serialize};
 pub trait PoemFrontMatterTrait {
     fn get_memes_mut(&mut self) -> &mut Vec<Meme>;
     fn get_pending_meme_description_mut(&mut self) -> &mut Option<String>;
+
+    fn set_title(&mut self, title: String);
+    fn set_summary(&mut self, summary: String);
+    fn set_keywords(&mut self, keywords: String);
+    fn set_emojis(&mut self, emojis: String);
+    fn set_art_generator_instructions(&mut self, instructions: String);
+    fn add_meme(&mut self, meme: Meme);
+    fn set_poem_body(&mut self, body: String);
+    fn set_pending_meme_description(&mut self, description: String);
 }
 
 // Define Meme struct here, as it's part of the trait's interface

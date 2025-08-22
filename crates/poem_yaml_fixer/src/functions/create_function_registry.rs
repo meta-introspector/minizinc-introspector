@@ -64,3 +64,45 @@ pub fn _handle_new_meme_template_regex(_line: &str, captures: Vec<String>, fixed
     }
     Ok(())
 }
+
+#[poem_macros::poem_function]
+#[allow(non_snake_case)]
+pub fn handle_title_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> anyhow::Result<()> {
+    fixed_fm.set_title(captures[1].trim().to_string());
+    Ok(())
+}
+
+#[poem_macros::poem_function]
+#[allow(non_snake_case)]
+pub fn handle_summary_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> anyhow::Result<()> {
+    fixed_fm.set_summary(captures[1].trim().to_string());
+    Ok(())
+}
+
+#[poem_macros::poem_function]
+#[allow(non_snake_case)]
+pub fn handle_keywords_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> anyhow::Result<()> {
+    fixed_fm.set_keywords(captures[1].trim().to_string());
+    Ok(())
+}
+
+#[poem_macros::poem_function]
+#[allow(non_snake_case)]
+pub fn handle_emojis_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> anyhow::Result<()> {
+    fixed_fm.set_emojis(captures[1].trim().to_string());
+    Ok(())
+}
+
+#[poem_macros::poem_function]
+#[allow(non_snake_case)]
+pub fn handle_art_generator_instructions_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> anyhow::Result<()> {
+    fixed_fm.set_art_generator_instructions(captures[1].trim().to_string());
+    Ok(())
+}
+
+#[poem_macros::poem_function]
+#[allow(non_snake_case)]
+pub fn handle_poem_body_start_regex(_line: &str, _captures: Vec<String>, _fixed_fm: &mut dyn PoemFrontMatterTrait) -> anyhow::Result<()> {
+    // This function just marks the start of the poem body, no direct action needed here
+    Ok(())
+}

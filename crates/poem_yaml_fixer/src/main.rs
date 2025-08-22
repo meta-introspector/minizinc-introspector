@@ -1,11 +1,10 @@
-use std::path::PathBuf;
+use std::{fs, path::PathBuf};
 use clap::Parser;
+use walkdir::WalkDir;
 
-poem_macros::poem_header!(); // Call the header macro
+poem_macros::poem_header!(); // Call the header macro once
 
-mod functions; // Declare the functions module
-
-
+mod functions; // Declare the functions module once
 
 // Add Cli struct
 #[derive(Parser, Debug)]
@@ -25,11 +24,42 @@ struct Cli {
 }
 
 fn main() -> anyhow::Result<()> {
-    let _cli = Cli::parse();
+    let cli = Cli::parse();
 
-    let _regex_config = functions::load_regex_config::load_regex_config()?; // Load regex patterns
+    let current_dir = std::env::current_dir()?;
+    let poems_dir = current_dir.join("docs").join("poems");
 
-    // TODO: Add actual logic for poem_yaml_fixer
+    let regex_config = functions::load_regex_config::load_regex_config()?; // Load regex patterns
+    let function_registry = create_function_registry(); // Call directly as provided by poem_header!
+
+    if let Some(file_path) = cli.file {
+        functions::process_poem_file::process_poem_file(
+            &file_path,
+            cli.max_change_percentage,
+            cli.debug,
+            &regex_config,
+            &function_registry,
+        )?;
+    } else {
+        for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
+            let path = entry.path();
+            if path.is_file() && path.extension().map_or(false, |ext| ext == "md") {
+                if path.file_name().map_or(false, |name| name == "index.md") {
+                    continue;
+                }
+
+                println!("Processing: {:?}\n", path);
+                let path_buf = path.to_path_buf();
+                functions::process_poem_file::process_poem_file(
+                    &path_buf,
+                    cli.max_change_percentage,
+                    cli.debug,
+                    &regex_config,
+                    &function_registry,
+                )?;
+            }
+        }
+    }
 
     Ok(())
 }

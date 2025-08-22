@@ -13,3 +13,33 @@ callback_function = "handle_new_meme_desc_regex"
 name = "new_meme_template_regex"
 pattern = "^\\s*template:\\s*(.*?)"
 callback_function = "handle_new_meme_template_regex"
+
+[[regexes]]
+name = "title_regex"
+pattern = "^title:\\s*(.*)"
+callback_function = "handle_title_regex"
+
+[[regexes]]
+name = "summary_regex"
+pattern = "^summary:\\s*(.*)"
+callback_function = "handle_summary_regex"
+
+[[regexes]]
+name = "keywords_regex"
+pattern = "^keywords:\\s*(.*)"
+callback_function = "handle_keywords_regex"
+
+[[regexes]]
+name = "emojis_regex"
+pattern = "^emojis:\\s*(.*)"
+callback_function = "handle_emojis_regex"
+
+[[regexes]]
+name = "art_generator_instructions_regex"
+pattern = "^art_generator_instructions:\\s*(.*)"
+callback_function = "handle_art_generator_instructions_regex"
+
+[[regexes]]
+name = "poem_body_start_regex"
+pattern = "^poem_body:\\s*\\|"
+callback_function = "handle_poem_body_start_regex"

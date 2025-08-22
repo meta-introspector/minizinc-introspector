@@ -11,7 +11,7 @@ use poem_traits::CallbackFn;
 
 #[allow(dead_code)]
 pub fn process_memes_with_workflow(
-    front_matter_str_for_parsing: &str,
+    meme_lines: &Vec<String>,
     regex_config: &RegexConfig,
     fixed_fm: &mut FixedFrontMatter,
     function_registry: &HashMap<String, CallbackFn>,
@@ -22,7 +22,7 @@ pub fn process_memes_with_workflow(
         compiled_regexes.insert(entry.name.clone(), Regex::new(&entry.pattern)?);
     }
 
-    for line in front_matter_str_for_parsing.lines() {
+    for line in meme_lines {
         let mut matched_any_regex = false;
         for entry in &regex_config.regexes {
             if let Some(regex) = compiled_regexes.get(&entry.name) {
@@ -49,7 +49,8 @@ pub fn process_memes_with_workflow(
                 }
             }
         }
-        if !matched_any_regex {
+        // Only return error if no regex matched and the line is not empty
+        if !matched_any_regex && !line.trim().is_empty() {
             return Err(anyhow!("No regex matched line: {}", line));
         }
     }
