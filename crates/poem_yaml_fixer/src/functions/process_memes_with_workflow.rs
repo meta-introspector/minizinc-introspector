@@ -3,13 +3,11 @@
 
 use std::collections::HashMap;
 use anyhow::{Result, anyhow};
-use regex::{Regex,
-	    //Captures
-};
+use regex::Regex; // Removed unused Captures import
+
 use crate::functions::types::{FixedFrontMatter, RegexConfig}; // Import types from the types module
 use poem_traits::CallbackFn;
 
-#[allow(dead_code)]
 pub fn process_memes_with_workflow(
     meme_lines: &Vec<String>,
     regex_config: &RegexConfig,

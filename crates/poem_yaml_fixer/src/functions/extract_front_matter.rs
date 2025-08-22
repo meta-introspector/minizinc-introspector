@@ -2,10 +2,8 @@
 // It is responsible for parsing the YAML front matter delimiters and extracting
 // the front matter content and the raw poem body from the input text.
 
-//use std::path::PathBuf;
 use anyhow::{Result, anyhow};
 
-#[allow(dead_code)]
 pub fn extract_front_matter(lines: &mut Vec<&str>, content: &str) -> Result<(isize, isize, String, String)> {
     let mut fm_start = -1;
     let mut fm_end = -1;

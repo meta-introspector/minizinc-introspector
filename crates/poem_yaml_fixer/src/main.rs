@@ -14,13 +14,21 @@ struct Cli {
     #[arg(short, long, value_name = "FILE_PATH")]
     file: Option<PathBuf>,
 
-    /// Maximum allowed percentage of content reduction. Aborts if reduction exceeds this. Defaults to 1.0.
+    /// Maximum allowed percentage of content reduction. Aborts if reduction exceeds this.
     #[arg(long, value_name = "PERCENTAGE")]
     max_change_percentage: Option<f64>,
 
     /// Enable debug output, dumping findings in YAML format.
     #[arg(long)]
     debug: bool,
+
+    /// Perform a dry run, showing changes without writing to disk.
+    #[arg(long)]
+    dry_run: bool,
+
+    /// Optional path to a TOML file containing regex configurations for meme processing.
+    #[arg(long, value_name = "FILE_PATH")]
+    regex_config_path: Option<PathBuf>,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -29,7 +37,12 @@ fn main() -> anyhow::Result<()> {
     let current_dir = std::env::current_dir()?;
     let poems_dir = current_dir.join("docs").join("poems");
 
-    let regex_config = functions::load_regex_config::load_regex_config()?; // Load regex patterns
+    let regex_config = if let Some(config_path) = cli.regex_config_path {
+        functions::load_regex_config::load_regex_config(&config_path)?
+    } else {
+        // If no config path is provided, load a default empty config
+        functions::types::RegexConfig { regexes: Vec::new() }
+    };
     let function_registry = create_function_registry(); // Call directly as provided by poem_header!
 
     if let Some(file_path) = cli.file {
@@ -37,6 +50,7 @@ fn main() -> anyhow::Result<()> {
             &file_path,
             cli.max_change_percentage,
             cli.debug,
+            cli.dry_run, // Pass dry_run
             &regex_config,
             &function_registry,
         )?;
@@ -54,6 +68,7 @@ fn main() -> anyhow::Result<()> {
                     &path_buf,
                     cli.max_change_percentage,
                     cli.debug,
+                    cli.dry_run, // Pass dry_run
                     &regex_config,
                     &function_registry,
                 )?;

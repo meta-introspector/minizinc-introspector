@@ -1,7 +1,6 @@
 use std::collections::HashMap;
 use poem_traits::{PoemFrontMatterTrait, Meme};
 
-#[allow(dead_code)]
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct RegexEntry {
     pub name: String,
@@ -9,7 +8,6 @@ pub struct RegexEntry {
     pub callback_function: String,
 }
 
-#[allow(dead_code)]
 #[derive(serde::Deserialize, Debug, Clone)]
 pub struct RegexConfig {
     pub regexes: Vec<RegexEntry>,
@@ -65,4 +63,3 @@ impl PoemFrontMatterTrait for FixedFrontMatter {
         self.pending_meme_description = Some(description);
     }
 }
-

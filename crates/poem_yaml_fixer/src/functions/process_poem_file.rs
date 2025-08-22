@@ -21,6 +21,7 @@ pub fn process_poem_file(
     path: &PathBuf,
     max_change_percentage: Option<f64>,
     debug_mode: bool,
+    dry_run: bool, // Add dry_run parameter
     regex_config: &RegexConfig, // Pass regex_config
     function_registry: &HashMap<String, CallbackFn>, // Pass function_registry
 ) -> Result<()> {
@@ -66,15 +67,37 @@ pub fn process_poem_file(
     if let Some(art_generator_instructions) = parsed_front_matter.get("art_generator_instructions").and_then(|v| v.as_str()) {
         fixed_fm.set_art_generator_instructions(art_generator_instructions.to_string());
     }
+
+    // Extract raw meme lines for processing by workflow
+    let mut raw_meme_lines: Vec<String> = Vec::new();
+    if let Some(memes_value) = parsed_front_matter.get("memes") {
+        if let Some(memes_seq) = memes_value.as_sequence() {
+            for meme_item in memes_seq {
+                if let Ok(meme_str) = serde_yaml::to_string(meme_item) {
+                    raw_meme_lines.push(meme_str.trim().to_string());
+                }
+            }
+        }
+    }
+
+    // Process memes with workflow
+    process_memes_with_workflow(
+        &raw_meme_lines,
+        regex_config,
+        &mut fixed_fm,
+        function_registry,
+        debug_mode,
+    )?;
+
     let mut new_content_parts = Vec::new();
     new_content_parts.push("---".to_string());
     new_content_parts.push(serde_yaml::to_string(&fixed_fm)?);
 
     // Handle poem_body formatting
     if let Some(pb) = fixed_fm.poem_body.take() {
-        new_content_parts.push("poem_body: |".to_string());
+        new_content_parts.push("poem_body: |\n".to_string());
         for line in pb.lines() {
-            new_content_parts.push(format!("  {}", line)); // Indent each line
+            new_content_parts.push(format!("  {}\n", line)); // Indent each line
         }
     } else {
         new_content_parts.push(final_poem_body);
@@ -98,7 +121,21 @@ pub fn process_poem_file(
         ));
     }
 
-    fs::write(path, new_content)?;
+    // Only write if not in dry_run mode and content has changed
+    if !dry_run {
+        if new_content != content {
+            fs::write(path, new_content)?;
+            println!("  Changes applied to: {:?}", path);
+        } else {
+            println!("  No changes needed for: {:?}", path);
+        }
+    } else {
+        if new_content != content {
+            println!("  Dry run: Would apply changes to: {:?}", path);
+        } else {
+            println!("  Dry run: No changes needed for: {:?}", path);
+        }
+    }
 
     if debug_mode {
         println!("\n--- Debug Output (Fixed Front Matter) ---");

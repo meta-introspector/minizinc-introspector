@@ -9,6 +9,7 @@ pub fn process_single_file(
     file_path: &PathBuf,
     max_change_percentage: Option<f64>,
     debug_mode: bool,
+    dry_run: bool, // Add dry_run parameter
     regex_config: &RegexConfig,
     function_registry: &HashMap<String, Box<dyn Fn(&str, Vec<String>, &mut dyn poem_traits::PoemFrontMatterTrait) -> anyhow::Result<(), anyhow::Error> + Send + Sync + 'static>>,
 ) -> Result<()> {
@@ -17,6 +18,7 @@ pub fn process_single_file(
         file_path,
         max_change_percentage,
         debug_mode,
+        dry_run, // Pass dry_run
         regex_config,
         function_registry,
     ) {
@@ -25,8 +27,7 @@ pub fn process_single_file(
             if e.to_string().contains("No regex matched line:") {
                 handle_unmatched_regex_error(file_path, &e.to_string())?;
             } else {
-                eprintln!("Error fixing {:?}: {}
-", file_path, e);
+                eprintln!("Error fixing {:?}: {}\n", file_path, e);
             }
         }
     }
