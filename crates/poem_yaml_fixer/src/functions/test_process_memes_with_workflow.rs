@@ -1,10 +1,4 @@
-use anyhow::Result;
-// use std::collections::HashMap;
-// use regex::Regex;
-
-// use crate::functions::types::{FixedFrontMatter, PoemFunctionRegistry, PoemFunctionEntry, PoemCallbackFn}; // Import from local types
-// use poem_traits::{RegexConfig, PoemFrontMatterTrait}; // Import trait from poem_traits
-
+#![allow(unused_imports)]
 use anyhow::Result;
 use std::collections::HashMap;
 use regex::Regex;

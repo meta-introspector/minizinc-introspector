@@ -1,15 +1,9 @@
 
 
-//use    crate::functions::error_handling::handle_unmatched_regex_error::handle_unmatched_regex_error;
-//use std::path::PathBuf;
-//use anyhow::Result;
-
-
+#![allow(unused_imports)]
 use crate::functions::error_handling::handle_unmatched_regex_error::handle_unmatched_regex_error;
 use std::path::PathBuf;
 use anyhow::Result;
-
-#[test]
 
 #[test]
 fn test_handle_unmatched_regex_error() -> Result<()> {
