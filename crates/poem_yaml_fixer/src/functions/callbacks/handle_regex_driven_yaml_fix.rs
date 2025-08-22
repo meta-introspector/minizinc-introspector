@@ -6,8 +6,16 @@ use crate::functions::process_document_with_regex::process_document_with_regex;
 
 // This function represents the root of the regex-driven YAML fixing process.
 // It will use regex matches to determine the state of the parsing/fixing and guide further actions.
-// Removed #[poem_macros::poem_function(...)]
-#[allow(dead_code)] // This function will be called dynamically
+// #[poem_macros::poem_function(
+//     name = "handle_regex_driven_yaml_fix",
+//     pattern = "a^", // Placeholder pattern that won't match anything
+//     title = "Regex Driven YAML Fix",
+//     summary = "A top-level function for regex-driven YAML fixing.",
+//     keywords = "regex, yaml, fix",
+//     emojis = "🛠️✨",
+//     art_generator_instructions = "Generate an image of a YAML file being fixed by regex.",
+//     pending_meme_description = "This is a pending description for the regex driven YAML fix."
+// )]
 pub fn handle_regex_driven_yaml_fix(
     file_path: &PathBuf, // Added file_path
     full_content: &str, // Changed from _line to full_content

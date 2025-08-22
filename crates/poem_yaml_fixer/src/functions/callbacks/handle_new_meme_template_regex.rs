@@ -11,7 +11,6 @@ use poem_traits::{PoemFrontMatterTrait, Meme};
     art_generator_instructions = "Generate an image of a blank canvas with a brush.",
     pending_meme_description = "This is a pending description for a new meme template."
 )]
-#[allow(dead_code)] // This function is called dynamically via the function registry
 pub fn handle_new_meme_template_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> Result<(), anyhow::Error> {
     if let Some(description) = fixed_fm.get_pending_meme_description_mut().take() {
         let template = captures[1].trim().to_string();

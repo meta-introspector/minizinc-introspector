@@ -1,12 +1,14 @@
 use std::path::{PathBuf};
 use clap::Parser;
 use walkdir::WalkDir;
+use poem_yaml_fixer::functions::types::FixedFrontMatter; // Added for manual_parse_poem_file
+use poem_yaml_fixer::manual_parser::manual_parse_poem_file; // Import the manual parser
 //use poem_yaml_fixer::functions::callbacks::handle_title_regex::handle_title_regex;
 //use poem_yaml_fixer::functions::types::{FixedFrontMatter, PoemFunctionRegistry};
 //use regex::Regex;
 //use poem_yaml_fixer::functions::utils::option_vec_helpers::{is_option_vec_empty, extend_option_vec};
 //use poem_yaml_fixer::functions::process_single_poem_file_for_report::process_single_poem_file_for_report;
-use poem_yaml_fixer::functions::types::PoemFunctionRegistry;
+
 use poem_yaml_fixer::functions::report_processing::process_poems_for_report;
 use poem_yaml_fixer::functions::load_regex_config::get_default_regex_config;
 use poem_yaml_fixer::create_function_registry;
@@ -38,6 +40,10 @@ struct Cli {
     /// Generate a report of processed files and matched patterns.
     #[arg(long)]
     report: bool,
+
+    /// Use the manual parser for testing purposes.
+    #[arg(long)]
+    manual_parse: bool,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -46,23 +52,29 @@ fn main() -> anyhow::Result<()> {
     let current_dir = std::env::current_dir()?;
     let poems_dir = current_dir.join("docs").join("poems");
 
-    let mut regex_config = get_default_regex_config();
+    // Only initialize regex_config and function_registry if not using manual_parse
+    let (regex_config, function_registry) = if cli.manual_parse {
+        // Provide dummy values or handle as needed for manual parsing
+        (get_default_regex_config(), create_function_registry()) // Still need these types, but they won't be used for lookup
+    } else {
+        let mut regex_config = get_default_regex_config();
 
-    let external_config_path = current_dir.join("regex_config.toml");
-    if external_config_path.exists() {
-        println!("Loading external regex config from: {:?}", external_config_path);
-        let external_config = poem_yaml_fixer::functions::load_regex_config::load_regex_config(&external_config_path)?;
+        let external_config_path = current_dir.join("regex_config.toml");
+        if external_config_path.exists() {
+            println!("Loading external regex config from: {:?}", external_config_path);
+            let external_config = poem_yaml_fixer::functions::load_regex_config::load_regex_config(&external_config_path)?;
 
-        for external_entry in external_config.regexes {
-            if let Some(default_entry) = regex_config.regexes.iter_mut().find(|e| e.name == external_entry.name) {
-                *default_entry = external_entry;
-            } else {
-                regex_config.regexes.push(external_entry);
+            for external_entry in external_config.regexes {
+                if let Some(default_entry) = regex_config.regexes.iter_mut().find(|e| e.name == external_entry.name) {
+                    *default_entry = external_entry;
+                } else {
+                    regex_config.regexes.push(external_entry);
+                }
             }
         }
-    }
+        (regex_config, create_function_registry())
+    };
 
-    let function_registry: PoemFunctionRegistry = create_function_registry();
 
     if cli.report {
         process_poems_for_report(
@@ -75,7 +87,18 @@ fn main() -> anyhow::Result<()> {
     } else {
         let mut report_entries: Vec<poem_yaml_fixer::functions::report_generator::PoemReportEntry> = Vec::new();
         if let Some(file_path) = cli.file {
-            process_file(&file_path, &regex_config, &function_registry, &mut report_entries, cli.debug, cli.dry_run)?;
+            if cli.manual_parse {
+                println!("Using manual parser for: {:?}", file_path);
+                let content = std::fs::read_to_string(&file_path)?;
+                let mut fixed_fm = FixedFrontMatter::default();
+                manual_parse_poem_file(&content, &mut fixed_fm)?;
+                // For manual parse, we just print the result for now
+                println!("--- Manual Parse Result (Fixed Front Matter) ---");
+                println!("{}", serde_yaml::to_string(&fixed_fm)?);
+                println!("------------------------------------------------");
+            } else {
+                process_file(&file_path, &regex_config, &function_registry, &mut report_entries, cli.debug, cli.dry_run)?;
+            }
         } else {
             for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
                 let path = entry.path();
@@ -83,7 +106,17 @@ fn main() -> anyhow::Result<()> {
                     if path.file_name().is_some_and(|name| name.to_str().unwrap_or("").ends_with(".archeology.md")) {
                         continue;
                     }
-                    process_file(path, &regex_config, &function_registry, &mut report_entries, cli.debug, cli.dry_run)?;
+                    if cli.manual_parse {
+                        println!("Using manual parser for: {:?}", path);
+                        let content = std::fs::read_to_string(&path)?;
+                        let mut fixed_fm = FixedFrontMatter::default();
+                        manual_parse_poem_file(&content, &mut fixed_fm)?;
+                        println!("--- Manual Parse Result (Fixed Front Matter) ---");
+                        println!("{}", serde_yaml::to_string(&fixed_fm)?);
+                        println!("------------------------------------------------");
+                    } else {
+                        process_file(path, &regex_config, &function_registry, &mut report_entries, cli.debug, cli.dry_run)?;
+                    }
                 }
             }
         }

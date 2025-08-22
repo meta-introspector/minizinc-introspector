@@ -9,6 +9,7 @@ use crate::functions::utils::option_vec_helpers::{is_option_vec_empty, extend_op
 poem_macros::poem_header!();
 
 pub mod functions;
+pub mod manual_parser;
 
 pub fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: &PoemFunctionRegistry, report_entries: &mut Vec<functions::report_generator::PoemReportEntry>, debug: bool, dry_run: bool) -> anyhow::Result<()> {
     println!("Processing file: {:?}", path);

@@ -10,7 +10,7 @@ use poem_traits::PoemFrontMatterTrait;
     art_generator_instructions = "Generate an image of a scroll unrolling.",
     pending_meme_description = "This is a pending description for the poem body start marker."
 )]
-#[allow(dead_code)] // This function is called dynamically via the function registry
+
 pub fn handle_poem_body_start_regex(_line: &str, _captures: Vec<String>, _fixed_fm: &mut dyn PoemFrontMatterTrait) -> anyhow::Result<()> {
     // This function just marks the start of the poem body, no direct action needed here
     Ok(())

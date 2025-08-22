@@ -14,7 +14,6 @@ use std::collections::HashMap;
     art_generator_instructions = "Generate an image of a tree with roots validating a document.",
     pending_meme_description = "This function is the entry point for the new YAML validation scheme."
 )]
-#[allow(dead_code)] // This function will be called dynamically
 pub fn handle_root_yaml_validation(
     _line: &str, // The line that matched the pattern (e.g., "---")
     _captures: Vec<String>, // Captures from the regex match

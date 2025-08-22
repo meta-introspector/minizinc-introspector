@@ -3,7 +3,7 @@ use poem_traits::PoemFrontMatterTrait;
 
 
 #[poem_macros::poem_function]
-#[allow(dead_code)] // This function will be called dynamically
+
 pub fn handle_new_document(
     _line: &str,
     _captures: Vec<String>,
