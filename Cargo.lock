@@ -2863,6 +2863,7 @@ dependencies = [
  "anyhow",
  "clap",
  "grex",
+ "lazy_static",
  "linkme",
  "once_cell",
  "poem_macros",

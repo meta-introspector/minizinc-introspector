@@ -1,9 +1,8 @@
 // tests/front_matter_fixes.rs
 
-//use poem_yaml_fixer::functions::types::FixedFrontMatter;
+//use crate::functions::types::FixedFrontMatter;
 use poem_traits::Meme; // Assuming Meme is accessible
 use anyhow::Result; // For error handling tests
-use crate::functions::types::FixedFrontMatter; // Added import
 
 // Helper function to simulate front matter processing
 // In a real test, this would call the actual processing logic of poem_yaml_fixer

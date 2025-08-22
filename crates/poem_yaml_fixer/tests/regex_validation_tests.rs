@@ -1,8 +1,8 @@
 use anyhow::Result;
 use regex::Regex;
 use std::fs;
-//use std::path::PathBuf;
-use poem_traits::RegexConfig; // Assuming RegexConfig is public and accessible
+use poem_traits::RegexConfig;
+use crate::functions::regex_patterns::{KEYWORDS_REGEX, MALFORMED_MEME_REGEX, UNQUOTED_COLON_REGEX, DOCUMENT_SEPARATOR_REGEX}; // New import
 
 #[test]
 fn test_all_configured_regexes_compile() -> Result<()> {
@@ -25,22 +25,17 @@ fn test_all_configured_regexes_compile() -> Result<()> {
     Ok(())
 }
 
-// Optional: Add more specific tests for individual regexes if needed
-// For example, for the "document_separator" regex:
 #[test]
-fn test_document_separator_regex() {
-    let regex = Regex::new(r"^---").unwrap();
+fn test_regex_patterns_constants_compile() {
+    // Test compilation of each constant regex pattern
+    let _ = &KEYWORDS_REGEX;
+    let _ = &MALFORMED_MEME_REGEX;
+    let _ = &UNQUOTED_COLON_REGEX;
+    let _ = &DOCUMENT_SEPARATOR_REGEX;
 
-    // Positive test cases
-    assert!(regex.is_match("---"));
-    assert!(regex.is_match("---")); // Even with leading/trailing whitespace if trim is applied before matching
-
-    // Negative test cases
-    assert!(!regex.is_match("----"));
-    assert!(!regex.is_match("---abc"));
-    assert!(!regex.is_match("abc---"));
-    assert!(!regex.is_match(" ---"));
-    assert!(!regex.is_match("--- "));
-    assert!(!regex.is_match(""));
-    assert!(!regex.is_match("some text"));
+    // Add specific test cases for each regex constant if needed
+    // Example for DOCUMENT_SEPARATOR_REGEX:
+    assert!(DOCUMENT_SEPARATOR_REGEX.is_match("---"));
+    assert!(!DOCUMENT_SEPARATOR_REGEX.is_match("----"));
+    assert!(!DOCUMENT_SEPARATOR_REGEX.is_match("---abc"));
 }

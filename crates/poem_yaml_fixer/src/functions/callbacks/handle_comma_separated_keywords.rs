@@ -1,14 +1,14 @@
 use anyhow::Result;
 use crate::functions::types::FixedFrontMatter;
-use poem_traits::{//CallbackFn, PoemFunctionMetadata, RegexEntry,
-    PoemFrontMatterTrait};
+use poem_traits::{CallbackFn, PoemFunctionMetadata, RegexEntry, PoemFrontMatterTrait};
 use poem_macros::poem_function;
 use std::any::Any; // New import
+//use crate::functions::regex_patterns::KEYWORDS_REGEX_PATTERN; // New import
 
 #[poem_function(
     regex_entry = RegexEntry {
         name: "keywords_comma_separated".to_string(),
-        pattern: "keywords: (.*)".to_string(), // This regex will capture the comma-separated string
+        pattern: KEYWORDS_REGEX_PATTERN.to_string(), // Use constant
         callback_function: "handle_comma_separated_keywords".to_string(),
     }
 )]

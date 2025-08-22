@@ -1,14 +1,13 @@
 use anyhow::Result;
 use crate::functions::types::FixedFrontMatter;
-use poem_traits::{
-    //CallbackFn, PoemFunctionMetadata, RegexEntry,
-    Meme, PoemFrontMatterTrait};
+use poem_traits::{CallbackFn, PoemFunctionMetadata, RegexEntry, Meme, PoemFrontMatterTrait};
 use poem_macros::poem_function;
 use std::any::Any; // New import
+//use crate::functions::regex_patterns::MALFORMED_MEME_REGEX_PATTERN; // New import
 #[poem_function(
     regex_entry = RegexEntry {
         name: "malformed_meme_list_item".to_string(),
-        pattern: r#"^- "([^"]+)" \(([^)]+)\)"#.to_string(), // Regex to capture description and template in parentheses
+        pattern: MALFORMED_MEME_REGEX_PATTERN.to_string(), // Use constant
         callback_function: "handle_malformed_meme_list_item".to_string(),
     }
 )]

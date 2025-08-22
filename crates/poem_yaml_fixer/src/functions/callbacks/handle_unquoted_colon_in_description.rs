@@ -1,13 +1,12 @@
 use anyhow::{Result, anyhow};
-//use crate::functions::types::FixedFrontMatter;
-use poem_traits::{
-    //CallbackFn, PoemFunctionMetadata, RegexEntry,
-    PoemFrontMatterTrait};
+use crate::functions::types::FixedFrontMatter;
+use poem_traits::{CallbackFn, PoemFunctionMetadata, RegexEntry, PoemFrontMatterTrait};
 use poem_macros::poem_function;
+//use crate::functions::regex_patterns::UNQUOTED_COLON_REGEX_PATTERN; // New import
 #[poem_function(
     regex_entry = RegexEntry {
         name: "unquoted_colon_in_meme_description".to_string(),
-        pattern: r"description: (.*:.*)".to_string(), // Regex to capture unquoted colon in description
+        pattern: UNQUOTED_COLON_REGEX_PATTERN.to_string(), // Use constant
         callback_function: "handle_unquoted_colon_in_description".to_string(),
     }
 )]
