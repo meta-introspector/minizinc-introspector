@@ -23,3 +23,6 @@ pub mod load_regex_config;
 pub mod report_processing;
 pub mod process_document_with_regex;
 pub mod report_printer;
+pub mod initialize_config;
+pub mod process_files;
+pub mod run_app;

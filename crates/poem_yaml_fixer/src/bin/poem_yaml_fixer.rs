@@ -15,6 +15,9 @@ use poem_yaml_fixer::create_function_registry;
 use poem_yaml_fixer::process_file;
 
 use poem_yaml_fixer::functions::report_printer::print_detailed_regex_report;
+use poem_yaml_fixer::functions::initialize_config::initialize_config;
+use poem_yaml_fixer::functions::process_files::process_files;
+use poem_yaml_fixer::functions::run_app::run_app;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -54,81 +57,19 @@ fn main() -> anyhow::Result<()> {
     let current_dir = std::env::current_dir()?;
     let poems_dir = current_dir.join("docs").join("poems");
 
-    // Only initialize regex_config and function_registry if not using manual_parse
-    let (regex_config, function_registry) = if cli.manual_parse {
-        // Provide dummy values or handle as needed for manual parsing
-        (get_default_regex_config(), create_function_registry()) // Still need these types, but they won't be used for lookup
-    } else {
-        let mut regex_config = get_default_regex_config();
+    let (regex_config, function_registry) = initialize_config(cli.manual_parse, &current_dir)?;
 
-        let external_config_path = current_dir.join("regex_config.toml");
-        if external_config_path.exists() {
-            println!("Loading external regex config from: {:?}", external_config_path);
-            let external_config = poem_yaml_fixer::functions::load_regex_config::load_regex_config(&external_config_path)?;
-
-            for external_entry in external_config.regexes {
-                if let Some(default_entry) = regex_config.regexes.iter_mut().find(|e| e.name == external_entry.name) {
-                    *default_entry = external_entry;
-                } else {
-                    regex_config.regexes.push(external_entry);
-                }
-            }
-        }
-        (regex_config, create_function_registry())
-    };
-
-
-    if cli.report && !cli.manual_parse {
-        process_poems_for_report(
-            &poems_dir,
-            &cli.file,
-            &regex_config,
-            &function_registry,
-            cli.debug,
-        )?;
-    } else {
-        let mut report_entries: Vec<poem_yaml_fixer::functions::report_generator::PoemReportEntry> = Vec::new();
-        if let Some(file_path) = cli.file {
-            if cli.manual_parse {
-                println!("Using manual parser for: {:?}", file_path);
-                let content = std::fs::read_to_string(&file_path)?;
-                let mut fixed_fm = FixedFrontMatter::default();
-                manual_parse_poem_file(&content, &mut fixed_fm)?;
-                // For manual parse, we just print the result for now
-                println!("--- Manual Parse Result (Fixed Front Matter) ---");
-                println!("{}", serde_yaml::to_string(&fixed_fm)?);
-                println!("------------------------------------------------");
-            } else {
-                process_file(&file_path, &regex_config, &function_registry, &mut report_entries, cli.debug, cli.dry_run)?;
-            }
-        } else {
-            for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
-                let path = entry.path();
-                if path.is_file() && path.extension().is_some_and(|ext| ext == "md") {
-                    if path.file_name().is_some_and(|name| name.to_str().unwrap_or("").ends_with(".archeology.md")) {
-                        continue;
-                    }
-                    if cli.manual_parse {
-                        println!("Using manual parser for: {:?}", path);
-                        let content = std::fs::read_to_string(&path)?;
-                        let mut fixed_fm = FixedFrontMatter::default();
-                        manual_parse_poem_file(&content, &mut fixed_fm)?;
-                        println!("--- Manual Parse Result (Fixed Front Matter) ---");
-                        println!("{}", serde_yaml::to_string(&fixed_fm)?);
-                        println!("------------------------------------------------");
-                    } else {
-                        process_file(path, &regex_config, &function_registry, &mut report_entries, cli.debug, cli.dry_run)?;
-                    }
-                }
-            }
-        }
-
-        // This block is only executed if cli.report is false
-        if cli.report {
-            print_detailed_regex_report(&report_entries, &current_dir)?;
-            poem_yaml_fixer::functions::report_generator::generate_and_save_report(report_entries, &current_dir)?;
-        }
-    }
+    run_app(
+        cli.report,
+        cli.manual_parse,
+        &cli.file,
+        cli.debug,
+        cli.dry_run,
+        &poems_dir,
+        &current_dir,
+        &regex_config,
+        &function_registry,
+    )?;
 
     Ok(())
 }
