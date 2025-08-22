@@ -12,6 +12,12 @@ use poem_traits::PoemFrontMatterTrait;
 )]
 
 pub fn handle_keywords_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> anyhow::Result<()> {
-    fixed_fm.set_keywords(vec![captures[1].trim().to_string()]);
+    let keywords_str = captures[1].trim().to_string();
+    let keywords_vec: Vec<String> = keywords_str
+        .split(',')
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .collect();
+    fixed_fm.set_keywords(keywords_vec);
     Ok(())
 }
