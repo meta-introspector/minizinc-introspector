@@ -5,10 +5,10 @@ use poem_traits::{PoemFrontMatterTrait, Meme}; // Import RegexEntry and RegexCon
 pub struct FixedFrontMatter {
     pub title: Option<String>,
     pub summary: Option<String>,
-    pub keywords: Option<String>,
+    pub keywords: Option<Vec<String>>, // Changed from String to Vec<String>
     pub emojis: Option<String>,
     pub art_generator_instructions: Option<String>,
-    pub memes: Vec<Meme>,
+    pub memes: Option<Vec<Meme>>, // Changed from Vec<Meme> to Option<Vec<Meme>>
     pub poem_body: Option<String>,
     pub pending_meme_description: Option<String>,
 }
@@ -29,7 +29,7 @@ pub type PoemCallbackFn = poem_traits::CallbackFn;
 pub type PoemFunctionEntry = poem_traits::PoemFunctionEntry;
 
 impl PoemFrontMatterTrait for FixedFrontMatter {
-    fn get_memes_mut(&mut self) -> &mut Vec<Meme> {
+    fn get_memes_mut(&mut self) -> &mut Option<Vec<Meme>> {
         &mut self.memes
     }
     fn get_pending_meme_description_mut(&mut self) -> &mut Option<String> {
@@ -42,18 +42,14 @@ impl PoemFrontMatterTrait for FixedFrontMatter {
     fn set_summary(&mut self, summary: String) {
         self.summary = Some(summary);
     }
-    fn set_keywords(&mut self, keywords: String) {
-        self.keywords = Some(keywords);
-    }
+    // Removed set_keywords as it's handled by the callback directly
     fn set_emojis(&mut self, emojis: String) {
         self.emojis = Some(emojis);
     }
     fn set_art_generator_instructions(&mut self, instructions: String) {
         self.art_generator_instructions = Some(instructions);
     }
-    fn add_meme(&mut self, meme: Meme) {
-        self.memes.push(meme);
-    }
+    // Removed add_meme as it's handled by the callback directly
     fn set_poem_body(&mut self, body: String) {
         self.poem_body = Some(body);
     }

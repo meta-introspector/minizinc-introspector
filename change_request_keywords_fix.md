@@ -132,3 +132,82 @@ This adheres to the "manager of Rust edits" mandate by providing the Rust code c
 1.  Implement the changes described above in your Rust codebase.
 2.  Rebuild and run `poem_yaml_fixer`.
 3.  Observe the updated `poem_processing_report.yaml` to see if `the_omniverse_deployers_ode.md` now processes successfully.
+
+
+--- Implementation Plan ---
+
+**Phase 1: Implement `keywords` field fix**
+
+This phase focuses on converting comma-separated `keywords` strings into proper YAML lists.
+
+1.  **Create New Callback Function File:**
+    *   Create a new file: `/data/data/com.termux/files/home/storage/github/libminizinc/crates/poem_yaml_fixer/src/functions/callbacks/handle_comma_separated_keywords.rs`
+    *   Add the following Rust code to this file:
+        ```rust
+        use anyhow::Result;
+        use crate::functions::types::FixedFrontMatter;
+        use poem_traits::CallbackFn;
+
+        pub fn handle_comma_separated_keywords(
+            _line: &str, // The line that matched the regex (not directly used here, but part of signature)
+            captures: Vec<String>, // The captured groups from the regex
+            fixed_fm: &mut FixedFrontMatter, // The mutable FixedFrontMatter struct
+        ) -> Result<()> {
+            if let Some(keywords_str) = captures.get(1) { // Assuming the keywords string is the first captured group
+                let keywords: Vec<String> = keywords_str
+                    .split(',')
+                    .map(|s| s.trim().to_string())
+                    .filter(|s| !s.is_empty())
+                    .collect();
+                fixed_fm.keywords = Some(keywords);
+            }
+            Ok(())
+        }
+        ```
+
+2.  **Register the New Module:**
+    *   Open the file: `/data/data/com.termux/files/home/storage/github/libminizinc/crates/poem_yaml_fixer/src/functions/callbacks/mod.rs`
+    *   Add the following line to declare the new module:
+        ```rust
+        pub mod handle_comma_separated_keywords;
+        ```
+
+3.  **Update `FixedFrontMatter` Structure:**
+    *   Open the file: `/data/data/com.termux/files/home/storage/github/libminizinc/crates/poem_yaml_fixer/src/functions/types.rs`
+    *   Ensure the `FixedFrontMatter` struct has a `keywords` field of type `Option<Vec<String>>` and derives `Default`, `Serialize`, `Deserialize`, and `Clone`. It should look like this:
+        ```rust
+        #[derive(Debug, Default, Serialize, Deserialize, Clone)]
+        pub struct FixedFrontMatter {
+            pub title: Option<String>,
+            pub summary: Option<String>,
+            pub keywords: Option<Vec<String>>, // Ensure this line is correct
+            pub emojis: Option<String>,
+            pub art_generator_instructions: Option<String>,
+            pub memes: Option<Vec<Meme>>,
+            pub poem_body: Option<String>,
+            pub pending_meme_description: Option<String>,
+        }
+        ```
+
+4.  **Register Callback in Function Registry:**
+    *   Open the file: `/data/data/com.termux/files/home/storage/github/libminizinc/crates/poem_yaml_fixer/src/functions/create_function_registry.rs`
+    *   Add the following code within the `create_function_registry()` function to register the new callback. Place it alongside existing registrations:
+        ```rust
+        // Register the new keyword handler
+        let metadata_keywords = poem_traits::PoemFunctionMetadata {
+            regex_entry: poem_traits::RegexEntry {
+                name: "keywords_comma_separated".to_string(),
+                pattern: "keywords: (.*)".to_string(), // This regex will capture the comma-separated string
+                callback_function: "handle_comma_separated_keywords".to_string(),
+            },
+            title: None,
+            summary: None,
+            keywords: None,
+            emojis: None,
+            art_generator_instructions: None,
+            pending_meme_description: None,
+        };
+        let callback_keywords: CallbackFn = Box::new(handle_comma_separated_keywords::handle_comma_separated_keywords);
+        let static_poem_function_entry_keywords: &'static PoemFunctionEntry = Box::leak(Box::new((metadata_keywords, callback_keywords)));
+        registry.insert("handle_comma_separated_keywords".to_string(), static_poem_function_entry_keywords);
+        ```

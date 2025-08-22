@@ -1,0 +1,24 @@
+use anyhow::Result;
+use crate::functions::types::FixedFrontMatter;
+use poem_traits::{CallbackFn, PoemFunctionMetadata, RegexEntry};
+use poem_macros::poem_function;
+
+#[poem_function(
+    regex_entry = RegexEntry {
+        name: "unquoted_colon_in_meme_description".to_string(),
+        pattern: r"description: (.*:.*)".to_string(), // Regex to capture unquoted colon in description
+        callback_function: "handle_unquoted_colon_in_description".to_string(),
+    }
+)]
+pub fn handle_unquoted_colon_in_description(
+    _line: &str,
+    captures: Vec<String>,
+    _fixed_fm: &mut FixedFrontMatter, // Not modifying fixed_fm directly here
+) -> Result<()> {
+    let problematic_description = captures.get(1).map_or("".to_string(), |s| s.clone());
+    Err(anyhow!(
+        "YAML parsing error: Unquoted colon in meme description. Problematic content: \"{}.\" Requires manual fix or advanced YAML parsing logic.",
+        problematic_description
+    ))
+}
+

@@ -9,3 +9,6 @@ pub mod handle_art_generator_instructions_regex;
 pub mod handle_poem_body_start_regex;
 pub mod handle_regex_driven_yaml_fix;
 pub mod handle_new_document;
+pub mod handle_comma_separated_keywords;
+pub mod handle_malformed_meme_list_item;
+pub mod handle_unquoted_colon_in_description;

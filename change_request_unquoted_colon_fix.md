@@ -89,7 +89,7 @@ pub fn create_function_registry() -> PoemFunctionRegistry {
     };
     let callback_unquoted_colon: CallbackFn = Box::new(handle_unquoted_colon_in_description::handle_unquoted_colon_in_description);
     let static_poem_function_entry_unquoted_colon: &'static PoemFunctionEntry = Box::leak(Box::new((metadata_unquoted_colon, callback_unquoted_colon)));
-    registry.insert("handle_unquoted_colon_in_description".to_string(), static_poem_function_entry_unquoted_colon);
+    registry.insert("unquoted_colon_in_meme_description".to_string(), static_poem_function_entry_unquoted_colon);
 
     registry
 }
