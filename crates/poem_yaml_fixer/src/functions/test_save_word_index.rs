@@ -11,6 +11,8 @@ use crate::functions::save_word_index::save_word_index;
 use crate::functions::types::WordIndex;
 
 #[test]
+
+#[test]
 fn test_save_word_index() -> anyhow::Result<()> {
     // 1. Create a dummy WordIndex instance
     let mut word_index = WordIndex {

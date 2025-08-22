@@ -10,6 +10,8 @@ use std::path::PathBuf;
 use anyhow::Result;
 
 #[test]
+
+#[test]
 fn test_handle_unmatched_regex_error() -> Result<()> {
     let file_path = PathBuf::from("test_file.md");
     let error_message = "No regex matched line: some unmatched line";
