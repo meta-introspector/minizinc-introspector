@@ -1,6 +1,6 @@
 use anyhow::Result;
 use linkme::distributed_slice;
-use poem_traits::{PoemFrontMatterTrait, Meme}; // Import Meme from poem_traits
+use poem_traits::PoemFrontMatterTrait; // Import Meme from poem_traits
 
 // Define the distributed slice where functions will register themselves.
 // This static is populated by functions annotated with #[poem_macros::poem_function]

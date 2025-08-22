@@ -14,7 +14,7 @@ pub fn write_chunked_embeddings_dzn(
     logger: &mut LogWriter,
 ) -> Result<()> {
     let num_words = id_to_word.len();
-    let num_chunks = (num_words + chunk_size - 1) / chunk_size;
+    let num_chunks = num_words.div_ceil(chunk_size);
 
     // Collect all words and embeddings into sorted Vecs for chunking
     let mut sorted_ids: Vec<u32> = id_to_word.keys().cloned().collect();
@@ -26,7 +26,7 @@ pub fn write_chunked_embeddings_dzn(
 
         let chunk_ids = &sorted_ids[start_index..end_index];
 
-        let dzn_filename = format!("word_embeddings_chunk_{}.dzn", i);
+        let dzn_filename = format!("word_embeddings_chunk_{i}.dzn");
         let dzn_path = minizinc_data_dir.join(dzn_filename);
 
         let mut dzn_content = String::new();
@@ -34,7 +34,7 @@ pub fn write_chunked_embeddings_dzn(
         dzn_content.push_str("word_map = [\n");
         for (idx, &id) in chunk_ids.iter().enumerate() {
             let word = id_to_word.get(&id).unwrap();
-            dzn_content.push_str(&format!("\"{ }\"", word));
+            dzn_content.push_str(&format!("\"{word}\""));
             if idx < chunk_ids.len() - 1 {
                 dzn_content.push_str(", ");
             }
@@ -77,7 +77,7 @@ pub fn write_chunked_embeddings_dzn(
         for (word1_str, word2_str, desired_dist) in all_relations.iter() {
             if let (Some(id1_global), Some(id2_global)) = (word_to_id.get(word1_str).map(|&x| x as u32), word_to_id.get(word2_str).map(|&x| x as u32)) {
                 if let (Some(id1_local), Some(id2_local)) = (global_to_local_id.get(&id1_global), global_to_local_id.get(&id2_global)) {
-                    chunk_relation_pairs.push(format!("({},{}", id1_local, id2_local));
+                    chunk_relation_pairs.push(format!("({id1_local},{id2_local}"));
                     chunk_desired_distances.push(desired_dist.to_string());
                 }
             }

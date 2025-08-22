@@ -5,7 +5,7 @@ use syn::parse::{Parse, ParseStream};
 use syn::punctuated::Punctuated;
 use syn::token::Comma;
 
-use poem_traits::{RegexEntry, CallbackFn, PoemFunctionMetadata, PoemFunctionEntry}; // Import PoemFunctionEntry
+ // Import PoemFunctionEntry
 
 // Struct to parse the attributes for #[poem_function]
 struct PoemFunctionAttrs {
@@ -100,7 +100,7 @@ pub fn poem_function_impl(attr: proc_macro2::TokenStream, input_fn: ItemFn) -> T
     let attrs = syn::parse::Parser::parse2(PoemFunctionAttrs::parse, attr).unwrap();
 
     let default_name = fn_name.to_string();
-    let default_pattern = format!("^{}$", fn_name.to_string()); // Default pattern based on function name
+    let default_pattern = format!("^{fn_name}$"); // Default pattern based on function name
 
     let name_lit = attrs.name.unwrap_or_else(|| LitStr::new(&default_name, fn_name.span()));
     let pattern_lit = attrs.pattern.unwrap_or_else(|| LitStr::new(&default_pattern, fn_name.span()));
@@ -149,7 +149,7 @@ pub fn poem_function_impl(attr: proc_macro2::TokenStream, input_fn: ItemFn) -> T
         });
     };
 
-    TokenStream::from(expanded)
+    expanded
 }
 
 pub fn poem_header_impl() -> TokenStream {

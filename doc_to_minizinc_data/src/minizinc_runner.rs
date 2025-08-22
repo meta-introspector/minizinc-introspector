@@ -8,7 +8,7 @@ pub fn run_minizinc_test(dzn_path: &PathBuf, logger: &mut LogWriter) -> Result<(
     logger.log(&format!("Running MiniZinc for: {}", dzn_path.display()));
     let output = process::Command::new(minizinc_executable)
         .arg(minizinc_model)
-        .arg(&dzn_path)
+        .arg(dzn_path)
         .output()?;
 
     if output.status.success() {

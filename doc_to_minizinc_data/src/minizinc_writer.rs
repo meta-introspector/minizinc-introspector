@@ -8,7 +8,7 @@ pub fn write_data_declarations(minizinc_data_dir: &PathBuf, all_relations: &Vec<
     data_declarations_content.push_str(&format!("int: num_relations = {};\n", all_relations.len()));
     data_declarations_content.push_str("array[1..num_relations] of tuple(string, string): relation_pairs = [\n");
     for (idx, (w1, w2, _)) in all_relations.iter().enumerate() {
-        data_declarations_content.push_str(&format!("    (\"{}\", \"{}\")", w1, w2));
+        data_declarations_content.push_str(&format!("    (\"{w1}\", \"{w2}\")"));
         if idx < all_relations.len() - 1 {
             data_declarations_content.push_str(",\n");
         }
@@ -17,7 +17,7 @@ pub fn write_data_declarations(minizinc_data_dir: &PathBuf, all_relations: &Vec<
 
     data_declarations_content.push_str("array[1..num_relations] of float: desired_distances = [\n");
     for (idx, (_, _, dist)) in all_relations.iter().enumerate() {
-        data_declarations_content.push_str(&format!("    {}", dist));
+        data_declarations_content.push_str(&format!("    {dist}"));
         if idx < all_relations.len() - 1 {
             data_declarations_content.push_str(",\n");
         }
@@ -30,7 +30,7 @@ pub fn write_data_declarations(minizinc_data_dir: &PathBuf, all_relations: &Vec<
 
 pub fn write_chunked_embeddings(minizinc_data_dir: &PathBuf, word_data: &WordData, chunk_size: usize, logger: &mut LogWriter) -> Result<(), Box<dyn std::error::Error>> {
     let num_words = word_data.len();
-    let num_chunks = (num_words + chunk_size - 1) / chunk_size;
+    let num_chunks = num_words.div_ceil(chunk_size);
 
     for i in 0..num_chunks {
         let start_index = i * chunk_size;
@@ -39,14 +39,14 @@ pub fn write_chunked_embeddings(minizinc_data_dir: &PathBuf, word_data: &WordDat
         let chunk_words = &word_data.id_to_word[start_index..end_index];
         let chunk_embeddings = &word_data.embeddings[start_index..end_index];
 
-        let dzn_filename = format!("word_embeddings_chunk_{}.dzn", i);
+        let dzn_filename = format!("word_embeddings_chunk_{i}.dzn");
         let dzn_path = minizinc_data_dir.join(dzn_filename);
 
         let mut dzn_content = String::new();
         dzn_content.push_str(&format!("num_words = {};\n", chunk_words.len()));
         dzn_content.push_str("word_map = [\n");
         for (idx, word) in chunk_words.iter().enumerate() {
-            dzn_content.push_str(&format!("\"{}\"", word));
+            dzn_content.push_str(&format!("\"{word}\""));
             if idx < chunk_words.len() - 1 {
                 dzn_content.push_str(", ");
             }

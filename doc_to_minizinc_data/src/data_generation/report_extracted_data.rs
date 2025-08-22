@@ -11,7 +11,7 @@ pub fn report_extracted_data(
     // Iterate over the HashMap directly
     for (id, word) in id_to_word.iter() {
         if let Some(embedding) = embeddings.get(id) {
-            logger.debug_log(&format!("Word: {}, Embedding: {:?}", word, embedding));
+            logger.debug_log(&format!("Word: {word}, Embedding: {embedding:?}"));
         }
     }
     logger.debug_log("--------------------------------------");

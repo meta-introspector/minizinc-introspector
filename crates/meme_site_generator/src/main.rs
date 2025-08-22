@@ -1,6 +1,5 @@
 use std::{fs, path::PathBuf};
 use serde::{Deserialize, Serialize};
-use serde_yaml;
 use anyhow::{Result, anyhow};
 use walkdir::WalkDir;
 use tera::{Tera, Context};
@@ -70,13 +69,13 @@ fn main() -> Result<()> {
 
     for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
         let path = entry.path();
-        if path.is_file() && path.extension().map_or(false, |ext| ext == "md") {
+        if path.is_file() && path.extension().is_some_and(|ext| ext == "md") {
             let filename = path.file_name().unwrap().to_str().unwrap().to_string();
             if filename == "index.md" {
                 continue; // Skip index.md for individual poem pages
             }
 
-            println!("Generating page for: {:?}", path);
+            println!("Generating page for: {path:?}");
             let content = fs::read_to_string(path)?;
             let parts: Vec<&str> = content.split("---").collect();
 
@@ -104,7 +103,7 @@ fn main() -> Result<()> {
     let rendered_index = tera.render("index.html", &context)?;
     fs::write(site_output_dir.join("index.html"), rendered_index)?;
 
-    println!("Static site generated successfully in {:?}", site_output_dir);
+    println!("Static site generated successfully in {site_output_dir:?}");
 
     Ok(())
 }

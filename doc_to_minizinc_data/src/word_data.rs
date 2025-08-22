@@ -7,6 +7,12 @@ pub struct WordData {
     pub embeddings: Vec<Vec<f64>>,
 }
 
+impl Default for WordData {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl WordData {
     pub fn new() -> Self {
         WordData {

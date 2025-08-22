@@ -9,3 +9,5 @@ pub mod types;
 pub mod error_handling;
 pub mod load_regex_config;
 pub mod callbacks; // Add this line
+pub mod parse_poem_file_direct;
+pub mod test_save_word_index;

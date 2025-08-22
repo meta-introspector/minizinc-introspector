@@ -12,7 +12,7 @@ pub fn sanitize_filename_char(c: char) -> String {
 }
 
 pub fn sanitize_filename(s: &str) -> String {
-    s.chars().map(|c| sanitize_filename_char(c)).collect::<Vec<String>>().join("")
+    s.chars().map(sanitize_filename_char).collect::<Vec<String>>().join("")
 }
 
 

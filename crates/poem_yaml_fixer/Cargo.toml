@@ -16,3 +16,4 @@ once_cell = "1.19"
 linkme = "0.3"
 grex = { path = "../../vendor/grex" }
 poem_traits = { path = "../poem_traits" }
+tempfile = "3.10.1"

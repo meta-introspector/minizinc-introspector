@@ -43,15 +43,13 @@ pub fn is_junk_term(term: &str) -> bool {
 pub fn load_and_filter_terms(hierarchical_index_path: &str) -> Result<Vec<String>, Box<dyn std::error::Error>> {
     let hierarchical_term_index_file = PathBuf::from(hierarchical_index_path);
 
-    println!("cargo:warning=Loading hierarchical term index from: {:?}", hierarchical_term_index_file);
+    println!("cargo:warning=Loading hierarchical term index from: {hierarchical_term_index_file:?}");
     let cached_data = fs::read_to_string(&hierarchical_term_index_file)?;
     let hierarchical_term_index: HashMap<String, HashMap<PathBuf, usize>> = serde_json::from_str(&cached_data)?;
 
     println!("cargo:warning=Successfully loaded index with {} terms.", hierarchical_term_index.len());
 
-    let filtered_terms: Vec<String> = hierarchical_term_index.keys()
-        .cloned()
-        .filter(|term| !is_junk_term(term)) // Apply the junk term filter
+    let filtered_terms: Vec<String> = hierarchical_term_index.keys().filter(|&term| !is_junk_term(term)).cloned() // Apply the junk term filter
         .collect();
 
     println!("cargo:warning=Filtered down to {} non-junk terms.", filtered_terms.len());

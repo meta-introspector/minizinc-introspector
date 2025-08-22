@@ -23,5 +23,5 @@ fn solve_my_problem() -> MySolution {
 fn main() {
     println!("Calling solve_my_problem...");
     let solution = solve_my_problem();
-    println!("Received solution: {:?}", solution);
+    println!("Received solution: {solution:?}");
 }

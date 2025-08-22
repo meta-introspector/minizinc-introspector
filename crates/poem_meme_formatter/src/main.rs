@@ -14,13 +14,13 @@ fn main() -> Result<()> {
 
     for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
         let path = entry.path();
-        if path.is_file() && path.extension().map_or(false, |ext| ext == "md") {
+        if path.is_file() && path.extension().is_some_and(|ext| ext == "md") {
             // Skip index.md for this specific processing
-            if path.file_name().map_or(false, |name| name == "index.md") {
+            if path.file_name().is_some_and(|name| name == "index.md") {
                 continue;
             }
 
-            println!("Processing: {:?}\n", path);
+            println!("Processing: {path:?}\n");
             let content = fs::read_to_string(path)?;
             match parser::parse_poem_document(&content) {
                 Ok(poem_doc) => {
@@ -30,7 +30,7 @@ fn main() -> Result<()> {
                     // For now, just print for verification.
                     // println!("{:?}\n", poem_doc);
                 },
-                Err(e) => eprintln!("Error parsing {:?}: {}\n", path, e),
+                Err(e) => eprintln!("Error parsing {path:?}: {e}\n"),
             }
         }
     }

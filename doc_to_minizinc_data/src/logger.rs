@@ -10,21 +10,21 @@ impl LogWriter {
     pub fn new(path: &PathBuf) -> io::Result<LogWriter> {
         let file = OpenOptions::new()
             .create(true)
-            .write(true)
+            
             .append(true)
             .open(path)?;
         Ok(LogWriter { file })
     }
 
     pub fn log(&mut self, message: &str) {
-        if let Err(e) = writeln!(self.file, "[LOG] {}", message) {
-            eprintln!("Failed to write to log file: {}", e);
+        if let Err(e) = writeln!(self.file, "[LOG] {message}") {
+            eprintln!("Failed to write to log file: {e}");
         }
     }
 
     pub fn debug_log(&mut self, message: &str) {
-        if let Err(e) = writeln!(self.file, "[DEBUG] {}", message) {
-            eprintln!("Failed to write to log file: {}", e);
+        if let Err(e) = writeln!(self.file, "[DEBUG] {message}") {
+            eprintln!("Failed to write to log file: {e}");
         }
     }
 }

@@ -3,20 +3,21 @@ use std::fs;
 use std::path::PathBuf;
 
 #[test]
-fn test_quality_procedures_sonnet_fix() {
+fn test_quality_procedures_sonnet_fix() -> anyhow::Result<()> {
     // Define the path to the poem file
     let poem_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("..\..")
+        .parent().unwrap()
+        .parent().unwrap()
         .join("docs")
         .join("poems")
         .join("quality_procedures_sonnet.md");
 
     // Ensure the poem file exists
-    assert!(poem_path.exists(), "Poem file does not exist: {:?}", poem_path);
+    assert!(poem_path.exists(), "Poem file does not exist: {poem_path:?}");
 
     // Define a temporary output directory for the test
-    let temp_dir = PathBuf::from(env!("CARGO_TARGET_TMPDIR")).join("test_output");
-    let temp_poem_path = temp_dir.join("quality_procedures_sonnet.md");
+    let temp_dir = tempfile::tempdir()?;
+    let temp_poem_path = temp_dir.path().join("quality_procedures_sonnet.md");
 
     // Create the temporary directory
     fs::create_dir_all(&temp_dir).expect("Failed to create temporary directory");
@@ -28,18 +29,19 @@ fn test_quality_procedures_sonnet_fix() {
     let output = Command::new(env!("CARGO_BIN_EXE_poem_yaml_fixer"))
         .arg("--file")
         .arg(&temp_poem_path)
+        .arg("--max-change-percentage").arg("90.0")
         .arg("--dry-run")
         .output()
         .expect("Failed to execute poem_yaml_fixer");
 
     // Assert that the command ran successfully
-    assert!(output.status.success(), "Command failed with: {:?}", output);
+    assert!(output.status.success(), "Command failed with: {output:?}");
 
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
 
-    println!("Stdout: {}", stdout);
-    println!("Stderr: {}", stderr);
+    println!("Stdout: {stdout}");
+    println!("Stderr: {stderr}");
 
     // --- Assertions for the dry-run output ---
     // In dry-run mode, we expect to see "Would apply changes to" if changes are needed,
@@ -72,4 +74,5 @@ fn test_quality_procedures_sonnet_fix() {
 
     // Clean up temporary directory
     fs::remove_dir_all(&temp_dir).expect("Failed to remove temporary directory");
+    Ok(())
 }

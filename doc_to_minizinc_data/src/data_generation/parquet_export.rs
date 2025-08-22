@@ -78,7 +78,7 @@ pub fn export_embeddings_to_parquet(
     writer.write(&record_batch)?;
     writer.close()?;
 
-    println!("✅ Embeddings exported to {:?}", output_file_path);
+    println!("✅ Embeddings exported to {output_file_path:?}");
 
     Ok(())
 }

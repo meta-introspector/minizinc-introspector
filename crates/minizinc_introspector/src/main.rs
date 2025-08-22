@@ -58,7 +58,7 @@ fn main() {
     let tu = match parser.parse() {
         Ok(tu) => tu,
         Err(e) => {
-            eprintln!("Error parsing C++ file {:?}: {:?}", cpp_file_path, e);
+            eprintln!("Error parsing C++ file {cpp_file_path:?}: {e:?}");
             // Attempt to get diagnostics for more info
             // Note: Diagnostics are usually part of the TranslationUnit, even on error.
             // We need to get them from the returned TranslationUnitError if available.
@@ -74,7 +74,7 @@ fn main() {
     tu.get_entity().visit_children(|entity, _| {
         if entity.get_kind() == EntityKind::FunctionDecl {
             if let Some(name) = entity.get_display_name() {
-                println!("  - {}", name);
+                println!("  - {name}");
             }
         }
         EntityVisitResult::Continue // Continue visiting children

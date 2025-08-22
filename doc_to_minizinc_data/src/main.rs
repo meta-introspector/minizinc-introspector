@@ -33,8 +33,8 @@ fn main() -> anyhow::Result<()> {
 
     match args.command {
         Command::GenerateData { chunk_size, ref input_path, ref output_path, ref previous_embeddings_path } => {
-            println!("DEBUG: chunk_size = {}", chunk_size);
-            println!("DEBUG: input_path = {:?}", input_path);
+            println!("DEBUG: chunk_size = {chunk_size}");
+            println!("DEBUG: input_path = {input_path:?}");
             // Pass config to handler
             handle_generate_data_command(args, &config)?; // Pass the original args and config
         },

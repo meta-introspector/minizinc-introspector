@@ -117,7 +117,7 @@ pub fn generate_data(args: Args, config: &AppConfig) -> Result<()> {
     let mut fixed_id_to_embedding: HashMap<u32, Vec<f64>> = HashMap::new();
 
     if let Some(path) = previous_embeddings_path {
-        logger.debug_log(&format!("Loading previous embeddings from: {:?}", path));
+        logger.debug_log(&format!("Loading previous embeddings from: {path:?}"));
         (fixed_id_to_word, fixed_id_to_embedding) = load_embeddings_from_parquet(&path)?;
         logger.debug_log(&format!("Loaded {} fixed embeddings.", fixed_id_to_word.len()));
     }
@@ -139,7 +139,7 @@ pub fn generate_data(args: Args, config: &AppConfig) -> Result<()> {
     } else {
         current_dir
     };
-    logger.debug_log(&format!("Attempting to process files from: {:?}", actual_input_path));
+    logger.debug_log(&format!("Attempting to process files from: {actual_input_path:?}"));
     process_files_and_collect_words(
         &actual_input_path,
         &extensions,
@@ -149,7 +149,7 @@ pub fn generate_data(args: Args, config: &AppConfig) -> Result<()> {
         &mut initialized_data.rng,
         &mut logger,
     )?;
-    logger.debug_log(&format!("Successfully processed files from: {:?}", actual_input_path));
+    logger.debug_log(&format!("Successfully processed files from: {actual_input_path:?}"));
     logger.debug_log("2. Files processed and words collected.");
 
     logger.debug_log("3. Writing data_declarations.mzn.");

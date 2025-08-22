@@ -29,7 +29,7 @@ pub fn write_data_declarations_mzn(
     for (idx, (word1, word2, _)) in filtered_relations.iter().enumerate() {
         let id1 = word_to_id.get(word1.as_str()).unwrap();
         let id2 = word_to_id.get(word2.as_str()).unwrap();
-        data_declarations_content.push_str(&format!("  ({}, {})", id1, id2));
+        data_declarations_content.push_str(&format!("  ({id1}, {id2})"));
         if idx < filtered_relations.len() - 1 {
             data_declarations_content.push_str(",\n");
         }
@@ -38,7 +38,7 @@ pub fn write_data_declarations_mzn(
 
     data_declarations_content.push_str("desired_distances = [\n");
     for (idx, (_, _, distance)) in filtered_relations.iter().enumerate() {
-        data_declarations_content.push_str(&format!("  {}", distance));
+        data_declarations_content.push_str(&format!("  {distance}"));
         if idx < filtered_relations.len() - 1 {
             data_declarations_content.push_str(",\n");
         }

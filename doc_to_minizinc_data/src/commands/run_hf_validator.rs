@@ -12,7 +12,7 @@ pub fn handle_generate_data_command(args: Args, config: &AppConfig) -> Result<()
 }
 
 pub fn handle_run_hf_validator_command(config: &AppConfig, project_path: PathBuf, output_path: PathBuf) -> Result<()> {
-    println!("Running hf-validator on project: {:?} to output: {:?}", project_path, output_path);
+    println!("Running hf-validator on project: {project_path:?} to output: {output_path:?}");
 
     // Construct the path to the hf-validator binary using config.project_root and config.build_target
     let hf_validator_path = config.project_root.join("target").join(&config.build_target).join("hf-validator");
@@ -27,7 +27,7 @@ pub fn handle_run_hf_validator_command(config: &AppConfig, project_path: PathBuf
     if status.success() {
         println!("hf-validator executed successfully.");
     } else {
-        eprintln!("hf-validator failed with status: {:?}", status);
+        eprintln!("hf-validator failed with status: {status:?}");
         anyhow::bail!("hf-validator failed with status: {:?}", status);
     }
 

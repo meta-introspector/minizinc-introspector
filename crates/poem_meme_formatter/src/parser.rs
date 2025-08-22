@@ -41,7 +41,7 @@ pub fn parse_poem_document(content: &str) -> Result<PoemDocument> {
             extracted_poem_body = pb_str.to_string();
             // Remove 'poem_body' from the front matter so it's not serialized back into it
             if let Some(map) = parsed_front_matter.as_mapping_mut() {
-                map.remove(&serde_yaml::Value::String("poem_body".to_string()));
+                map.remove(serde_yaml::Value::String("poem_body".to_string()));
             }
         }
     }

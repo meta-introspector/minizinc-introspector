@@ -8,8 +8,8 @@ pub fn generate_cpp_coverage_report() -> Result<(), String> {
     let mut gcno_files = Vec::new();
     let mut gcda_files = Vec::new();
 
-    for entry in fs::read_dir(&build_dir).map_err(|e| format!("Failed to read build directory: {}", e))? {
-        let entry = entry.map_err(|e| format!("Failed to read directory entry: {}", e))?;
+    for entry in fs::read_dir(&build_dir).map_err(|e| format!("Failed to read build directory: {e}"))? {
+        let entry = entry.map_err(|e| format!("Failed to read directory entry: {e}"))?;
         let path = entry.path();
         if path.is_file() {
             if let Some(extension) = path.extension() {
@@ -30,8 +30,8 @@ pub fn generate_cpp_coverage_report() -> Result<(), String> {
     let gcno_path = &gcno_files[0];
     let gcda_path = &gcda_files[0];
 
-    println!("Processing .gcno: {:?}", gcno_path);
-    println!("Processing .gcda: {:?}", gcda_path);
+    println!("Processing .gcno: {gcno_path:?}");
+    println!("Processing .gcda: {gcda_path:?}");
 
     // We cannot use the 'cov' crate directly due to import issues.
     // Instead, we will rely on external 'gcov' tool.

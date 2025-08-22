@@ -2,20 +2,16 @@
 // It orchestrates calls to other functions to extract front matter, parse fields,
 // process memes, extract words, and save the word index.
 
-use std::{fs, path::PathBuf, collections::HashMap};
+use std::{fs, path::PathBuf};
 use anyhow::{Result, anyhow};
 use serde_yaml; // Re-added: use serde_yaml;
 
-use crate::functions::types::{FixedFrontMatter,
-			      WordIndex}; // Import types from the types module
-use poem_traits::{CallbackFn, PoemFrontMatterTrait, PoemFunctionMetadata, RegexConfig, PoemFunctionEntry, FunctionRegistry}; // Import FunctionRegistry
+use crate::functions::types::FixedFrontMatter; // Import types from the types module
+use poem_traits::{RegexConfig, FunctionRegistry}; // Import FunctionRegistry
 use crate::functions::extract_front_matter::extract_front_matter;
 // TODO: This function is currently not used. It might be used in future refactoring.
-use crate::functions::parse_front_matter_fields::parse_front_matter_fields;
 // Removed: use crate::functions::process_memes_with_workflow::process_memes_with_workflow;
 // TODO: These functions are currently not used. They are part of the word indexing feature.
-use crate::functions::extract_words_from_text::extract_words_from_text;
-use crate::functions::save_word_index::{save_word_index};
 
 // Import the new root YAML validation function
 use crate::functions::callbacks::handle_regex_driven_yaml_fix; // Import directly
@@ -101,7 +97,7 @@ pub fn process_poem_file(
     if let Some(pb) = fixed_fm.poem_body.take() {
         new_content_parts.push("poem_body: |\n".to_string());
         for line in pb.lines() {
-            new_content_parts.push(format!("  {}\n", line)); // Indent each line
+            new_content_parts.push(format!("  {line}\n")); // Indent each line
         }
     } else {
         new_content_parts.push(final_poem_body);
@@ -129,17 +125,15 @@ pub fn process_poem_file(
     if !dry_run {
         if new_content != content {
             fs::write(path, new_content)?;
-            println!("  Changes applied to: {:?}", path);
+            println!("  Changes applied to: {path:?}");
         } else {
-            println!("  No changes needed for: {:?}", path);
+            println!("  No changes needed for: {path:?}");
         }
     }
-    else {
-        if new_content != content {
-            println!("  Dry run: Would apply changes to: {:?}", path);
-        } else {
-            println!("  Dry run: No changes needed for: {:?}", path);
-        }
+    else if new_content != content {
+        println!("  Dry run: Would apply changes to: {path:?}");
+    } else {
+        println!("  Dry run: No changes needed for: {path:?}");
     }
 
     if debug_mode {

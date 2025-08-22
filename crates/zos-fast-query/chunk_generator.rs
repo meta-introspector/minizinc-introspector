@@ -12,14 +12,14 @@ pub fn sanitize_filename_char(c: char) -> String {
 }
 
 pub fn sanitize_filename(s: &str) -> String {
-    s.chars().map(|c| sanitize_filename_char(c)).collect::<Vec<String>>().join("")
+    s.chars().map(sanitize_filename_char).collect::<Vec<String>>().join("")
 }
 pub fn generate_term_chunks(filtered_terms: Vec<String>, out_dir: &PathBuf) -> Result<(Vec<String>, u64), Box<dyn std::error::Error>> {
     let mut terms_by_first_char: BTreeMap<String, Vec<String>> = BTreeMap::new();
     for term in filtered_terms {
         if let Some(first_char) = term.chars().next() {
             let sanitized_char = sanitize_filename(&first_char.to_string());
-            terms_by_first_char.entry(sanitized_char).or_insert_with(Vec::new).push(term);
+            terms_by_first_char.entry(sanitized_char).or_default().push(term);
         }
     }
 
@@ -31,7 +31,7 @@ pub fn generate_term_chunks(filtered_terms: Vec<String>, out_dir: &PathBuf) -> R
             // Split into smaller chunks
             println!("cargo:warning=  Splitting terms for '{}' ({} terms) into chunks of {} terms.", sanitized_char, terms.len(), MAX_TERMS_PER_CHUNK);
             for (i, chunk) in terms.chunks(MAX_TERMS_PER_CHUNK).enumerate() {
-                let chunk_file_name = format!("terms_{}_{}.json", sanitized_char, i);
+                let chunk_file_name = format!("terms_{sanitized_char}_{i}.json");
                 let chunk_file_path = out_dir.join(&chunk_file_name);
                 let json_content = serde_json::to_string(&chunk)?;
                 fs::write(&chunk_file_path, &json_content)?;
@@ -42,7 +42,7 @@ pub fn generate_term_chunks(filtered_terms: Vec<String>, out_dir: &PathBuf) -> R
             }
         } else {
             // Write directly to a single file
-            let file_name = format!("terms_{}.json", sanitized_char);
+            let file_name = format!("terms_{sanitized_char}.json");
             let file_path = out_dir.join(&file_name);
             let json_content = serde_json::to_string(&terms)?;
             fs::write(&file_path, &json_content)?;
@@ -54,7 +54,7 @@ pub fn generate_term_chunks(filtered_terms: Vec<String>, out_dir: &PathBuf) -> R
     }
 
     println!("cargo:warning=Total generated term files: {}", generated_files.len());
-    println!("cargo:warning=Total size of generated term files: {} bytes", total_generated_size);
+    println!("cargo:warning=Total size of generated term files: {total_generated_size} bytes");
 
     Ok((generated_files, total_generated_size))
 }

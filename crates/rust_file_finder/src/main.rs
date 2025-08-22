@@ -26,7 +26,6 @@ use clap::Parser;
 use rayon::prelude::*;
 use std::time::SystemTime;
 use anyhow::Result;
-use puffin;
 //use puffin_egui;
 
 const GITHUB_ROOT_DIR: &str = "/data/data/com.termux/files/home/storage/github/";
@@ -160,7 +159,7 @@ fn run_full_analysis() -> Result<()> {
 
     let mut all_rust_files: Vec<FileAnalysis> = Vec::new();
 
-    eprintln!("Discovering Rust projects in: {:?}", search_root);
+    eprintln!("Discovering Rust projects in: {search_root:?}");
 
     // First pass: Discover Cargo.toml files to identify project roots
     let mut discovered_project_roots: std::collections::HashSet<PathBuf> = std::collections::HashSet::new();
@@ -170,7 +169,7 @@ fn run_full_analysis() -> Result<()> {
         .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target")) // Skip target directories
     {
         let path = entry.path();
-        if path.is_file() && path.file_name().map_or(false, |name| name == "Cargo.toml") {
+        if path.is_file() && path.file_name().is_some_and(|name| name == "Cargo.toml") {
             if let Some(parent) = path.parent() {
                 discovered_project_roots.insert(parent.to_path_buf());
             }
@@ -217,7 +216,7 @@ fn run_full_analysis() -> Result<()> {
                                         }
                                         if !project_is_stale {
                                             should_reprocess_project = false;
-                                            eprintln!("Skipping up-to-date project: {:?}", project_root);
+                                            eprintln!("Skipping up-to-date project: {project_root:?}");
                                             // Add files from this project to all_rust_files
                                             all_rust_files.extend(cached_project_analysis.rust_files.into_iter());
                                         }
@@ -231,7 +230,7 @@ fn run_full_analysis() -> Result<()> {
         }
 
         if should_reprocess_project {
-            eprintln!("Processing project: {:?}", project_root);
+            eprintln!("Processing project: {project_root:?}");
             let mut current_project_rust_files: Vec<FileAnalysis> = Vec::new();
 
             let mut prioritized_files: std::collections::HashSet<PathBuf> = std::collections::HashSet::new();
@@ -265,7 +264,7 @@ fn run_full_analysis() -> Result<()> {
             
             // Process prioritized files first
             let processed_prioritized_files: Vec<FileAnalysis> = prioritized_files.par_iter().filter_map(|path| {
-                if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") {
+                if path.is_file() && path.extension().is_some_and(|ext| ext == "rs") {
                     match fs::read_to_string(path) {
                         Ok(file_content) => {
                             let tokens = tokenize(&file_content);
@@ -284,7 +283,7 @@ fn run_full_analysis() -> Result<()> {
                             })
                         },
                         Err(e) => {
-                            eprintln!("  Error reading prioritized Rust file {:?}: {}", path, e);
+                            eprintln!("  Error reading prioritized Rust file {path:?}: {e}");
                             None
                         }
                     }
@@ -302,7 +301,7 @@ fn run_full_analysis() -> Result<()> {
                 .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target")) // Skip target directories
                 .filter_map(|entry| {
                     let path = entry.path();
-                    if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") && !prioritized_files.contains(path) {
+                    if path.is_file() && path.extension().is_some_and(|ext| ext == "rs") && !prioritized_files.contains(path) {
                         match fs::read_to_string(path) {
                             Ok(file_content) => {
                                 let tokens = tokenize(&file_content);
@@ -321,7 +320,7 @@ fn run_full_analysis() -> Result<()> {
                                 })
                             },
                             Err(e) => {
-                                eprintln!("  Error reading Rust file {:?}: {}", path, e);
+                                eprintln!("  Error reading Rust file {path:?}: {e}");
                                 None
                             }
                         }
@@ -336,7 +335,7 @@ fn run_full_analysis() -> Result<()> {
                 rust_files: current_project_rust_files.clone(),
             };
             // Save per-project summary
-            eprintln!("Saving project summary to {:?}", project_summary_file);
+            eprintln!("Saving project summary to {project_summary_file:?}");
             let serialized = serde_json::to_string_pretty(&project_analysis)?;
             fs::write(&project_summary_file, serialized)?;
 
@@ -366,7 +365,7 @@ fn run_full_analysis() -> Result<()> {
         }
     }
 
-    eprintln!("Saving file pair similarities to {:?}", file_pair_similarities_file);
+    eprintln!("Saving file pair similarities to {file_pair_similarities_file:?}");
     let serialized_file_pair_similarities = serde_json::to_string_pretty(&file_pair_similarities)?;
     fs::write(&file_pair_similarities_file, serialized_file_pair_similarities)?;
 
@@ -393,12 +392,12 @@ fn run_full_analysis() -> Result<()> {
             file_analysis.path.parent().unwrap().file_name().unwrap_or_default().to_string_lossy().into_owned()
         };
 
-        for (word, _count) in &file_analysis.bag_of_words {
-            term_index.entry(word.clone()).or_insert_with(HashSet::new).insert(crate_name.clone());
+        for word in file_analysis.bag_of_words.keys() {
+            term_index.entry(word.clone()).or_default().insert(crate_name.clone());
         }
     }
 
-    eprintln!("Saving term index to {:?}", term_index_file);
+    eprintln!("Saving term index to {term_index_file:?}");
     let serialized_term_index = serde_json::to_string_pretty(&term_index)?;
     fs::write(&term_index_file, serialized_term_index)?;
 
@@ -410,21 +409,21 @@ fn run_read_cargo_toml_mode() -> Result<()> {
     puffin::profile_function!();
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
 
-    eprintln!("Searching for Cargo.toml files in: {:?}", search_root);
+    eprintln!("Searching for Cargo.toml files in: {search_root:?}");
 
     for entry in WalkDir::new(&search_root)
         .into_iter()
         .filter_map(|e| e.ok())
     {
         let path = entry.path();
-        if path.is_file() && path.file_name().map_or(false, |name| name == "Cargo.toml") {
-            eprintln!("Found Cargo.toml: {:?}", path);
+        if path.is_file() && path.file_name().is_some_and(|name| name == "Cargo.toml") {
+            eprintln!("Found Cargo.toml: {path:?}");
             match fs::read_to_string(path) {
                 Ok(content) => {
-                    println!("\n--- Content of {:?} ---\n{}\n", path, content);
+                    println!("\n--- Content of {path:?} ---\n{content}\n");
                 },
                 Err(e) => {
-                    eprintln!("Error reading Cargo.toml {:?}: {}", path, e);
+                    eprintln!("Error reading Cargo.toml {path:?}: {e}");
                 }
             }
         }
@@ -439,7 +438,7 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let file_pair_similarities_file = search_root.join("file_pair_similarities.json");
 
-    eprintln!("Discovering Rust projects in: {:?}", search_root);
+    eprintln!("Discovering Rust projects in: {search_root:?}");
 
     // First pass: Discover Cargo.toml files to identify project roots
     let mut discovered_project_roots: std::collections::HashSet<PathBuf> = std::collections::HashSet::new();
@@ -449,7 +448,7 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
         .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target")) // Skip target directories
     {
         let path = entry.path();
-        if path.is_file() && path.file_name().map_or(false, |name| name == "Cargo.toml") {
+        if path.is_file() && path.file_name().is_some_and(|name| name == "Cargo.toml") {
             if let Some(parent) = path.parent() {
                 discovered_project_roots.insert(parent.to_path_buf());
             }
@@ -509,7 +508,7 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
     let target_crate_name_str = target_crate_name.unwrap_or_else(|| "file_content_analyzer".to_string());
     let target_crate_bag = crate_bags_of_words.get(&target_crate_name_str).ok_or(anyhow::anyhow!("Target crate '{}' not found in cache. Run full_analysis first.", target_crate_name_str))?;
 
-    eprintln!("Calculating similarities to '{}'ները...", target_crate_name_str);
+    eprintln!("Calculating similarities to '{target_crate_name_str}'ները...");
     let mut similarities: Vec<(String, f64)> = Vec::new();
     for (crate_name, bag_of_words) in &crate_bags_of_words {
         if crate_name != &target_crate_name_str {
@@ -520,7 +519,7 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
 
     similarities.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
 
-    println!("\n--- Top {} Similar Crates to {} ---", num_results, target_crate_name_str);
+    println!("\n--- Top {num_results} Similar Crates to {target_crate_name_str} ---");
     let top_similar_crates: Vec<String> = similarities.iter().take(num_results).map(|(name, _)| name.clone()).collect();
 
     for (crate_name, similarity) in similarities.iter().take(num_results) {
@@ -529,7 +528,7 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
 
     // Load file pair similarities
     if file_pair_similarities_file.exists() {
-        eprintln!("Loading file pair similarities from {:?}", file_pair_similarities_file);
+        eprintln!("Loading file pair similarities from {file_pair_similarities_file:?}");
         let cached_data = fs::read_to_string(&file_pair_similarities_file)?;
         let all_file_pair_similarities: Vec<FilePairSimilarity> = serde_json::from_str(&cached_data)?;
 
@@ -538,7 +537,7 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
 
         for similar_crate_name in &top_similar_crates {
             if let Some(similar_crate_files) = crate_file_paths.get(similar_crate_name) {
-                println!("\n  Files similar to {} (in {})", target_crate_name_str, similar_crate_name);
+                println!("\n  Files similar to {target_crate_name_str} (in {similar_crate_name})");
                 let mut found_similarities = false;
                 for file_pair in &all_file_pair_similarities {
                     let file1_in_target = target_crate_files.contains(&file_pair.file1_path);
@@ -560,7 +559,7 @@ fn run_crate_similarity_analysis(target_crate_name: Option<String>, num_results:
             }
         }
     } else {
-        eprintln!("File pair similarities file {:?} not found. Run full_analysis first.", file_pair_similarities_file);
+        eprintln!("File pair similarities file {file_pair_similarities_file:?} not found. Run full_analysis first.");
     }
 
     Ok(())
@@ -572,7 +571,7 @@ fn run_search_keywords_mode(keywords: Vec<String>, search_path: Option<PathBuf>)
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let hierarchical_term_index_file = search_root.join("hierarchical_term_index.json");
 
-    eprintln!("Loading hierarchical term index from {:?}", hierarchical_term_index_file);
+    eprintln!("Loading hierarchical term index from {hierarchical_term_index_file:?}");
     let cached_data = fs::read_to_string(&hierarchical_term_index_file)?;
     let hierarchical_term_index: HashMap<String, HashMap<PathBuf, usize>> = serde_json::from_str(&cached_data)?;
 
@@ -583,13 +582,13 @@ fn run_search_keywords_mode(keywords: Vec<String>, search_path: Option<PathBuf>)
 
     let mut matching_files_summary: HashMap<PathBuf, usize> = HashMap::new(); // File path -> count of matching keywords
 
-    println!("\n--- Detailed Search Results for Keywords {:?} ---", keywords);
+    println!("\n--- Detailed Search Results for Keywords {keywords:?} ---");
     if let Some(ref path_filter) = search_path {
-        println!("  (Filtered by path: {:?})", path_filter);
+        println!("  (Filtered by path: {path_filter:?})");
     }
 
     for keyword in &keywords {
-        println!("\nKeyword: '{}'\n--------------------", keyword);
+        println!("\nKeyword: '{keyword}'\n--------------------");
         if let Some(file_counts) = hierarchical_term_index.get(&keyword.to_lowercase()) {
             let mut files_for_keyword: Vec<(&PathBuf, &usize)> = file_counts.iter().collect();
             files_for_keyword.sort_by(|a, b| b.1.cmp(a.1)); // Sort by count, descending
@@ -604,7 +603,7 @@ fn run_search_keywords_mode(keywords: Vec<String>, search_path: Option<PathBuf>)
                             continue;
                         }
                     }
-                    println!("  File: {:?}, Occurrences: {}", file_path, count);
+                    println!("  File: {file_path:?}, Occurrences: {count}");
                     *matching_files_summary.entry(file_path.clone()).or_insert(0) += 1;
                 }
             }
@@ -621,7 +620,7 @@ fn run_search_keywords_mode(keywords: Vec<String>, search_path: Option<PathBuf>)
         println!("No files found matching any of the provided keywords.");
     } else {
         for (file_path, match_count) in sorted_summary {
-            println!("File: {:?}, Matching Keywords: {}", file_path, match_count);
+            println!("File: {file_path:?}, Matching Keywords: {match_count}");
         }
     }
 
@@ -633,7 +632,7 @@ fn run_generate_stopword_report_mode() -> Result<()> {
     puffin::profile_function!();
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
 
-    eprintln!("Discovering Rust projects in: {:?}", search_root);
+    eprintln!("Discovering Rust projects in: {search_root:?}");
 
     // First pass: Discover Cargo.toml files to identify project roots
     let mut discovered_project_roots: std::collections::HashSet<PathBuf> = std::collections::HashSet::new();
@@ -643,7 +642,7 @@ fn run_generate_stopword_report_mode() -> Result<()> {
         .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target")) // Skip target directories
     {
         let path = entry.path();
-        if path.is_file() && path.file_name().map_or(false, |name| name == "Cargo.toml") {
+        if path.is_file() && path.file_name().is_some_and(|name| name == "Cargo.toml") {
             if let Some(parent) = path.parent() {
                 discovered_project_roots.insert(parent.to_path_buf());
             }
@@ -673,7 +672,7 @@ fn run_generate_stopword_report_mode() -> Result<()> {
     let mut word_file_counts: HashMap<String, usize> = HashMap::new();
 
     for file_analysis in &all_rust_files {
-        for (word, _count) in &file_analysis.bag_of_words {
+        for word in file_analysis.bag_of_words.keys() {
             *word_file_counts.entry(word.clone()).or_insert(0) += 1;
         }
     }
@@ -691,7 +690,7 @@ fn run_generate_stopword_report_mode() -> Result<()> {
         println!("No stopword candidates found.");
     } else {
         for (word, percentage) in stopword_candidates.iter().take(100) { // Print top 100
-            println!("Word: '{}', Appears in: {:.2}% of files", word, percentage);
+            println!("Word: '{word}', Appears in: {percentage:.2}% of files");
         }
         eprintln!("Full stopword report saved to full_stopword_report.json");
         let serialized_report = serde_json::to_string_pretty(&stopword_candidates)?;
@@ -707,7 +706,7 @@ fn run_migrate_cache_mode() -> Result<()> {
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let old_cache_file = search_root.join("file_analysis_cache.json");
 
-    eprintln!("Attempting to migrate old cache from {:?}", old_cache_file);
+    eprintln!("Attempting to migrate old cache from {old_cache_file:?}");
 
     if old_cache_file.exists() {
         let cached_data = fs::read_to_string(&old_cache_file)?;
@@ -719,9 +718,9 @@ fn run_migrate_cache_mode() -> Result<()> {
             let serialized = serde_json::to_string_pretty(&project_analysis)?;
             fs::write(&project_summary_file, serialized)?;
         }
-        eprintln!("Migration complete. You can now safely remove {:?}", old_cache_file);
+        eprintln!("Migration complete. You can now safely remove {old_cache_file:?}");
     } else {
-        eprintln!("Old cache file {:?} not found. Nothing to migrate.", old_cache_file);
+        eprintln!("Old cache file {old_cache_file:?} not found. Nothing to migrate.");
     }
 
     Ok(())
@@ -754,7 +753,7 @@ fn build_directory_index(current_dir: &Path, search_root: &Path) -> Result<HashM
                     // Load from cache
                     if let Ok(cached_data) = fs::read_to_string(&dir_summary_file) {
                         if let Ok(index) = serde_json::from_str::<HashMap<String, HashMap<PathBuf, usize>>>(&cached_data) {
-                            eprintln!("Loaded cached index for: {:?}", current_dir);
+                            eprintln!("Loaded cached index for: {current_dir:?}");
                             return Ok(index);
                         }
                     }
@@ -763,12 +762,12 @@ fn build_directory_index(current_dir: &Path, search_root: &Path) -> Result<HashM
         }
     }
 
-    eprintln!("Processing directory: {:?}", current_dir);
+    eprintln!("Processing directory: {current_dir:?}");
 
     // Process files directly in the current directory
     for entry in WalkDir::new(current_dir).max_depth(1).into_iter().filter_map(|e| e.ok()) {
         let path = entry.path();
-        if path.is_file() && path.extension().map_or(false, |ext| ext == "rs") {
+        if path.is_file() && path.extension().is_some_and(|ext| ext == "rs") {
             if let Ok(file_content) = fs::read_to_string(path) {
                 let tokens = tokenize(&file_content);
                 let mut bag_of_words: HashMap<String, usize> = HashMap::new();
@@ -783,7 +782,7 @@ fn build_directory_index(current_dir: &Path, search_root: &Path) -> Result<HashM
                 for (word, count) in bag_of_words {
                     local_index
                         .entry(word)
-                        .or_insert_with(HashMap::new)
+                        .or_default()
                         .insert(relative_path.clone(), count);
                 }
             }
@@ -808,7 +807,7 @@ fn build_directory_index(current_dir: &Path, search_root: &Path) -> Result<HashM
             match build_directory_index(sub_dir_path, search_root) {
                 Ok(index) => Some(index),
                 Err(e) => {
-                    eprintln!("Error processing subdirectory {:?}: {}", sub_dir_path, e);
+                    eprintln!("Error processing subdirectory {sub_dir_path:?}: {e}");
                     None
                 }
             }
@@ -820,14 +819,14 @@ fn build_directory_index(current_dir: &Path, search_root: &Path) -> Result<HashM
             for (path, count) in file_counts {
                 local_index
                     .entry(word.clone()) // Clone the word here
-                    .or_insert_with(HashMap::new)
+                    .or_default()
                     .insert(path, count);
             }
         }
     }
 
     // Save the local index for this directory
-    eprintln!("Saving directory index for: {:?}", current_dir);
+    eprintln!("Saving directory index for: {current_dir:?}");
     let serialized_local_index = serde_json::to_string_pretty(&local_index)?;
     fs::write(&dir_summary_file, serialized_local_index)?;
 
@@ -843,7 +842,7 @@ fn run_build_hierarchical_index_mode() -> Result<()> {
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let hierarchical_term_index_file = search_root.join("hierarchical_term_index.json");
 
-    eprintln!("Starting hierarchical index build from: {:?}", search_root);
+    eprintln!("Starting hierarchical index build from: {search_root:?}");
 
     let final_index = build_directory_index(&search_root, &search_root)?;
 
@@ -861,7 +860,7 @@ fn run_find_exact_shared_files_terms_mode(search_path: Option<PathBuf>, filter_b
     let search_root = PathBuf::from(GITHUB_ROOT_DIR);
     let hierarchical_term_index_file = search_root.join("hierarchical_term_index.json");
 
-    eprintln!("Loading hierarchical term index from {:?}", hierarchical_term_index_file);
+    eprintln!("Loading hierarchical term index from {hierarchical_term_index_file:?}");
     let cached_data = fs::read_to_string(&hierarchical_term_index_file)?;
     let hierarchical_term_index: HashMap<String, HashMap<PathBuf, usize>> = serde_json::from_str(&cached_data)?;
 
@@ -886,12 +885,12 @@ fn run_find_exact_shared_files_terms_mode(search_path: Option<PathBuf>, filter_b
             }
         })
         .fold(HashMap::new, |mut acc: HashMap<Vec<PathBuf>, HashSet<String>>, (file_paths_vec, term)| {
-            acc.entry(file_paths_vec).or_insert_with(HashSet::new).insert(term);
+            acc.entry(file_paths_vec).or_default().insert(term);
             acc
         })
         .reduce(HashMap::new, |mut map1, map2| {
             for (key, value) in map2 {
-                map1.entry(key).or_insert_with(HashSet::new).extend(value);
+                map1.entry(key).or_default().extend(value);
             }
             map1
         });
@@ -953,7 +952,7 @@ fn run_estimate_mode() -> Result<()> {
             .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target"))
         {
             let path = entry.path();
-            if path.is_file() && path.file_name().map_or(false, |name| name == "Cargo.toml") {
+            if path.is_file() && path.file_name().is_some_and(|name| name == "Cargo.toml") {
                 if let Some(parent) = path.parent() {
                     discovered_project_roots.insert(parent.to_path_buf());
                 }
@@ -974,7 +973,7 @@ fn run_estimate_mode() -> Result<()> {
                         .into_iter()
                         .filter_map(|e| e.ok())
                         .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target"))
-                        .filter(|e| e.path().is_file() && e.path().extension().map_or(false, |ext| ext == "rs"))
+                        .filter(|e| e.path().is_file() && e.path().extension().is_some_and(|ext| ext == "rs"))
                     {
                         let path = entry.path();
                         if let Some(cached_file) = cached_files.remove(path) {
@@ -1002,7 +1001,7 @@ fn run_estimate_mode() -> Result<()> {
                 .into_iter()
                 .filter_map(|e| e.ok())
                 .filter(|e| !e.path().components().any(|comp| comp.as_os_str() == "target"))
-                .filter(|e| e.path().is_file() && e.path().extension().map_or(false, |ext| ext == "rs"))
+                .filter(|e| e.path().is_file() && e.path().extension().is_some_and(|ext| ext == "rs"))
             {
                 new_files.push(entry.path().to_path_buf());
                 if let Ok(metadata) = fs::metadata(entry.path()) {
@@ -1015,20 +1014,20 @@ fn run_estimate_mode() -> Result<()> {
     println!("--- Indexing Estimation Report ---");
     println!("New files: {}", new_files.len());
     for file in new_files {
-        println!("  - {:?}", file);
+        println!("  - {file:?}");
     }
     println!("Modified files: {}", modified_files.len());
     for file in modified_files {
-        println!("  - {:?}", file);
+        println!("  - {file:?}");
     }
     println!("Deleted files: {}", deleted_files.len());
     for file in deleted_files {
-        println!("  - {:?}", file);
+        println!("  - {file:?}");
     }
 
     // Simple estimation heuristic: 1 second per 100KB
     let estimated_time_seconds = (total_size as f64 / 102400.0).ceil();
-    println!("\nEstimated time to index: {} seconds", estimated_time_seconds);
+    println!("\nEstimated time to index: {estimated_time_seconds} seconds");
 
     Ok(())
 }

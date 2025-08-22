@@ -47,18 +47,18 @@ pub fn process_poem_file(path: &PathBuf, patch_function_name: &Option<String>, p
                     return Err(anyhow!("Failed to parse front matter YAML after {} attempts for {:?}: {}", MAX_ATTEMPTS, path, e));
                 }
 
-                eprintln!("YAML parsing error in {:?} (attempt {}): {}", path, attempts, e);
+                eprintln!("YAML parsing error in {path:?} (attempt {attempts}): {e}");
                 let error_line_num = e.location().map(|loc| loc.line()).unwrap_or(0);
 
                 if error_line_num > 0 && error_line_num <= front_matter_lines_vec.len() {
                     let problematic_line_index = error_line_num - 1;
                     let original_problematic_line = front_matter_lines_vec[problematic_line_index].clone();
-                    eprintln!("Problematic line (original): \"{}\"", original_problematic_line);
+                    eprintln!("Problematic line (original): \"{original_problematic_line}\"");
 
                     if let Some(patch_fn_name) = patch_function_name {
                         if let Some(patch_fn) = patch_functions.get(patch_fn_name) {
                             let patched_line = patch_fn(&original_problematic_line);
-                            eprintln!("Attempting patch with '{}': \"{}\"", patch_fn_name, patched_line);
+                            eprintln!("Attempting patch with '{patch_fn_name}': \"{patched_line}\"");
                             front_matter_lines_vec[problematic_line_index] = patched_line;
                         } else {
                             return Err(anyhow!("Patch function '{}' not found.", patch_fn_name));

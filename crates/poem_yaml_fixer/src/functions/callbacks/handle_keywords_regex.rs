@@ -1,4 +1,3 @@
-use anyhow::Result;
 use poem_traits::PoemFrontMatterTrait;
 
 #[poem_macros::poem_function(

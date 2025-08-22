@@ -32,11 +32,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let binary_path = PathBuf::from("./build_coverage/libminizinc_c_wrapper.so"); // Adjust path as needed
 
     if !profdata_path.exists() {
-        eprintln!("Error: merged.profdata not found at {:?}", profdata_path);
+        eprintln!("Error: merged.profdata not found at {profdata_path:?}");
         return Ok(())
     }
     if !binary_path.exists() {
-        eprintln!("Error: libminizinc_c_wrapper.so not found at {:?}", binary_path);
+        eprintln!("Error: libminizinc_c_wrapper.so not found at {binary_path:?}");
         return Ok(())
     }
 
@@ -50,7 +50,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .output()?;
 
     if !output.status.success() {
-        eprintln!("llvm-cov export failed: {:?}", output);
+        eprintln!("llvm-cov export failed: {output:?}");
         return Err("llvm-cov export failed".into());
     }
 
@@ -88,12 +88,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         cpp_file_names.len()
     )
     .to_string() + &format!(
-        "cpp_file_names = {:?};\n",
-        cpp_file_names
+        "cpp_file_names = {cpp_file_names:?};\n"
     )
     .to_string() + &format!(
-        "cpp_file_covered = {:?};\n",
-        cpp_file_covered
+        "cpp_file_covered = {cpp_file_covered:?};\n"
     )
     .to_string() + &format!(
         "num_rust_tests = {};\n", // This needs to be dynamically determined from test runs
@@ -103,9 +101,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "rust_test_names = {:?};\n", // Placeholder for now
         vec!["test_parser_basic", "test_model_creation", "test_solver_init"]
     )
-    .to_string() + &format!(
-        "test_covers_file = [| true, false, false, false, false\n                   | false, true, false, false, false\n                   | false, false, false, false, true |];" // This is the hardest part to automate per-test
-    );
+    .to_string() + &"test_covers_file = [| true, false, false, false, false\n                   | false, true, false, false, false\n                   | false, false, false, false, true |];".to_string();
 
     std::fs::write("./extracted_coverage.dzn", dzn_content)?;
 

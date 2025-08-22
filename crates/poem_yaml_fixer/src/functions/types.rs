@@ -1,7 +1,7 @@
 use std::collections::HashMap;
-use poem_traits::{PoemFrontMatterTrait, Meme, RegexEntry, RegexConfig}; // Import RegexEntry and RegexConfig
+use poem_traits::{PoemFrontMatterTrait, Meme}; // Import RegexEntry and RegexConfig
 
-#[derive(serde::Deserialize, serde::Serialize, Debug, Clone)]
+#[derive(serde::Deserialize, serde::Serialize, Debug, Clone, Default)]
 pub struct FixedFrontMatter {
     pub title: Option<String>,
     pub summary: Option<String>,

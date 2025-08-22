@@ -1,7 +1,8 @@
 use std::path::PathBuf;
 use clap::Parser;
 use walkdir::WalkDir;
-use std::fs; // Need fs for checking file existence
+use anyhow::anyhow; // Add this line
+ // Need fs for checking file existence
 
 poem_macros::poem_header!(); // Call the header macro once
 
@@ -26,6 +27,10 @@ struct Cli {
     /// Perform a dry run, showing changes without writing to disk.
     #[arg(long)]
     dry_run: bool,
+
+    /// Use direct YAML parsing fast path.
+    #[arg(long)]
+    fast_parse: bool,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -39,7 +44,7 @@ fn main() -> anyhow::Result<()> {
     // Check for an external regex_config.toml in the current directory
     let external_config_path = current_dir.join("regex_config.toml");
     if external_config_path.exists() {
-        println!("Loading external regex config from: {:?}", external_config_path);
+        println!("Loading external regex config from: {external_config_path:?}");
         let external_config = functions::load_regex_config::load_regex_config(&external_config_path)?;
 
         // Merge external config into default config (external overrides defaults by name)
@@ -55,7 +60,12 @@ fn main() -> anyhow::Result<()> {
     use poem_traits::FunctionRegistry; // Import FunctionRegistry
     let function_registry: FunctionRegistry = create_function_registry(); // Use FunctionRegistry
 
-    if let Some(file_path) = cli.file {
+    if cli.fast_parse {
+        let file_path = cli.file.ok_or_else(|| anyhow::anyhow!("A file path must be provided for fast parsing."))?;
+        println!("Performing fast parse for: {file_path:?}\n");
+        let (fixed_fm, poem_body) = functions::parse_poem_file_direct::parse_poem_file_direct(&file_path)?;
+        println!("Parsed Front Matter: {fixed_fm:#?}\nExtracted Poem Body: {poem_body}");
+    } else if let Some(file_path) = cli.file {
         functions::process_poem_file::process_poem_file(
             &file_path,
             cli.max_change_percentage,
@@ -67,12 +77,13 @@ fn main() -> anyhow::Result<()> {
     } else {
         for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
             let path = entry.path();
-            if path.is_file() && path.extension().map_or(false, |ext| ext == "md") {
-                if path.file_name().map_or(false, |name| name == "index.md") {
+            if path.is_file() && path.extension().is_some_and(|ext| ext == "md") {
+                if path.file_name().is_some_and(|name| name == "index.md") {
                     continue;
                 }
 
-                println!("Processing: {:?}\n", path);
+                println!("Processing: {path:?}
+");
                 let path_buf = path.to_path_buf();
                 functions::process_poem_file::process_poem_file(
                     &path_buf,

@@ -2,7 +2,7 @@ use anyhow::{Result, anyhow};
 use poem_traits::PoemFrontMatterTrait;
 use std::collections::HashMap;
 use regex::Regex; // For regex matching
-use poem_traits::{RegexConfig, PoemFunctionMetadata, CallbackFn, FunctionRegistry}; // Import FunctionRegistry
+use poem_traits::{RegexConfig, FunctionRegistry}; // Import FunctionRegistry
 
 // This function represents the root of the regex-driven YAML fixing process.
 // It will use regex matches to determine the state of the parsing/fixing and guide further actions.
@@ -21,7 +21,7 @@ pub fn handle_regex_driven_yaml_fix(
     let mut current_line_idx = 0;
 
     // Skip the initial "---"
-    if lines.get(current_line_idx).map_or(false, |l| l.trim() == "---") {
+    if lines.get(current_line_idx).is_some_and(|l| l.trim() == "---") {
         current_line_idx += 1;
     } else {
         return Err(anyhow!("Expected '---' at the beginning of the file."));
@@ -54,7 +54,7 @@ pub fn handle_regex_driven_yaml_fix(
                     let line = lines[current_line_idx];
                     if let Some(captures_raw) = regex.captures(line) {
                         matched_this_field = true;
-                        println!("  Matched field: {} with line: {}", field_name, line);
+                        println!("  Matched field: {field_name} with line: {line}");
 
                         let captures: Vec<String> = (0..captures_raw.len())
                             .map(|i| captures_raw.get(i).map_or("", |m| m.as_str()).to_string())
@@ -71,7 +71,7 @@ pub fn handle_regex_driven_yaml_fix(
                     current_line_idx += 1; // Move to the next line if no match
                 }
                 if !matched_this_field {
-                    println!("  Warning: Field '{}' not found or did not match in expected sequence.", field_name);
+                    println!("  Warning: Field '{field_name}' not found or did not match in expected sequence.");
                     // TODO: Handle missing fields based on schema (e.g., optional vs. required)
                 }
             }

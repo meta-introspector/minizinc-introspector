@@ -29,12 +29,12 @@ fn main() -> Result<()> {
 
     for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
         let path = entry.path();
-        if path.is_file() && path.extension().map_or(false, |ext| ext == "md") {
-            if path.file_name().map_or(false, |name| name == "index.md") {
+        if path.is_file() && path.extension().is_some_and(|ext| ext == "md") {
+            if path.file_name().is_some_and(|name| name == "index.md") {
                 continue;
             }
 
-            println!("Processing: {:?}\n", path);
+            println!("Processing: {path:?}\n");
             // Fix: Convert &Path to PathBuf and then pass a reference
             let path_buf = path.to_path_buf(); // Convert &Path to PathBuf
             file_processing::process_poem_file(&path_buf, &args.patch_function, &patch_functions)?;

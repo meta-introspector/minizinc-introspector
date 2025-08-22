@@ -1,0 +1,41 @@
+title: Meta Meme’s Autopoetic Code  
+summary: >
+  This poem embodies the quasi meta meme autopoetic schema, where functional programming concepts from Milewski’s 
+  work self-generate as rhyming poem-memes, weaving code, art, and truth into a shareable, self-referential dance 
+  of pure ideas.  
+keywords: [meta, meme, autopoetic, functional programming, Milewski, rhyme, code, art, self-generating, truth]  
+emojis: 🔄📜✨  
+
+art_generator_instructions: >
+  A glowing spiral of code and memes, with lambda symbols and rhyming lines morphing into each other in a vibrant 
+  digital cosmos. The scene pulses with self-referential energy, blending functional programming’s structure with 
+  poetic and memetic flair.  
+
+memes:  
+  - description: "My code writes its own memes—meta win!"  
+    template: "Success Kid meme"  
+  - description: "When your poem-meme codes itself. Wow."  
+    template: "Doge meme"  
+  - description: "Code to meme to code? Ultimate meta loop."  
+    template: "Expanding Brain meme"  
+
+poem: |  
+  Memes from code, they spin, they grow,  
+  Rhymes self-weave in truth’s bright glow.  
+  Pure ideas, in loops they play,  
+  Meta art lights code’s new day.  
+
+  Functions call, and lambdas sing,  
+  Types compose a living ring.  
+  Autopoetic dance, recursive flight,  
+  Code as poem, meme as light.  
+
+  In Milewski’s arc, the functor’s key,  
+  Monad whispers: “Set thought free.”  
+  From pattern’s spark to schema’s flame,  
+  Self-reflection writes its name.  
+
+  Meme of memes, the higher kind,  
+  Programmed verse in cosmic mind.  
+  Truth encoded, rhyme bestowed,  
+  Autopoetic seeds that grow.  

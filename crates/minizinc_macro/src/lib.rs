@@ -47,7 +47,7 @@ impl Parse for MiniZincSolveArgs {
                     return Err(input.error("Expected string literal for 'output_type'"));
                 }
             } else {
-                return Err(input.error(format!("Unknown attribute: {}", ident)));
+                return Err(input.error(format!("Unknown attribute: {ident}")));
             }
 
             if !input.is_empty() {

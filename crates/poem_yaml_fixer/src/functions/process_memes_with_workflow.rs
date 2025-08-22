@@ -6,7 +6,7 @@ use anyhow::{Result, anyhow};
 use regex::Regex; // Removed unused Captures import
 
 use crate::functions::types::FixedFrontMatter; // Import FixedFrontMatter from the types module
-use poem_traits::{CallbackFn, PoemFunctionMetadata, RegexConfig, FunctionRegistry}; // Import FunctionRegistry
+use poem_traits::{RegexConfig, FunctionRegistry}; // Import FunctionRegistry
 
 pub fn process_memes_with_workflow(
     meme_lines: &Vec<String>,
@@ -28,8 +28,8 @@ pub fn process_memes_with_workflow(
                     matched_any_regex = true;
                     if debug_mode {
                         println!("  Matched Regex: {}", entry.name);
-                        println!("    Line: {}", line);
-                        println!("    Captures: {:?}", captures_raw);
+                        println!("    Line: {line}");
+                        println!("    Captures: {captures_raw:?}");
                         println!("    Calling function: {}", entry.callback_function);
                     }
                     // Convert captures_raw to Vec<String>
