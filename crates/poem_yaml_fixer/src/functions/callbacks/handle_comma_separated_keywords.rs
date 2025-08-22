@@ -1,7 +1,8 @@
 use anyhow::Result;
 use crate::functions::types::FixedFrontMatter;
-use poem_traits::{CallbackFn, PoemFunctionMetadata, RegexEntry};
+//use poem_traits::{CallbackFn, PoemFunctionMetadata, RegexEntry};
 use poem_macros::poem_function; // Import the macro
+use poem_traits::PoemFrontMatterTrait;
 
 #[poem_function(
     regex_entry = RegexEntry {
@@ -10,6 +11,7 @@ use poem_macros::poem_function; // Import the macro
         callback_function: "handle_comma_separated_keywords".to_string(),
     }
 )]
+
 pub fn handle_comma_separated_keywords(
     _line: &str, // The line that matched the regex (not directly used here, but part of signature)
     captures: Vec<String>, // The captured groups from the regex

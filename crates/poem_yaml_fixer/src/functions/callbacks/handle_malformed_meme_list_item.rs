@@ -1,8 +1,9 @@
 use anyhow::Result;
 use crate::functions::types::FixedFrontMatter;
-use poem_traits::{CallbackFn, PoemFunctionMetadata, RegexEntry, Meme};
+//use poem_traits::{CallbackFn, PoemFunctionMetadata, RegexEntry, Meme};
+use poem_traits::{Meme};
 use poem_macros::poem_function;
-
+use poem_traits::PoemFrontMatterTrait;
 #[poem_function(
     regex_entry = RegexEntry {
         name: "malformed_meme_list_item".to_string(),
