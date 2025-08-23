@@ -15,6 +15,6 @@ use crate::functions::generate_regex::generate_generalized_regex;
     pending_meme_description = "This callback matches the start tag for an XAI artifact and extracts its attributes."
 )]
 pub fn handle_xaistart_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> Result<()> {
-    fixed_fm.raw_meme_lines.get_or_insert_with(Vec::new).push(format!("xaistart: id={}, version={}, title={}, type={}", captures[1].trim(), captures[2].trim(), captures[3].trim(), captures[4].trim()));
+    fixed_fm.get_raw_meme_lines_mut().push(format!("xaistart: id={}, version={}, title={}, type={}", captures[1].trim(), captures[2].trim(), captures[3].trim(), captures[4].trim()));
     Ok(())
 }

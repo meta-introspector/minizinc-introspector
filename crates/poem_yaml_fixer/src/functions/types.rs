@@ -37,6 +37,14 @@ impl PoemFrontMatterTrait for FixedFrontMatter {
     fn get_pending_meme_description_mut(&mut self) -> &mut Option<String> {
         &mut self.pending_meme_description
     }
+    // New method implementation
+    fn get_raw_meme_lines_mut(&mut self) -> &mut Vec<String> {
+        self.raw_meme_lines.get_or_insert_with(Vec::new)
+    }
+    // New method implementation
+    fn get_poem_body_mut(&mut self) -> &mut String {
+        self.poem_body.get_or_insert_with(String::new)
+    }
 
     fn set_title(&mut self, title: String) {
         self.title = Some(title);

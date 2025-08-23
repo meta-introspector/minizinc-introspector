@@ -15,6 +15,6 @@ use crate::functions::generate_regex::generate_generalized_regex;
     pending_meme_description = "This callback extracts the NFT ID field."
 )]
 pub fn handle_nft_id_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> Result<()> {
-    fixed_fm.raw_meme_lines.get_or_insert_with(Vec::new).push(format!("nft_id: {}", captures[1].trim()));
+    fixed_fm.get_raw_meme_lines_mut().push(format!("nft_id: {}", captures[1].trim()));
     Ok(())
 }

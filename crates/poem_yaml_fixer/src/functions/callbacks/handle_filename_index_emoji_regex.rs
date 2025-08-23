@@ -15,6 +15,6 @@ use crate::functions::generate_regex::generate_generalized_regex;
     pending_meme_description = "This callback extracts filename and associated emojis."
 )]
 pub fn handle_filename_index_emoji_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> Result<()> {
-    fixed_fm.raw_meme_lines.get_or_insert_with(Vec::new).push(format!("filename_index_emoji: {}", captures[1].trim()));
+    fixed_fm.get_raw_meme_lines_mut().push(format!("filename_index_emoji: {}", captures[1].trim()));
     Ok(())
 }

@@ -6,7 +6,7 @@ use crate::functions::generate_regex::generate_generalized_regex;
 
 #[poem_function(
     name = "quote_content",
-    pattern = r#"^"([^"]*)""#,
+    pattern = r#"^\"([^\"]*)\""#,
     title = "Quote Content",
     summary = "Appends quoted content to the poem body.",
     keywords = "content, body, quote",
@@ -15,6 +15,6 @@ use crate::functions::generate_regex::generate_generalized_regex;
     pending_meme_description = "This callback appends quoted content to the poem body."
 )]
 pub fn handle_quote_content_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> Result<()> {
-    fixed_fm.poem_body.get_or_insert_with(String::new).push_str(&format!("{}\n", captures[1].trim()));
+    fixed_fm.get_poem_body_mut().push_str(&format!("{}\n", captures[1].trim()));
     Ok(())
 }

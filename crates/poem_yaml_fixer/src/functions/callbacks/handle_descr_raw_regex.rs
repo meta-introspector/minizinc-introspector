@@ -15,6 +15,6 @@ use crate::functions::generate_regex::generate_generalized_regex;
     pending_meme_description = "This callback extracts a raw description from a list item."
 )]
 pub fn handle_descr_raw_regex(_line: &str, captures: Vec<String>, fixed_fm: &mut dyn PoemFrontMatterTrait) -> Result<()> {
-    fixed_fm.raw_meme_lines.get_or_insert_with(Vec::new).push(format!("descr_raw: {}", captures[1].trim()));
+    fixed_fm.get_raw_meme_lines_mut().push(format!("descr_raw: {}", captures[1].trim()));
     Ok(())
 }
