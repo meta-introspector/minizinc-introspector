@@ -1,4 +1,4 @@
-use proc_macro2::TokenStream as ProcMacro2TokenStream; // This import might become unused
+//use proc_macro2::TokenStream as ProcMacro2TokenStream; // This import might become unused
 use std::iter::Peekable;
 use std::str::Chars;
 use std::collections::HashMap;

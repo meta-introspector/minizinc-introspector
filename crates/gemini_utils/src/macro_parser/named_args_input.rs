@@ -1,5 +1,5 @@
 use syn::{parse::{Parse, ParseStream}, LitStr, Token, ExprAssign, punctuated::Punctuated};
-use quote::ToTokens;
+//use quote::ToTokens;
 
 pub struct Input {
     pub format_string: LitStr,
