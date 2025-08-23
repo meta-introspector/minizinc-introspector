@@ -1,11 +1,13 @@
 use proc_macro::TokenStream;
-use syn::{parse_macro_input,
-	  //LitStr,
-	  Expr, ExprLit, punctuated::Punctuated, token::Comma};
+use syn::{parse_macro_input, Expr, ExprLit, punctuated::Punctuated, token::Comma};
 use quote::quote;
 use proc_macro2::TokenStream as ProcMacro2TokenStream;
 
-//include!(concat!(env!("OUT_DIR"), "/emojis.rs"));
+mod kantspel;
+mod processing;
+
+
+use processing::{process_char_for_emojis, append_segment_and_clear};
 
 struct CommaSeparatedExprs {
     exprs: Punctuated<Expr, Comma>,
@@ -38,57 +40,9 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
 
         let mut chars = original_string.chars().peekable();
         while let Some(c) = chars.next() {
-            match c {
-                '\\'=> {
-                    if let Some('n') = chars.peek() {
-                        chars.next(); // consume 'n'
-                        if !current_segment.is_empty() {
-                            result_tokens.extend(quote! { #current_segment });
-                            current_segment.clear();
-                        }
-                        result_tokens.extend(quote! { *EMOJIS.get("return").unwrap_or(&"⏎") });
-                    } else {
-                        current_segment.push(c);
-                    }
-                },
-                '{' => {
-                    if let Some('{') = chars.peek() {
-                        chars.next(); // consume '{'
-                        if let Some('}') = chars.peek() {
-                            chars.next(); // consume '}'
-                            if let Some('}') = chars.peek() {
-                                chars.next(); // consume '}'
-                                if !current_segment.is_empty() {
-                                    result_tokens.extend(quote! { #current_segment });
-                                    current_segment.clear();
-                                }
-                                result_tokens.extend(quote! { *EMOJIS.get("brick").unwrap_or(&"🧱") });
-                            } else {
-                                current_segment.push('{');
-                                current_segment.push('{');
-                                current_segment.push('}');
-                            }
-                        } else {
-                            current_segment.push('{');
-                            current_segment.push('{');
-                        }
-                    } else if let Some('}') = chars.peek() {
-                        chars.next(); // consume '}'
-                        if !current_segment.is_empty() {
-                            result_tokens.extend(quote! { #current_segment });
-                            current_segment.clear();
-                        }
-                        result_tokens.extend(quote! { *EMOJIS.get("sparkles").unwrap_or(&"✨") });
-                    } else {
-                        current_segment.push(c);
-                    }
-                },
-                _ => current_segment.push(c),
-            }
+            process_char_for_emojis(c, &mut chars, &mut current_segment, &mut result_tokens);
         }
-        if !current_segment.is_empty() {
-            result_tokens.extend(quote! { #current_segment });
-        }
+        append_segment_and_clear(&mut current_segment, &mut result_tokens);
 
         // Generate a `format!` call that produces the final string
         quote! { format!(#result_tokens) }

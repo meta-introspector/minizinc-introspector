@@ -18,7 +18,7 @@ impl VisitMut for KantspelTransformer {
             let mut chars = original_string.chars().peekable();
             while let Some(c) = chars.next() {
                 match c {
-                    '\' => {
+                    BACKSLASH => {
                         // Replace with BACKSLASH constant
                         modified_string.push_str(&BACKSLASH.to_string());
                     },

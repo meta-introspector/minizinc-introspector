@@ -60,7 +60,7 @@ pub const AMPERSAND_EQUALS: &str = "&=";
 pub const PIPE_EQUALS: &str = "|=";
 pub const CARET_EQUALS: &str = "^=";
 pub const SHIFT_LEFT: &str = "<<";
-pub const SHIFT_RIGHT: &str = ">>",
+pub const SHIFT_RIGHT: &str = ">>";
 pub const TRIPLE_DOT: &str = "...";
 pub const DOUBLE_DOT: &str = "..";
 
