@@ -5,6 +5,11 @@ pattern = "^\\s*-\\s*(.*?)\\s*\\((.*?)\\)"
 callback_function = "handle_old_meme_regex"
 
 [[regexes]]
+name = "list_meme_header"
+pattern = "^\\s*-\\s*'memes:'"
+callback_function = "handle_list_meme_header_regex"
+
+[[regexes]]
 name = "new_meme_desc_regex"
 pattern = "^\\s*-\\s*description:\\s*(.*?)"
 callback_function = "handle_new_meme_desc_regex"
@@ -41,5 +46,15 @@ callback_function = "handle_art_generator_instructions_regex"
 
 [[regexes]]
 name = "poem_body_start_regex"
-pattern = "^poem_body:\\s*\\|"
+pattern = "^\\s*poem_body:\\s*(?:\\||""""")?"
 callback_function = "handle_poem_body_start_regex"
+
+[[regexes]]
+name = "memes_start_regex"
+pattern = "^\\s*memes:\\s*$"
+callback_function = "handle_memes_start_regex"
+
+[[regexes]]
+name = "list_item_two_quotes_regex"
+pattern = "^\\s*-\\s*''"
+callback_function = "handle_list_item_two_quotes_regex"

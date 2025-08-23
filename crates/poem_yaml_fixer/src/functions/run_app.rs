@@ -16,7 +16,7 @@ pub fn run_app(
     current_dir: &PathBuf,
     regex_config: &RegexConfig,
     function_registry: &PoemFunctionRegistry,
-    log_dir: &Option<PathBuf>, // Add this line
+    log_dir: &PathBuf, // Change from &Option<PathBuf> to &PathBuf
 ) -> Result<()> {
     process_files(
         cli_file,

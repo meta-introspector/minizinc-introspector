@@ -56,3 +56,5 @@ pub mod handle_xaistart_regex;
 pub mod handle_raw_content_regex;
 pub mod handle_got_it_ai_response_regex;
 pub mod handle_filename_index_emoji_regex;
+pub mod handle_list_item_two_quotes_regex;
+pub mod handle_list_item_memes_regex;

@@ -54,9 +54,9 @@ struct Cli {
     #[arg(long)]
     generate_grex_regex: bool,
 
-    /// Optional path to a directory where log files should be written. If not provided, logs to stdout.
-    #[arg(long, value_name = "LOG_DIR")]
-    log_dir: Option<PathBuf>,
+    /// Optional path to a directory where log files should be written. If not provided, defaults to ./logs.
+    #[arg(long, value_name = "LOG_DIR", default_value = "./logs")]
+    log_dir: PathBuf, // Change to PathBuf directly as it will always have a value
 }
 
 fn main() -> anyhow::Result<()> {

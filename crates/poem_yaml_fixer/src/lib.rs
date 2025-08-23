@@ -10,22 +10,18 @@ poem_macros::poem_header!();
 pub mod functions;
 pub mod manual_parser;
 
-// Helper function to write to a log file or stdout
-fn write_to_log_file(log_dir: &Option<PathBuf>, poem_path: &Path, message: &str) -> anyhow::Result<()> {
-    if let Some(log_dir_path) = log_dir {
-        std::fs::create_dir_all(log_dir_path)?; // Ensure directory exists
-        let file_name = poem_path.file_name().unwrap_or_default().to_string_lossy().replace(".md", ".log");
-        let log_file_path = log_dir_path.join(file_name);
-        let mut file = File::create(&log_file_path)?;
-        file.write_all(message.as_bytes())?;
-    } else {
-        println!("{}", message);
-    }
+// Helper function to write to a log file
+fn write_to_log_file(log_dir: &PathBuf, poem_path: &Path, message: &str) -> anyhow::Result<()> {
+    std::fs::create_dir_all(log_dir)?; // Ensure directory exists
+    let file_name = poem_path.file_name().unwrap_or_default().to_string_lossy().replace(".md", ".log");
+    let log_file_path = log_dir.join(file_name);
+    let mut file = std::fs::File::create(&log_file_path)?;
+    file.write_all(message.as_bytes())?;
     Ok(())
 }
 
-pub fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: &PoemFunctionRegistry, report_entries: &mut Vec<functions::report_generator::PoemReportEntry>, debug: bool, dry_run: bool, log_dir: &Option<PathBuf>) -> anyhow::Result<()> {
-    write_to_log_file(log_dir, path, &format!("Processing file: {:?}", path))?; // Redirect this println!
+pub fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: &PoemFunctionRegistry, report_entries: &mut Vec<functions::report_generator::PoemReportEntry>, debug: bool, dry_run: bool, log_dir: &PathBuf) -> anyhow::Result<()> {
+    write_to_log_file(log_dir, path, &format!("Processing file: {:?}\n", path))?;
     let content = std::fs::read_to_string(path)?;
 
     let mut stack: Vec<FixedFrontMatter> = vec![FixedFrontMatter::default()];
@@ -175,13 +171,13 @@ pub fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: 
     }
 
     if dry_run {
-        write_to_log_file(log_dir, path, &format!("Dry run: Would write to {:?}", path))?;
+        write_to_log_file(log_dir, path, &format!("Dry run: Would write to {:?}\n", path))?;
         if debug {
-            write_to_log_file(log_dir, path, &format!("--- New Content ---\n{}", final_content))?;
+            write_to_log_file(log_dir, path, &format!("--- New Content ---\n{}\n", final_content))?;
         }
     } else {
         std::fs::write(path, &final_content)?;
-        write_to_log_file(log_dir, path, &format!("Applied changes to: {:?}", path))?;
+        write_to_log_file(log_dir, path, &format!("Applied changes to: {:?}\n", path))?;
     }
 
     report_entries.push(functions::report_generator::PoemReportEntry {
@@ -196,3 +192,4 @@ pub fn process_file(path: &Path, regex_config: &RegexConfig, function_registry: 
 
     Ok(())
 }
+

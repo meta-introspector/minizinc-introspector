@@ -24,21 +24,17 @@ pub fn process_files(
     current_dir: &PathBuf,
     regex_config: &RegexConfig,
     function_registry: &PoemFunctionRegistry,
-    log_dir: &Option<PathBuf>, // Add this line
+    log_dir: &PathBuf, // Change from &Option<PathBuf> to &PathBuf
 ) -> Result<()> {
     let mut report_entries: Vec<PoemReportEntry> = Vec::new();
 
     if let Some(file_path) = cli_file {
         if cli_manual_parse {
             let log_output = format!("Using manual parser for: {:?}\n---\nManual Parse Result (Fixed Front Matter):\n{}\n---", file_path, serde_yaml::to_string(&FixedFrontMatter::default())?);
-            if let Some(log_dir_path) = log_dir {
-                let file_name = file_path.file_name().unwrap_or_default().to_string_lossy().replace(".md", ".log");
-                let log_file_path = log_dir_path.join(file_name);
-                let mut file = std::fs::File::create(&log_file_path)?;
-                file.write_all(log_output.as_bytes())?;
-            } else {
-                println!("{}", log_output);
-            }
+            let file_name = file_path.file_name().unwrap_or_default().to_string_lossy().replace(".md", ".log");
+            let log_file_path = log_dir.join(file_name);
+            let mut file = std::fs::File::create(&log_file_path)?;
+            file.write_all(log_output.as_bytes())?;
         } else {
             process_file(&file_path, regex_config, function_registry, &mut report_entries, cli_debug, cli_dry_run, log_dir)?;
         }
@@ -51,14 +47,10 @@ pub fn process_files(
                 }
                 if cli_manual_parse {
                     let log_output = format!("Using manual parser for: {:?}\n---\nManual Parse Result (Fixed Front Matter):\n{}\n---", path, serde_yaml::to_string(&FixedFrontMatter::default())?);
-                    if let Some(log_dir_path) = log_dir {
-                        let file_name = path.file_name().unwrap_or_default().to_string_lossy().replace(".md", ".log");
-                        let log_file_path = log_dir_path.join(file_name);
-                        let mut file = std::fs::File::create(&log_file_path)?;
-                        file.write_all(log_output.as_bytes())?;
-                    } else {
-                        println!("{}", log_output);
-                    }
+                    let file_name = path.file_name().unwrap_or_default().to_string_lossy().replace(".md", ".log");
+                    let log_file_path = log_dir.join(file_name);
+                    let mut file = std::fs::File::create(&log_file_path)?;
+                    file.write_all(log_output.as_bytes())?;
                 } else {
                     process_file(path, regex_config, function_registry, &mut report_entries, cli_debug, cli_dry_run, log_dir)?;
                 }
