@@ -1,3 +1,6 @@
+
+
+
 use anyhow::Result;
 use std::path::PathBuf;
 use walkdir::WalkDir;
@@ -7,9 +10,8 @@ use crate::manual_parser::manual_parse_poem_file;
 use crate::process_file;
 use crate::functions::report_generator::PoemReportEntry;
 use crate::functions::report_printer::print_detailed_regex_report;
-//use crate::functions::report_processing::process_poems_for_report;
-//use crate::functions::generate_regex::generate_generalized_regex;
-use crate::functions::generate_templates::generate_and_save_new_regex_templates;
+use crate::functions::process_unmatched_lines_for_grex::process_unmatched_lines_for_grex;
+use std::io::Write;
 
 pub fn process_files(
     cli_file: &Option<PathBuf>,
@@ -17,24 +19,28 @@ pub fn process_files(
     cli_debug: bool,
     cli_dry_run: bool,
     cli_report: bool,
+    cli_generate_grex_regex: bool,
     poems_dir: &PathBuf,
     current_dir: &PathBuf,
     regex_config: &RegexConfig,
     function_registry: &PoemFunctionRegistry,
+    log_dir: &Option<PathBuf>, // Add this line
 ) -> Result<()> {
     let mut report_entries: Vec<PoemReportEntry> = Vec::new();
 
     if let Some(file_path) = cli_file {
         if cli_manual_parse {
-            println!("Using manual parser for: {:?}", file_path);
-            let content = std::fs::read_to_string(&file_path)?;
-            let mut fixed_fm = FixedFrontMatter::default();
-            manual_parse_poem_file(&content, &mut fixed_fm)?;
-            println!("--- Manual Parse Result (Fixed Front Matter) ---");
-            println!("{}", serde_yaml::to_string(&fixed_fm)?);
-            println!("------------------------------------------------");
+            let log_output = format!("Using manual parser for: {:?}\n---\nManual Parse Result (Fixed Front Matter):\n{}\n---", file_path, serde_yaml::to_string(&FixedFrontMatter::default())?);
+            if let Some(log_dir_path) = log_dir {
+                let file_name = file_path.file_name().unwrap_or_default().to_string_lossy().replace(".md", ".log");
+                let log_file_path = log_dir_path.join(file_name);
+                let mut file = std::fs::File::create(&log_file_path)?;
+                file.write_all(log_output.as_bytes())?;
+            } else {
+                println!("{}", log_output);
+            }
         } else {
-            process_file(&file_path, regex_config, function_registry, &mut report_entries, cli_debug, cli_dry_run)?;
+            process_file(&file_path, regex_config, function_registry, &mut report_entries, cli_debug, cli_dry_run, log_dir)?;
         }
     } else {
         for entry in WalkDir::new(poems_dir).into_iter().filter_map(|e| e.ok()) {
@@ -44,16 +50,17 @@ pub fn process_files(
                     continue;
                 }
                 if cli_manual_parse {
-                    println!("Using manual parser for: {:?}\n", path);
-                    let content = std::fs::read_to_string(&path)?;
-                    let mut fixed_fm = FixedFrontMatter::default();
-                    manual_parse_poem_file(&content, &mut fixed_fm)?;
-                    println!("--- Manual Parse Result (Fixed Front Matter) ---
-");
-                    println!("{}\n", serde_yaml::to_string(&fixed_fm)?);
-                    println!("------------------------------------------------\n");
+                    let log_output = format!("Using manual parser for: {:?}\n---\nManual Parse Result (Fixed Front Matter):\n{}\n---", path, serde_yaml::to_string(&FixedFrontMatter::default())?);
+                    if let Some(log_dir_path) = log_dir {
+                        let file_name = path.file_name().unwrap_or_default().to_string_lossy().replace(".md", ".log");
+                        let log_file_path = log_dir_path.join(file_name);
+                        let mut file = std::fs::File::create(&log_file_path)?;
+                        file.write_all(log_output.as_bytes())?;
+                    } else {
+                        println!("{}", log_output);
+                    }
                 } else {
-                    process_file(path, regex_config, function_registry, &mut report_entries, cli_debug, cli_dry_run)?;
+                    process_file(path, regex_config, function_registry, &mut report_entries, cli_debug, cli_dry_run, log_dir)?;
                 }
             }
         }
@@ -63,16 +70,18 @@ pub fn process_files(
     if cli_report {
         print_detailed_regex_report(&report_entries, current_dir)?;
 
-        let mut all_unmatched_lines: Vec<String> = Vec::new();
-        for entry in &report_entries {
-            if let Some(unmatched) = &entry.unmatched_lines {
-                all_unmatched_lines.extend_from_slice(unmatched);
+        // Process unmatched lines for grex per poem, if enabled
+        if cli_generate_grex_regex {
+            for entry in &report_entries {
+                if let Some(unmatched) = &entry.unmatched_lines {
+                    if !unmatched.is_empty() {
+                        // Need to pass the actual file_path for the poem
+                        // The file_path in PoemReportEntry is a String, convert to Path
+                        let poem_path = PathBuf::from(&entry.file_path);
+                        process_unmatched_lines_for_grex(unmatched, &poem_path, current_dir, log_dir)?;
+                    }
+                }
             }
-        }
-
-        if !all_unmatched_lines.is_empty() {
-            // Call the new function to generate and save regex templates
-            generate_and_save_new_regex_templates(&all_unmatched_lines, current_dir)?;
         }
 
         crate::functions::report_generator::generate_and_save_report(report_entries, current_dir)?;
@@ -80,3 +89,4 @@ pub fn process_files(
 
     Ok(())
 }
+

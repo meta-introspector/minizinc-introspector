@@ -11,10 +11,12 @@ pub fn run_app(
     cli_file: &Option<PathBuf>,
     cli_debug: bool,
     cli_dry_run: bool,
+    cli_generate_grex_regex: bool,
     poems_dir: &PathBuf,
     current_dir: &PathBuf,
     regex_config: &RegexConfig,
     function_registry: &PoemFunctionRegistry,
+    log_dir: &Option<PathBuf>, // Add this line
 ) -> Result<()> {
     process_files(
         cli_file,
@@ -22,10 +24,12 @@ pub fn run_app(
         cli_debug,
         cli_dry_run,
         cli_report,
+        cli_generate_grex_regex,
         poems_dir,
         current_dir,
         regex_config,
         function_registry,
+        log_dir, // Pass the new argument
     )?;
     Ok(())
 }

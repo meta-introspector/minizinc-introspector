@@ -49,6 +49,14 @@ struct Cli {
     /// Use the manual parser for testing purposes.
     #[arg(long)]
     manual_parse: bool,
+
+    /// Generate grex regex for unmatched lines per poem.
+    #[arg(long)]
+    generate_grex_regex: bool,
+
+    /// Optional path to a directory where log files should be written. If not provided, logs to stdout.
+    #[arg(long, value_name = "LOG_DIR")]
+    log_dir: Option<PathBuf>,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -65,10 +73,12 @@ fn main() -> anyhow::Result<()> {
         &cli.file,
         cli.debug,
         cli.dry_run,
+        cli.generate_grex_regex,
         &poems_dir,
         &current_dir,
         &regex_config,
         &function_registry,
+        &cli.log_dir, // Pass the new argument
     )?;
 
     Ok(())

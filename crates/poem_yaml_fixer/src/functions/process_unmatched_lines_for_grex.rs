@@ -8,9 +8,10 @@ pub fn process_unmatched_lines_for_grex(
     unmatched_lines: &[String],
     file_path: &Path,
     current_dir: &Path,
+    log_dir: &Option<PathBuf>, // Add this line
 ) -> Result<()> {
     if unmatched_lines.is_empty() {
-        return Ok(());
+        return Ok(())
     }
 
     let mut sampled_lines: Vec<String> = Vec::new();
@@ -33,7 +34,7 @@ pub fn process_unmatched_lines_for_grex(
     }
 
     if sampled_lines.is_empty() {
-        return Ok(());
+        return Ok(())
     }
 
     let all_sampled_lines_str = sampled_lines.join("\n");
@@ -48,7 +49,17 @@ pub fn process_unmatched_lines_for_grex(
     let file_path = regex_templates_dir.join(&output_file_name);
     
     let file_content = format!(
-        r###"// Generated regex for unmatched lines in: {}\nuse regex::Regex;\nuse std::collections::HashMap;\n\npub fn {}_regex() -> (Regex, HashMap<String, String>) {{\n    let regex = Regex::new(r#"{}"#).unwrap();\n    let mut captures = HashMap::new();\n    // TODO: Populate captures based on the regex groups if any\n    (regex, captures)\n}}\n"###,
+        r###"// Generated regex for unmatched lines in: {}
+use regex::Regex;
+use std::collections::HashMap;
+
+pub fn {}_regex() -> (Regex, HashMap<String, String>) {{
+    let regex = Regex::new(r#"{}"#).unwrap();
+    let mut captures = HashMap::new();
+    // TODO: Populate captures based on the regex groups if any
+    (regex, captures)
+}}
+"###,
         file_path.display(),
         poem_file_name,
         generated_regex_pattern
@@ -56,7 +67,7 @@ pub fn process_unmatched_lines_for_grex(
 
     let mut file = std::fs::File::create(&file_path)?;
     file.write_all(file_content.as_bytes())?;
-    println!("Generated poem-specific grex regex for {:?} at: {:?}\n", file_path, file_path);
+    crate::write_to_log_file(log_dir, file_path, &format!("Generated poem-specific grex regex for {:?} at: {:?}\n", file_path, file_path))?;
 
     // Update the regex_templates/mod.rs file
     let mod_rs_path = regex_templates_dir.join("mod.rs");
@@ -66,7 +77,7 @@ pub fn process_unmatched_lines_for_grex(
         .open(&mod_rs_path)?;
     
     writeln!(mod_rs_file, "pub mod {};\n", poem_file_name)?;
-    println!("Updated {:?} with new module declaration for poem-specific grex regex.\n", mod_rs_path);
+    crate::write_to_log_file(log_dir, file_path, &format!("Updated {:?} with new module declaration for poem-specific grex regex.\n", mod_rs_path))?;
 
     Ok(())
 }
