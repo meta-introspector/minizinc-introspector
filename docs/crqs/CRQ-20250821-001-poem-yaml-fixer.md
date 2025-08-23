@@ -29,6 +29,45 @@ Refactor `poem_yaml_fixer` to implement a more robust YAML parsing and patching 
 
 This approach ensures that `poem_yaml_fixer` can handle the existing malformations and produce clean, valid YAML for subsequent tools.
 
+### Current Flow Diagram (Simplified)
+
+```
+[Start]
+  |
+  V
+[Load regex_patterns.toml into FunctionRegistry]
+  |
+  V
+[CLI Args: --generate-regex-report?] --(Yes)--> [Generate Regex Report to stdout] --(End)
+  |
+  V (No)
+[CLI Args: --test-yaml <FILE_PATH>?] --(Yes)--> [Parse test.yml]
+  |                                              |
+  |                                              V
+  |                                            [For each line in unmatched_lines:]
+  |                                              |
+  |                                              V
+  |                                            [Attempt to match line against FunctionRegistry regexes]
+  |                                              |
+  |                                              V
+  |                                            [Match Found?] --(Yes)--> [Report Match]
+  |                                              |
+  |                                              V (No)
+  |                                            [Generate grex regex for line]
+  |                                              |
+  |                                              V
+  |                                            [Print suggested TOML entry to stdout]
+  |                                              |
+  |                                              V
+  |                                            [End line processing]
+  |                                              |
+  V (No)                                       V
+[Process Markdown Files (Default Behavior)] --> [End]
+  |
+  V
+[End]
+```
+
 ## 4. Verification Plan
 *   Successful compilation of `poem_yaml_fixer`.
 *   Successful execution of `poem_yaml_fixer` across all poem files without errors.
