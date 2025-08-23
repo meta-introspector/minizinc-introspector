@@ -5,6 +5,12 @@ edition = "2024"
 
 [dependencies]
 asciicast = "0.2"
-serde_json = "1.0"
 grex = { path = "../../vendor/grex" }
 anyhow = "1.0"
+clap = { version = "4.0", features = ["derive"] }
+strip-ansi-escapes = "0.1"
+unicode-segmentation = "1.0"
+quote = "1.0"
+syn = { version = "2.0", features = ["full", "extra-traits"] }
+proc-macro2 = "1.0"
+poem_macro_impl = { path = "../../crates/poem_macro_impl" }
