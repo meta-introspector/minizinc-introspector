@@ -22,3 +22,6 @@
 [submodule "vendor/grex"]
 	path = vendor/grex
 	url = https://github.com/pemistahl/grex
+[submodule "vendor/asciicast"]
+	path = vendor/asciicast
+	url = https://github.com/LegNeato/asciicast-rs.git

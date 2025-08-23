@@ -105,3 +105,4 @@ minizinc_data/chunk*_output/*
 /regex_match_details.yaml
 /test.txt
 /unmatched.txt
+*.cast
