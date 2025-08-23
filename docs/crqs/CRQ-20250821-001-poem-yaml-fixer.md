@@ -42,3 +42,15 @@ This approach ensures that `poem_yaml_fixer` can handle the existing malformatio
 
 ## 6. Notes
 This CRQ acknowledges the iterative nature of development and the challenges of working with evolving data formats. The goal is to build a resilient tool that can adapt to and correct inconsistencies.
+
+## 7. Execution Instructions
+
+To run the `poem_yaml_fixer` tool with dry-run, debug output, and report generation enabled, use the following command from the project root:
+
+```bash
+cargo run --bin poem_yaml_fixer -- --dry-run --debug --report
+```
+
+*   `--dry-run`: Performs a simulated run without writing any changes to disk. This is the default behavior.
+*   `--debug`: Enables verbose debug output, providing detailed information about the processing.
+*   `--report`: Generates a detailed report of processed files and matched patterns, including any unmatched lines.

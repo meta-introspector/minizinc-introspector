@@ -68,6 +68,28 @@ This is the primary CLI for project management and ZOS bootstrapping. Test each 
     *   Verify the correctness of extracted data, analysis reports, and transformations.
     *   Refer to `docs/sops/zos_codebase_querying_sop.md` for detailed usage of related analysis tools.
 
+### 3.4. General CLI Tool Execution with Debugging and Reporting
+
+For any CLI tool, the following common arguments can be used to control execution behavior and generate reports:
+
+*   **Dry Run (`--dry-run`):** Most tools support a dry-run mode, which simulates the execution without making any permanent changes to the file system. This is useful for verifying the intended operations before committing them.
+    ```bash
+    cargo run --bin <tool_name> -- --dry-run [other_args]
+    ```
+*   **Debug Output (`--debug`):** To get verbose output for debugging purposes, use the `--debug` flag. This will provide detailed logs and internal state information.
+    ```bash
+    cargo run --bin <tool_name> -- --debug [other_args]
+    ```
+*   **Report Generation (`--report`):** Tools that process files or data often support a `--report` flag to generate a summary of their operations, including matched patterns, unmatched lines, or other relevant metrics.
+    ```bash
+    cargo run --bin <tool_name> -- --report [other_args]
+    ```
+
+**Example for `poem_yaml_fixer`:**
+```bash
+cargo run --bin poem_yaml_fixer -- --dry-run --debug --report
+```
+
 ## 4. Performance Testing
 
 Performance testing evaluates the speed, resource consumption (CPU, memory), and scalability of the CLI tools.

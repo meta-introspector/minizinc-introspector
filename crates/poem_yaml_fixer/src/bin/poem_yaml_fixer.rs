@@ -35,7 +35,7 @@ struct Cli {
     debug: bool,
 
     /// Perform a dry run, showing changes without writing to disk.
-    #[arg(long)]
+    #[arg(long, default_value_t = true)]
     dry_run: bool,
 
     /// Use direct YAML parsing fast path.
