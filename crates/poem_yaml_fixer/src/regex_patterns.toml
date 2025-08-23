@@ -46,8 +46,7 @@ callback_function = "handle_art_generator_instructions_regex"
 
 [[regexes]]
 name = "poem_body_start_regex"
-#pattern = "^\s*poem_body:\s*(?:\||""")?"
-pattern = "^\\s*poem_body:\\s*(?:\\||\\"\\"\")?"
+pattern = "^\\s*poem_body:\\s*(?:|\"\"\")?"
 callback_function = "handle_poem_body_start_regex"
 
 [[regexes]]
