@@ -19,6 +19,7 @@ use poem_yaml_fixer::functions::initialize_config::initialize_config;
 //use poem_yaml_fixer::functions::process_files::process_files;
 use poem_yaml_fixer::functions::run_app::run_app;
 use poem_yaml_fixer::functions::regex_report::generate_regex_report;
+use poem_yaml_fixer::functions::test_processor::process_test_yaml;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -62,6 +63,10 @@ struct Cli {
     /// Optional path to a directory where log files should be written. If not provided, defaults to ./logs.
     #[arg(long, value_name = "LOG_DIR", default_value = "./logs")]
     log_dir: PathBuf, // Change to PathBuf directly as it will always have a value
+
+    /// Path to a YAML file to test against the regex patterns.
+    #[arg(long, value_name = "FILE_PATH")]
+    test_yaml: Option<PathBuf>,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -69,6 +74,13 @@ fn main() -> anyhow::Result<()> {
 
     if cli.generate_regex_report {
         generate_regex_report()?;
+        return Ok(());
+    }
+
+    if let Some(test_yaml_path) = cli.test_yaml {
+        let current_dir = std::env::current_dir()?;
+        let (regex_config, function_registry) = initialize_config(cli.manual_parse, &current_dir)?;
+        process_test_yaml(test_yaml_path, &regex_config, &function_registry)?;
         return Ok(());
     }
 

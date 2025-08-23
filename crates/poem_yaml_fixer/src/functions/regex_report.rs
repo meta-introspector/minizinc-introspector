@@ -6,7 +6,9 @@ use regex::Regex;
 pub fn generate_regex_report() -> Result<()> {
     println!("--- Regex Report ---");
 
-    let toml_content = fs::read_to_string("crates/poem_yaml_fixer/src/regex_patterns.toml")?;
+    let config_path = "crates/poem_yaml_fixer/src/regex_patterns.toml";
+    println!("Reading regex patterns from: {}", config_path);
+    let toml_content = fs::read_to_string(config_path)?;
     let parsed_toml: Value = toml::from_str(&toml_content)?;
 
     let regexes_array = parsed_toml
