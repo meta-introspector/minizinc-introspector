@@ -1,22 +1,22 @@
 use std::path::{PathBuf};
 use clap::Parser;
-use walkdir::WalkDir;
-use poem_yaml_fixer::functions::types::FixedFrontMatter; // Added for manual_parse_poem_file
-use poem_yaml_fixer::manual_parser::manual_parse_poem_file; // Import the manual parser
+//use walkdir::WalkDir;
+//use poem_yaml_fixer::functions::types::FixedFrontMatter; // Added for manual_parse_poem_file
+//use poem_yaml_fixer::manual_parser::manual_parse_poem_file; // Import the manual parser
 //use poem_yaml_fixer::functions::callbacks::handle_title_regex::handle_title_regex;
 //use poem_yaml_fixer::functions::types::{FixedFrontMatter, PoemFunctionRegistry};
 //use regex::Regex;
 //use poem_yaml_fixer::functions::utils::option_vec_helpers::{is_option_vec_empty, extend_option_vec};
 //use poem_yaml_fixer::functions::process_single_poem_file_for_report::process_single_poem_file_for_report;
 
-use poem_yaml_fixer::functions::report_processing::process_poems_for_report;
-use poem_yaml_fixer::functions::load_regex_config::get_default_regex_config;
-use poem_yaml_fixer::create_function_registry;
-use poem_yaml_fixer::process_file;
+//use poem_yaml_fixer::functions::report_processing::process_poems_for_report;
+//use poem_yaml_fixer::functions::load_regex_config::get_default_regex_config;
+//use poem_yaml_fixer::create_function_registry;
+//use poem_yaml_fixer::process_file;
 
-use poem_yaml_fixer::functions::report_printer::print_detailed_regex_report;
+//use poem_yaml_fixer::functions::report_printer::print_detailed_regex_report;
 use poem_yaml_fixer::functions::initialize_config::initialize_config;
-use poem_yaml_fixer::functions::process_files::process_files;
+//use poem_yaml_fixer::functions::process_files::process_files;
 use poem_yaml_fixer::functions::run_app::run_app;
 
 #[derive(Parser, Debug)]

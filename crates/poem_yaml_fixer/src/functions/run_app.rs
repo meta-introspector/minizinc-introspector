@@ -2,7 +2,7 @@ use anyhow::Result;
 use std::path::PathBuf;
 use crate::functions::types::PoemFunctionRegistry;
 use crate::RegexConfig;
-use crate::functions::report_processing::process_poems_for_report;
+//use crate::functions::report_processing::process_poems_for_report;
 use crate::functions::process_files::process_files;
 
 pub fn run_app(

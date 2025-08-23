@@ -7,8 +7,8 @@ use crate::manual_parser::manual_parse_poem_file;
 use crate::process_file;
 use crate::functions::report_generator::PoemReportEntry;
 use crate::functions::report_printer::print_detailed_regex_report;
-use crate::functions::report_processing::process_poems_for_report;
-use crate::functions::generate_regex::generate_generalized_regex;
+//use crate::functions::report_processing::process_poems_for_report;
+//use crate::functions::generate_regex::generate_generalized_regex;
 use crate::functions::generate_templates::generate_and_save_new_regex_templates;
 
 pub fn process_files(

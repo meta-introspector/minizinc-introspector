@@ -1,8 +1,9 @@
 use anyhow::Result;
-use std::collections::HashMap;
+//use std::collections::HashMap;
 use std::path::PathBuf;
-use regex::Regex;
+//use regex::Regex;
 use std::io::Write;
+use crate::functions::generate_regex::generate_generalized_regex; // Import the generalization function
 
 // Helper function to sanitize text for use as a Rust identifier
 fn sanitize_name(text: &str) -> String {
@@ -39,7 +40,8 @@ pub fn generate_and_save_new_regex_templates(
     let mut new_module_declarations = Vec::new();
 
     for line in unmatched_lines {
-        let generated_regex_pattern = regex::escape(line);
+        // Use the generalized regex function instead of simple escaping
+        let generated_regex_pattern = generate_generalized_regex(&[line.clone()]);
         let sanitized_name = sanitize_name(line);
         let module_name = format!("regex_template_{}", sanitized_name);
         let function_name = format!("{}_regex", sanitized_name);
