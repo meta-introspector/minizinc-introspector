@@ -36,14 +36,33 @@ pub fn process_char_for_emojis(
     context: &mut ProcessingContext,
 ) {
     // Try to match multi-character emojis/keywords first
-    for (keyword, replacement) in context.emojis.iter() {
-        if keyword.len() > 1 && context.chars.as_str().starts_with(keyword) {
-            // Consume the characters for the keyword
-            for _ in 0..keyword.len() {
-                context.chars.next();
+    // Iterate over sorted keywords (longest first) to ensure correct matching
+    let mut sorted_emojis: Vec<(&&str, &&str)> = context.emojis.iter().collect();
+    sorted_emojis.sort_by(|a, b| b.0.len().cmp(&a.0.len()));
+
+    for (keyword, replacement) in sorted_emojis {
+        if keyword.len() > 1 {
+            let mut temp_chars = context.chars.clone();
+            let mut matches = true;
+            for k_char in keyword.chars() {
+                if let Some(c) = temp_chars.next() {
+                    if c != k_char {
+                        matches = false;
+                        break;
+                    }
+                } else {
+                    matches = false;
+                    break;
+                }
             }
-            context.current_segment.push_str(replacement);
-            return; // Keyword matched and processed, return
+            if matches {
+                // Consume the characters for the keyword from the original iterator
+                for _ in 0..keyword.len() {
+                    context.chars.next();
+                }
+                context.current_segment.push_str(replacement);
+                return; // Keyword matched and processed, return
+            }
         }
     }
 

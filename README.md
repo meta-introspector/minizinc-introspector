@@ -180,6 +180,38 @@ This project provides several utility scripts to assist with indexing the codeba
     ```
     For more detailed profiling, you can run the `file_content_analyzer` directly with the `--profile` flag (e.g., `./target/debug/file_content_analyzer --mode build_hierarchical_index --profile`). You will need a Puffin viewer to visualize the generated profiling data.
 
+### Gemini CLI Logging (`gemini_eprintln!`) 
+
+The `gemini_utils::gemini_eprintln!` macro is the preferred method for logging and communication within this project. It adheres to strict `kantspel` principles, automatically translating specific keywords and emojis into standard Rust formatting characters (`\n`, `{}`). This design ensures LLM readability and structured output.
+
+**Usage:**
+
+The macro accepts a format string, which can contain special keywords or emojis, followed by an optional dictionary-like structure for named arguments.
+
+*   **Simple Message:**
+    ```rust
+    gemini_eprintln!("Asciicast Header:");
+    ```
+
+*   **Message with Named Arguments:**
+    ```rust
+    gemini_eprintln!(" Version: :version:, Width: :width:, Height: :height:", version = header.version, width = header.width, height = header.height);
+    ```
+
+*   **Message with Special Characters (Emojis/Keywords):**
+    ```rust
+    gemini_eprintln!("Processing events and collecting cleaned output (limited to :limit:).sparkles", limit = args.limit);
+    // This will translate to: eprintln!("Processing events and collecting cleaned output (limited to {}.\n", args.limit);
+    ```
+
+*   **Message with Literal Curly Braces (building_construction):**
+    ```rust
+    gemini_eprintln!("This is a building_construction block.", some_var = value);
+    // This will translate to: eprintln!("This is a {} block.", some_var = value);
+    ```
+
+For more detailed information and advanced usage, please refer to the Standard Operating Procedure: [Strict `gemini_eprintln!` Usage and `kantspel` Principles](docs/sops/gemini_eprintln_kantspel_sop.md).
+
 
 ## Contributing
 

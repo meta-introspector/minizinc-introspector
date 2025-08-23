@@ -158,7 +158,8 @@ This document summarizes key memories and operational guidelines for the Gemini 
     *   User prefers that all QA-related commits use a detailed commit message provided via an absolute filename (e.g., `git commit -F /tmp/qa_commit_message.txt`).
     *   User prefers to proceed with the next logical step without asking for confirmation, especially when it involves writing documentation I have just proposed.
     *   User prefers that I do not use my built-in search tool because it crashes. A new search tool is being built.
-*   **Logging Preference:** Always use `gemini_utils::gemini_eprintln!` for logging instead of `eprintln!`. This macro provides enhanced, visually expressive output with emoji replacements for common patterns (`\n`, `{}`, `{{}}`).
+*   **Logging Preference:** Always use `gemini_utils::gemini_eprintln!` for logging instead of `eprintln!`. This macro adheres to strict `kantspel` principles, automatically translating specific keywords and emojis (e.g., "sparkles" or ✨ to 
+, "brickwall" or 🧱 to {}) into standard Rust formatting characters. It supports named arguments for clear and structured output. **Crucially, do NOT use literal `\n`, `{}` or `{{}}` directly in the input string to `gemini_eprintln!`; instead, use the defined keywords or emojis.** For more detailed information and advanced usage, refer to the Standard Operating Procedure: `docs/sops/gemini_eprintln_kantspel_sop.md`.
 *   **Meta-Programs & SOPs:**
     *   The "KitKat" meta-program is a user-defined workflow for pausing the current line of work, defining a new strategic plan, documenting it, committing the current state, and conceptually rebooting the development cycle to focus on the new plan.
     *   The "GM" meta-program is a workflow for recovering from a reboot. It involves staying on the critical path, reviewing memories, and checking recent commits to quickly understand the project's current state.
