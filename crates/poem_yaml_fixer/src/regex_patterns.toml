@@ -37,7 +37,7 @@ callback_function = "handle_keywords_regex"
 [[regexes]]
 name = "emojis_regex"
 pattern = "^emojis:\\s*(.*)"
-callback_function = "handle_emojis_regex"
+callback = "handle_emojis_regex"
 
 [[regexes]]
 name = "art_generator_instructions_regex"
@@ -46,8 +46,8 @@ callback_function = "handle_art_generator_instructions_regex"
 
 [[regexes]]
 name = "poem_body_start_regex"
-#pattern = "^\s\*poem_body:\\s*(?:\\||\"\"\")?"
-pattern = "^\\s*poem_body:\\\\s*(?:\\\\||\\\"\\\"\\\")?"
+#pattern = "^\s*poem_body:\s*(?:\||""")?"
+pattern = "^\\s*poem_body:\\s*(?:\\||\\"\\"\")?"
 callback_function = "handle_poem_body_start_regex"
 
 [[regexes]]
@@ -59,3 +59,33 @@ callback_function = "handle_memes_start_regex"
 name = "list_item_two_quotes_regex"
 pattern = "^\\s*-\\s*''"
 callback_function = "handle_list_item_two_quotes_regex"
+
+[[regexes]]
+name = "grex_generated_three_dash"
+pattern = "^---"
+callback_function = "handle_grex_generated_three_dash_regex"
+
+[[regexes]]
+name = "grex_generated_memes_colon"
+pattern = "^memes:"
+callback_function = "handle_grex_generated_memes_colon_regex"
+
+[[regexes]]
+name = "grex_generated_poem_body_empty_quotes"
+pattern = "^poem_body: ''"
+callback_function = "handle_grex_generated_poem_body_empty_quotes_regex"
+
+[[regexes]]
+name = "grex_generated_empty_line"
+pattern = "^$"
+callback_function = "handle_grex_generated_empty_line_regex"
+
+[[regexes]]
+name = "grex_generated_lost_revision_commit"
+pattern = "^## Lost Revision from commit 82c06560a1c3453cd95f811ae420ea65275b8a83$"
+callback_function = "handle_grex_generated_lost_revision_commit_regex"
+
+[[regexes]]
+name = "grex_generated_the_agent_s_quest"
+pattern = "^## The Agent's Quest"
+callback_function = "handle_grex_generated_the_agent_s_quest_regex"
