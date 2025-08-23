@@ -16,3 +16,4 @@ proc-macro2 = "1.0"
 serde_json = "1.0"
 poem_macro_impl = { path = "../../crates/poem_macro_impl" }
 gemini_utils = { path = "../../crates/gemini_utils" }
+poem_macros = { path = "../poem_macros" }
