@@ -252,6 +252,12 @@ This section lists the detailed documentation and MiniZinc models generated duri
             *   `handle_memes_start_regex`: Introduced to properly initialize meme sections.
             *   `regex_patterns.toml` updated with new patterns: `list_meme_header`, `memes_start_regex`, and `list_item_two_quotes_regex`.
 
+*   **Key Rust Crates:**
+    *   **`zos-bootstrap`**: Provides foundational utilities and commands for bootstrapping and managing the project's self-aware system.
+    *   **`minizinc_introspector`**: This crate is designed to introspect MiniZinc models, potentially extracting structural information or aiding in analysis.
+    *   **`poem_yaml_fixer`**: A utility crate for fixing and formatting YAML files, particularly those related to "poem" data structures within the project.
+    *   **`doc_to_minizinc_data`**: Responsible for extracting data from various documentation formats and converting it into MiniZinc data (`.dzn`) files for analysis and optimization.
+
 ## 3. Plan for After Reboot
 
 *   **GM Meta-Program:** Review git log and memories.

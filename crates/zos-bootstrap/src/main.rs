@@ -23,6 +23,10 @@
 use zos_bootstrap::command_handlers::handle_command_dispatch;
 use zos_bootstrap::utils::error::Result;
 
+/// Main entry point for the ZOS Bootstrap application.
+///
+/// This function dispatches commands to the appropriate handlers,
+/// orchestrating the various bootstrap processes.
 fn main() -> Result<()> {
     handle_command_dispatch()
 }

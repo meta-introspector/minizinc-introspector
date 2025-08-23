@@ -120,6 +120,15 @@ This section lists the detailed documentation and MiniZinc models generated duri
 *   [Conversation Summary and Project Vision](docs/conversation_summary_and_vision.md)
 *   [The Loop That Sings Itself (Poem)](docs/poems/closed_timelike_curve_poem.md)
 
+### Key Rust Crates
+
+This project leverages several custom Rust crates to implement its unique functionalities. Here's an overview of some core crates:
+
+*   **`zos-bootstrap`**: Provides foundational utilities and commands for bootstrapping and managing the project's self-aware system. [View Documentation](target/doc/zos_bootstrap/index.html)
+*   **`minizinc_introspector`**: (If exists and relevant) This crate is designed to introspect MiniZinc models, potentially extracting structural information or aiding in analysis. [View Documentation](target/doc/minizinc_introspector/index.html)
+*   **`poem_yaml_fixer`**: A utility crate for fixing and formatting YAML files, particularly those related to "poem" data structures within the project. [View Documentation](target/doc/poem_yaml_fixer/index.html)
+*   **`doc_to_minizinc_data`**: Responsible for extracting data from various documentation formats and converting it into MiniZinc data (`.dzn`) files for analysis and optimization. [View Documentation](target/doc/doc_to_minizinc_data/index.html)
+
 #### MiniZinc Models
 *   [Combinatorial Topologies](combinatorial_topologies.mzn)
 *   [Development Path Optimizer](development_path_optimizer.mzn)
