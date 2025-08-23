@@ -4,9 +4,10 @@ use crate::functions::load_regex_config::{get_default_regex_config, load_regex_c
 use crate::create_function_registry;
 use crate::functions::types::PoemFunctionRegistry;
 use crate::RegexConfig;
+use crate::functions::register_new_callbacks::register_new_callbacks; // New import
 
 pub fn initialize_config(cli_manual_parse: bool, current_dir: &PathBuf) -> Result<(RegexConfig, PoemFunctionRegistry)> {
-    let (regex_config, function_registry) = if cli_manual_parse {
+    let (regex_config, mut function_registry) = if cli_manual_parse { // Make function_registry mutable
         (get_default_regex_config(), create_function_registry())
     } else {
         let mut regex_config = get_default_regex_config();
@@ -26,5 +27,9 @@ pub fn initialize_config(cli_manual_parse: bool, current_dir: &PathBuf) -> Resul
         }
         (regex_config, create_function_registry())
     };
+
+    // Register new callbacks
+    register_new_callbacks(&mut function_registry); // Call the new function
+
     Ok((regex_config, function_registry))
 }

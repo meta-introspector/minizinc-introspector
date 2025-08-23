@@ -35,6 +35,8 @@ pub struct PoemFunctionMetadata {
 pub trait PoemFrontMatterTrait: Any {
     fn get_memes_mut(&mut self) -> &mut Vec<Meme>;
     fn get_pending_meme_description_mut(&mut self) -> &mut Option<String>;
+    fn get_raw_meme_lines_mut(&mut self) -> &mut Vec<String>; // New method
+    fn get_poem_body_mut(&mut self) -> &mut String; // New method
 
     fn set_title(&mut self, title: String);
     fn set_summary(&mut self, summary: String);
