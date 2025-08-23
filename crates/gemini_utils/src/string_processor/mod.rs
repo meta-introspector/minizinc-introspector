@@ -17,13 +17,16 @@ lazy_static! {
     pub(crate) static ref EMOJIS: HashMap<&'static str, &'static str> = {
         let mut map = HashMap::new();
         // Map emojis and keywords to their corresponding characters for LLM readability
-        map.insert("✨", "\\n"); // sparkles emoji to newline
-        map.insert("sparkles", "\\n"); // sparkles keyword to newline
+        map.insert("✨", "\n"); // sparkles emoji to newline
+        map.insert("sparkles", "\n"); // sparkles keyword to newline
         map.insert("🧱", "{}"); // brick emoji to curly braces
         map.insert("brick", "{}"); // brick keyword to curly braces
-        map.insert("🏗️", "{{}}"); // brick emoji to curly braces
-        map.insert("building-construction", "{{}}"); // brick keyword to curly braces
+        map.insert("🏗️", "{{}}"); // building-construction emoji to double curly braces
+        map.insert("building-construction", "{{}}"); // building-construction keyword to double curly braces
         map.insert("⏎", "return"); // return emoji to return keyword
+        // New entry for debug printing
+        map.insert("🔍", "{{:?}}"); // magnifying glass emoji to debug format
+        map.insert("inspect", "{{:?}}"); // inspect keyword to debug format
         map
     };
 }

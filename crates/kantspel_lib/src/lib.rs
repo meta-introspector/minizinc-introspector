@@ -141,3 +141,11 @@ pub const PROPORTIONAL_TO_SYMBOL: char = '∝';
 pub const CUBE_ROOT_SYMBOL: char = '∛';
 pub const FOURTH_ROOT_SYMBOL: char = '∜';
 pub const PER_MILLE_SIGN_SYMBOL: char = '‰';
+
+/// Debugging and Formatting
+///
+/// This constant provides the standard Rust debug format specifier `{:?}`.
+/// It is intended for use in `eprintln!` calls within procedural macros
+/// or other contexts where `gemini_eprintln!` cannot be directly used,
+/// ensuring consistent debug output formatting.
+pub const DEBUG_FORMAT_SPECIFIER: &str = "{:?}";

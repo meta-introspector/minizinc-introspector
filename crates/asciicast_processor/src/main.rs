@@ -176,17 +176,17 @@ fn main() -> Result<()> {
     let header: Header = serde_json::from_value(header_value.map_err(|e| anyhow!(e))?)?;
 
     gemini_eprintln!("Asciicast Header:");
-    gemini_eprintln!("  Version: :version:", version = header.version);
-    gemini_eprintln!("  Width: :width:", width = header.width);
-    gemini_eprintln!("  Height: :height:", height = header.height);
+    gemini_eprintln!(format!("  Version: {}", header.version));
+    gemini_eprintln!(format!("  Width: {}", header.width));
+    gemini_eprintln!(format!("  Height: {}", header.height));
     if let Some(timestamp) = header.timestamp {
-        gemini_eprintln!(format!("  Timestamp: {}", timestamp));
+        gemini_eprintln!("  Timestamp: :timestamp:", timestamp = timestamp);
     }
     if let Some(duration) = header.duration {
-        gemini_eprintln!(format!("  Duration: {}", duration));
+        gemini_eprintln!("  Duration: :duration:", duration = duration);
     }
     if let Some(title) = header.title {
-        gemini_eprintln!(format!("  Title: {}", title));
+        gemini_eprintln!("  Title: :title:", title = title);
     }
 
     let mut event_count = 0;

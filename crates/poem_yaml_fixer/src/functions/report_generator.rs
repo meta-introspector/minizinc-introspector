@@ -1,8 +1,9 @@
 use anyhow::Result;
 use serde::{Serialize, Deserialize};
 use std::path::Path;
+
 #[cfg(test)]
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 use std::collections::HashMap;
 
 #[derive(Debug, Serialize, Deserialize)]

@@ -159,7 +159,8 @@ This document summarizes key memories and operational guidelines for the Gemini 
     *   User prefers to proceed with the next logical step without asking for confirmation, especially when it involves writing documentation I have just proposed.
     *   User prefers that I do not use my built-in search tool because it crashes. A new search tool is being built.
 *   **Logging Preference:** Always use `gemini_utils::gemini_eprintln!` for logging instead of `eprintln!`. This macro adheres to strict `kantspel` principles, automatically translating specific keywords and emojis (e.g., "sparkles" or ✨ to 
-, "brickwall" or 🧱 to {}) into standard Rust formatting characters. It supports named arguments for clear and structured output. **Crucially, do NOT use literal `\n`, `{}` or `{{}}` directly in the input string to `gemini_eprintln!`; instead, use the defined keywords or emojis.** For more detailed information and advanced usage, refer to the Standard Operating Procedure: `docs/sops/gemini_eprintln_kantspel_sop.md`.
+, "brickwall" or 🧱 to {}) into standard Rust formatting characters. It supports named arguments for clear and structured output. **Crucially, do NOT use literal `\n`, `{}` or `{{}}` directly in the input string to `gemini_eprintln!`; instead, use the defined keywords or emojis.** For more detailed information and advanced usage, refer to the Standard Operating Procedure: `docs/sops/gemini_eprintln_kantspel_sop.md`. 
+    *   For internal debugging within the `gemini_eprintln!` macro itself (where `gemini_eprintln!` cannot be directly used), `eprintln!` is employed. In such cases, `kantspel_lib::DEBUG_FORMAT_SPECIFIER` should be used for consistent debug output formatting.
 *   **Meta-Programs & SOPs:**
     *   The "KitKat" meta-program is a user-defined workflow for pausing the current line of work, defining a new strategic plan, documenting it, committing the current state, and conceptually rebooting the development cycle to focus on the new plan.
     *   The "GM" meta-program is a workflow for recovering from a reboot. It involves staying on the critical path, reviewing memories, and checking recent commits to quickly understand the project's current state.
@@ -202,6 +203,29 @@ This section lists the detailed documentation and MiniZinc models generated duri
 *   [Universal Bootstrap Gödel Number Data](universal_bootstrap_godel.dzn)
 *   [Deep Bootstrap Chain](deep_bootstrap_chain.mzn)
 *   [Deep Bootstrap Chain Data](deep_bootstrap_chain.dzn)
+
+## 3. Lessons Learned from `gemini_utils` Debugging
+
+This section summarizes key lessons learned during the recent debugging and refactoring of the `gemini_utils` crate, particularly concerning procedural macros and logging.
+
+*   **Procedural Macro Internal Debugging:**
+    *   A procedural macro cannot directly use itself (`gemini_eprintln!`) for internal debugging within its own definition. This is a fundamental limitation of how procedural macros are expanded at compile time.
+    *   Therefore, `eprintln!` must be used for internal debugging within the `gemini_eprintln!` macro's implementation.
+    *   The output of these `eprintln!` calls will appear during the compilation of any crate that uses `gemini_utils`.
+
+*   **`eprintln!` Format String Literal Requirement:**
+    *   The `eprintln!` macro (and other Rust formatting macros like `println!`, `format!`) requires its format string to be a string literal.
+    *   This means variables (like `kantspel_lib::DEBUG_FORMAT_SPECIFIER`) cannot be directly embedded as the format specifier itself within the format string. Instead, the format specifier (`{:?}`, `{}`, etc.) must be written directly into the literal string.
+    *   For example, `eprintln!("DEBUG: Value: {}", kantspel_lib::DEBUG_FORMAT_SPECIFIER, my_var);` is incorrect. The correct usage is `eprintln!("DEBUG: Value: {:?}", my_var);` or `eprintln!("DEBUG: Value: {}", my_var);`.
+
+*   **Importance of Exact File Content for `replace` Tool:**
+    *   The `replace` tool is highly sensitive to the exact `old_string` provided, including whitespace, indentation, and line endings.
+    *   Any discrepancy, even a single character, will result in the tool failing to find a match and making no changes.
+    *   It is crucial to `read_file` immediately before attempting a `replace` operation to ensure the `old_string` precisely matches the current file content.
+
+*   **Clarity in Communication and Context:**
+    *   Ambiguity in instructions, especially regarding the context of code execution (e.g., internal macro implementation vs. external user calls), can lead to misunderstandings and iterative debugging.
+    *   Explicitly clarifying whether a rule applies to the *implementation* of a tool/macro or its *usage* is vital for efficient collaboration.
 
 ## 2. libminizinc Specific Memories & Context
 

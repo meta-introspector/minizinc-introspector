@@ -1,4 +1,5 @@
 use anyhow::Result;
+use poem_traits::PoemFrontMatterTrait;
 #[cfg(test)]
 use std::collections::HashMap;
 #[cfg(test)]
@@ -6,14 +7,14 @@ use regex::Regex;
 #[cfg(test)]
 use std::path::PathBuf; // Added PathBuf import
 
-use poem_traits::PoemFrontMatterTrait;
+
 #[cfg(test)]
 use crate::functions::types::{
     FixedFrontMatter, PoemFunctionRegistry, PoemFunctionEntry,
     PoemCallbackFn
 }; // Import from local types
 #[cfg(test)]
-use poem_traits::{RegexConfig, PoemFrontMatterTrait}; // Import trait from poem_traits
+use poem_traits::RegexConfig;
 
 // Dummy callback function for testing
 #[allow(dead_code)]

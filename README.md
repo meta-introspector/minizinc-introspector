@@ -120,6 +120,29 @@ This section lists the detailed documentation and MiniZinc models generated duri
 *   [Conversation Summary and Project Vision](docs/conversation_summary_and_vision.md)
 *   [The Loop That Sings Itself (Poem)](docs/poems/closed_timelike_curve_poem.md)
 
+### Lessons Learned from `gemini_utils` Debugging
+
+This section summarizes key lessons learned during the recent debugging and refactoring of the `gemini_utils` crate, particularly concerning procedural macros and logging.
+
+*   **Procedural Macro Internal Debugging:**
+    *   A procedural macro cannot directly use itself (`gemini_eprintln!`) for internal debugging within its own definition. This is a fundamental limitation of how procedural macros are expanded at compile time.
+    *   Therefore, `eprintln!` must be used for internal debugging within the `gemini_eprintln!` macro's implementation.
+    *   The output of these `eprintln!` calls will appear during the compilation of any crate that uses `gemini_utils`.
+
+*   **`eprintln!` Format String Literal Requirement:**
+    *   The `eprintln!` macro (and other Rust formatting macros like `println!`, `format!`) requires its format string to be a string literal.
+    *   This means variables (like `kantspel_lib::DEBUG_FORMAT_SPECIFIER`) cannot be directly embedded as the format specifier itself within the format string. Instead, the format specifier (`{:?}`, `{}`, etc.) must be written directly into the literal string.
+    *   For example, `eprintln!("DEBUG: Value: {}", kantspel_lib::DEBUG_FORMAT_SPECIFIER, my_var);` is incorrect. The correct usage is `eprintln!("DEBUG: Value: {:?}", my_var);` or `eprintln!("DEBUG: Value: {}", my_var);`.
+
+*   **Importance of Exact File Content for `replace` Tool:**
+    *   The `replace` tool is highly sensitive to the exact `old_string` provided, including whitespace, indentation, and line endings.
+    *   Any discrepancy, even a single character, will result in the tool failing to find a match and making no changes.
+    *   It is crucial to `read_file` immediately before attempting a `replace` operation to ensure the `old_string` precisely matches the current file content.
+
+*   **Clarity in Communication and Context:**
+    *   Ambiguity in instructions, especially regarding the context of code execution (e.g., internal macro implementation vs. external user calls), can lead to misunderstandings and iterative debugging.
+    *   Explicitly clarifying whether a rule applies to the *implementation* of a tool/macro or its *usage* is vital for efficient collaboration.
+
 ### Key Rust Crates
 
 This project leverages several custom Rust crates to implement its unique functionalities. Here's an overview of some core crates:
@@ -183,6 +206,8 @@ This project provides several utility scripts to assist with indexing the codeba
 ### Gemini CLI Logging (`gemini_eprintln!`) 
 
 The `gemini_utils::gemini_eprintln!` macro is the preferred method for logging and communication within this project. It adheres to strict `kantspel` principles, automatically translating specific keywords and emojis into standard Rust formatting characters (`\n`, `{}`). This design ensures LLM readability and structured output.
+
+For internal debugging within the `gemini_eprintln!` macro itself (where `gemini_eprintln!` cannot be directly used), `eprintln!` is employed. In such cases, `kantspel_lib::DEBUG_FORMAT_SPECIFIER` should be used for consistent debug output formatting.
 
 **Usage:**
 

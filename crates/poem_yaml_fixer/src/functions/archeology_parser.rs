@@ -6,8 +6,7 @@ use crate::functions::parse_front_matter_fields::parse_front_matter_fields;
 use anyhow::Result;
 use std::fs;
 use std::path::Path;
-#[cfg(test)]
-use crate::functions::types::FixedFrontMatter;
+
 use crate::functions::extract_front_matter::extract_front_matter;
 
 use poem_traits::{RegexConfig, FunctionRegistry};

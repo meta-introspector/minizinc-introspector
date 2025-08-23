@@ -21,6 +21,7 @@
         *   "brickwall" or `🧱` into `{}`
         *   "building_construction" or `🏗️` into `{{}}`
         *   `:key:` placeholders into `{key}`
+        *   "inspect" or `🔍` into `{:?}`
     *   This translation happens *before* the string is passed to the underlying `eprintln!` macro.
 
 3.  **Example Usage:**
@@ -45,4 +46,10 @@
         ```rust
         gemini_eprintln!("This is a building_construction block.", some_var = value);
         // This will translate to: eprintln!("This is a {{}} block.", some_var = value);
+        ```
+
+    *   **Message with debug formatting (inspect/🔍):**
+        ```rust
+        gemini_eprintln!("Debug value: inspect", my_variable = some_value);
+        // This will translate to: eprintln!("Debug value: {:?}", some_value);
         ```

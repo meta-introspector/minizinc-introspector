@@ -23,7 +23,7 @@ fn test_handle_unmatched_regex_error() -> Result<()> {
         context_after: Vec::new(),  // New field
         parsing_state: "TestState".to_string(), // New field
         current_tree_path: Vec::new(), // New field
-        error_message: "Unmatched regex error in test".to_string(), // Updated message
+        error_message: "No regex matched line: some unmatched line".to_string(), // Updated message
     };
     let result = handle_unmatched_regex_error(context);
 
