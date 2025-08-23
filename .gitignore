@@ -98,3 +98,10 @@ report.txt
 minizinc_data/chunk*_output/*
 /temp_poem_fix_reports/
 /crates/poem_yaml_fixer/src/regex_templates/
+/docs/poems/poem_processing_report.yaml
+/docs/poems/regex_match_details.txt
+/poem_processing_report.yaml
+/regex_match_details.txt
+/regex_match_details.yaml
+/test.txt
+/unmatched.txt

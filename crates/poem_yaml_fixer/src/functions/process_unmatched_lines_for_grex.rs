@@ -67,7 +67,7 @@ pub fn {}_regex() -> (Regex, HashMap<String, String>) {{
 
     let mut file = std::fs::File::create(&file_path)?;
     file.write_all(file_content.as_bytes())?;
-    crate::write_to_log_file(log_dir, file_path, &format!("Generated poem-specific grex regex for {:?} at: {:?}\n", file_path, file_path))?;
+    crate::write_to_log_file(log_dir, &file_path, &format!("Generated poem-specific grex regex for {:?} at: {:?}\n", file_path, file_path))?;
 
     // Update the regex_templates/mod.rs file
     let mod_rs_path = regex_templates_dir.join("mod.rs");
@@ -76,8 +76,8 @@ pub fn {}_regex() -> (Regex, HashMap<String, String>) {{
         .create(true)
         .open(&mod_rs_path)?;
     
-    writeln!(mod_rs_file, "pub mod {};\n", poem_file_name)?;
-    crate::write_to_log_file(log_dir, file_path, &format!("Updated {:?} with new module declaration for poem-specific grex regex.\n", mod_rs_path))?;
+    writeln!(mod_rs_file, "pub mod {};", poem_file_name)?;
+    crate::write_to_log_file(log_dir, &file_path, &format!("Updated {:?} with new module declaration for poem-specific grex regex.\n", mod_rs_path))?;
 
     Ok(())
 }
