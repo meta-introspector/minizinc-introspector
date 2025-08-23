@@ -1,27 +1,22 @@
 use proc_macro::TokenStream;
-use syn::{parse_macro_input, Expr, ExprLit};
-use quote::quote;
+use syn::{parse_macro_input, Expr, ExprLit, LitStr};
+use quote::{quote, ToTokens};
 use proc_macro2::TokenStream as ProcMacro2TokenStream;
 use lazy_static::lazy_static; // Add this import
 use std::collections::HashMap; // Add this import
+use proc_macro2::Span; // Add this import
 
 use kantspel_lib::*;
 mod macro_parser;
 mod string_processor;
+mod token_generator; // Add this module
 
 use macro_parser::comma_separated_exprs::CommaSeparatedExprs;
-use string_processor::{process_char_for_emojis, append_segment_and_clear};
+use string_processor::{process_char_for_emojis, EMOJIS};
+use token_generator::generate_eprintln_tokens::generate_eprintln_tokens; // Add this use statement
 
 // Define EMOJIS here
-lazy_static! {
-    pub static ref EMOJIS: HashMap<&'static str, &'static str> = {
-        let mut map = HashMap::new();
-        map.insert("return", "⏎");
-        map.insert("brick", "🧱");
-        map.insert("sparkles", "✨");
-        map
-    };
-}
+
 
 #[proc_macro]
 pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
@@ -34,32 +29,25 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
     let format_expr = &input_args[0];
     let other_args = input_args.iter().skip(1).collect::<Vec<_>>();
 
-    let (processed_format_string_tokens, is_literal_string) = if let Expr::Lit(ExprLit { lit: syn::Lit::Str(s), .. }) = format_expr {
+    let (processed_format_string_literal, is_literal_string) = if let Expr::Lit(ExprLit { lit: syn::Lit::Str(s), .. }) = format_expr {
         let original_string = s.value();
 
-        let mut result_tokens = ProcMacro2TokenStream::new();
         let mut current_segment = String::new();
 
         let mut chars = original_string.chars().peekable();
-        while let Some(c) = chars.next() {
-            process_char_for_emojis(c, &mut chars, &mut current_segment, &mut result_tokens, &EMOJIS); // Pass &EMOJIS
+        let mut context = string_processor::processing_context::ProcessingContext {
+            chars: &mut chars,
+            current_segment: &mut current_segment,
+            emojis: &EMOJIS,
+        };
+        while let Some(c) = context.chars.next() {
+            process_char_for_emojis(c, &mut context);
         }
-        append_segment_and_clear(&mut current_segment, &mut result_tokens);
 
-        (result_tokens, true)
+        (LitStr::new(&current_segment, s.span()), true) // Create LitStr from current_segment
     } else {
-        (quote! { #format_expr }, false)
+        (LitStr::new(&format_expr.to_token_stream().to_string(), proc_macro2::Span::call_site()), false) // Convert Expr to LitStr
     };
 
-    let expanded = if is_literal_string {
-        quote! {
-            eprintln!(#processed_format_string_tokens, #(#other_args),*);
-        }
-    } else {
-        quote! {
-            eprintln!("{}", #processed_format_string_tokens, #(#other_args),*);
-        }
-    };
-
-    expanded.into()
+    generate_eprintln_tokens(processed_format_string_literal, is_literal_string, other_args).into()
 }

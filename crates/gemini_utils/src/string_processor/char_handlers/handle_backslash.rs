@@ -1,32 +1,23 @@
-use proc_macro2::TokenStream as ProcMacro2TokenStream;
-use quote::quote;
 use std::iter::Peekable;
 use std::str::Chars;
-use std::collections::HashMap; // Add this import
+use std::collections::HashMap;
 
-use super::super::segment_appender::append_segment_and_clear;
+use super::super::processing_context::ProcessingContext;
 
 pub fn handle_backslash_n(
-    chars: &mut Peekable<Chars>,
-    current_segment: &mut String,
-    result_tokens: &mut ProcMacro2TokenStream,
-    emojis: &HashMap<&'static str, &'static str>, // Add emojis parameter
+    context: &mut ProcessingContext,
 ) {
-    chars.next(); // consume 'n'
-    append_segment_and_clear(current_segment, result_tokens);
-    result_tokens.extend(quote! { *emojis.get("return").unwrap_or(&"⏎") }); // Use emojis parameter
+    context.chars.next(); // consume 'n'
+    context.current_segment.push_str(context.emojis.get("return").unwrap_or(&"⏎"));
 }
 
 pub fn handle_backslash_char(
     c: char,
-    chars: &mut Peekable<Chars>,
-    current_segment: &mut String,
-    result_tokens: &mut ProcMacro2TokenStream,
-    emojis: &HashMap<&'static str, &'static str>, // Add emojis parameter
+    context: &mut ProcessingContext,
 ) {
-    if let Some('n') = chars.peek() {
-        handle_backslash_n(chars, current_segment, result_tokens, emojis); // Pass emojis
+    if let Some('n') = context.chars.peek() {
+        handle_backslash_n(context);
     } else {
-        current_segment.push(c);
+        context.current_segment.push(c);
     }
 }

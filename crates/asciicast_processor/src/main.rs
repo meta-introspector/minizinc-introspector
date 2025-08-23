@@ -175,18 +175,18 @@ fn main() -> Result<()> {
     let header_value = de.next().ok_or_else(|| anyhow!("Missing header"))?;
     let header: Header = serde_json::from_value(header_value.map_err(|e| anyhow!(e))?)?;
 
-    gemini_eprintln!("Asciicast Header:");
-    gemini_eprintln!("  Version: {}", header.version);
-    gemini_eprintln!("  Width: {}", header.width);
-    gemini_eprintln!("  Height: {}", header.height);
+    gemini_eprintln!(format!("Asciicast Header:"));
+    gemini_eprintln!(format!("  Version: {}", header.version));
+    gemini_eprintln!(format!("  Width: {}", header.width));
+    gemini_eprintln!(format!("  Height: {}", header.height));
     if let Some(timestamp) = header.timestamp {
-        gemini_eprintln!("  Timestamp: {}", timestamp);
+        gemini_eprintln!(format!("  Timestamp: {}", timestamp));
     }
     if let Some(duration) = header.duration {
-        gemini_eprintln!("  Duration: {}", duration);
+        gemini_eprintln!(format!("  Duration: {}", duration));
     }
     if let Some(title) = header.title {
-        gemini_eprintln!("  Title: {}", title);
+        gemini_eprintln!(format!("  Title: {}", title));
     }
 
     let mut event_count = 0;
@@ -195,7 +195,7 @@ fn main() -> Result<()> {
 
     for value in de {
         if event_count >= args.limit {
-            gemini_eprintln!("Reached event processing limit of {}. Stopping.", args.limit);
+            gemini_eprintln!(format!("Reached event processing limit of {}. Stopping.", args.limit));
             break;
         }
 
@@ -217,7 +217,7 @@ fn main() -> Result<()> {
             },
         }
     }
-    gemini_eprintln!("Total number of events processed: {}", event_count);
+    gemini_eprintln!(format!("Total number of events processed: {}", event_count));
 
     let hierarchy = build_hierarchy(cleaned_output_lines, &args.steps);
     
@@ -226,7 +226,7 @@ fn main() -> Result<()> {
     let mut output_file = File::create(&args.rust_output_file)?;
     output_file.write_all(generated_code.to_string().as_bytes())?;
 
-    gemini_eprintln!("Generated Rust code written to: {:?}", args.rust_output_file);
+    gemini_eprintln!(format!("Generated Rust code written to: {:?}", args.rust_output_file));
 
     Ok(())
 }

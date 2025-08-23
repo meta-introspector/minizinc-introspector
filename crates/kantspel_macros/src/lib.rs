@@ -24,7 +24,7 @@ impl VisitMut for KantspelTransformer {
                     },
                     OPEN_CURLY_BRACE => {
                         // Check for {{ 
-                        if let Some(OPEN_CURLY_BRACE) = chars.peek() {
+                        if let Some(&OPEN_CURLY_BRACE) = chars.peek() {
                             chars.next(); // consume second '{'
                             modified_string.push_str(&OPEN_CURLY_BRACE.to_string());
                             modified_string.push_str(&OPEN_CURLY_BRACE.to_string());
@@ -34,7 +34,7 @@ impl VisitMut for KantspelTransformer {
                     },
                     CLOSE_CURLY_BRACE => {
                         // Check for }}
-                        if let Some(CLOSE_CURLY_BRACE) = chars.peek() {
+                        if let Some(&CLOSE_CURLY_BRACE) = chars.peek() {
                             chars.next(); // consume second '}'
                             modified_string.push_str(&CLOSE_CURLY_BRACE.to_string());
                             modified_string.push_str(&CLOSE_CURLY_BRACE.to_string());
