@@ -25,3 +25,6 @@
 [submodule "vendor/asciicast"]
 	path = vendor/asciicast
 	url = https://github.com/LegNeato/asciicast-rs.git
+[submodule "vendor/libjq"]
+	path = vendor/libjq
+	url = https://github.com/jqlang/jq.git
