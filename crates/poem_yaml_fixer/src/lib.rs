@@ -3,7 +3,7 @@ use regex::Regex;
 use crate::functions::types::{FixedFrontMatter, PoemFunctionRegistry};
 use crate::functions::utils::option_vec_helpers::{is_option_vec_empty, extend_option_vec};
 use std::io::Write; // Add this
-use std::fs::File; // Add this
+//use std::fs::File; // Add this
 
 poem_macros::poem_header!();
 

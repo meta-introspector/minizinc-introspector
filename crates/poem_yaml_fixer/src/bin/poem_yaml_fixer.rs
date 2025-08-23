@@ -18,10 +18,15 @@ use clap::Parser;
 use poem_yaml_fixer::functions::initialize_config::initialize_config;
 //use poem_yaml_fixer::functions::process_files::process_files;
 use poem_yaml_fixer::functions::run_app::run_app;
+use poem_yaml_fixer::functions::regex_report::generate_regex_report;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Cli {
+    /// Generate a report of all regex patterns and their compilation status.
+    #[arg(long)]
+    generate_regex_report: bool,
+
     /// Optional path to a single poem file to process. If not provided, processes all .md files in docs/poems/.
     #[arg(short, long, value_name = "FILE_PATH")]
     file: Option<PathBuf>,
@@ -61,6 +66,11 @@ struct Cli {
 
 fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
+
+    if cli.generate_regex_report {
+        generate_regex_report()?;
+        return Ok(());
+    }
 
     let current_dir = std::env::current_dir()?;
     let poems_dir = current_dir.join("docs").join("poems");

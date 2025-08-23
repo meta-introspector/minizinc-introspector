@@ -1,5 +1,5 @@
 use anyhow::Result;
-use crate::functions::types::FixedFrontMatter;
+//use crate::functions::types::FixedFrontMatter;
 use poem_macros::poem_function;
 use poem_traits::PoemFrontMatterTrait;
 
@@ -13,7 +13,8 @@ pub fn handle_list_item_memes_regex(
     _line: &str,
     _captures: Vec<String>,
     _fixed_front_matter: &mut dyn PoemFrontMatterTrait,
-) -> Result<()> {
+) -> Result<()>
+{
     // TODO: Implement logic for handling list item with 'memes:'
     Ok(())
 }

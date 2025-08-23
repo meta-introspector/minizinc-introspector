@@ -31,3 +31,4 @@ pub mod generate_templates;
 pub mod register_new_callbacks;
 pub mod generate_generalized_regex;
 pub mod process_unmatched_lines_for_grex;
+pub mod regex_report;

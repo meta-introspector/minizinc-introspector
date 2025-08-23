@@ -6,7 +6,7 @@ use std::path::PathBuf;
 use walkdir::WalkDir;
 use crate::functions::types::{FixedFrontMatter, PoemFunctionRegistry};
 use crate::RegexConfig;
-use crate::manual_parser::manual_parse_poem_file;
+//use crate::manual_parser::manual_parse_poem_file;
 use crate::process_file;
 use crate::functions::report_generator::PoemReportEntry;
 use crate::functions::report_printer::print_detailed_regex_report;
