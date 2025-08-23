@@ -1,3 +1,5 @@
+extern crate phf_codegen;
+
 use std::env;
 use std::fs::File;
 use std::io::{BufWriter, Write};
