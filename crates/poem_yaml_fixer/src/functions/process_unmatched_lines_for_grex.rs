@@ -1,14 +1,14 @@
 use anyhow::Result;
 use std::path::{Path, PathBuf};
-use std::io::Write;
+//use std::io::Write;
 use grex::RegExpBuilder;
 use regex::Regex;
 
 pub fn process_unmatched_lines_for_grex(
     unmatched_lines: &[String],
     file_path: &Path,
-    current_dir: &Path,
-    log_dir: &PathBuf,
+    _current_dir: &Path,
+    _log_dir: &PathBuf,
 ) -> Result<()> {
     if unmatched_lines.is_empty() {
         return Ok(())
