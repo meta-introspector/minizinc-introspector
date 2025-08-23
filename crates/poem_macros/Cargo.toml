@@ -8,5 +8,6 @@ proc-macro = true
 
 [dependencies]
 poem_macro_impl = { path = "../poem_macro_impl" }
+proc-macro2 = "1.0"
 quote = "1.0.40"
 syn = "2.0.106"

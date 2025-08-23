@@ -98,7 +98,7 @@ fn main() -> anyhow::Result<()> {
         cli.generate_grex_regex,
         &poems_dir,
         &current_dir,
-        //&regex_config, // Removed
+        _regex_config.as_ref(),
         &function_registry,
         &cli.log_dir, // Pass the new argument
     )?;

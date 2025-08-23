@@ -1,4 +1,4 @@
-use proc_macro2::TokenStream;
+use proc_macro2::TokenStream as ProcMacro2TokenStream;
 use quote::quote;
 use syn::{ItemFn, LitStr};
 use syn::parse::{Parse, ParseStream};
@@ -93,7 +93,7 @@ impl Parse for PoemFunctionAttrs {
 }
 
 #[allow(non_upper_case_globals)]
-pub fn poem_function_impl(attr: proc_macro2::TokenStream, input_fn: ItemFn) -> TokenStream {
+pub fn poem_function_impl(attr: ProcMacro2TokenStream, input_fn: ItemFn) -> ProcMacro2TokenStream {
     let fn_name = &input_fn.sig.ident;
 
     // Parse the attributes
@@ -152,7 +152,7 @@ pub fn poem_function_impl(attr: proc_macro2::TokenStream, input_fn: ItemFn) -> T
     expanded
 }
 
-pub fn poem_header_impl() -> TokenStream {
+pub fn poem_header_impl() -> ProcMacro2TokenStream {
     quote! {
         use std::collections::HashMap;
         use anyhow::Result;
@@ -179,4 +179,8 @@ pub fn poem_header_impl() -> TokenStream {
             RegexConfig { regexes }
         }
     }
+}
+
+pub fn poem_header(_input: ProcMacro2TokenStream) -> ProcMacro2TokenStream {
+    poem_header_impl()
 }

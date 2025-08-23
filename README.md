@@ -128,6 +128,7 @@ This project leverages several custom Rust crates to implement its unique functi
 *   **`minizinc_introspector`**: (If exists and relevant) This crate is designed to introspect MiniZinc models, potentially extracting structural information or aiding in analysis. [View Documentation](target/doc/minizinc_introspector/index.html)
 *   **`poem_yaml_fixer`**: A utility crate for fixing and formatting YAML files, particularly those related to "poem" data structures within the project. [View Documentation](target/doc/poem_yaml_fixer/index.html)
 *   **`doc_to_minizinc_data`**: Responsible for extracting data from various documentation formats and converting it into MiniZinc data (`.dzn`) files for analysis and optimization. [View Documentation](target/doc/doc_to_minizinc_data/index.html)
+*   **`gemini_utils`**: A utility crate providing enhanced logging capabilities, including the `gemini_eprintln!` procedural macro for visually expressive output with emoji replacements. [View Documentation](target/doc/gemini_utils/index.html)
 
 #### MiniZinc Models
 *   [Combinatorial Topologies](combinatorial_topologies.mzn)

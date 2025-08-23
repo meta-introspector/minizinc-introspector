@@ -1,6 +1,9 @@
 use asciicast::{Entry, EventType, Header};
 use std::fs::File;
-use std::io::{self, BufReader, Write};
+use std::io::{
+    //self,
+    BufReader, Write};
+use serde_json::Deserializer;
 use grex::RegExpBuilder;
 use anyhow::{Result, anyhow};
 use clap::Parser;
@@ -13,9 +16,11 @@ use quote::quote;
 use syn::{Ident, LitStr};
 use proc_macro2::TokenStream;
 
+use gemini_utils::gemini_eprintln;
+
 // Re-export the macro for use in generated code
 #[allow(unused_imports)]
-use poem_macro_impl::poem_function;
+use poem_macros::poem_function;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -108,26 +113,26 @@ fn generate_poem_functions(node: &RegexHierarchyNode, parent_name: &str, level: 
     let mut functions = TokenStream::new();
 
     if let Some(ref regex_str) = node.prefix_regex {
-        let fn_name_str = format!("{}_level{{}}{{}}", parent_name, level, regex_str.replace("^", "").replace("$", "").replace("\\", "").replace(".", "dot").replace(" ", "_").replace("(", "").replace(")", "").replace("|", "or").replace("+", "plus").replace("*", "star").replace("[", "").replace("]", "").replace("{{", "").replace("}}", "").replace(",", "").replace("-", "").replace("^", "").replace("$", "").replace("", ""));
+                let fn_name_str = format!("{}_level{}", parent_name, level);
         let fn_name = Ident::new(&fn_name_str, proc_macro2::Span::call_site());
         let pattern_lit = LitStr::new(regex_str, proc_macro2::Span::call_site());
 
-        let title_str = format!("Meme for pattern: {{}}", regex_str);
+        let title_str = format!("Meme for pattern: {}", regex_str);
         let title_lit = LitStr::new(&title_str, proc_macro2::Span::call_site());
 
-        let summary_str = format!("Generated from asciicast output at level {{}}", level);
+        let summary_str = format!("Generated from asciicast output at level {}", level);
         let summary_lit = LitStr::new(&summary_str, proc_macro2::Span::call_site());
 
-        let keywords_str = format!("asciicast,regex,meme,level{{}}", level);
+        let keywords_str = format!("asciicast,regex,meme,level{}", level);
         let keywords_lit = LitStr::new(&keywords_str, proc_macro2::Span::call_site());
 
         let emojis_str = "🔍🌲🔄";
         let emojis_lit = LitStr::new(emojis_str, proc_macro2::Span::call_site());
 
-        let art_generator_instructions_str = format!("Generate an image for: {{}}", regex_str);
+        let art_generator_instructions_str = format!("Generate an image for: {}", regex_str);
         let art_generator_instructions_lit = LitStr::new(&art_generator_instructions_str, proc_macro2::Span::call_site());
 
-        let pending_meme_description_str = format!("This meme represents the pattern: {{}}", regex_str);
+        let pending_meme_description_str = format!("This meme represents the pattern: {}", regex_str);
         let pending_meme_description_lit = LitStr::new(&pending_meme_description_str, proc_macro2::Span::call_site());
 
         let function_code = quote! {
@@ -170,27 +175,27 @@ fn main() -> Result<()> {
     let header_value = de.next().ok_or_else(|| anyhow!("Missing header"))?;
     let header: Header = serde_json::from_value(header_value.map_err(|e| anyhow!(e))?)?;
 
-    eprintln!("Asciicast Header:");
-    eprintln!("  Version: {{}}", header.version);
-    eprintln!("  Width: {{}}", header.width);
-    eprintln!("  Height: {{}}", header.height);
+    gemini_eprintln!("Asciicast Header:");
+    gemini_eprintln!("  Version: {}", header.version);
+    gemini_eprintln!("  Width: {}", header.width);
+    gemini_eprintln!("  Height: {}", header.height);
     if let Some(timestamp) = header.timestamp {
-        eprintln!("  Timestamp: {{}}", timestamp);
+        gemini_eprintln!("  Timestamp: {}", timestamp);
     }
     if let Some(duration) = header.duration {
-        eprintln!("  Duration: {{}}", duration);
+        gemini_eprintln!("  Duration: {}", duration);
     }
     if let Some(title) = header.title {
-        eprintln!("  Title: {{}}", title);
+        gemini_eprintln!("  Title: {}", title);
     }
 
     let mut event_count = 0;
     let mut cleaned_output_lines: Vec<String> = Vec::new();
-    eprintln!("\nProcessing events and collecting cleaned output (limited to {{}})...\n", args.limit);
+    gemini_eprintln!("\nProcessing events and collecting cleaned output (limited to {{}})...\n", args.limit);
 
     for value in de {
         if event_count >= args.limit {
-            eprintln!("Reached event processing limit of {{}}. Stopping.", args.limit);
+            gemini_eprintln!("Reached event processing limit of {}. Stopping.", args.limit);
             break;
         }
 
@@ -212,7 +217,7 @@ fn main() -> Result<()> {
             },
         }
     }
-    eprintln!("Total number of events processed: {{}}", event_count);
+    gemini_eprintln!("Total number of events processed: {}", event_count);
 
     let hierarchy = build_hierarchy(cleaned_output_lines, &args.steps);
     
@@ -221,7 +226,7 @@ fn main() -> Result<()> {
     let mut output_file = File::create(&args.rust_output_file)?;
     output_file.write_all(generated_code.to_string().as_bytes())?;
 
-    eprintln!("Generated Rust code written to: {{:?}}", args.rust_output_file);
+    gemini_eprintln!("Generated Rust code written to: {:?}", args.rust_output_file);
 
     Ok(())
 }

@@ -1,6 +1,8 @@
 use anyhow::{Result, anyhow};
 use regex::Regex;
-use std::path::{PathBuf, Path};
+use std::path::{PathBuf,
+		//Path
+};
 use std::fs;
 use serde_yaml::Value;
 use crate::functions::types::PoemFunctionRegistry;

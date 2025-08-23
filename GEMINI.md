@@ -158,6 +158,7 @@ This document summarizes key memories and operational guidelines for the Gemini 
     *   User prefers that all QA-related commits use a detailed commit message provided via an absolute filename (e.g., `git commit -F /tmp/qa_commit_message.txt`).
     *   User prefers to proceed with the next logical step without asking for confirmation, especially when it involves writing documentation I have just proposed.
     *   User prefers that I do not use my built-in search tool because it crashes. A new search tool is being built.
+*   **Logging Preference:** Always use `gemini_utils::gemini_eprintln!` for logging instead of `eprintln!`. This macro provides enhanced, visually expressive output with emoji replacements for common patterns (`\n`, `{}`, `{{}}`).
 *   **Meta-Programs & SOPs:**
     *   The "KitKat" meta-program is a user-defined workflow for pausing the current line of work, defining a new strategic plan, documenting it, committing the current state, and conceptually rebooting the development cycle to focus on the new plan.
     *   The "GM" meta-program is a workflow for recovering from a reboot. It involves staying on the critical path, reviewing memories, and checking recent commits to quickly understand the project's current state.
@@ -257,6 +258,7 @@ This section lists the detailed documentation and MiniZinc models generated duri
     *   **`minizinc_introspector`**: This crate is designed to introspect MiniZinc models, potentially extracting structural information or aiding in analysis.
     *   **`poem_yaml_fixer`**: A utility crate for fixing and formatting YAML files, particularly those related to "poem" data structures within the project.
     *   **`doc_to_minizinc_data`**: Responsible for extracting data from various documentation formats and converting it into MiniZinc data (`.dzn`) files for analysis and optimization.
+*   **`gemini_utils`**: A utility crate providing enhanced logging capabilities, including the `gemini_eprintln!` procedural macro for visually expressive output with emoji replacements. This macro is preferred over standard `eprintln!` for all logging within the project.
 
 ## 3. Plan for After Reboot
 

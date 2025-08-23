@@ -5,7 +5,7 @@ use crate::functions::types::PoemFunctionRegistry;
 use poem_traits::RegexConfig; // Keep RegexConfig for return type
 use crate::functions::register_new_callbacks::register_new_callbacks; // New import
 
-pub fn initialize_config(_cli_manual_parse: bool, _current_dir: &PathBuf) -> Result<(RegexConfig, PoemFunctionRegistry)> {
+pub fn initialize_config(_cli_manual_parse: bool, _current_dir: &PathBuf) -> Result<(Option<RegexConfig>, PoemFunctionRegistry)> {
     // For now, we will only use the function registry populated by macros.
     // The RegexConfig will be an empty default.
     let regex_config = RegexConfig { regexes: Vec::new() };
@@ -14,5 +14,5 @@ pub fn initialize_config(_cli_manual_parse: bool, _current_dir: &PathBuf) -> Res
     // Register new callbacks from #[poem_function] macro
     register_new_callbacks(&mut function_registry);
 
-    Ok((regex_config, function_registry))
+    Ok((Some(regex_config), function_registry))
 }
