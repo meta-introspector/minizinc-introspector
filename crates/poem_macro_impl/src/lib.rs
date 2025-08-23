@@ -166,7 +166,7 @@ pub fn poem_header_impl() -> TokenStream {
         pub fn create_function_registry() -> FunctionRegistry { // Use FunctionRegistry as return type
             let mut registry = HashMap::new();
             for entry in FUNCTIONS { // Iterate over PoemFunctionEntry
-                registry.insert(entry.0.regex_entry.name.clone(), (*entry).clone()); // Insert the whole PoemFunctionEntry
+                registry.insert(entry.0.regex_entry.callback_function.clone(), (*entry).clone()); // Insert the whole PoemFunctionEntry
             }
             registry
         }
