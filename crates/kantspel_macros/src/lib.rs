@@ -3,7 +3,7 @@ use syn::{parse_macro_input, LitStr, visit_mut::{self, VisitMut}};
 use quote::quote;
 
 // Import kantspel constants
-use gemini_utils::kantspel::*;
+use kantspel_lib::{BACKSLASH, OPEN_CURLY_BRACE, CLOSE_CURLY_BRACE};
 
 // Define the KantspelTransformer struct
 struct KantspelTransformer;
@@ -22,9 +22,9 @@ impl VisitMut for KantspelTransformer {
                         // Replace with BACKSLASH constant
                         modified_string.push_str(&BACKSLASH.to_string());
                     },
-                    '{' => {
+                    OPEN_CURLY_BRACE => {
                         // Check for {{ 
-                        if let Some('{') = chars.peek() {
+                        if let Some(OPEN_CURLY_BRACE) = chars.peek() {
                             chars.next(); // consume second '{'
                             modified_string.push_str(&OPEN_CURLY_BRACE.to_string());
                             modified_string.push_str(&OPEN_CURLY_BRACE.to_string());
@@ -32,9 +32,9 @@ impl VisitMut for KantspelTransformer {
                             modified_string.push_str(&OPEN_CURLY_BRACE.to_string());
                         }
                     },
-                    '}' => {
+                    CLOSE_CURLY_BRACE => {
                         // Check for }}
-                        if let Some('}') = chars.peek() {
+                        if let Some(CLOSE_CURLY_BRACE) = chars.peek() {
                             chars.next(); // consume second '}'
                             modified_string.push_str(&CLOSE_CURLY_BRACE.to_string());
                             modified_string.push_str(&CLOSE_CURLY_BRACE.to_string());

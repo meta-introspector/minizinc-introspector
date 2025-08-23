@@ -1,25 +1,16 @@
 use proc_macro::TokenStream;
-use syn::{parse_macro_input, Expr, ExprLit, punctuated::Punctuated, token::Comma};
+use syn::{parse_macro_input, Expr, ExprLit};
 use quote::quote;
 use proc_macro2::TokenStream as ProcMacro2TokenStream;
 
-mod kantspel;
-mod processing;
+use kantspel_lib::*;
+mod macro_parser;
+mod string_processor;
+
+use macro_parser::comma_separated_exprs::CommaSeparatedExprs;
+use string_processor::{process_char_for_emojis, append_segment_and_clear};
 
 
-use processing::{process_char_for_emojis, append_segment_and_clear};
-
-struct CommaSeparatedExprs {
-    exprs: Punctuated<Expr, Comma>,
-}
-
-impl syn::parse::Parse for CommaSeparatedExprs {
-    fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
-        Ok(CommaSeparatedExprs {
-            exprs: Punctuated::parse_terminated(input)?,
-        })
-    }
-}
 
 #[proc_macro]
 pub fn gemini_eprintln(input: TokenStream) -> TokenStream {

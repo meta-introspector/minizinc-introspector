@@ -1552,6 +1552,8 @@ name = "gemini_utils"
 version = "0.1.0"
 dependencies = [
  "emojicons",
+ "kantspel_lib",
+ "lazy_static",
  "phf 0.11.3",
  "phf_codegen 0.11.3",
  "proc-macro2",
@@ -1968,14 +1970,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "kantspel_lib"
+version = "0.1.0"
+
+[[package]]
 name = "kantspel_macros"
 version = "0.1.0"
 dependencies = [
  "anyhow",
  "gemini_utils",
+ "kantspel_lib",
  "poem_macros",
  "poem_traits",
+ "proc-macro2",
+ "quote",
  "regex 1.11.1",
+ "syn",
 ]
 
 [[package]]

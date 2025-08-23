@@ -14,6 +14,7 @@ proc-macro2 = "1.0"
 phf = { version = "0.11", features = ["macros"] }
 phf_codegen = "0.11"
 emojicons = { path = "../../vendor/rust-emojicons" }
+kantspel_lib = { path = "../../crates/kantspel_lib" }
 
 [build-dependencies]
 phf_codegen = "0.11"

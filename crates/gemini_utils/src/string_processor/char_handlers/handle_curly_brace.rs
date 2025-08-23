@@ -1,11 +1,17 @@
 use proc_macro2::TokenStream as ProcMacro2TokenStream;
 use quote::quote;
-use std::collections::HashMap;
 use std::iter::Peekable;
 use std::str::Chars;
-use lazy_static::lazy_static; // Import lazy_static
+use lazy_static::lazy_static;
+use std::collections::HashMap;
 
-use crate::kantspel::{BACKSLASH, OPEN_CURLY_BRACE, CLOSE_CURLY_BRACE}; // Import kantspel constants
+use kantspel_lib::{OPEN_CURLY_BRACE, CLOSE_CURLY_BRACE};
+
+// Re-import EMOJIS and append_segment_and_clear from string_processor/mod.rs
+// This is a temporary measure. Ideally, these would be passed as arguments or
+// accessed through a shared context if they are truly atomic and independent.
+// For now, to make the extracted function compile, I'll re-declare them.
+// The overall refactoring will address proper passing of these.
 
 // Placeholder for EMOJIS. This should ideally come from a generated file.
 lazy_static! {
@@ -18,7 +24,7 @@ lazy_static! {
     };
 }
 
-// Helper to append segment and clear
+// Helper to append segment and clear (copied from string_processor/mod.rs)
 pub fn append_segment_and_clear(
     current_segment: &mut String,
     result_tokens: &mut ProcMacro2TokenStream,
@@ -29,18 +35,7 @@ pub fn append_segment_and_clear(
     }
 }
 
-// Handles \n sequence
-pub fn handle_backslash_n(
-    chars: &mut Peekable<Chars>,
-    current_segment: &mut String,
-    result_tokens: &mut ProcMacro2TokenStream,
-) {
-    chars.next(); // consume 'n'
-    append_segment_and_clear(current_segment, result_tokens);
-    result_tokens.extend(quote! { *EMOJIS.get("return").unwrap_or(&"⏎") });
-}
-
-// Handles {{}} and {} sequences
+// Handles {{}} and {} sequences (copied from string_processor/mod.rs)
 pub fn handle_curly_braces(
     chars: &mut Peekable<Chars>,
     current_segment: &mut String,
@@ -72,24 +67,10 @@ pub fn handle_curly_braces(
     }
 }
 
-// Main character processing logic
-pub fn process_char_for_emojis(
-    c: char,
+pub fn handle_curly_brace_char(
     chars: &mut Peekable<Chars>,
     current_segment: &mut String,
     result_tokens: &mut ProcMacro2TokenStream,
 ) {
-    match c {
-        BACKSLASH => {
-            if let Some('n') = chars.peek() { // 'n' is not in kantspel, so keep as is
-                handle_backslash_n(chars, current_segment, result_tokens);
-            } else {
-                current_segment.push(c);
-            }
-        },
-        OPEN_CURLY_BRACE => {
-            handle_curly_braces(chars, current_segment, result_tokens);
-        },
-        _ => current_segment.push(c),
-    }
+    handle_curly_braces(chars, current_segment, result_tokens);
 }
