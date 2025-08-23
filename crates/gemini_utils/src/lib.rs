@@ -1,9 +1,11 @@
 use proc_macro::TokenStream;
-use syn::{parse_macro_input, LitStr, Expr, ExprLit, punctuated::Punctuated, token::Comma};
+use syn::{parse_macro_input,
+	  //LitStr,
+	  Expr, ExprLit, punctuated::Punctuated, token::Comma};
 use quote::quote;
 use proc_macro2::TokenStream as ProcMacro2TokenStream;
 
-include!(concat!(env!("OUT_DIR"), "/emojis.rs"));
+//include!(concat!(env!("OUT_DIR"), "/emojis.rs"));
 
 struct CommaSeparatedExprs {
     exprs: Punctuated<Expr, Comma>,
@@ -37,14 +39,14 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
         let mut chars = original_string.chars().peekable();
         while let Some(c) = chars.next() {
             match c {
-                '\'=> {
+                '\\'=> {
                     if let Some('n') = chars.peek() {
                         chars.next(); // consume 'n'
                         if !current_segment.is_empty() {
                             result_tokens.extend(quote! { #current_segment });
                             current_segment.clear();
                         }
-                        result_tokens.extend(quote! { #EMOJIS.get("return").unwrap_or(&"⏎") });
+                        result_tokens.extend(quote! { *EMOJIS.get("return").unwrap_or(&"⏎") });
                     } else {
                         current_segment.push(c);
                     }
@@ -60,7 +62,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
                                     result_tokens.extend(quote! { #current_segment });
                                     current_segment.clear();
                                 }
-                                result_tokens.extend(quote! { #EMOJIS.get("brick").unwrap_or(&"🧱") });
+                                result_tokens.extend(quote! { *EMOJIS.get("brick").unwrap_or(&"🧱") });
                             } else {
                                 current_segment.push('{');
                                 current_segment.push('{');
@@ -76,7 +78,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
                             result_tokens.extend(quote! { #current_segment });
                             current_segment.clear();
                         }
-                        result_tokens.extend(quote! { #EMOJIS.get("sparkles").unwrap_or(&"✨") });
+                        result_tokens.extend(quote! { *EMOJIS.get("sparkles").unwrap_or(&"✨") });
                     } else {
                         current_segment.push(c);
                     }
