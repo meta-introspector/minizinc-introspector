@@ -97,3 +97,4 @@ report.txt
 /all_terms.txt
 minizinc_data/chunk*_output/*
 /temp_poem_fix_reports/
+/crates/poem_yaml_fixer/src/regex_templates/
