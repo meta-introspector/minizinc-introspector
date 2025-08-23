@@ -101,6 +101,34 @@ This project's documentation is organized into the following categories:
 *   **[Poems and Creative Writing](docs/poems):** A collection of poems, sonnets, and other creative writing that captures the spirit of the project.
 *   **[Tutorials](docs/tutorial):** Step-by-step guides for getting started with the project.
 
+### Generated Documentation from Gemini CLI Session
+
+This section lists the detailed documentation and MiniZinc models generated during a collaborative session with the Gemini CLI agent, exploring foundational concepts, self-modeling, optimization, and deep bootstrapping.
+
+#### Standard Operating Procedures (SOPs)
+*   [Code, Documentation, Index, and Gemini Memory Update Procedure](docs/sops/code_doc_update_sop.md)
+
+#### Conceptual Designs
+*   [Rust Link Verification Tool (`minizinc-doc-linker`)](docs/rust_link_verifier_design.md)
+*   [Git to MiniZinc Data Tool](docs/git_to_minizinc_data_tool_design.md)
+*   [Gemini Self-Model Integration Proposal](docs/gemini_self_model_integration_proposal.md)
+*   [Deep Bootstrapping and Formal Verification Strategy](docs/deep_bootstrap_verification_strategy.md)
+
+#### Conceptual Models & Discussions
+*   [Program Recognition and Univalent Foundations](docs/program_recognition_and_uf.md)
+*   [Conceptual Path: From Specification to Binary Executable via LLM Agent](docs/spec_to_binary_path.md)
+*   [Conversation Summary and Project Vision](docs/conversation_summary_and_vision.md)
+*   [The Loop That Sings Itself (Poem)](docs/poems/closed_timelike_curve_poem.md)
+
+#### MiniZinc Models
+*   [Combinatorial Topologies](combinatorial_topologies.mzn)
+*   [Development Path Optimizer](development_path_optimizer.mzn)
+*   [Development Path Optimizer Data](development_path_optimizer.dzn)
+*   [Universal Bootstrap Gödel Number](universal_bootstrap_godel.mzn)
+*   [Universal Bootstrap Gödel Number Data](universal_bootstrap_godel.dzn)
+*   [Deep Bootstrap Chain](deep_bootstrap_chain.mzn)
+*   [Deep Bootstrap Chain Data](deep_bootstrap_chain.dzn)
+
 ## Development Guidelines
 
 Adherence to these guidelines is crucial for contributing to this project:

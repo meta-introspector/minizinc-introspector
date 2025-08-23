@@ -1,0 +1,17 @@
+num_tasks = 5;
+task_duration = [5, 3, 8, 2, 4]; % Durations for Task 1 to Task 5
+
+% Dependencies:
+% Task 1: No dependencies
+% Task 2: Depends on Task 1
+% Task 3: Depends on Task 1
+% Task 4: Depends on Task 2 and Task 3
+% Task 5: Depends on Task 4
+depends = [| false, false, false, false, false
+          | true,  false, false, false, false
+          | true,  false, false, false, false
+          | false, true,  true,  false, false
+          | false, false, false, true,  false |];
+
+llm_agent_time_cost = [2, 1, 3, 1, 2]; % Example costs
+cpu_time_cost = [1, 2, 1, 1, 3]; % Example costs

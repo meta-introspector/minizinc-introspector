@@ -14,7 +14,7 @@ pub fn run_app(
     cli_generate_grex_regex: bool,
     poems_dir: &PathBuf,
     current_dir: &PathBuf,
-    regex_config: &RegexConfig,
+    _regex_config: Option<&RegexConfig>,
     function_registry: &PoemFunctionRegistry,
     log_dir: &PathBuf, // Change from &Option<PathBuf> to &PathBuf
 ) -> Result<()> {
@@ -27,7 +27,7 @@ pub fn run_app(
         cli_generate_grex_regex,
         poems_dir,
         current_dir,
-        regex_config,
+        _regex_config,
         function_registry,
         log_dir, // Pass the new argument
     )?;

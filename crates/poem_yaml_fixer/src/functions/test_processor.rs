@@ -1,17 +1,13 @@
 use anyhow::{Result, anyhow};
 use regex::Regex;
-use std::path::{PathBuf,
-		//Path
-};
+use std::path::{PathBuf, Path};
 use std::fs;
 use serde_yaml::Value;
-use poem_traits::RegexConfig;
 use crate::functions::types::PoemFunctionRegistry;
 use crate::functions::process_unmatched_lines_for_grex::process_unmatched_lines_for_grex;
 
 pub fn process_test_yaml(
     test_yaml_path: PathBuf,
-    _regex_config: &RegexConfig,
     function_registry: &PoemFunctionRegistry,
 ) -> Result<()> {
     println!("--- Processing Test YAML: {:?} ---", test_yaml_path);

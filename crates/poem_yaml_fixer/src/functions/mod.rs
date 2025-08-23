@@ -19,7 +19,7 @@ pub mod archeology_parser;
 pub mod utils; // New line
 pub mod report_generator;
 pub mod regex_patterns;
-pub mod load_regex_config;
+
 pub mod report_processing;
 pub mod process_document_with_regex;
 pub mod report_printer;
@@ -33,4 +33,3 @@ pub mod generate_generalized_regex;
 pub mod process_unmatched_lines_for_grex;
 pub mod regex_report;
 pub mod test_processor;
-pub mod config_loader;

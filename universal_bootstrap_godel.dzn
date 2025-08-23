@@ -1,0 +1,31 @@
+% Define the dependency matrix for the COMPONENT enum
+% depends_on[A, B] = true means A depends on B
+
+depends_on = array2d(COMPONENT, COMPONENT, [
+    % CliffordAlgebra depends on:
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    % Multivector depends on:
+    true,  false, false, false, false, false, false, false, false, false, false, false, false,
+    % Unimath depends on:
+    true,  false, false, false, false, false, false, false, false, false, false, false, false,
+    % Lean4Mathlib depends on:
+    true,  false, true,  false, false, false, false, false, false, false, false, false, false,
+    % Lean4Compiler depends on:
+    false, false, false, false, false, true,  true,  false, true,  false, false, false, false,
+    % LLVM depends on:
+    false, false, false, false, false, false, true,  false, false, false, false, false, false,
+    % Linux depends on:
+    false, false, false, false, false, false, false, false, true,  false, false, false, false,
+    % QEMU depends on:
+    false, false, false, false, false, false, true,  false, false, false, false, false, false,
+    % GNUMesBootstrap depends on:
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    % GeminiCLI depends on:
+    false, false, false, false, false, false, true,  false, false, true,  true,  true,  true,
+    % MiniZinc depends on:
+    false, false, false, false, false, false, true,  false, false, false, false, false, false,
+    % Rust depends on:
+    false, false, false, false, false, true,  true,  false, false, false, false, false, false,
+    % Docker depends on:
+    false, false, false, false, false, false, true,  false, false, false, false, false, false
+|]);

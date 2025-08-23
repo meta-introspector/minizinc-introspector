@@ -1,3 +1,138 @@
+# Minizinc-Introspector project 
+fork of libminizinc for add the entire intropector on top and in it.
+part of the SOLFUNMEME ZOS (zero ontology system) Meta Universal Consiousness, Process, Compiler and Runtime OODA Introspector
+proof system minizinc solver module.
+to be coupled with lean4 and coq and zkp for proof.
+to use mtts, genetic algorithms and alife to generate novel solutions.
+to use graph partitioning, graph layout and creative introspection for intuitive understanding.
+embodying unimath, hott, 
+# Consider authors
+Brouwer → Heyting → Martin-Löf → Voevodsky
+Whitehead → Gödel → Weyl → Voevodsky
+Peirce → Eco → Hofstadter → Voevodsky
+Dawkins → Hofstadter → Voevodsky
+
+# GEMINI.md – Project AI Context and Best Practices
+
+## Overview
+
+This file provides instructional context for Google Gemini CLI within your project. Follow these best practices for reliability, safety, and team consistency.
+
+---
+
+## 1. Use GEMINI.md as AI Project Memory
+
+Place this file at the project root.  
+Describe your architecture, technologies, coding standards, naming conventions, common commands (build, test, deploy), team workflows, and anything Gemini should avoid.
+
+---
+
+## 2. Modularize Context with Imports
+
+For complex projects, import other Markdown files using:
+```
+@backend.md
+@frontend.md
+```
+Only `.md` files are supported. Organize context for different modules to improve customization.
+
+---
+
+## 3. Hierarchical and Granular Loading
+
+Gemini-CLI loads `GEMINI.md` files from:
+- Global (`~/.gemini/GEMINI.md`)
+- Project-specific (repo root)
+- Sub-directory (component-specific)
+More specific files override general settings.  
+Check the active, combined context with:
+```
+/memory show
+```
+
+---
+
+## 4. Define Standards, Constraints, and Team Norms
+
+Explicitly specify coding guidelines, preferred libraries, restrictions, and deployment steps.  
+Document team workflows and what Gemini should NOT do (e.g., avoid deprecated APIs, do not use certain database methods).
+
+---
+
+## 5. Review and Update Frequently
+
+Update `GEMINI.md` for changes in standards, tech, or workflow.  
+Add sections for bugs, refactors, or special instructions.  
+Treat this file as living documentation.
+
+---
+
+## 6. Secure Secrets and Sensitive Info
+
+Never store API keys or secrets here.
+Use environment files and `.geminiignore` to exclude sensitive paths.
+
+---
+
+## 7. Integrate with CI/CD and Automation
+
+Document standard automation scripts and flows (e.g., CI tests, deployment routines) for reproducible workflows.
+
+---
+
+## 8. Test and Validate Gemini’s Output
+
+Always manually review and test Gemini's output before merging or deploying.
+Use self-correction and checkpoint features for recovery.
+
+---
+
+## Example `GEMINI.md` Structure
+
+```
+# GEMINI.md – Project AI Context
+
+## Project Overview
+Brief description of project, tech stack, architecture.
+
+## Coding Standards
+- Python: PEP8
+- C#: PascalCase
+- TypeScript: Interface-first design
+
+## Common Commands
+- Build: `npm run build`
+- Test: `pytest tests/`
+- Deploy: `scripts/deploy.sh`
+
+## Team Norms
+- Generate unit tests before adding code
+- Refactor legacy modules using feature flags
+
+## Restrictions
+- Avoid deprecated APIs (see @deprecated.md)
+- Do not write files to /tmp
+
+## Imports
+@backend.md
+@frontend.md
+```
+
+---
+
+*Regularly maintain GEMINI.md to maximize Gemini-CLI reliability and team productivity.*
+```
+
+Citations:
+[1] Google Gemini CLI Cheatsheet - Philschmid https://www.philschmid.de/gemini-cli-cheatsheet
+[2] gemini-cli/docs/cli/configuration.md at main - GitHub https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/configuration.md
+[3] Hands-on with Gemini CLI - Codelabs https://codelabs.developers.google.com/gemini-cli-hands-on
+[4] GEMINI.md global instructions (Pre-merge) - GitHub Gist https://gist.github.com/ksprashu/5ce25ae8e451eccdcc974f4f6cdbf031
+[5] Customize Gemini Code Assist behavior in GitHub https://developers.google.com/gemini-code-assist/docs/customize-gemini-behavior-github
+[6] Structured output | Gemini API | Google AI for Developers https://ai.google.dev/gemini-api/docs/structured-output
+[7] Gemini CLI Full Tutorial - DEV Community https://dev.to/proflead/gemini-cli-full-tutorial-2ab5
+
+
 # Gemini CLI Important Memories for libminizinc Project
 
 This document summarizes key memories and operational guidelines for the Gemini CLI agent within the `libminizinc` project, filtered from various project documentation and past interactions.
@@ -37,6 +172,34 @@ This document summarizes key memories and operational guidelines for the Gemini 
     *   On session startup, I should consult `docs/sops/session_recovery_sop.md` to recover the context of the previous session.
     *   Remember to use `Ok(())` instead of `Ok!(())` for `Result` types.
     *   All generated poetry should be stored in the `docs/poems/` directory.
+
+## Generated Documentation from Gemini CLI Session
+
+This section lists the detailed documentation and MiniZinc models generated during a collaborative session with the Gemini CLI agent, exploring foundational concepts, self-modeling, optimization, and deep bootstrapping.
+
+### Standard Operating Procedures (SOPs)
+*   [Code, Documentation, Index, and Gemini Memory Update Procedure](docs/sops/code_doc_update_sop.md)
+
+### Conceptual Designs
+*   [Rust Link Verification Tool (`minizinc-doc-linker`)](docs/rust_link_verifier_design.md)
+*   [Git to MiniZinc Data Tool](docs/git_to_minizinc_data_tool_design.md)
+*   [Gemini Self-Model Integration Proposal](docs/gemini_self_model_integration_proposal.md)
+*   [Deep Bootstrapping and Formal Verification Strategy](docs/deep_bootstrap_verification_strategy.md)
+
+### Conceptual Models & Discussions
+*   [Program Recognition and Univalent Foundations](docs/program_recognition_and_uf.md)
+*   [Conceptual Path: From Specification to Binary Executable via LLM Agent](docs/spec_to_binary_path.md)
+*   [Conversation Summary and Project Vision](docs/conversation_summary_and_vision.md)
+*   [The Loop That Sings Itself (Poem)](docs/poems/closed_timelike_curve_poem.md)
+
+### MiniZinc Models
+*   [Combinatorial Topologies](combinatorial_topologies.mzn)
+*   [Development Path Optimizer](development_path_optimizer.mzn)
+*   [Development Path Optimizer Data](development_path_optimizer.dzn)
+*   [Universal Bootstrap Gödel Number](universal_bootstrap_godel.mzn)
+*   [Universal Bootstrap Gödel Number Data](universal_bootstrap_godel.dzn)
+*   [Deep Bootstrap Chain](deep_bootstrap_chain.mzn)
+*   [Deep Bootstrap Chain Data](deep_bootstrap_chain.dzn)
 
 ## 2. libminizinc Specific Memories & Context
 

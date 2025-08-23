@@ -45,3 +45,30 @@ arrow-arith = { path = "vendor/arrow-arith-patched" }
 [workspace.dependencies]
 arrow = "56.0.0"
 parquet = "56.0.0"
+
+# --- Generated Documentation References ---
+# This section provides links to key documentation generated during
+# collaborative sessions with the Gemini CLI agent.
+#
+# Standard Operating Procedures (SOPs):
+# - docs/sops/code_doc_update_sop.md
+#
+# Conceptual Designs:
+# - docs/rust_link_verifier_design.md
+# - docs/git_to_minizinc_data_tool_design.md
+# - docs/gemini_self_model_integration_proposal.md
+# - docs/deep_bootstrap_verification_strategy.md
+#
+# Conceptual Models & Discussions:
+# - docs/program_recognition_and_uf.md
+# - docs/spec_to_binary_path.md
+# - docs/conversation_summary_and_vision.md
+#
+# MiniZinc Models:
+# - combinatorial_topologies.mzn
+# - development_path_optimizer.mzn
+# - development_path_optimizer.dzn
+# - universal_bootstrap_godel.mzn
+# - universal_bootstrap_godel.dzn
+# - deep_bootstrap_chain.mzn
+# - deep_bootstrap_chain.dzn

@@ -79,15 +79,15 @@ fn main() -> anyhow::Result<()> {
 
     if let Some(test_yaml_path) = cli.test_yaml {
         let current_dir = std::env::current_dir()?;
-        let (regex_config, function_registry) = initialize_config(cli.manual_parse, &current_dir)?;
-        process_test_yaml(test_yaml_path, &regex_config, &function_registry)?;
+        let (_regex_config, function_registry) = initialize_config(cli.manual_parse, &current_dir)?;
+        process_test_yaml(test_yaml_path, &function_registry)?;
         return Ok(());
     }
 
     let current_dir = std::env::current_dir()?;
     let poems_dir = current_dir.join("docs").join("poems");
 
-    let (regex_config, function_registry) = initialize_config(cli.manual_parse, &current_dir)?;
+    let (_regex_config, function_registry) = initialize_config(cli.manual_parse, &current_dir)?;
 
     run_app(
         cli.report,
@@ -98,7 +98,7 @@ fn main() -> anyhow::Result<()> {
         cli.generate_grex_regex,
         &poems_dir,
         &current_dir,
-        &regex_config,
+        //&regex_config, // Removed
         &function_registry,
         &cli.log_dir, // Pass the new argument
     )?;

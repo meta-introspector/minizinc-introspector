@@ -1,0 +1,25 @@
+% Define the dependency matrix for BOOT_COMPONENT
+% depends_on[A, B] = true means A depends on B
+
+depends_on = array2d(BOOT_COMPONENT, BOOT_COMPONENT, [
+    % HexLoader depends on: (nothing, it's the base)
+    false, false, false, false, false, false, false, false, false, false,
+    % GNUMes depends on: HexLoader
+    true,  false, false, false, false, false, false, false, false, false,
+    % TCC depends on: GNUMes
+    false, true,  false, false, false, false, false, false, false, false,
+    % GuixNix depends on: TCC, Linux (for runtime) - simplified
+    false, false, true,  false, false, false, false, true,  false, false,
+    % Lean4 depends on: LLVM, Linux
+    false, false, false, false, false, true,  false, true,  false, false,
+    % LLVM depends on: TCC, Linux
+    false, false, true,  false, false, false, true,  false, false, false,
+    % Rust depends on: LLVM, Linux
+    false, false, false, false, false, true,  false, true,  false, false,
+    % Linux depends on: GNUMes (for initial build), QEMU (for testing/virtualization) - simplified
+    false, true,  false, false, false, false, false, false, true,  false,
+    % QEMU depends on: Linux (for host OS) - simplified
+    false, false, false, false, false, false, false, true,  false, false,
+    % GeminiCLI depends on: MiniZinc, Rust, Linux
+    false, false, false, false, false, false, true,  true,  false, false
+|]);

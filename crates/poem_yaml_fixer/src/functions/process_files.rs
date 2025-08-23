@@ -22,7 +22,7 @@ pub fn process_files(
     cli_generate_grex_regex: bool,
     poems_dir: &PathBuf,
     current_dir: &PathBuf,
-    regex_config: &RegexConfig,
+    _regex_config: Option<&RegexConfig>,
     function_registry: &PoemFunctionRegistry,
     log_dir: &PathBuf, // Change from &Option<PathBuf> to &PathBuf
 ) -> Result<()> {
@@ -36,7 +36,7 @@ pub fn process_files(
             let mut file = std::fs::File::create(&log_file_path)?;
             file.write_all(log_output.as_bytes())?;
         } else {
-            process_file(&file_path, regex_config, function_registry, &mut report_entries, cli_debug, cli_dry_run, log_dir)?;
+            process_file(&file_path, _regex_config, function_registry, &mut report_entries, cli_debug, cli_dry_run, log_dir)?;
         }
     } else {
         for entry in WalkDir::new(poems_dir).into_iter().filter_map(|e| e.ok()) {
@@ -52,7 +52,7 @@ pub fn process_files(
                     let mut file = std::fs::File::create(&log_file_path)?;
                     file.write_all(log_output.as_bytes())?;
                 } else {
-                    process_file(path, regex_config, function_registry, &mut report_entries, cli_debug, cli_dry_run, log_dir)?;
+                    process_file(path, _regex_config, function_registry, &mut report_entries, cli_debug, cli_dry_run, log_dir)?;
                 }
             }
         }
@@ -81,4 +81,5 @@ pub fn process_files(
 
     Ok(())
 }
+
 
