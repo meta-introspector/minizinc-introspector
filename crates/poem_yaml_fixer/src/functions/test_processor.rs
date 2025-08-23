@@ -1,4 +1,5 @@
 use anyhow::{Result, anyhow};
+use regex::Regex;
 use std::path::{PathBuf,
 		//Path
 };
@@ -10,7 +11,7 @@ use crate::functions::process_unmatched_lines_for_grex::process_unmatched_lines_
 
 pub fn process_test_yaml(
     test_yaml_path: PathBuf,
-    regex_config: &RegexConfig,
+    _regex_config: &RegexConfig,
     function_registry: &PoemFunctionRegistry,
 ) -> Result<()> {
     println!("--- Processing Test YAML: {:?} ---", test_yaml_path);
@@ -18,12 +19,18 @@ pub fn process_test_yaml(
     let content = fs::read_to_string(&test_yaml_path)?;
     let parsed_test_yaml: Value = serde_yaml::from_str(&content)?;
 
-    let file_path_str = parsed_test_yaml["file_path"]
+    // Get the first element of the sequence
+    let test_data = parsed_test_yaml
+        .as_sequence()
+        .and_then(|seq| seq.get(0))
+        .ok_or_else(|| anyhow!("test YAML is not a sequence or is empty"))?;
+
+    let file_path_str = test_data["file_path"]
         .as_str()
         .ok_or_else(|| anyhow!("file_path not found or not a string in test YAML"))?;
     let file_path = PathBuf::from(file_path_str);
 
-    let unmatched_lines_array = parsed_test_yaml["unmatched_lines"]
+    let unmatched_lines_array = test_data["unmatched_lines"]
         .as_sequence()
         .ok_or_else(|| anyhow!("unmatched_lines not found or not a sequence in test YAML"))?;
 
@@ -31,6 +38,7 @@ pub fn process_test_yaml(
     let log_dir = PathBuf::from("./test_logs");
     fs::create_dir_all(&log_dir)?;
 
+    // Iterate through each unmatched line and try to match it against existing regexes
     for (i, line_value) in unmatched_lines_array.iter().enumerate() {
         let line = line_value
             .as_str()
@@ -38,28 +46,28 @@ pub fn process_test_yaml(
 
         println!("\nProcessing unmatched line {}: \"{}\"", i, line);
 
-        let mut matched = false;
-        for (regex_metadata, callback_fn) in function_registry.iter() {
-            let regex = &regex_metadata.regex_entry.regex;
-            if let Some(captures) = regex.captures(line) {
-                println!("  MATCHED by regex: {}", regex_metadata.name);
-                // You can add more detailed reporting here, e.g., captured groups
-                matched = true;
+        let mut line_matched = false;
+        for (callback_name, (regex_metadata, _callback_fn)) in function_registry.iter() {
+            let regex = Regex::new(&regex_metadata.regex_entry.pattern)?;
+            if let Some(_captures) = regex.captures(line) {
+                println!("  MATCHED by regex: {} (callback: {})", regex_metadata.regex_entry.name, callback_name);
+                line_matched = true;
                 break;
             }
         }
-
-        if !matched {
-            println!("  NO MATCH found for line. Generating grex regex...");
-            // Call process_unmatched_lines_for_grex for this single line
-            process_unmatched_lines_for_grex(
-                &[line.to_string()],
-                &file_path,
-                &current_dir,
-                &log_dir,
-            )?;
+        if !line_matched {
+            println!("  NO MATCH found for line by existing regexes.");
         }
     }
+
+    // Generate grex regex for all unmatched lines at once
+    println!("\nGenerating grex regex for all unmatched lines...");
+    process_unmatched_lines_for_grex(
+        &unmatched_lines_array.iter().map(|v| v.as_str().unwrap_or("").to_string()).collect::<Vec<String>>(),
+        &file_path,
+        &current_dir,
+        &log_dir,
+    )?;
 
     println!("--- Finished Processing Test YAML ---");
     Ok(())

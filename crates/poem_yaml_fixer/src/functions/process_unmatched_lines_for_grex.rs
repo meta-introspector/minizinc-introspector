@@ -49,12 +49,23 @@ pub fn process_unmatched_lines_for_grex(
     let file_path = regex_templates_dir.join(&output_file_name);
     
     let file_content = format!(
-        r###"// Generated regex for unmatched lines in: {}\nuse regex::Regex;\nuse std::collections::HashMap;\n\npub fn {}_regex() -> (Regex, HashMap<String, String>) {{\n    let regex = Regex::new(r#"{}"#).unwrap();\n    let mut captures = HashMap::new();\n    // TODO: Populate captures based on the regex groups if any\n    (regex, captures)\n}}\n"###,
+        r#"// Generated regex for unmatched lines in: {}
+use regex::Regex;
+use std::collections::HashMap;
+
+pub fn {}_regex() -> (Regex, HashMap<String, String>) {{
+    let regex = Regex::new(r\#"{}"\#).unwrap();
+    let mut captures = HashMap::new();
+    // TODO: Populate captures based on the regex groups if any
+    (regex, captures)
+}}
+"#,
         file_path.display(),
         poem_file_name,
         generated_regex_pattern
     );
 
+    println!("Generating new regex file: {:?}", file_path);
     let mut file = std::fs::File::create(&file_path)?;
     file.write_all(file_content.as_bytes())?;
     crate::write_to_log_file(log_dir, &file_path, &format!("Generated poem-specific grex regex for {:?} at: {:?}\n", file_path, file_path))?;
