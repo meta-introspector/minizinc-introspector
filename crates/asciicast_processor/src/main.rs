@@ -176,9 +176,9 @@ fn main() -> Result<()> {
     let header: Header = serde_json::from_value(header_value.map_err(|e| anyhow!(e))?)?;
 
     gemini_eprintln!("Asciicast Header:");
-    gemini_eprintln!(format!("  Version: {}", header.version));
-    gemini_eprintln!(format!("  Width: {}", header.width));
-    gemini_eprintln!(format!("  Height: {}", header.height));
+    gemini_eprintln!("  Version: :version:", version = header.version);
+    gemini_eprintln!("  Width: :width:", width = header.width);
+    gemini_eprintln!("  Height: :height:", height = header.height);
     if let Some(timestamp) = header.timestamp {
         gemini_eprintln!("  Timestamp: :timestamp:", timestamp = timestamp);
     }
@@ -191,11 +191,11 @@ fn main() -> Result<()> {
 
     let mut event_count = 0;
     let mut cleaned_output_lines: Vec<String> = Vec::new();
-    gemini_eprintln!("\nProcessing events and collecting cleaned output (limited to {{}})...\n", args.limit);
+    gemini_eprintln!("sparklesProcessing events and collecting cleaned output (limited to brickwall)...sparkles", limit = args.limit);
 
     for value in de {
         if event_count >= args.limit {
-            gemini_eprintln!(format!("Reached event processing limit of {}. Stopping.", args.limit));
+            gemini_eprintln!("Reached event processing limit of :limit:. Stopping.", limit = args.limit);
             break;
         }
 
@@ -217,7 +217,7 @@ fn main() -> Result<()> {
             },
         }
     }
-    gemini_eprintln!(format!("Total number of events processed: {}", event_count));
+    gemini_eprintln!("Total number of events processed: :event_count:", event_count = event_count);
 
     let hierarchy = build_hierarchy(cleaned_output_lines, &args.steps);
     
@@ -226,7 +226,7 @@ fn main() -> Result<()> {
     let mut output_file = File::create(&args.rust_output_file)?;
     output_file.write_all(generated_code.to_string().as_bytes())?;
 
-    gemini_eprintln!(format!("Generated Rust code written to: {:?}", args.rust_output_file));
+    gemini_eprintln!("Generated Rust code written to: :file_path:", file_path = format!("{:?}", args.rust_output_file));
 
     Ok(())
 }

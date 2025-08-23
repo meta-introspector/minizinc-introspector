@@ -15,8 +15,7 @@ impl Parse for Input {
         let named_args = if input.peek(Token![,]) {
             input.parse::<Token![,]>()?; // Consume the comma
             let args = Punctuated::parse_terminated(input)?;
-            // Debug print for named_args
-            eprintln!("DEBUG: Parsed named_args: {:?}", args);
+            
             Some(args)
         } else {
             // Debug print when no named_args
