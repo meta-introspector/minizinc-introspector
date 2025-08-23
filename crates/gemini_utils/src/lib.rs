@@ -20,34 +20,51 @@ use token_generator::generate_eprintln_tokens::generate_eprintln_tokens; // Add 
 
 #[proc_macro]
 pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
-    let input_args = parse_macro_input!(input as CommaSeparatedExprs).exprs;
+    let input = parse_macro_input!(input as Input);
 
-    if input_args.is_empty() {
-        return quote! { eprintln!(); }.into();
+    let mut format_string_value = input.format_string.value();
+    let format_string_span = input.format_string.span();
+
+    // Translate named placeholders (:key:) to standard {} placeholders
+    // This is a simplified approach; a more robust solution might use regex
+    let mut translated_format_string = String::new();
+    let mut in_placeholder = false;
+    for c in format_string_value.chars() {
+        if c == ':' && !in_placeholder {
+            in_placeholder = true;
+            translated_format_string.push('{');
+        } else if c == ':' && in_placeholder {
+            in_placeholder = false;
+            translated_format_string.push('}');
+        } else {
+            translated_format_string.push(c);
+        }
     }
 
-    let format_expr = &input_args[0];
-    let other_args = input_args.iter().skip(1).collect::<Vec<_>>();
+    let mut current_segment = String::new();
+    let mut chars = translated_format_string.chars().peekable(); // Use translated_format_string
+    let mut context = string_processor::processing_context::ProcessingContext {
+        chars: &mut chars,
+        current_segment: &mut current_segment,
+        emojis: &EMOJIS,
+    };
+    while let Some(c) = context.chars.next() {
+        process_char_for_emojis(c, &mut context);
+    }
+    let processed_format_string = LitStr::new(&current_segment, format_string_span);
 
-    let (processed_format_string_literal, is_literal_string) = if let Expr::Lit(ExprLit { lit: syn::Lit::Str(s), .. }) = format_expr {
-        let original_string = s.value();
+    let named_args = input.named_args;
 
-        let mut current_segment = String::new();
-
-        let mut chars = original_string.chars().peekable();
-        let mut context = string_processor::processing_context::ProcessingContext {
-            chars: &mut chars,
-            current_segment: &mut current_segment,
-            emojis: &EMOJIS,
-        };
-        while let Some(c) = context.chars.next() {
-            process_char_for_emojis(c, &mut context);
+    // Generate the eprintln! call
+    let expanded = if let Some(args) = named_args {
+        quote! {
+            eprintln!(#processed_format_string, #args);
         }
-
-        (LitStr::new(&current_segment, s.span()), true) // Create LitStr from current_segment
     } else {
-        (LitStr::new(&format_expr.to_token_stream().to_string(), proc_macro2::Span::call_site()), false) // Convert Expr to LitStr
+        quote! {
+            eprintln!(#processed_format_string);
+        }
     };
 
-    generate_eprintln_tokens(processed_format_string_literal, is_literal_string, other_args).into()
+    expanded.into()
 }

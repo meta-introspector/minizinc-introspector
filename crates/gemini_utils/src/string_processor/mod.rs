@@ -35,6 +35,19 @@ pub fn process_char_for_emojis(
     c: char,
     context: &mut ProcessingContext,
 ) {
+    // Try to match multi-character emojis/keywords first
+    for (keyword, replacement) in context.emojis.iter() {
+        if keyword.len() > 1 && context.chars.as_str().starts_with(keyword) {
+            // Consume the characters for the keyword
+            for _ in 0..keyword.len() {
+                context.chars.next();
+            }
+            context.current_segment.push_str(replacement);
+            return; // Keyword matched and processed, return
+        }
+    }
+
+    // If no multi-character keyword matched, process single characters
     match c {
         BACKSLASH => {
             char_handlers::handle_backslash::handle_backslash_char(c, context);

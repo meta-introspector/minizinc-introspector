@@ -175,10 +175,10 @@ fn main() -> Result<()> {
     let header_value = de.next().ok_or_else(|| anyhow!("Missing header"))?;
     let header: Header = serde_json::from_value(header_value.map_err(|e| anyhow!(e))?)?;
 
-    gemini_eprintln!(format!("Asciicast Header:"));
-    gemini_eprintln!(format!("  Version: {}", header.version));
-    gemini_eprintln!(format!("  Width: {}", header.width));
-    gemini_eprintln!(format!("  Height: {}", header.height));
+    gemini_eprintln!("Asciicast Header:");
+    gemini_eprintln!("  Version: :version:", version = header.version);
+    gemini_eprintln!("  Width: :width:", width = header.width);
+    gemini_eprintln!("  Height: :height:", height = header.height);
     if let Some(timestamp) = header.timestamp {
         gemini_eprintln!(format!("  Timestamp: {}", timestamp));
     }
