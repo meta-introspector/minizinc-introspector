@@ -4,6 +4,9 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+walkdir = "2.3"
+wait-timeout = "0.2"
+
 #inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm20-1"] }
 
 #clang = { path = "../../vendor/clang-rs" }
