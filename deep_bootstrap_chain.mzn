@@ -43,11 +43,11 @@ solve maximize sum(c in BOOT_COMPONENT)(if is_verified[c] then 1 else 0 endif);
 output [
     "Verification Status of Components:\n",
     "----------------------------------\n"
-] +
+] ++
 [
     show(c) ++ ": " ++ show(is_verified[c]) ++ "\n"
     | c in BOOT_COMPONENT
-] +
+] ++ 
 [
     "----------------------------------\n",
     "Total Verified Components: ", show(sum(c in BOOT_COMPONENT)(if is_verified[c] then 1 else 0 endif)), "\n"

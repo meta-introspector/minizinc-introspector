@@ -6,13 +6,10 @@
 enum ThoughtType = {Observation, Plan, Action, Reflection, Error, Goal};
 
 % Represents a single thought
-record Thought = {
-    string timestamp,
-    ThoughtType type,
-    string content, % Natural language description of the thought
-    string related_project_concept, % e.g., "OODA loop", "Code Oxidation"
-    int godel_number % Simulated Gödel number for the related project concept
-};
+type Thought = record(
+    id: int,
+    value: int
+);
 
 % --- Narrative Stages (Hero's Journey) ---
 enum NarrativeStage = {
@@ -30,17 +27,17 @@ enum NarrativeStage = {
 };
 
 % Represents the Gemini agent
-record GeminiAgent = {
-    string name,
-    string purpose,
-    array[int] of string available_tools,
-    array[int] of Thought thoughts_log, % A log of Gemini's thoughts
-    NarrativeStage current_narrative_stage % Current stage of the Hero's Journey
-};
+type GeminiAgent = record(
+    name: string,
+    purpose: string,
+    available_tools: array[int] of string,
+    thoughts_log: array[int] of Thought, % A log of Gemini's thoughts
+    current_narrative_stage: NarrativeStage % Current stage of the Hero's Journey
+);
 
 % --- Simulated Project Concepts and their Gödel Numbers ---
 % In a real system, these would come from the "numerical content model"
-array[int] of string project_concepts = [
+array[int] of string: project_concepts = [
     "OODA loop",
     "Code Oxidation",
     "MiniZinc Model",
@@ -71,7 +68,7 @@ include "gemini_thoughts_data.dzn";
 array[int] of Thought: gemini_thoughts;
 
 % --- Gemini Agent Instance ---
-GeminiAgent gemini_instance = (
+GeminiAgent: gemini_instance = (
     name: "Gemini CLI Agent",
     purpose: "Assist in software engineering tasks, evolve codebase, and introspect project.",
     available_tools: ["read_file", "write_file", "run_shell_command", "glob", "replace", "search_file_content", "web_fetch", "read_many_files", "save_memory", "google_web_search"],
