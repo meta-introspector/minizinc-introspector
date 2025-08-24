@@ -6,6 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-git2 = "0.18.1"
+git2 = { workspace = true }
 anyhow = "1.0.82"
 walkdir = "2.5.0"

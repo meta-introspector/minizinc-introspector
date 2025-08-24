@@ -35,7 +35,8 @@ members = [
     "crates/poem_macro_impl",
     "crates/poem_macro_impl_test", "crates/poem_macro_test_crate", "crates/poem_traits", "crates/poem_archeologist",
     #"crates/poem_fixer_orchestrator",
-    "regex_extractor", "crates/asciicast_processor", "crates/gemini_utils", "crates/gemini_utils_test", "crates/kantspel_macros",
+    "regex_extractor", "crates/asciicast_processor", "crates/gemini_utils", "crates/gemini_utils_test", "crates/kantspel_macros", "git_diff_analyzer",
+    "crates/regex_file_analyzer",
 ]
 
 [patch.crates-io]
@@ -45,6 +46,7 @@ arrow-arith = { path = "vendor/arrow-arith-patched" }
 [workspace.dependencies]
 arrow = "56.0.0"
 parquet = "56.0.0"
+git2 = "0.19"
 
 # --- Generated Documentation References ---
 # This section provides links to key documentation generated during
