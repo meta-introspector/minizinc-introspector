@@ -109,7 +109,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
         }
     }
 
-    let final_segment = current_segment.to_string(); // Take ownership of the string
+    let final_segment = std::mem::take(context.current_segment); // Take ownership of the string
     let processed_format_string = LitStr::new(&final_segment, format_string_literal.span());
 
     // --- NEW ARGUMENT MAPPING LOGIC ---

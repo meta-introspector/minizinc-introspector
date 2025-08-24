@@ -200,7 +200,7 @@ fn main() -> Result<()> {
     if let Some(tail_count) = args.tail {
         gemini_eprintln!("Collecting all events to process last :tail_count: events.", tail_count = tail_count);
         for value in de {
-            gemini_eprintln!("DEBUG: Processing value: :value_str:", value_str = value.to_string());
+            gemini_eprintln!("DEBUG: Processing value: :value_str:", value_str = format!("{:?}", value));
             let entry: Entry = serde_json::from_value(value.map_err(|e| anyhow!(e))?)?;
             all_events.push(entry);
         }
@@ -209,7 +209,7 @@ fn main() -> Result<()> {
         // Existing limit logic
         gemini_eprintln!("sparklesProcessing events and collecting cleaned output (limited to brickwall)...sparkles", limit = args.limit);
         for value in de {
-            gemini_eprintln!("DEBUG: Processing value: :value_str:", value_str = value.to_string());
+            gemini_eprintln!("DEBUG: Processing value: :value_str:", value_str = format!("{:?}", value));
             if event_count >= args.limit {
                 gemini_eprintln!("Reached event processing limit of :limit:. Stopping.", limit = args.limit);
                 break;

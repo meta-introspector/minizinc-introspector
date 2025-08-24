@@ -203,6 +203,18 @@ This project provides several utility scripts to assist with indexing the codeba
     ```
     For more detailed profiling, you can run the `file_content_analyzer` directly with the `--profile` flag (e.g., `./target/debug/file_content_analyzer --mode build_hierarchical_index --profile`). You will need a Puffin viewer to visualize the generated profiling data.
 
+### Asciicast Processing
+
+The `asciicast_processor` tool is used to parse asciinema recordings and generate Rust code from them. This is a crucial part of the project's "meme compilation" workflow, allowing for the static typing and compilation of patterns derived from terminal interactions.
+
+*   **Usage:**
+    ```bash
+    target/debug/asciicast_processor --rust-output-file <OUTPUT_FILE.rs> <INPUT_FILE.cast>
+    ```
+    Replace `<OUTPUT_FILE.rs>` with the desired path for the generated Rust code and `<INPUT_FILE.cast>` with the path to the asciinema recording.
+
+For details on recent build fixes and execution, refer to the Change Request: [Asciicast Processor Build Fix and Execution](docs/crqs/asciicast_processor_build_fix_crq_20250823.md).
+
 ### Gemini CLI Logging (`gemini_eprintln!`) 
 
 The `gemini_utils::gemini_eprintln!` macro is the preferred method for logging and communication within this project. It adheres to strict `kantspel` principles, automatically translating specific keywords and emojis into standard Rust formatting characters (`\n`, `{}`). This design ensures LLM readability and structured output.
@@ -239,6 +251,7 @@ For more detailed information and advanced usage, please refer to the Standard O
 
 
 ## Contributing
+
 
 Contributions that align with the project's vision and adhere to its unique development philosophy are welcome. Please familiarize yourself with the documentation in the `docs/` directory before contributing.
 
