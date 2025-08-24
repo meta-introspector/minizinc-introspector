@@ -15,6 +15,7 @@ use std::path::PathBuf;
 use quote::quote;
 use syn::{Ident, LitStr};
 use proc_macro2::TokenStream;
+use regex::Regex;
 
 use gemini_utils::gemini_eprintln;
 
@@ -22,26 +23,44 @@ use gemini_utils::gemini_eprintln;
 #[allow(unused_imports)]
 use poem_macros::poem_function;
 
+use clap::Subcommand;
+
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 struct Args {
     /// Path to the asciicast input file
     input_file: PathBuf, // Added input file argument
-    /// Limit the number of events to process from the beginning
-    #[arg(long, default_value_t = 10, conflicts_with = "tail")]
-    limit: usize,
-    /// Process only the last N events
-    #[arg(long, conflicts_with = "limit")]
-    tail: Option<usize>,
-    /// Steps for hierarchical grouping (e.g., --steps 5,3,1)
-    #[arg(long, value_delimiter = ',', default_values_t = [5, 3, 1])]
-    steps: Vec<usize>,
-    /// Output file to save the generated Rust code
-    #[arg(long)]
-    rust_output_file: PathBuf,
-    /// Enable ASCII naming for Unicode characters and ANSI sequences
-    #[arg(long)]
-    ascii_names: bool,
+
+    #[command(subcommand)]
+    command: Commands,
+}
+
+#[derive(Subcommand, Debug)]
+enum Commands {
+    /// Generates Rust code from an asciicast file
+    Generate {
+        /// Limit the number of events to process from the beginning
+        #[arg(long, default_value_t = 10, conflicts_with = "tail")]
+        limit: usize,
+        /// Process only the last N events
+        #[arg(long, conflicts_with = "limit")]
+        tail: Option<usize>,
+        /// Steps for hierarchical grouping (e.g., --steps 5,3,1)
+        #[arg(long, value_delimiter = ',', default_values_t = [5, 3, 1])]
+        steps: Vec<usize>,
+        /// Output file to save the generated Rust code
+        #[arg(long)]
+        rust_output_file: PathBuf,
+        /// Enable ASCII naming for Unicode characters and ANSI sequences
+        #[arg(long)]
+        ascii_names: bool,
+    },
+    /// Analyzes an asciicast file using previously generated Rust code
+    Analyze {
+        /// Path to the previously generated Rust code file (.rs)
+        #[arg(long)]
+        generated_rust_file: PathBuf,
+    },
 }
 
 // This struct is no longer directly serialized/deserialized, but its structure is used to generate code
@@ -167,6 +186,36 @@ fn generate_poem_functions(node: &RegexHierarchyNode, parent_name: &str, level: 
     functions
 }
 
+fn extract_patterns_from_rust_file(file_path: &PathBuf) -> Result<Vec<String>> {
+    let content = std::fs::read_to_string(file_path)?;
+    let syntax_tree = syn::parse_file(&content)?;
+
+    let mut patterns = Vec::new();
+
+    for item in syntax_tree.items {
+        if let syn::Item::Fn(item_fn) = item {
+            for attr in item_fn.attrs {
+                if attr.path().is_ident("poem_function") {
+                    if let Some(meta_list) = attr.meta.as_list() { // Use as_list() to get MetaList
+                        for nested_meta in meta_list.nested.iter() { // Iterate over nested
+                            if let syn::Meta::NameValue(name_value) = nested_meta { // Directly match NameValue
+                                if name_value.path.is_ident("pattern") {
+                                    if let syn::Expr::Lit(expr_lit) = name_value.value {
+                                        if let syn::Lit::Str(lit_str) = expr_lit.lit {
+                                            patterns.push(lit_str.value());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    Ok(patterns)
+}
+
 fn main() -> Result<()> {
     let args = Args::parse();
 
@@ -207,11 +256,115 @@ fn main() -> Result<()> {
         event_count = all_events.len();
     } else {
         // Existing limit logic
-        gemini_eprintln!("sparklesProcessing events and collecting cleaned output (limited to brickwall)...sparkles", limit = args.limit);
+        fn main() -> Result<()> {
+    let args = Args::parse();
+
+    let file = File::open(&args.input_file)?;
+    let reader = BufReader::new(file);
+
+    let mut de = Deserializer::from_reader(reader).into_iter::<serde_json::Value>();
+
+    // Read the header
+    let header_value = de.next().ok_or_else(|| anyhow!("Missing header"))?;
+    let header: Header = serde_json::from_value(header_value.map_err(|e| anyhow!(e))?)?;
+
+    gemini_eprintln!("Asciicast Header:");
+    gemini_eprintln!("  Version: :version:", version = header.version);
+    gemini_eprintln!("  Width: :width:", width = header.width);
+    gemini_eprintln!("  Height: :height:", height = header.height);
+    if let Some(timestamp) = header.timestamp {
+        gemini_eprintln!("  Timestamp: :timestamp:", timestamp = timestamp);
+    }
+    if let Some(duration) = header.duration {
+        gemini_eprintln!("  Duration: :duration:", duration = duration);
+    }
+    if let Some(title) = header.title {
+        gemini_eprintln!("  Title: :title:", title = title);
+    }
+
+    let mut all_events: Vec<Entry> = Vec::new();
+    let mut event_count = 0;
+
+    // Collect all events
+    for value in de {
+        let entry: Entry = serde_json::from_value(value.map_err(|e| anyhow!(e))?)?;
+        all_events.push(entry);
+        event_count += 1;
+    }
+
+    match args.command {
+        Commands::Generate { limit, tail, steps, rust_output_file, ascii_names } => {
+            let start_index = if let Some(tail_count) = tail {
+                if tail_count >= all_events.len() {
+                    0 // Process all if tail_count is greater than or equal to total events
+                } else {
+                    all_events.len() - tail_count
+                }
+            } else {
+                0 // Start from beginning for --limit
+            };
+
+            let end_index = if let Some(tail_count) = tail {
+                event_count // Process up to the end of collected events
+            } else {
+                limit.min(event_count) // Process up to limit or collected events
+            };
+
+                        gemini_eprintln!("sparklesProcessing events and collecting cleaned output (limited to brickwall)...sparkles", limit = limit);
+
+            let mut cleaned_output_lines: Vec<String> = Vec::new();
+            for i in start_index..end_index {
+                let entry = &all_events[i];
+                match entry.event_type {
+                    EventType::Output => {
+                        let cleaned_data = String::from_utf8_lossy(&strip(entry.event_data.as_bytes())?).to_string();
+                        let processed_data = if ascii_names {
+                            map_to_ascii_names(&cleaned_data)
+                        } else {
+                            cleaned_data
+                        };
+                        cleaned_output_lines.push(processed_data);
+                    },
+                    EventType::Input => {
+                        // Ignore input events for now
+                    },
+                }
+            }
+
+            gemini_eprintln!("Total number of events processed: :event_count:", event_count = event_count);
+
+            let hierarchy = build_hierarchy(cleaned_output_lines, &steps);
+
+            let generated_code = generate_poem_functions(&hierarchy, "root", 0);
+
+            let mut output_file = File::create(&rust_output_file)?;
+            output_file.write_all(generated_code.to_string().as_bytes())?;
+
+            gemini_eprintln!("Generated Rust code written to: :file_path:", file_path = format!("{:?}", rust_output_file));
+        },
+        Commands::Analyze { generated_rust_file } => {
+            gemini_eprintln!("Entering Analyze mode with generated Rust file: :file_path:", file_path = format!("{:?}", generated_rust_file));
+
+            let patterns = extract_patterns_from_rust_file(&generated_rust_file)?;
+            gemini_eprintln!("Extracted :count: patterns from :file_path:", count = patterns.len(), file_path = format!("{:?}", generated_rust_file));
+            for pattern in patterns {
+                gemini_eprintln!("  - :pattern:", pattern = pattern);
+            }
+            // TODO: Implement analysis logic here
+            // 2. Match against all_events output lines
+            // 3. Calculate match percentage
+            // 4. Identify unmatched lines
+            // 5. Perform bag-of-words and cosine similarity on unmatched lines
+            // 6. Generate new regexes for unmatched lines
+        },
+    }
+
+    Ok(())
+}
         for value in de {
             gemini_eprintln!("DEBUG: Processing value: :value_str:", value_str = format!("{:?}", value));
             if event_count >= args.limit {
-                gemini_eprintln!("Reached event processing limit of :limit:. Stopping.", limit = args.limit);
+                gemini_eprintln!("Reached event processing limit of :limit:. Stopping.", limit = limit);
                 break;
             }
             let entry: Entry = serde_json::from_value(value.map_err(|e| anyhow!(e))?)?;
