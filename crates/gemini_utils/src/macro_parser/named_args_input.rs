@@ -1,6 +1,7 @@
 use syn::{parse::{Parse, ParseStream}, LitStr, Token, ExprAssign, punctuated::Punctuated};
 //use quote::ToTokens;
 
+#[allow(dead_code)]
 pub struct Input {
     pub format_string: LitStr,
     pub named_args: Option<Punctuated<ExprAssign, Token![,]>>,

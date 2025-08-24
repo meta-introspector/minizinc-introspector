@@ -53,8 +53,10 @@ pub enum Commands {
         occurrences: Option<usize>,
     },
     /// Counts raw matches in the input file
+    #[command(name = "count-raw")]
     CountRaw {
         /// Regex pattern to count raw matches
         #[arg(long)]
         regex: String,
-    },
+    }
+}

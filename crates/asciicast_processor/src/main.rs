@@ -19,14 +19,10 @@ use clap::Parser;
 use cli::{Args, Commands};
 use pattern_generator::{build_hierarchy, generate_poem_functions, map_to_ascii_names};
 use rust_parser::extract_patterns_from_rust_file;
-use raw_parser::count_and_print_raw_matches; // New use statement
+use raw_parser::check_raw_matches; // New use statement
 
 fn main() -> Result<()> {
     let args = Args::parse();
-
-    if let Some(raw_regex) = &args.count_raw_matches {
-        count_and_print_raw_matches(&args.input_file, raw_regex)?;
-    }
 
     let file = File::open(&args.input_file)?;
     let reader = BufReader::new(file);
@@ -131,6 +127,10 @@ fn main() -> Result<()> {
         },
         Commands::Filter { limit, regex, context, occurrences } => {
             let filter_regex = Regex::new(&regex)?;
+
+            // Check if regex is present in raw input
+            let raw_match_found = check_raw_matches(&args.input_file, &regex)?;
+
             let mut matched_lines_with_context: Vec<String> = Vec::new();
             let mut last_match_index: Option<usize> = None;
             let mut matches_found = 0; // Track number of matches
@@ -158,15 +158,17 @@ fn main() -> Result<()> {
                 processed_events_count += 1;
             }
 
+            let mut processed_match_found = false;
             for (i, line) in cleaned_output_lines.iter().enumerate() {
                 eprintln!("DEBUG: Processing line {}: {}", i, line); // Log line number and content
-                if let Some(max_occurrences) = occurrences {
-                    if matches_found >= max_occurrences {
-                        break; // Stop if occurrences limit is reached
-                    }
-                }
-
                 if filter_regex.is_match(line) {
+                    processed_match_found = true;
+                    if let Some(max_occurrences) = occurrences {
+                        if matches_found >= max_occurrences {
+                            break; // Stop if occurrences limit is reached
+                        }
+                    }
+
                     eprintln!("DEBUG: Regex matched line {}: {}", i, line); // Log regex match
                     matches_found += 1;
 
@@ -188,9 +190,35 @@ fn main() -> Result<()> {
                 }
             }
 
+            // Panic logic
+            if raw_match_found && !processed_match_found {
+                panic!("String found in raw input but not in processed output!");
+            }
+
             for line in matched_lines_with_context {
                 println!("{}", line);
             }
+            return Ok(())
+        },
+        Commands::CountRaw { regex } => {
+            let file = File::open(&args.input_file)?;
+            let reader = BufReader::new(file);
+            let filter_regex = Regex::new(&regex)?;
+
+            let mut matches_found = 0;
+
+            gemini_eprintln!("Searching raw input for pattern: ':regex::newline:", regex = regex);
+
+            for (i, line_result) in reader.lines().enumerate() {
+                let line = line_result?;
+                if filter_regex.is_match(&line) {
+                    matches_found += 1;
+                    gemini_eprintln!("RAW MATCH (Line :line_num:): :line:", line_num = i + 1, line = line);
+                }
+            }
+
+            gemini_eprintln!("sparklesTotal raw matches found: :matches_found:", matches_found = matches_found);
+
             return Ok(())
         },
     }

@@ -212,8 +212,20 @@ The macro accepts a format string, which can contain special keywords or emojis,
 
 For more detailed information and advanced usage, please refer to the Standard Operating Procedure: [Strict `gemini_eprintln!` Usage and `kantspel` Principles](docs/sops/gemini_eprintln_kantspel_sop.md).
 
+## Kantspel Implementation Details
+
+The `libminizinc` project employs a sophisticated "kantspel" system to manage problematic characters, particularly `\` and `{}`. This system is primarily implemented through the `gemini_utils` and `kantspel_macros` crates, working at different levels of abstraction:
+
+*   **`gemini_utils` (via `gemini_eprintln!`)**: Operates at the *macro call site* for logging and communication. It provides a user-friendly, emoji/keyword-based syntax that is translated into standard Rust format strings. This simplifies the developer's interaction with problematic characters by abstracting away the need for manual escaping in `eprintln!` calls. It ensures that the *output* of the logging is semantically correct and consistent with "kantspel" principles.
+
+*   **`kantspel_macros`**: This crate provides two key procedural macros:
+    *   **`kantspel_regex!`**: Operates on *regex string literals*. It allows developers to define regex patterns using a more readable, "kantspel"-compliant syntax (emojis, aliases) which is then translated into standard regex syntax, handling necessary escaping implicitly. This ensures that regex patterns are consistently and correctly formed according to "kantspel" principles.
+    *   **`kantspel_transform!`**: Operates at the *AST level* on *any string literal* within annotated code. It directly modifies the string literals in the Rust code to replace `\` and `{}` with their `kantspel_lib` constant representations. This is the deepest level of "kantspel" enforcement, ensuring that the *source code itself* adheres to the principle of explicit and consistent representation of problematic characters, preventing misinterpretation by the Rust compiler or other tools.
+
+Together, these crates form a comprehensive system for "kantspel" enforcement, providing multiple layers of abstraction, ensuring consistency, promoting readability, and contributing to the project's goal of formal verification and trustworthiness.
 
 ## Contributing
+
 
 
 Contributions that align with the project's vision and adhere to its unique development philosophy are welcome. Please familiarize yourself with the documentation in the `docs/` directory before contributing.
