@@ -35,7 +35,7 @@ members = [
     "crates/poem_macro_impl",
     "crates/poem_macro_impl_test", "crates/poem_macro_test_crate", "crates/poem_traits", "crates/poem_archeologist",
     #"crates/poem_fixer_orchestrator",
-    "regex_extractor", #"crates/asciicast_processor", 
+    "regex_extractor", "crates/asciicast_processor", 
     "crates/gemini_utils", "crates/gemini_utils_test", "crates/kantspel_macros", #    "git_diff_analyzer",
     "crates/regex_file_analyzer",
 ]

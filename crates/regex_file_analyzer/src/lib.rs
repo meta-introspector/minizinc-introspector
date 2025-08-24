@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 use std::path::Path;
 use serde::{Deserialize, Serialize};
-use anyhow::{Result, anyhow};
+//use anyhow::{Result, anyhow};
 
 // --- Rust representation of MiniZinc Enums and Records ---
 

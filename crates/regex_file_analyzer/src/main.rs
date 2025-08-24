@@ -15,7 +15,7 @@ use regex_file_analyzer::{
 
 fn main() -> Result<()> {
     let generated_regexes_path = "/data/data/com.termux/files/home/storage/github/libminizinc/generated_path_regexes.json";
-    let file_analysis_summary_path = "/data/data/com.termux/files/home/storage/github/libminizinc/.file_analysis_summary_index.txt";
+    let _file_analysis_summary_path = "/data/data/com.termux/files/home/storage/github/libminizinc/.file_analysis_summary_index.txt";
     let output_dzn_path = "/data/data/com.termux/files/home/storage/github/libminizinc/project_model_data.dzn";
 
     // 1. Read and parse the generated regexes JSON file

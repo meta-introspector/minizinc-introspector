@@ -151,7 +151,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
     for (i, placeholder_type) in context.placeholders.iter().enumerate() {
         if final_args[i].is_none() {
             match placeholder_type {
-                string_processor::PlaceholderType::Positional(is_debug) => {
+                string_processor::PlaceholderType::Positional(_is_debug) => {
                     if let Some((ident, expr)) = unclaimed_named_arg_iter.next() {
                         final_args[i] = Some(expr);
                         used_named_args.insert(ident.to_string(), true);

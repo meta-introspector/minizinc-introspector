@@ -50,7 +50,7 @@ impl VisitMut for KantspelTransformer {
     }
 }
 
-pub fn kantspel_transform_impl(attr: TokenStream, item: TokenStream) -> TokenStream {
+pub fn kantspel_transform_impl(_attr: TokenStream, item: TokenStream) -> TokenStream {
     let mut ast = parse_macro_input!(item as syn::File); // Parse the entire file
     let mut transformer = KantspelTransformer;
     transformer.visit_file_mut(&mut ast); // Visit and transform the file's AST
