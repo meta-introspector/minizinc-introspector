@@ -28,3 +28,6 @@
 [submodule "vendor/libjq"]
 	path = vendor/libjq
 	url = https://github.com/jqlang/jq.git
+[submodule "vendor/act"]
+	path = vendor/act
+	url = https://github.com/nektos/act
