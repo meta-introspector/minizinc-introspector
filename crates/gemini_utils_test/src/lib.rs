@@ -14,7 +14,7 @@ pub fn log_examples() {
 
     // Message with special characters (emojis/keywords)
     let limit = 100;
-    gemini_eprintln!("sparklesProcessing events (limited to ::brickwall::)...::newline::", limit = limit);
+    gemini_eprintln!("sparklesProcessing events (limited to :limit:)...::newline::", limit = limit);
 
     // Message with debug formatting (using the workaround)
     let output_file = std::path::PathBuf::from("/tmp/output.txt");

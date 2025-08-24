@@ -1,6 +1,6 @@
 use asciicast::{Entry, EventType, Header};
 use std::fs::File;
-use std::io::{BufReader, Write};
+use std::io::{BufReader, Write, BufRead};
 use serde_json::Deserializer;
 use anyhow::{Result, anyhow};
 use strip_ansi_escapes::strip;

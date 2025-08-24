@@ -73,10 +73,43 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
     };
 
     while let Some(c) = context.chars.next() {
-        // Check for named argument placeholder like :key:
-        if c == ':' {
+        // Check for ::keyword:: patterns
+        if c == ':' && context.chars.peek() == Some(&':') {
+            context.chars.next(); // Consume the second ':'
+            let mut keyword_name = String::new();
+            while let Some(&next_char) = context.chars.peek() {
+                if next_char == ':' {
+                    break; // End of keyword
+                }
+                keyword_name.push(next_char);
+                context.chars.next();
+            }
+            if context.chars.peek() == Some(&':') {
+                context.chars.next(); // Consume the final ':'
+                if let Some(replacement) = context.emojis.get(keyword_name.as_str()) {
+                    context.current_segment.push_str(replacement);
+                    // Handle placeholders for ::brick::, ::crane::, etc.
+                    if replacement == &"{}" { // For ::brick::
+                        context.placeholders.push(string_processor::PlaceholderType::Positional(false));
+                    } else if replacement == &"{}:?" { // For 🔍/inspect
+                        context.placeholders.push(string_processor::PlaceholderType::Positional(true));
+                    } else if replacement == &"{{}}" { // For ::crane::
+                        // No placeholder needed for literal {{}}
+                    }
+                } else {
+                    // If keyword not found, treat as literal ::keyword::
+                    context.current_segment.push_str("::");
+                    context.current_segment.push_str(&keyword_name);
+                    context.current_segment.push(':');
+                }
+            } else {
+                // Not a ::keyword:: pattern, treat as literal ::
+                context.current_segment.push_str("::");
+                context.current_segment.push_str(&keyword_name);
+            }
+        } else if c == ':' { // Existing :key: placeholder logic
             let mut placeholder_name = String::new();
-            let mut temp_chars = context.chars.clone(); // Clone to peek ahead without consuming
+            let mut temp_chars = context.chars.clone();
             let mut peeked_chars_count = 0;
 
             while let Some(&next_char) = temp_chars.peek() {
@@ -90,22 +123,14 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
             }
 
             if temp_chars.peek() == Some(&':') {
-                // It's a valid :key: placeholder
-                context.chars.nth(peeked_chars_count); // Consume the chars for the placeholder name
-                context.chars.next(); // Consume the closing ':'
-                context.current_segment.push_str("{}"); // Replace :key: with {}
-                context.placeholders.push(string_processor::PlaceholderType::Named(placeholder_name)); // Store named placeholder
+                context.chars.nth(peeked_chars_count); 
+                context.chars.next(); 
+                context.current_segment.push_str("{}"); 
+                context.placeholders.push(string_processor::PlaceholderType::Named(placeholder_name)); 
             } else {
-                // Not a named argument placeholder, treat as literal ':' and process normally
                 context.current_segment.push(':');
-                // Re-process the characters that were part of the potential placeholder name
-                // This is a bit tricky, as process_char_for_emojis expects to consume from context.chars
-                // For simplicity, let's just push them back as literals for now.
                 context.current_segment.push_str(&placeholder_name);
             }
-        } else {
-            // Process other characters normally
-            process_char_for_emojis(c, &mut context);
         }
     }
 
