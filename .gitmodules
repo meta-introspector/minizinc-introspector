@@ -31,3 +31,15 @@
 [submodule "vendor/act"]
 	path = vendor/act
 	url = https://github.com/nektos/act
+[submodule "vendor/clang-rs"]
+	path = vendor/clang-rs
+	url = https://github.com/KyleMayes/clang-rs
+[submodule "vendor/clang-sys"]
+	path = vendor/clang-sys
+	url = https://github.com/KyleMayes/clang-sys
+[submodule "vendor/lexgen"]
+	path = vendor/lexgen
+	url = https://github.com/osa1/lexgen
+[submodule "vendor/rust-emojicons"]
+	path = vendor/rust-emojicons
+	url = https://github.com/jiri/rust-emojicons
