@@ -169,12 +169,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b0674a1ddeecb70197781e945de4b3b8ffb61fa939a5597bcf48503737663100"
 
 [[package]]
-name = "arrayvec"
-version = "0.5.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
-
-[[package]]
 name = "arrow"
 version = "53.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -594,37 +588,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "asciicast"
-version = "0.2.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4521e5a844fab4639ec32b21de3a2639f7c2783ba6bb9daead2672b6a298ed7b"
-dependencies = [
- "chrono",
- "serde",
- "serde_derive",
- "serde_json",
-]
-
-[[package]]
-name = "asciicast_processor"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "asciicast",
- "clap",
- "gemini_utils",
- "grex",
- "poem_macro_impl",
- "poem_macros",
- "proc-macro2",
- "quote",
- "serde_json",
- "strip-ansi-escapes",
- "syn",
- "unicode-segmentation",
-]
-
-[[package]]
 name = "assert_cmd"
 version = "2.0.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -838,7 +801,6 @@ dependencies = [
  "iana-time-zone",
  "js-sys",
  "num-traits",
- "serde",
  "wasm-bindgen",
  "windows-link",
 ]
@@ -1623,20 +1585,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "git_diff_analyzer"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "clap",
- "git2",
- "regex 1.11.1",
- "serde",
- "serde_json",
- "stop-words",
- "walkdir",
-]
-
-[[package]]
 name = "glob"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1675,6 +1623,7 @@ dependencies = [
  "criterion",
  "indoc",
  "itertools 0.13.0",
+ "kantspel_macros",
  "lazy_static",
  "ndarray",
  "petgraph",
@@ -1727,7 +1676,6 @@ dependencies = [
  "anyhow",
  "arrow 53.4.0",
  "chrono",
- "criterion",
  "parquet 53.4.0",
  "rand 0.8.5",
  "serde",
@@ -2001,6 +1949,7 @@ dependencies = [
  "anyhow",
  "gemini_utils",
  "kantspel_lib",
+ "lazy_static",
  "poem_macros",
  "poem_traits",
  "proc-macro2",
@@ -2292,6 +2241,14 @@ name = "minizinc_ffi"
 version = "0.1.0"
 dependencies = [
  "lazy_static",
+]
+
+[[package]]
+name = "minizinc_introspector"
+version = "0.1.0"
+dependencies = [
+ "wait-timeout",
+ "walkdir",
 ]
 
 [[package]]
@@ -2912,27 +2869,6 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "serde",
-]
-
-[[package]]
-name = "poem_yaml_fixer"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "clap",
- "grex",
- "lazy_static",
- "linkme",
- "once_cell",
- "poem_macros",
- "poem_traits",
- "regex 1.11.1",
- "serde",
- "serde_json",
- "serde_yaml",
- "tempfile",
- "toml 0.5.11",
- "walkdir",
 ]
 
 [[package]]
@@ -3775,24 +3711,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
-name = "stop-words"
-version = "0.8.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3c6a86be9f7fa4559b7339669e72026eb437f5e9c5a85c207fe1033079033a17"
-dependencies = [
- "serde_json",
-]
-
-[[package]]
-name = "strip-ansi-escapes"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "011cbb39cf7c1f62871aea3cc46e5817b0937b49e9447370c93cacbe93a766d8"
-dependencies = [
- "vte",
-]
-
-[[package]]
 name = "strsim"
 version = "0.11.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4305,27 +4223,6 @@ name = "version_check"
 version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0b928f33d975fc6ad9f86c8f283853ad26bdd5b10b7f1542aa2fa15e2289105a"
-
-[[package]]
-name = "vte"
-version = "0.10.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6cbce692ab4ca2f1f3047fcf732430249c0e971bfdd2b234cf2c47ad93af5983"
-dependencies = [
- "arrayvec",
- "utf8parse",
- "vte_generate_state_changes",
-]
-
-[[package]]
-name = "vte_generate_state_changes"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2e369bee1b05d510a7b4ed645f5faa90619e05437111783ea5848f28d97d3c2e"
-dependencies = [
- "proc-macro2",
- "quote",
-]
 
 [[package]]
 name = "wait-timeout"

@@ -16,3 +16,4 @@ syn = { version = "2.0", features = ["full", "visit-mut"] }
 quote = "1.0"
 proc-macro2 = "1.0"
 kantspel_lib = { path = "../../crates/kantspel_lib" }
+lazy_static = "1.4.0"

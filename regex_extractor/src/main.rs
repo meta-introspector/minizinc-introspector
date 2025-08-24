@@ -35,7 +35,7 @@ fn main() -> anyhow::Result<()> {
     // Regex to find any string literal (content within "..." or r#"..."#)
     let string_literal_regex = Regex::new(r#"(?:r#"(.*?)"|"(.*?)")"#).unwrap();
     // Regex to check if a string contains common regex metacharacters
-    let metachar_check_regex = Regex::new(r".*[.*+?|(){}\[\]^$\\]+.*\").unwrap();
+    let metachar_check_regex = Regex::new(r".*[.*+?|(){}\[\]^$\\]+.*\\" ).unwrap();
 
     for entry in WalkDir::new(&poems_dir).into_iter().filter_map(|e| e.ok()) {
         let path = entry.path();

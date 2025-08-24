@@ -6,7 +6,7 @@ members = [
     "crates/zos-bootstrap",
     "crates/constant_analyzer",
     "crates/constant_analyzer_macros",
-#    "crates/minizinc_introspector", needs clang
+    "crates/minizinc_introspector", # needs clang
     "crates/minizinc_macro",
     "crates/minizinc_macro_test",
     "doc_organizer",
@@ -22,7 +22,7 @@ members = [
     # "crates/vocabulary_dfa_lib",
     # "crates/dfa_tester",
     "crates/backpack_tool", "crates/code_search_tool",
-    "vendor/hugging-face-dataset-validator-rust",
+    #    "vendor/hugging-face-dataset-validator-rust",
     "temp_parquet_inspector",
     "crates/poem_formatter",
     "crates/meme_site_generator",
@@ -30,12 +30,13 @@ members = [
     "vendor/grex",
     "crates/poem_meme_formatter",
     "crates/regex_generator_tool",
-    "crates/poem_yaml_fixer",
+#    "crates/poem_yaml_fixer",
     "crates/poem_macros",
     "crates/poem_macro_impl",
     "crates/poem_macro_impl_test", "crates/poem_macro_test_crate", "crates/poem_traits", "crates/poem_archeologist",
     #"crates/poem_fixer_orchestrator",
-    "regex_extractor", "crates/asciicast_processor", "crates/gemini_utils", "crates/gemini_utils_test", "crates/kantspel_macros", "git_diff_analyzer",
+    "regex_extractor", #"crates/asciicast_processor", 
+    "crates/gemini_utils", "crates/gemini_utils_test", "crates/kantspel_macros", #    "git_diff_analyzer",
     "crates/regex_file_analyzer",
 ]
 
