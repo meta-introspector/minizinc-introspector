@@ -58,7 +58,8 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
     // New parsing logic for GeminiEprintlnInput
     let parsed_input = parse_macro_input!(input as GeminiEprintlnInput);
     let format_string_literal = parsed_input.format_string;
-    let named_args = parsed_input.args;
+    let named_args = parsed_input.named_args; // No longer mutable here
+    let positional_args = parsed_input.positional_args; // No longer mutable here
 
     let mut current_segment = String::new();
     let format_string_value = format_string_literal.value();
@@ -68,6 +69,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
         chars: &mut chars,
         current_segment: &mut current_segment,
         emojis: &EMOJIS,
+        placeholders: Vec::new(), // Initialize with new PlaceholderType
     };
 
     while let Some(c) = context.chars.next() {
@@ -92,6 +94,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
                 context.chars.nth(peeked_chars_count); // Consume the chars for the placeholder name
                 context.chars.next(); // Consume the closing ':'
                 context.current_segment.push_str("{}"); // Replace :key: with {}
+                context.placeholders.push(string_processor::PlaceholderType::Named(placeholder_name)); // Store named placeholder
             } else {
                 // Not a named argument placeholder, treat as literal ':' and process normally
                 context.current_segment.push(':');
@@ -106,10 +109,85 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
         }
     }
 
-    let processed_format_string = LitStr::new(&current_segment, format_string_literal.span());
+    let final_segment = current_segment.to_string(); // Take ownership of the string
+    let processed_format_string = LitStr::new(&final_segment, format_string_literal.span());
 
-    // Collect the values from named_args
-    let values: Vec<Expr> = named_args.into_iter().map(|(_, expr)| expr).collect();
+    // --- NEW ARGUMENT MAPPING LOGIC ---
+    let mut final_args: Vec<Option<Expr>> = vec![None; context.placeholders.len()];
+    let mut used_named_args: HashMap<String, bool> = HashMap::new();
 
-    generate_eprintln_tokens(processed_format_string, true, values.iter().collect()).into()
+    // First Pass: Fill Explicitly Named Placeholders
+    let mut unclaimed_named_args: Vec<(syn::Ident, syn::Expr)> = Vec::new();
+
+    for (ident, expr) in named_args.into_iter() {
+        let ident_str = ident.to_string();
+        let mut assigned = false;
+
+        for (i, placeholder_type) in context.placeholders.iter().enumerate() {
+            if let string_processor::PlaceholderType::Named(name) = placeholder_type {
+                if name == &ident_str {
+                    if final_args[i].is_none() {
+                        final_args[i] = Some(expr.clone()); // Clone expr as it might be used multiple times
+                        assigned = true;
+                        break;
+                    } else {
+                        return syn::Error::new_spanned(ident.clone(), format!("Named argument '{}' maps to an already filled placeholder.", ident_str)).to_compile_error().into();
+                    }
+                }
+            }
+        }
+
+        if assigned {
+            used_named_args.insert(ident_str, true);
+        } else {
+            unclaimed_named_args.push((ident, expr)); // Push back to be processed as unclaimed
+        }
+    }
+
+    // Second Pass: Fill Positional Placeholders and Unclaimed Named Arguments
+    let mut positional_arg_iter = positional_args.into_iter();
+    let mut unclaimed_named_arg_iter = unclaimed_named_args.into_iter();
+
+    for (i, placeholder_type) in context.placeholders.iter().enumerate() {
+        if final_args[i].is_none() {
+            match placeholder_type {
+                string_processor::PlaceholderType::Positional(is_debug) => {
+                    if let Some((ident, expr)) = unclaimed_named_arg_iter.next() {
+                        final_args[i] = Some(expr);
+                        used_named_args.insert(ident.to_string(), true);
+                    } else if let Some(expr) = positional_arg_iter.next() {
+                        final_args[i] = Some(expr);
+                    } else {
+                        return syn::Error::new_spanned(format_string_literal.clone(), format!("Positional placeholder at index {} is not filled by any argument.", i)).to_compile_error().into();
+                    }
+                },
+                string_processor::PlaceholderType::Named(name) => {
+                    // This case means an explicit named placeholder was not filled in the first pass.
+                    // This should be an error.
+                    return syn::Error::new_spanned(format_string_literal.clone(), format!("Named placeholder '{}' at index {} is not filled by any argument.", name, i)).to_compile_error().into();
+                }
+            }
+        }
+    }
+
+    // Check for unassigned placeholders (should be caught by previous loops, but as a safeguard)
+    for (i, arg_opt) in final_args.iter().enumerate() {
+        if arg_opt.is_none() {
+            return syn::Error::new_spanned(format_string_literal.clone(), format!("Placeholder at index {} is not filled by any argument (safeguard).", i)).to_compile_error().into();
+        }
+    }
+
+    // Check for unused named arguments
+    if let Some((ident, _)) = unclaimed_named_arg_iter.next() {
+        return syn::Error::new_spanned(ident.clone(), format!("Named argument '{}' is not used in the format string.", ident.to_string())).to_compile_error().into();
+    }
+
+    // Check for unused positional arguments
+    if let Some(expr) = positional_arg_iter.next() {
+        return syn::Error::new_spanned(expr.clone(), "Too many positional arguments provided.").to_compile_error().into();
+    }
+
+    let final_exprs: Vec<Expr> = final_args.into_iter().map(|opt_expr| opt_expr.unwrap()).collect();
+
+    generate_eprintln_tokens(processed_format_string, true, final_exprs.iter().collect()).into()
 }

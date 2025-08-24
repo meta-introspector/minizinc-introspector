@@ -3,24 +3,27 @@ use syn::punctuated::Punctuated;
 
 pub struct GeminiEprintlnInput {
     pub format_string: LitStr,
-    pub args: Vec<(Ident, Expr)>, // Store named arguments as (key, value)
+    pub named_args: Vec<(Ident, Expr)>,
+    pub positional_args: Vec<Expr>,
 }
 
 impl Parse for GeminiEprintlnInput {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let format_string: LitStr = input.parse()?;
 
-        let mut args = Vec::new();
+        let mut named_args = Vec::new();
+        let mut positional_args = Vec::new();
+
         if input.peek(Token![,]) {
             input.parse::<Token![,]>()?; // Consume the comma
 
-            let parsed_args = Punctuated::<Expr, Token![,]>::parse_terminated(input)?;
-
-            for expr in parsed_args {
+            while !input.is_empty() {
+                let expr: Expr = input.parse()?;
                 if let Expr::Assign(assign) = expr {
+                    // It's a named argument (key = value)
                     if let Expr::Path(path) = *assign.left {
                         if let Some(ident) = path.path.get_ident() {
-                            args.push((ident.clone(), *assign.right));
+                            named_args.push((ident.clone(), *assign.right));
                         } else {
                             return Err(input.error("Expected identifier on left side of assignment"));
                         }
@@ -28,11 +31,20 @@ impl Parse for GeminiEprintlnInput {
                         return Err(input.error("Expected identifier on left side of assignment"));
                     }
                 } else {
-                    return Err(input.error("Expected named argument in `key = value` format"));
+                    // It's a positional argument
+                    positional_args.push(expr);
+                }
+
+                if input.peek(Token![,]) {
+                    input.parse::<Token![,]>()?; // Consume the comma
                 }
             }
         }
 
-        Ok(GeminiEprintlnInput { format_string, args })
+        Ok(GeminiEprintlnInput {
+            format_string,
+            named_args,
+            positional_args,
+        })
     }
 }

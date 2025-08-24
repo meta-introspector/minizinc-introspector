@@ -1,3 +1,8 @@
+pub enum PlaceholderType {
+    Named(String), // For :key: placeholders
+    Positional(bool), // For {} or {:?} (bool indicates if it's debug format)
+}
+
 //use proc_macro2::TokenStream as ProcMacro2TokenStream;
 //use std::iter::Peekable;
 //use std::str::Chars;
@@ -64,6 +69,15 @@ pub fn process_char_for_emojis(
                     context.chars.next();
                 }
                 context.current_segment.push_str(replacement);
+
+                // --- NEW LOGIC ---
+                if replacement == &"{}" { // For brick
+                    context.placeholders.push(PlaceholderType::Positional(false));
+                } else if replacement == &"{{:?}}" { // For 🔍/inspect
+                    context.placeholders.push(PlaceholderType::Positional(true));
+                }
+                // --- END NEW LOGIC ---
+
                 return; // Keyword matched and processed, return
             }
         }
