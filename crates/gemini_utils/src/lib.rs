@@ -42,10 +42,10 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
     // during the compilation of crates that use `gemini_utils`.
 
     // Debug print for the input TokenStream using proc_macro2::TokenStream
-    eprintln!("DEBUG: Input TokenStream (proc_macro2): {:?}", ProcMacro2TokenStream::from(input.clone()));
+    //    eprintln!("DEBUG: Input TokenStream (proc_macro2): {:?}", ProcMacro2TokenStream::from(input.clone()));
 
     // Debug print for kantspel_lib usage
-    eprintln!("DEBUG: Kantspel backslash constant: {:?}", kantspel_lib::BACKSLASH);
+//    eprintln!("DEBUG: Kantspel backslash constant: {:?}", kantspel_lib::BACKSLASH);
 
     // Old parsing logic (commented out for refactoring)
     // let input_args = parse_macro_input!(input as CommaSeparatedExprs).exprs;

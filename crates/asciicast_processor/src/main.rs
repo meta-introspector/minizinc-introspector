@@ -4,7 +4,7 @@ use std::io::{BufReader, Write};
 use serde_json::Deserializer;
 use anyhow::{Result, anyhow};
 use strip_ansi_escapes::strip;
-use std::path::PathBuf;
+
 
 use gemini_utils::gemini_eprintln;
 
@@ -66,6 +66,7 @@ fn main() -> Result<()> {
                 0 // Start from beginning for --limit
             };
 
+            #[allow(unused_variables)]
             let end_index = if let Some(tail_count) = tail {
                 event_count // Process up to the end of collected events
             } else {
