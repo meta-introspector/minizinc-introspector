@@ -2,38 +2,13 @@
 
 % --- Data Structures for Gemini and its Thoughts ---
 
-% Represents the type of a thought
-enum ThoughtType = {Observation, Plan, Action, Reflection, Error, Goal};
+include "types/thought_type_enum.mzn";
 
-% Represents a single thought
-type Thought = record(
-    id: int,
-    value: int
-);
+include "types/thought_type.mzn";
 
-% --- Narrative Stages (Hero's Journey) ---
-enum NarrativeStage = {
-    CallToAdventure,
-    RefusalOfTheCall,
-    MeetingTheMentor,
-    CrossingTheThreshold,
-    TestsAlliesEnemies,
-    ApproachToTheInmostCave,
-    Ordeal,
-    RewardSeizingTheSword,
-    TheRoadBack,
-    Resurrection,
-    ReturnWithTheElixir
-};
+include "types/narrative_stage_enum.mzn";
 
-% Represents the Gemini agent
-type GeminiAgent = record(
-    name: string,
-    purpose: string,
-    available_tools: array[int] of string,
-    thoughts_log: array[int] of Thought, % A log of Gemini's thoughts
-    current_narrative_stage: NarrativeStage % Current stage of the Hero's Journey
-);
+include "types/gemini_agent_type.mzn";
 
 % --- Simulated Project Concepts and their Gödel Numbers ---
 % In a real system, these would come from the "numerical content model"
@@ -50,7 +25,7 @@ array[int] of string: project_concepts = [
 ];
 
 % Arbitrary Gödel numbers for demonstration
-function int: get_godel_number(string concept) =
+function int: get_godel_number(string: concept) =
     if concept = "OODA loop" then 101
     else if concept = "Code Oxidation" then 102
     else if concept = "MiniZinc Model" then 103
@@ -87,18 +62,18 @@ output [
     "\n--- Thought Log ---\n"
 ] ++
 [
-    "  Timestamp: ", t.timestamp, "\n",
-    "  Type: ", show(t.type), "\n",
-    "  Content: ", t.content, "\n",
-    "  Related Concept: ", t.related_project_concept, " (Gödel #", show(t.godel_number), ")\n\n"
+    ( "  Timestamp: " ++ show(t.timestamp) ++ "\n" ++
+      "  Type: " ++ show(t.kind) ++ "\n" ++
+      "  Content: " ++ t.content ++ "\n" ++
+      "  Related Concept: " ++ t.related_project_concept ++ " (Gödel #" ++ show(t.godel_number) ++ ")\n\n" )
     | t in gemini_instance.thoughts_log
 ] ++
 [
-    "\n--- Analysis of Thought Types ---\n",
-    "  Observations: ", show(sum(t in gemini_instance.thoughts_log)(if t.type = Observation then 1 else 0 endif)), "\n",
-    "  Plans: ", show(sum(t in gemini_instance.thoughts_log)(if t.type = Plan then 1 else 0 endif)), "\n",
-    "  Actions: ", show(sum(t in gemini_instance.thoughts_log)(if t.type = Action then 1 else 0 endif)), "\n",
-    "  Reflections: ", show(sum(t in gemini_instance.thoughts_log)(if t.type = Reflection then 1 else 0 endif)), "\n",
-    "  Errors: ", show(sum(t in gemini_instance.thoughts_log)(if t.type = Error then 1 else 0 endif)), "\n",
-    "  Goals: ", show(sum(t in gemini_instance.thoughts_log)(if t.type = Goal then 1 else 0 endif)), "\n"
+    "\n--- Analysis of Thought Types ---",
+    "  Observations: ", show(sum(t in gemini_instance.thoughts_log)(if t.kind = Observation then 1 else 0 endif)), "\n",
+    "  Plans: ", show(sum(t in gemini_instance.thoughts_log)(if t.kind = Plan then 1 else 0 endif)), "\n",
+    "  Actions: ", show(sum(t in gemini_instance.thoughts_log)(if t.kind = Action then 1 else 0 endif)), "\n",
+    "  Reflections: ", show(sum(t in gemini_instance.thoughts_log)(if t.kind = Reflection then 1 else 0 endif)), "\n",
+    "  Errors: ", show(sum(t in gemini_instance.thoughts_log)(if t.kind = Error then 1 else 0 endif)), "\n",
+    "  Goals: ", show(sum(t in gemini_instance.thoughts_log)(if t.kind = Goal then 1 else 0 endif)), "\n"
 ];
