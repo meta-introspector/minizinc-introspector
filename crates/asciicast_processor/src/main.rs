@@ -193,7 +193,33 @@ fn main() -> Result<()> {
 
             // Panic logic
             if raw_match_found && !processed_match_found {
-                panic!("String found in raw input but not in processed output!");
+                // Find the first raw event that matches the regex
+                let mut problematic_raw_entry: Option<&Entry> = None;
+                let mut problematic_cleaned_data: Option<String> = None;
+
+                for entry in &all_events {
+                    let raw_data_str = String::from_utf8_lossy(entry.event_data.as_bytes());
+                    if filter_regex.is_match(&raw_data_str) {
+                        problematic_raw_entry = Some(entry);
+                        problematic_cleaned_data = Some(String::from_utf8_lossy(&strip(entry.event_data.as_bytes())?).to_string());
+                        break; // Found the first one, no need to search further
+                    }
+                }
+
+                gemini_eprintln!("ERROR: String found in raw input but not in processed output!");
+                gemini_eprintln!("  Regex: :regex:", regex = regex);
+                gemini_eprintln!("  Raw match found: :raw_match_found:", raw_match_found = raw_match_found);
+                gemini_eprintln!("  Processed match found: :processed_match_found:", processed_match_found = processed_match_found);
+
+                if let Some(entry) = problematic_raw_entry {
+                    gemini_eprintln!("  Problematic Raw Event Data: :raw_event_data:", raw_event_data = format!("{:?}", entry.event_data));
+                    if let Some(cleaned_data) = problematic_cleaned_data {
+                        gemini_eprintln!("  Problematic Cleaned Data (UTF-8): :cleaned_data:", cleaned_data = cleaned_data);
+                        gemini_eprintln!("  Problematic Cleaned Data (Bytes): :cleaned_data_bytes:", cleaned_data_bytes = format!("{:?}", cleaned_data.as_bytes()));
+                    }
+                }
+
+                panic!("Discrepancy detected between raw and processed output.");
             }
 
             for line in matched_lines_with_context {
