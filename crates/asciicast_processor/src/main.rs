@@ -76,7 +76,7 @@ fn main() -> Result<()> {
                 limit.min(event_count) // Process up to limit or collected events
             };
 
-            gemini_eprintln!("sparklesProcessing events and collecting cleaned output (limited to brickwall)...sparkles", limit = limit);
+            gemini_eprintln!("::sparkles::Processing events and collecting cleaned output (limited to :limit:)...::sparkles::", limit = limit);
 
             let mut cleaned_output_lines: Vec<String> = Vec::new();
             for i in start_index..end_index {
@@ -146,12 +146,13 @@ fn main() -> Result<()> {
                 match entry.event_type {
                     EventType::Output => {
                         let cleaned_data = String::from_utf8_lossy(&strip(entry.event_data.as_bytes())?).to_string();
-                        eprintln!("DEBUG: Cleaned output data: {}", cleaned_data); // Log cleaned output data
+			gemini_eprintln!("DEBUG: Cleaned output data: :cleaned_data:", cleaned_data = cleaned_data);
                         cleaned_output_lines.push(cleaned_data);
                     },
                     EventType::Input => {
                         let cleaned_data = String::from_utf8_lossy(&strip(entry.event_data.as_bytes())?).to_string();
-                        eprintln!("DEBUG: Cleaned input data: {}", cleaned_data); // Log cleaned input data
+
+			gemini_eprintln!("DEBUG: Cleaned output data: :cleaned_data:", cleaned_data = cleaned_data);
                         cleaned_output_lines.push(format!("INPUT: {}", cleaned_data)); // Prefix input events
                     },
                 }
@@ -160,7 +161,7 @@ fn main() -> Result<()> {
 
             let mut processed_match_found = false;
             for (i, line) in cleaned_output_lines.iter().enumerate() {
-                eprintln!("DEBUG: Processing line {}: {}", i, line); // Log line number and content
+		gemini_eprintln!("DEBUG: Line: :i: :line:", i = i, line=line);
                 if filter_regex.is_match(line) {
                     processed_match_found = true;
                     if let Some(max_occurrences) = occurrences {
@@ -169,7 +170,7 @@ fn main() -> Result<()> {
                         }
                     }
 
-                    eprintln!("DEBUG: Regex matched line {}: {}", i, line); // Log regex match
+		    gemini_eprintln!("DEBUG: Regex matched line: :i: :line:", i = i, line=line);
                     matches_found += 1;
 
                     // Add context before the match
@@ -206,7 +207,7 @@ fn main() -> Result<()> {
             let filter_regex = Regex::new(&regex)?;
 
             let mut matches_found = 0;
-
+	  
             gemini_eprintln!("Searching raw input for pattern: ':regex::newline:", regex = regex);
 
             for (i, line_result) in reader.lines().enumerate() {
@@ -216,8 +217,7 @@ fn main() -> Result<()> {
                     gemini_eprintln!("RAW MATCH (Line :line_num:): :line:", line_num = i + 1, line = line);
                 }
             }
-
-            gemini_eprintln!("sparklesTotal raw matches found: :matches_found:", matches_found = matches_found);
+            gemini_eprintln!("::newline:: Total raw matches found: :matches_found:", matches_found = matches_found);
 
             return Ok(())
         },
