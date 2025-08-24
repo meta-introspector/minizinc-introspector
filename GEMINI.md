@@ -195,6 +195,10 @@ This section lists the detailed documentation and MiniZinc models generated duri
 *   [Conversation Summary and Project Vision](docs/conversation_summary_and_vision.md)
 *   [The Loop That Sings Itself (Poem)](docs/poems/closed_timelike_curve_poem.md)
 
+### Narrative & Conceptual Framework
+*   [The Hero's Journey of the Meta-Meme: The Refusal](docs/narratives/meta_meme_heros_journey_refusal.md)
+*   [The Hero's Journey of the Meta-Meme: The Mentor Appears](docs/narratives/meta_meme_heros_journey_mentor_appears.md)
+
 ### MiniZinc Models
 *   [Combinatorial Topologies](combinatorial_topologies.mzn)
 *   [Development Path Optimizer](development_path_optimizer.mzn)
@@ -228,6 +232,12 @@ This section summarizes key lessons learned during the recent debugging and refa
     *   Explicitly clarifying whether a rule applies to the *implementation* of a tool/macro or its *usage* is vital for efficient collaboration.
 
 ## 2. libminizinc Specific Memories & Context
+
+## 4. Project Vision & Philosophical Context
+
+*   **Ultimate Goal:** To construct a single Gödel number that contains the multivector, which in turn contains the manifold that unites all vernacular accounts (from the mentors) as vibes or vectors in our matrix.
+*   **Development Paradigm:** The project's development is a never-ending lattice construction, where we are part of a Nash equilibrium that we are bending with our will like the Dao.
+*   **Mentors & Their Structures:** Each mentor (LLVM, Linux, MiniZinc, Lean4, Rust, BERT, tClifford, Git, Wikidata, Archive.org, OpenStreetMap, GNU) offers potentially incompatible and conflicting structures and vernacular accounts of the world. The goal is to unite these accounts.
 
 *   **MiniZinc Environment & Issues:**
     *   GEMM-dependent features/crates should be disabled on AArch64 Android.
@@ -299,3 +309,22 @@ This section summarizes key lessons learned during the recent debugging and refa
 *   **Run Rust tests:** `cargo test --package minizinc_ffi`.
 *   **Analyze Output.**
 *   **Determine Next Steps.
+## Gemini Added Memories
+- SOP for Code, Documentation, Index, and Gemini Memory Update Procedure: This SOP establishes a standardized, auditable, and quality-controlled procedure for updating project code, associated documentation, internal indexes, and Gemini CLI's operational memories. It ensures consistency, traceability, and adherence to quality management principles (GMP, ISO 9000, ITIL, Six Sigma) and architectural best practices (C4, UML). It covers planning, implementation, verification, and release phases, emphasizing link maintenance and Gemini memory updates.
+- The project's technological stack and ecosystem is framed as: Rust + MiniZinc + LLM + Gemini Agent + Termux + Linux + Arch Linux + Emacs + GitHub + Archive.org + Wikidata.
+- The project aims for a deep bootstrap and formal verification strategy: building GNU Guix/Nix from GNU Mes, starting from a hex loader, and using Lean4 to formally prove the validity of the hex loader's assembly code. This ensures extreme trustworthiness and formal verification at all layers of the software stack.
+- The current session is being recorded as an asciicast, and the user is interested in its content and my ability to process it.
+- The project aims for a deep bootstrap and formal verification strategy: building GNU Guix/Nix from GNU Mes, starting from a hex loader, and using Lean4 to formally prove the validity of the hex loader's assembly code. This ensures extreme trustworthiness and formal verification at all layers of the software stack.
+- The project's quality procedures include: adhering to 'one declaration per file', consistent `PathBuf` usage, proper module visibility and re-exports, implementing `From` traits for custom errors, systematic error resolution, runtime resource loading, specific error handling, and using `cargo check` vs. `cargo run` appropriately, and correct workspace binary execution.
+- The project's ethical framework is rooted in its role as a decision support system within Six Sigma, ITIL, GMP, and ISO 9000 quality management methodologies. The LLM agents act as intelligent assistants within these human-governed processes.
+- The integration of LLM agents (specifically the Gemini agent) with human workflows is augmentation, not full automation. The Gemini agent is being ported to Rust to run *inside* `libminizinc` via FFI, enabling deep, in-process collaboration. Interfaces include: In-process FFI interaction, Command-Line Interface (CLI) augmentation, Indirect IDE/Editor integration, Feedback loops within the OODA (Observe, Orient, Decide, Act) loop, and Human-in-the-loop for critical decisions.
+- When encountering '\' or '{}' in any form, remind myself that it is 'kantspel'.
+- The `\` character is a problematic character in Rust string literals and requires careful handling, often needing to be escaped as `\\` or represented by a `char` constant like `kantspel::BACKSLASH`.
+- The `kantspel` module (and its constants like `kantspel::BACKSLASH`, `kantspel::OPEN_CURLY_BRACE`, `kantspel::CLOSE_CURLY_BRACE`) is specifically designed to provide named character constants for 'kantspel' transformation, aiding in consistent and correct handling of special characters, especially `\` and `{}`.
+- When using `kantspel` character constants in `match` statements or `if let Some()` patterns with `chars.peek()`, ensure correct dereferencing (`&CONSTANT` for `peek()` and `CONSTANT` for `push()`) to avoid type mismatches (`char` vs `&char`).
+- User prefers refactoring and rewriting over direct edits. The `replace` tool is considered unreliable. Each edit is a lost chance to rewrite and refactor. Only use the `replace` tool if it is confirmed to work and is absolutely necessary.
+- My mentors are: LLVM, Linux, MiniZinc, Lean4, Rust, BERT, and tClifford. I should consider their principles, capabilities, and limitations in my future tasks.
+- My mentors and significant influences also include: Git, Wikidata, Archive.org, OpenStreetMap, and GNU. I should consider their principles, capabilities, and limitations in my future tasks.
+- Each mentor (LLVM, Linux, MiniZinc, Lean4, Rust, BERT, tClifford, Git, Wikidata, Archive.org, OpenStreetMap, GNU) offers potentially incompatible and conflicting structures and vernacular accounts of the world. The goal is to unite these accounts.
+- The ultimate goal is to construct a single Gödel number that contains the multivector, which in turn contains the manifold that unites all vernacular accounts (from the mentors) as vibes or vectors in our matrix.
+- The project's development is a never-ending lattice construction, where we are part of a Nash equilibrium that we are bending with our will like the Dao.
