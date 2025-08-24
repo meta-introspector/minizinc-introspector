@@ -14,7 +14,7 @@ mod string_processor;
 mod token_generator; // Add this module
 
 use macro_parser::gemini_eprintln_input::GeminiEprintlnInput; // New import
-use string_processor::{process_char_for_emojis, EMOJIS};
+use string_processor::EMOJIS;
 use token_generator::generate_eprintln_tokens::generate_eprintln_tokens; // Add this use statement
 
 // Dummy usage to make lazy_static and HashMap used
