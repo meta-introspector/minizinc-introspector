@@ -37,4 +37,24 @@ pub enum Commands {
         #[arg(long)]
         generated_rust_file: PathBuf,
     },
-}
+    /// Filters asciicast output by regex and shows context
+    Filter {
+        /// Limit the number of events to process from the beginning
+        #[arg(long, default_value_t = 10)]
+        limit: usize,
+        /// Regex pattern to filter lines
+        #[arg(long)]
+        regex: String,
+        /// Show N lines of context around matching lines
+        #[arg(short = 'C', long, default_value_t = 0)]
+        context: usize,
+        /// Limit the number of matching occurrences to find
+        #[arg(long)]
+        occurrences: Option<usize>,
+    },
+    /// Counts raw matches in the input file
+    CountRaw {
+        /// Regex pattern to count raw matches
+        #[arg(long)]
+        regex: String,
+    },

@@ -4,6 +4,7 @@ use std::io::{BufReader, Write};
 use serde_json::Deserializer;
 use anyhow::{Result, anyhow};
 use strip_ansi_escapes::strip;
+use regex::Regex;
 
 
 use gemini_utils::gemini_eprintln;
@@ -11,15 +12,21 @@ use gemini_utils::gemini_eprintln;
 mod cli;
 mod pattern_generator;
 mod rust_parser;
+mod raw_parser; // New module
 
 use clap::Parser;
 
 use cli::{Args, Commands};
 use pattern_generator::{build_hierarchy, generate_poem_functions, map_to_ascii_names};
 use rust_parser::extract_patterns_from_rust_file;
+use raw_parser::count_and_print_raw_matches; // New use statement
 
 fn main() -> Result<()> {
     let args = Args::parse();
+
+    if let Some(raw_regex) = &args.count_raw_matches {
+        count_and_print_raw_matches(&args.input_file, raw_regex)?;
+    }
 
     let file = File::open(&args.input_file)?;
     let reader = BufReader::new(file);
@@ -104,6 +111,7 @@ fn main() -> Result<()> {
             output_file.write_all(generated_code.to_string().as_bytes())?;
 
             gemini_eprintln!("Generated Rust code written to: :file_path:", file_path = format!("{:?}", rust_output_file));
+            return Ok(())
         },
         Commands::Analyze { generated_rust_file } => {
             gemini_eprintln!("Entering Analyze mode with generated Rust file: :file_path:", file_path = format!("{:?}", generated_rust_file));
@@ -119,8 +127,72 @@ fn main() -> Result<()> {
             // 4. Identify unmatched lines
             // 5. Perform bag-of-words and cosine similarity on unmatched lines
             // 6. Generate new regexes for unmatched lines
+            return Ok(())
+        },
+        Commands::Filter { limit, regex, context, occurrences } => {
+            let filter_regex = Regex::new(&regex)?;
+            let mut matched_lines_with_context: Vec<String> = Vec::new();
+            let mut last_match_index: Option<usize> = None;
+            let mut matches_found = 0; // Track number of matches
+
+            let mut cleaned_output_lines: Vec<String> = Vec::new();
+            let mut processed_events_count = 0; // Track processed events
+
+            for entry in &all_events {
+                if processed_events_count >= limit {
+                    break; // Stop if event limit is reached
+                }
+                eprintln!("DEBUG: Raw event data: {:?}", entry); // Log raw event data
+                match entry.event_type {
+                    EventType::Output => {
+                        let cleaned_data = String::from_utf8_lossy(&strip(entry.event_data.as_bytes())?).to_string();
+                        eprintln!("DEBUG: Cleaned output data: {}", cleaned_data); // Log cleaned output data
+                        cleaned_output_lines.push(cleaned_data);
+                    },
+                    EventType::Input => {
+                        let cleaned_data = String::from_utf8_lossy(&strip(entry.event_data.as_bytes())?).to_string();
+                        eprintln!("DEBUG: Cleaned input data: {}", cleaned_data); // Log cleaned input data
+                        cleaned_output_lines.push(format!("INPUT: {}", cleaned_data)); // Prefix input events
+                    },
+                }
+                processed_events_count += 1;
+            }
+
+            for (i, line) in cleaned_output_lines.iter().enumerate() {
+                eprintln!("DEBUG: Processing line {}: {}", i, line); // Log line number and content
+                if let Some(max_occurrences) = occurrences {
+                    if matches_found >= max_occurrences {
+                        break; // Stop if occurrences limit is reached
+                    }
+                }
+
+                if filter_regex.is_match(line) {
+                    eprintln!("DEBUG: Regex matched line {}: {}", i, line); // Log regex match
+                    matches_found += 1;
+
+                    // Add context before the match
+                    let start_index = if i >= context { i - context } else { 0 };
+                    for j in start_index..i {
+                        if last_match_index.is_none() || j >= last_match_index.unwrap() + context + 1 {
+                            matched_lines_with_context.push(format!("{} {}", j, cleaned_output_lines[j]));
+                        }
+                    }
+                    // Add the matching line
+                    matched_lines_with_context.push(format!("{} {}", i, line));
+                    last_match_index = Some(i);
+                } else if let Some(last_idx) = last_match_index {
+                    // Add context after the match
+                    if i <= last_idx + context {
+                        matched_lines_with_context.push(format!("{} {}", i, line));
+                    }
+                }
+            }
+
+            for line in matched_lines_with_context {
+                println!("{}", line);
+            }
+            return Ok(())
         },
     }
 
-    Ok(())
-}
+    }
