@@ -14,12 +14,28 @@ record Thought = {
     int godel_number % Simulated Gödel number for the related project concept
 };
 
+% --- Narrative Stages (Hero's Journey) ---
+enum NarrativeStage = {
+    CallToAdventure,
+    RefusalOfTheCall,
+    MeetingTheMentor,
+    CrossingTheThreshold,
+    TestsAlliesEnemies,
+    ApproachToTheInmostCave,
+    Ordeal,
+    RewardSeizingTheSword,
+    TheRoadBack,
+    Resurrection,
+    ReturnWithTheElixir
+};
+
 % Represents the Gemini agent
 record GeminiAgent = {
     string name,
     string purpose,
     array[int] of string available_tools,
-    array[int] of Thought thoughts_log % A log of Gemini's thoughts
+    array[int] of Thought thoughts_log, % A log of Gemini's thoughts
+    NarrativeStage current_narrative_stage % Current stage of the Hero's Journey
 };
 
 % --- Simulated Project Concepts and their Gödel Numbers ---
@@ -59,7 +75,8 @@ GeminiAgent gemini_instance = (
     name: "Gemini CLI Agent",
     purpose: "Assist in software engineering tasks, evolve codebase, and introspect project.",
     available_tools: ["read_file", "write_file", "run_shell_command", "glob", "replace", "search_file_content", "web_fetch", "read_many_files", "save_memory", "google_web_search"],
-    thoughts_log: gemini_thoughts
+    thoughts_log: gemini_thoughts,
+    current_narrative_stage: RefusalOfTheCall
 );
 
 % --- Solve and Output ---

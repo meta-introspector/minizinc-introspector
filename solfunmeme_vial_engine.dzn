@@ -1,0 +1,18 @@
+% solfunmeme_vial_engine.dzn
+% Example data for the SOLFUNMEME Vial Engine MiniZinc model.
+
+% Example Meme (List of real numbers in [0,1])
+Meme = [0.8, 0.9, 0.6];
+
+% Example Provenance data
+Provenance = (
+    pins: 6,
+    gitCommits: 420,
+    gitForks: 21,
+    archiveMirrors: 3,
+    cidAgeDays: 180,
+    contractAgeDays: 365,
+    supplyCap: 777,
+    minted: 128,
+    royaltyBps: 500
+);
