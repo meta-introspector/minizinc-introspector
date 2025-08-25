@@ -19,3 +19,8 @@ ini = "1.x"
 [[bin]]
 name = "cm"
 path = "src/bin/cm.rs"
+dependencies = [
+    "ini",
+    "serde_yaml",
+    "serde",
+]
