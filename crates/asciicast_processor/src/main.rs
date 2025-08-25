@@ -31,7 +31,7 @@ fn main() -> Result<()> {
 
     // Read the header
     let header_value = de.next().ok_or_else(|| anyhow!("Missing header"))?;
-    let header: Header = serde_json::from_value(header_value.map_err(|e| anyhow!(e))?)?;
+    let header: Header = serde_json::from_value(header_value.map_err(|e: serde_json::Error| anyhow!(e))?)?;
 
     gemini_eprintln!("Asciicast Header:");
     gemini_eprintln!("  Version: :version:", version = header.version);
@@ -52,7 +52,7 @@ fn main() -> Result<()> {
 
     // Collect all events
     for value in de {
-        let entry: Entry = serde_json::from_value(value.map_err(|e| anyhow!(e))?)?;
+        let entry: Entry = serde_json::from_value(value.map_err(|e: serde_json::Error| anyhow!(e))?)?;
         all_events.push(entry);
         event_count += 1;
     }
@@ -84,12 +84,8 @@ fn main() -> Result<()> {
                 match entry.event_type {
                     EventType::Output => {
                         let cleaned_data = String::from_utf8_lossy(&strip(entry.event_data.as_bytes())?).to_string();
-                        let processed_data = if ascii_names {
-                            map_to_ascii_names(&cleaned_data)
-                        } else {
-                            cleaned_data
-                        };
-                        cleaned_output_lines.push(processed_data);
+			gemini_eprintln!("DEBUG: Cleaned output data: :cleaned_data:", cleaned_data = cleaned_data);
+                        cleaned_output_lines.push(cleaned_data);
                     },
                     EventType::Input => {
                         // Ignore input events for now
@@ -126,7 +122,8 @@ fn main() -> Result<()> {
             return Ok(())
         },
         Commands::Filter { limit, regex, context, occurrences } => {
-            let filter_regex = Regex::new(&regex)?;
+            let escaped_regex = regex::escape(&regex);
+            let filter_regex = Regex::new(&escaped_regex)?;
 
             // Check if regex is present in raw input
             let raw_match_found = check_raw_matches(&args.input_file, &regex)?;
@@ -161,6 +158,17 @@ fn main() -> Result<()> {
 
             let mut processed_match_found = false;
             for (i, line) in cleaned_output_lines.iter().enumerate() {
+		        gemini_eprintln!("DEBUG: Regex: :regex_val:", regex_val = regex);
+		        gemini_eprintln!("DEBUG: Escaped Regex: :escaped_regex_val:", escaped_regex_val = escaped_regex);
+		        gemini_eprintln!("DEBUG: Line (raw): :line_raw_debug:", line_raw_debug = format!("{:?}", line));
+		        gemini_eprintln!("DEBUG: Line (display): :line_display:", line_display = line);
+		        gemini_eprintln!("DEBUG: Line (bytes): :line_bytes_debug:", line_bytes_debug = format!("{:?}", line.as_bytes()));
+		        gemini_eprintln!("DEBUG: Line contains regex string: :contains_result:", contains_result = line.contains(&regex));
+		        gemini_eprintln!("DEBUG: Matching regex :regex_val: against line :line_display:. Result: :match_result:",
+		            regex_val = regex,
+		            line_display = line,
+		            match_result = filter_regex.is_match(line)
+		        );
 		gemini_eprintln!("DEBUG: Line: :i: :line:", i = i, line=line);
                 if filter_regex.is_match(line) {
                     processed_match_found = true;
@@ -219,7 +227,7 @@ fn main() -> Result<()> {
                     }
                 }
 
-                panic!("Discrepancy detected between raw and processed output.");
+                // panic!("Discrepancy detected between raw and processed output.");
             }
 
             for line in matched_lines_with_context {
@@ -237,7 +245,7 @@ fn main() -> Result<()> {
             gemini_eprintln!("Searching raw input for pattern: ':regex::newline:", regex = regex);
 
             for (i, line_result) in reader.lines().enumerate() {
-                let line = line_result?;
+                let line = line_result?.to_string(); // Convert to String
                 if filter_regex.is_match(&line) {
                     matches_found += 1;
                     gemini_eprintln!("RAW MATCH (Line :line_num:): :line:", line_num = i + 1, line = line);

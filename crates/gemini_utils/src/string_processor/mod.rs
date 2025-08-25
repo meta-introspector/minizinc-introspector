@@ -96,3 +96,11 @@ pub fn process_char_for_emojis(
         _ => char_handlers::handle_other_char::handle_other_char(c, context),
     }
 }
+
+pub fn clean_string_for_regex(input: &str) -> String {
+    let mut cleaned = input.trim().to_string();
+    // Remove the black diamond character (U+25C6)
+    cleaned = cleaned.replace('◆', "");
+    // Add more cleaning rules as needed
+    cleaned
+}
