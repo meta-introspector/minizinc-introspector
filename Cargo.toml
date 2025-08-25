@@ -42,6 +42,7 @@ members = [
     "crates/launchpad",
     "crates/zos-stage-session-manager",
     "crates/zos-stage-process-monitor",
+    "crates/github-repo-inspector",
 ]
 
 [patch.crates-io]
