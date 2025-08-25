@@ -46,3 +46,6 @@
 [submodule "vendor/octocrab"]
 	path = vendor/octocrab
 	url = https://github.com/XAMPPRocky/octocrab.git
+[submodule "vendor/tmux_interface"]
+	path = vendor/tmux_interface
+	url = https://github.com/AntonGepting/tmux-interface-rs

@@ -12,10 +12,7 @@ use ratatui::{
 };
 use std::io;
 use std::time::Duration;
-use tmux_interface::{
-    TmuxInterface,
-    HasSession, ListPanes, CapturePane
-};
+use tmux_interface::{Tmux, ListSessions, ListPanes};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -32,8 +29,6 @@ struct Args {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args = Args::parse();
-
     // Setup terminal
     enable_raw_mode()?;
     let mut stdout = io::stdout();
@@ -43,11 +38,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Application loop
     let mut app_state = AppState::new();
-    let tmux = TmuxInterface::new();
 
     loop {
         // Update app state (e.g., fetch tmux info)
-        app_state.update_tmux_info(&tmux, &args)?;
+        app_state.update_tmux_info(&Args::parse())?; // Pass parsed args directly
 
         // Draw UI
         terminal.draw(|f| {
@@ -93,34 +87,26 @@ impl AppState {
 
     fn update_tmux_info(
         &mut self,
-        tmux: &TmuxInterface,
         args: &Args,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut info = String::new();
 
         // List sessions
-        match tmux.list_sessions(None, None) {
-            Ok(sessions) => {
+        match Tmux::with_command(ListSessions::new()).output() {
+            Ok(output) => {
                 info.push_str("Sessions:\n");
-                for session in sessions {
-                    info.push_str(&format!("  - {}
-", session.name.unwrap_or_default()));
-                }
+                info.push_str(&String::from_utf8_lossy(&output.0.stdout));
             }
-            Err(e) => info.push_str(&format!("Error listing sessions: {}
-", e)),
+            Err(e) => info.push_str(&format!("Error listing sessions: {}\n", e)),
         }
 
         // List panes (simplified for now, will be more specific later)
-        match tmux.list_panes(None, None, None) {
-            Ok(panes) => {
+        match Tmux::with_command(ListPanes::new()).output() {
+            Ok(output) => {
                 info.push_str("\nPanes:\n");
-                for pane in panes {
-                    info.push_str(&format!("  - {} ({}x{}\n", pane.pane_id.unwrap_or_default(), pane.pane_width.unwrap_or_default(), pane.pane_height.unwrap_or_default()));
-                }
+                info.push_str(&String::from_utf8_lossy(&output.0.stdout));
             }
-            Err(e) => info.push_str(&format!("Error listing panes: {}
-", e)),
+            Err(e) => info.push_str(&format!("Error listing panes: {}\n", e)),
         }
 
         // TODO: Execute 'ps aux' in a selected pane and capture output

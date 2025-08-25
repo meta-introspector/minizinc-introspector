@@ -5336,6 +5336,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "25a9a759d05c8ae70c812a236ac4bdd2a861042307e458ea376b8256c5cb3d2f"
 
 [[package]]
+name = "tmux_interface"
+version = "0.3.2"
+
+[[package]]
 name = "tokio"
 version = "1.47.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6651,7 +6655,7 @@ dependencies = [
  "clap",
  "crossterm",
  "ratatui",
- "tmux_interface",
+ "tmux_interface 0.3.2",
 ]
 
 [[package]]
@@ -6661,7 +6665,7 @@ dependencies = [
  "clap",
  "serde",
  "serde_json",
- "tmux_interface",
+ "tmux_interface 0.1.0",
 ]
 
 [[package]]

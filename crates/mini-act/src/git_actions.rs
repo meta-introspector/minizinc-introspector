@@ -1,6 +1,6 @@
-use git2::{Repository, build::RepoBuilder};
+use git2::build::RepoBuilder;
 use std::path::Path;
-use std::fs;
+
 use std::process::Command;
 
 pub fn git_checkout(repo_url: &str, target_path: &Path) -> Result<(), String> {

@@ -5,6 +5,6 @@ edition = "2021"
 
 [dependencies]
 clap = { version = "4.0", features = ["derive"] }
-tmux_interface = "0.1.0"
+tmux_interface = { path = "../../vendor/tmux_interface" }
 ratatui = "0.26.0"
 crossterm = { version = "0.27.0", features = ["event-stream"] }
