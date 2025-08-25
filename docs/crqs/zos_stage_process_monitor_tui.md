@@ -46,25 +46,24 @@ Develop `zos-stage-process-monitor` as a dedicated Rust subcrate that:
 
 **Implementation Plan:**
 
-1.  **Create `crates/zos-stage-process-monitor` Subcrate:**
-    *   Create the directory `crates/zos-stage-process-monitor`.
-    *   Create `crates/zos-stage-process-monitor/Cargo.toml` and add `tmux_interface` and chosen TUI library dependencies.
-    *   Add `crates/zos-stage-process-monitor` to the root `Cargo.toml` members.
+1.  **Create `crates/zos-stage-process-monitor` Subcrate (Completed):**
+    *   The directory `crates/zos-stage-process-monitor` has been created.
+    *   `crates/zos-stage-process-monitor/Cargo.toml` has been created with `tmux_interface`, `ratatui`, and `crossterm` dependencies.
+    *   The subcrate has been added to the root `Cargo.toml` members.
 
-2.  **Initialize TUI Framework:**
-    *   Set up the basic TUI structure using the chosen Rust TUI library (e.g., `ratatui`, `crossterm`).
+2.  **Initialize TUI Framework (Completed - Skeleton):**
+    *   The basic TUI structure has been set up in `crates/zos-stage-process-monitor/src/main.rs` using `ratatui` and `crossterm`.
+    *   The `main.rs` currently lists `tmux` sessions and panes.
 
-3.  **Integrate `tmux_interface`:**
-    *   Use `tmux_interface` to list available `tmux` sessions, windows, and panes.
-    *   Allow the user (or AI) to select a target pane for process monitoring.
+3.  **Integrate `tmux_interface` (In Progress):**
+    *   The `tmux_interface` is initialized in `main.rs` and currently lists available `tmux` sessions and panes.
+    *   Future work will involve allowing selection of a target pane for process monitoring.
 
-4.  **Execute `ps` Command:**
-    *   Within the selected `tmux` pane, send the `ps aux` command using `tmux_interface::send_keys`.
-    *   Capture the output of the `ps` command from the `tmux` pane. This might involve reading the pane's buffer or redirecting output.
+4.  **Execute `ps` Command (To Do):**
+    *   This step will involve using `tmux_interface::send_keys` to send the `ps aux` command to a selected `tmux` pane and capturing its output.
 
-5.  **Display in TUI:**
-    *   Parse the `ps` output and display it in a readable format within the TUI.
-    *   Implement basic TUI navigation (e.g., scrolling).
+5.  **Display in TUI (To Do):**
+    *   This step will involve parsing the `ps` output and displaying it in a readable format within the TUI, along with implementing basic TUI navigation.
 
 **Verification Plan:**
 1.  **Build and Run:** Successfully build and run `zos-stage-process-monitor` via `launchpad`.

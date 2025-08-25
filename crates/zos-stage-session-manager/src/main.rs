@@ -45,6 +45,10 @@ struct ExportArgs {
     #[arg(short, long, default_value_t = false)]
     record_session: bool,
 
+    /// Launch a single Gemini instance in the background, detached from the current terminal
+    #[arg(long, default_value_t = false)]
+    background_detached: bool,
+
     /// Output file path for the session configuration
     #[arg(short, long, default_value = "sessions/last_session.json")]
     output: String,
