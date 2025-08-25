@@ -1,6 +1,7 @@
 use clap::{Parser, Subcommand};
 use tokio;
 use octocrab::{Octocrab, models::workflows::{Run, Job, WorkflowListArtifact}, models::RunId, Result};
+use credential_manager::{retrieve_credential};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -11,9 +12,6 @@ struct Cli {
     /// GitHub repository name (e.g., 'Spoon-Knife')
     #[arg(short, long)]
     repo: String,
-    /// GitHub Personal Access Token (PAT) with 'repo' scope
-    #[arg(short, long)]
-    token: String,
 
     #[command(subcommand)]
     command: Commands,
@@ -74,8 +72,11 @@ async fn fetch_job_logs(octocrab: &Octocrab, owner: &str, repo: &str, job_id: u6
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
 
+    let github_pat = retrieve_credential("github", "default")
+        .map_err(|e| format!("Failed to retrieve GitHub PAT: {}", e))?;
+
     let octocrab = Octocrab::builder()
-        .personal_token(cli.token.clone()) // Use clone as cli.token is moved into octocrab
+        .personal_token(github_pat)
         .build()?;
 
     match &cli.command {

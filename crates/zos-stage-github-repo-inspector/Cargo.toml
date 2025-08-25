@@ -9,3 +9,4 @@ reqwest = { version = "0.12", features = ["json"] }
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 octocrab = { path = "../../vendor/octocrab" }
+credential_manager = { path = "../../crates/credential_manager" }

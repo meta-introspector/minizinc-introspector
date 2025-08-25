@@ -7303,6 +7303,7 @@ name = "zos-stage-github-repo-inspector"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "credential_manager",
  "octocrab",
  "reqwest",
  "serde",
