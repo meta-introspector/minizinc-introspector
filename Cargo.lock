@@ -614,6 +614,7 @@ dependencies = [
  "clap",
  "gemini_utils",
  "grex",
+ "kantspel_lib",
  "poem_macro_impl",
  "poem_macros",
  "proc-macro2",

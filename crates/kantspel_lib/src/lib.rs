@@ -6,3 +6,5 @@ pub mod level10;
 pub mod constants;
 pub use level10::*;
 pub use constants::*;
+pub mod clean_non_ascii;
+pub use clean_non_ascii::clean_non_ascii;

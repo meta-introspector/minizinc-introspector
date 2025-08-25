@@ -109,6 +109,3 @@ pub fn clean_string_for_regex(input: &str) -> String {
     cleaned
 }
 
-pub fn clean_non_ascii(input: &str) -> String {
-    input.chars().filter(|c| c.is_ascii()).collect()
-}

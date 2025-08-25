@@ -20,6 +20,7 @@ poem_macros = { path = "../poem_macros" }
 regex = "1.10"
 serde = { version = "1.0", features = ["derive"] }
 serde_yaml = "0.9"
+kantspel_lib = { path = "../kantspel_lib" }
 
 [[bin]]
 name = "test_strip"
