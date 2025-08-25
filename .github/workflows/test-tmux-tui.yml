@@ -1,0 +1,38 @@
+name: Test Tmux TUI
+
+on:
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
+
+    - name: Install Tmux
+      run: sudo apt-get update && sudo apt-get install -y tmux
+
+    - name: Build project
+      run: cargo build
+
+    - name: Run Tmux Controller and Capture Output
+      run: |
+        # Run tmux_controller and capture its stdout
+        # The tmux_controller will start a tmux session, run zos-stage-process-monitor,
+        # capture its pane, and print the captured content to its own stdout.
+        target/debug/tmux_controller > tmux_tui_output.log 2>&1
+
+    - name: Upload Tmux TUI Output
+      uses: actions/upload-artifact@v3
+      with:
+        name: tmux-tui-output
+        path: tmux_tui_output.log
