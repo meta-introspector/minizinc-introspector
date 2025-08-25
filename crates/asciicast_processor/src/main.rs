@@ -8,6 +8,7 @@ use regex::Regex;
 
 
 use gemini_utils::gemini_eprintln;
+//use gemini_utils::string_processor::clean_non_ascii;
 
 mod cli;
 mod pattern_generator;
@@ -17,7 +18,7 @@ mod raw_parser; // New module
 use clap::Parser;
 
 use cli::{Args, Commands};
-use pattern_generator::{build_hierarchy, generate_poem_functions, map_to_ascii_names};
+use pattern_generator::{build_hierarchy, generate_poem_functions};
 use rust_parser::extract_patterns_from_rust_file;
 use raw_parser::check_raw_matches; // New use statement
 
@@ -142,12 +143,12 @@ fn main() -> Result<()> {
                 eprintln!("DEBUG: Raw event data: {:?}", entry); // Log raw event data
                 match entry.event_type {
                     EventType::Output => {
-                        let cleaned_data = String::from_utf8_lossy(&strip(entry.event_data.as_bytes())?).to_string();
+                        let cleaned_data = clean_non_ascii(&String::from_utf8_lossy(&strip(entry.event_data.as_bytes())?).to_string());
 			gemini_eprintln!("DEBUG: Cleaned output data: :cleaned_data:", cleaned_data = cleaned_data);
                         cleaned_output_lines.push(cleaned_data);
                     },
                     EventType::Input => {
-                        let cleaned_data = String::from_utf8_lossy(&strip(entry.event_data.as_bytes())?).to_string();
+                        let cleaned_data = clean_non_ascii(&String::from_utf8_lossy(&strip(entry.event_data.as_bytes())?).to_string());
 
 			gemini_eprintln!("DEBUG: Cleaned output data: :cleaned_data:", cleaned_data = cleaned_data);
                         cleaned_output_lines.push(format!("INPUT: {}", cleaned_data)); // Prefix input events
@@ -209,7 +210,7 @@ fn main() -> Result<()> {
                     let raw_data_str = String::from_utf8_lossy(entry.event_data.as_bytes());
                     if filter_regex.is_match(&raw_data_str) {
                         problematic_raw_entry = Some(entry);
-                        problematic_cleaned_data = Some(String::from_utf8_lossy(&strip(entry.event_data.as_bytes())?).to_string());
+                        problematic_cleaned_data = Some(clean_non_ascii(&String::from_utf8_lossy(&strip(entry.event_data.as_bytes())?).to_string()));
                         break; // Found the first one, no need to search further
                     }
                 }
@@ -227,7 +228,7 @@ fn main() -> Result<()> {
                     }
                 }
 
-                // panic!("Discrepancy detected between raw and processed output.");
+                panic!("Discrepancy detected between raw and processed output.");
             }
 
             for line in matched_lines_with_context {
@@ -238,7 +239,8 @@ fn main() -> Result<()> {
         Commands::CountRaw { regex } => {
             let file = File::open(&args.input_file)?;
             let reader = BufReader::new(file);
-            let filter_regex = Regex::new(&regex)?;
+            let escaped_regex = regex::escape(&regex);
+            let filter_regex = Regex::new(&escaped_regex)?;
 
             let mut matches_found = 0;
 	  

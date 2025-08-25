@@ -6,7 +6,7 @@ use syn::{parse_macro_input, Expr,
 //use proc_macro2::TokenStream as ProcMacro2TokenStream; // Alias for proc_macro2::TokenStream
 use lazy_static::lazy_static; // Add this import
 use std::collections::HashMap; // Add this import
-//use proc_macro2::Span; // Add this import
+//use std::io::Write; // Add this import for flush
 
 // No explicit import for kantspel_lib::BACKSLASH, use kantspel_lib::BACKSLASH directly
 mod macro_parser;
@@ -14,7 +14,7 @@ mod string_processor;
 mod token_generator; // Add this module
 
 use macro_parser::gemini_eprintln_input::GeminiEprintlnInput; // New import
-use string_processor::EMOJIS;
+use crate::string_processor::EMOJIS;
 use token_generator::generate_eprintln_tokens::generate_eprintln_tokens; // Add this use statement
 
 // Dummy usage to make lazy_static and HashMap used
@@ -42,10 +42,10 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
     // during the compilation of crates that use `gemini_utils`.
 
     // Debug print for the input TokenStream using proc_macro2::TokenStream
-    //    eprintln!("DEBUG: Input TokenStream (proc_macro2): {:?}", ProcMacro2TokenStream::from(input.clone()));
+    //    eprintln!("DEBUG: Input TokenStream (proc_macro2): {{:?}}", ProcMacro2TokenStream::from(input.clone()));
 
     // Debug print for kantspel_lib usage
-//    eprintln!("DEBUG: Kantspel backslash constant: {:?}", kantspel_lib::BACKSLASH);
+//    eprintln!("DEBUG: Kantspel backslash constant: {{:?}}", kantspel_lib::BACKSLASH);
 
     // Old parsing logic (commented out for refactoring)
     // let input_args = parse_macro_input!(input as CommaSeparatedExprs).exprs;
@@ -58,14 +58,14 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
     // New parsing logic for GeminiEprintlnInput
     let parsed_input = parse_macro_input!(input as GeminiEprintlnInput);
     let format_string_literal = parsed_input.format_string;
-    let named_args = parsed_input.named_args; // No longer mutable here
-    let positional_args = parsed_input.positional_args; // No longer mutable here
+    let named_args = parsed_input.named_args;
+    let positional_args = parsed_input.positional_args;
 
     let mut current_segment = String::new();
     let format_string_value = format_string_literal.value();
     let mut chars = format_string_value.chars().peekable();
 
-    let mut context = string_processor::processing_context::ProcessingContext {
+    let mut context = crate::string_processor::processing_context::ProcessingContext {
         chars: &mut chars,
         current_segment: &mut current_segment,
         emojis: &EMOJIS,
@@ -89,12 +89,10 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
                 if let Some(replacement) = context.emojis.get(keyword_name.as_str()) {
                     context.current_segment.push_str(replacement);
                     // Handle placeholders for ::brick::, ::crane::, etc.
-                    if replacement == &"{}" { // For ::brick::
-                        context.placeholders.push(string_processor::PlaceholderType::Positional(false));
-                    } else if replacement == &"{}:?" { // For 🔍/inspect
-                        context.placeholders.push(string_processor::PlaceholderType::Positional(true));
-                    } else if replacement == &"{{}}" { // For ::crane::
-                        // No placeholder needed for literal {{}}
+                    if replacement == &"{{}}" { // For brick
+                        context.placeholders.push(crate::string_processor::PlaceholderType::Positional(false));
+                    } else if replacement == &"{{:?}}" { // For 🔍/inspect
+                        context.placeholders.push(crate::string_processor::PlaceholderType::Positional(true));
                     }
                 } else {
                     // If keyword not found, treat as literal ::keyword::
@@ -126,7 +124,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
                 context.chars.nth(peeked_chars_count); 
                 context.chars.next(); 
                 context.current_segment.push_str("{}"); 
-                context.placeholders.push(string_processor::PlaceholderType::Named(placeholder_name)); 
+                context.placeholders.push(crate::string_processor::PlaceholderType::Named(placeholder_name)); 
             } else {
                 context.current_segment.push(':');
                 context.current_segment.push_str(&placeholder_name);
@@ -134,7 +132,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
         }
     }
 
-    let final_segment = std::mem::take(context.current_segment); // Take ownership of the string
+    let final_segment = std::mem::take(&mut *context.current_segment); // Take ownership of the string
     let processed_format_string = LitStr::new(&final_segment, format_string_literal.span());
 
     // --- NEW ARGUMENT MAPPING LOGIC ---
@@ -149,7 +147,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
         let mut assigned = false;
 
         for (i, placeholder_type) in context.placeholders.iter().enumerate() {
-            if let string_processor::PlaceholderType::Named(name) = placeholder_type {
+            if let crate::string_processor::PlaceholderType::Named(name) = placeholder_type {
                 if name == &ident_str {
                     if final_args[i].is_none() {
                         final_args[i] = Some(expr.clone()); // Clone expr as it might be used multiple times
@@ -176,7 +174,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
     for (i, placeholder_type) in context.placeholders.iter().enumerate() {
         if final_args[i].is_none() {
             match placeholder_type {
-                string_processor::PlaceholderType::Positional(_is_debug) => {
+                crate::string_processor::PlaceholderType::Positional(_is_debug) => {
                     if let Some((ident, expr)) = unclaimed_named_arg_iter.next() {
                         final_args[i] = Some(expr);
                         used_named_args.insert(ident.to_string(), true);
@@ -186,7 +184,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
                         return syn::Error::new_spanned(format_string_literal.clone(), format!("Positional placeholder at index {} is not filled by any argument.", i)).to_compile_error().into();
                     }
                 },
-                string_processor::PlaceholderType::Named(name) => {
+                crate::string_processor::PlaceholderType::Named(name) => {
                     // This case means an explicit named placeholder was not filled in the first pass.
                     // This should be an error.
                     return syn::Error::new_spanned(format_string_literal.clone(), format!("Named placeholder '{}' at index {} is not filled by any argument.", name, i)).to_compile_error().into();

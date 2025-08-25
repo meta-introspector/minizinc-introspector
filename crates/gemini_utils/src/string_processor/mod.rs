@@ -72,13 +72,17 @@ pub fn process_char_for_emojis(
                 }
                 context.current_segment.push_str(replacement);
 
-                // --- NEW LOGIC ---
+                // ---
+                // NEW LOGIC
+                // ---
                 if replacement == &"{}" { // For brick
                     context.placeholders.push(PlaceholderType::Positional(false));
                 } else if replacement == &"{{:?}}" { // For 🔍/inspect
                     context.placeholders.push(PlaceholderType::Positional(true));
                 }
-                // --- END NEW LOGIC ---
+                // ---
+                // END NEW LOGIC
+                // ---
 
                 return; // Keyword matched and processed, return
             }
@@ -103,4 +107,8 @@ pub fn clean_string_for_regex(input: &str) -> String {
     cleaned = cleaned.replace('◆', "");
     // Add more cleaning rules as needed
     cleaned
+}
+
+pub fn clean_non_ascii(input: &str) -> String {
+    input.chars().filter(|c| c.is_ascii()).collect()
 }

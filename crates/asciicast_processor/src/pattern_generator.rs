@@ -17,9 +17,9 @@ pub struct RegexHierarchyNode {
     pub lines: Vec<String>,
 }
 
-pub fn map_to_ascii_names(input: &str) -> String {
-    input.replace("█", "BLOCK").replace("░", "LIGHT_SHADE")
-}
+//pub fn map_to_ascii_names(input: &str) -> String {
+//    input.replace("█", "BLOCK").replace("░", "LIGHT_SHADE")
+//}
 
 pub fn build_hierarchy(lines: Vec<String>, steps: &[usize]) -> RegexHierarchyNode {
     if lines.is_empty() {
