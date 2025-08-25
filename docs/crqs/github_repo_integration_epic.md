@@ -63,18 +63,18 @@ Implement a robust system for integrating GitHub issues, PRs, and review comment
 
 **Implementation Plan:**
 
-1.  **Extend `github-repo-inspector`:**
-    *   Modify `crates/github-repo-inspector/src/main.rs` to add new subcommands for `Issues` and `PullRequests`.
-    *   Define necessary `serde` structs for GitHub Issue, Comment, Pull Request, and Review objects.
-    *   Implement async functions to fetch issues, issue comments, pull requests, and pull request review comments using `reqwest`.
+1.  **Extend `github-repo-inspector` (In Progress):**
+    *   The `crates/zos-stage-github-repo-inspector` crate has been created and its `Cargo.toml` updated to use `octocrab`.
+    *   `src/main.rs` has been refactored to use `octocrab` for fetching workflow runs, jobs, artifacts, and logs.
+    *   **Current Status:** Facing persistent compilation errors related to `octocrab` API usage, specifically with method calls and type mismatches. This is actively being debugged.
 
-2.  **Basic Signal Processing:**
+2.  **Basic Signal Processing (To Do):**
     *   Add logic to identify new issues or new comments since the last fetch.
 
-3.  **Local Data Storage:**
+3.  **Local Data Storage (To Do):**
     *   Implement a simple local caching mechanism (e.g., JSON files) for fetched GitHub data to reduce API calls.
 
-4.  **CRQ Linkage (Manual):**
+4.  **CRQ Linkage (Manual) (To Do):**
     *   Define a convention for manually linking GitHub entities to CRQs (e.g., adding a CRQ ID to an issue description or a specific label).
 
 **Verification Plan:**

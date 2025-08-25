@@ -29,7 +29,11 @@ fn main() -> Result<(), String> {
     // Construct the path to the stage binary
     // For now, assume stage binaries are in target/debug/
     // In a real scenario, this would be more sophisticated (e.g., based on a manifest)
-    let stage_binary_name = format!("zos-stage-{}", stage_identifier);
+    let stage_binary_name = if stage_identifier.starts_with("zos-stage-") {
+        stage_identifier.to_string()
+    } else {
+        format!("zos-stage-{}", stage_identifier)
+    };
     let stage_binary_path = project_root
         .join("target")
         .join("debug")
