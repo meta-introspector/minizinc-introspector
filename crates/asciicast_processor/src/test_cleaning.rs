@@ -5,6 +5,7 @@ use std::io::{self,
 //use serde_yaml;
 
 // Define a struct to hold the extracted message (optional, for future extensibility)
+#[allow(dead_code)]
 #[derive(serde::Deserialize, Debug)]
 struct Message {
     content: String,

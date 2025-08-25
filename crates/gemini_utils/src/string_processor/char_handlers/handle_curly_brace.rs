@@ -5,6 +5,7 @@
 use kantspel_lib::{OPEN_CURLY_BRACE, CLOSE_CURLY_BRACE};
 use super::super::processing_context::ProcessingContext;
 
+#[allow(dead_code)]
 pub fn handle_curly_braces(
     context: &mut ProcessingContext,
 ) {
@@ -23,6 +24,7 @@ pub fn handle_curly_braces(
     }
 }
 
+#[allow(dead_code)]
 pub fn handle_curly_brace_char(
     context: &mut ProcessingContext,
 ) {

@@ -41,6 +41,7 @@ lazy_static! {
 use crate::string_processor::processing_context::ProcessingContext; // Add this import
 
 // Main character processing logic
+#[allow(dead_code)]
 pub fn process_char_for_emojis(
     c: char,
     context: &mut ProcessingContext,
@@ -101,6 +102,7 @@ pub fn process_char_for_emojis(
     }
 }
 
+#[allow(dead_code)]
 pub fn clean_string_for_regex(input: &str) -> String {
     let mut cleaned = input.trim().to_string();
     // Remove the black diamond character (U+25C6)
