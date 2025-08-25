@@ -46,7 +46,7 @@ struct Cli {
     command: Commands,
 }
 
-#[derive(Subcommand, Debug>]
+#[derive(Subcommand, Debug)]
 enum Commands {
     /// Stores a credential
     Store {
@@ -76,13 +76,13 @@ enum Commands {
     },
 }
 
-#[derive(Subcommand, Debug>]
+#[derive(Subcommand, Debug)]
 enum AuthService {
     /// Authenticates with GitHub
     Github,
 }
 
-#[derive(Subcommand, Debug>]
+#[derive(Subcommand, Debug)]
 enum ImportService {
     /// Imports credentials from AWS configuration
     Aws,
