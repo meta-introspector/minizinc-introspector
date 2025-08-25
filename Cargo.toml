@@ -43,6 +43,8 @@ members = [
     "crates/zos-stage-session-manager",
     "crates/zos-stage-process-monitor",
     "crates/zos-stage-github-repo-inspector",
+    "crates/tmux_controller",
+    "crates/credential_manager",
 ]
 
 [patch.crates-io]

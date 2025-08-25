@@ -1,0 +1,13 @@
+[package]
+name = "credential_manager"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+keyring = { path = "../../vendor/keyring" }
+clap = { version = "4.0", features = ["derive"] }
+rpassword = "7.0"
+
+[[bin]]
+name = "cm"
+path = "src/bin/cm.rs"

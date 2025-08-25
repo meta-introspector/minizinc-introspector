@@ -49,3 +49,6 @@
 [submodule "vendor/tmux_interface"]
 	path = vendor/tmux_interface
 	url = https://github.com/AntonGepting/tmux-interface-rs
+[submodule "vendor/keyring"]
+	path = vendor/keyring
+	url = https://github.com/hwchen/keyring-rs

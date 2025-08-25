@@ -1,4 +1,4 @@
-name: Test Tmux TUI
+name: Mini-Act Tmux TUI Test
 
 on:
   workflow_dispatch: # Allows manual triggering
@@ -18,21 +18,12 @@ jobs:
         profile: minimal
         override: true
 
-    - name: Install Tmux
-      run: sudo apt-get update && sudo apt-get install -y tmux
+    - name: Build mini-act
+      run: cargo build --package mini-act
 
-    - name: Build project
-      run: cargo build
-
-    - name: Run Tmux Controller and Capture Output
+    - name: Run mini-act workflow
       run: |
-        # Run tmux_controller and capture its stdout
-        # The tmux_controller will start a tmux session, run zos-stage-process-monitor,
-        # capture its pane, and print the captured content to its own stdout.
-        target/debug/tmux_controller > tmux_tui_output.log 2>&1
-
-    - name: Upload Tmux TUI Output
-      uses: actions/upload-artifact@v3
-      with:
-        name: tmux-tui-output
-        path: tmux_tui_output.log
+        # Execute mini-act with the specific workflow definition
+        # This assumes mini-act can find and execute a workflow file.
+        # We'll define the mini-act-workflow.yml in the next step.
+        target/debug/mini-act --workflow mini-act-workflow.yml

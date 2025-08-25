@@ -87,7 +87,7 @@ impl AppState {
 
     fn update_tmux_info(
         &mut self,
-        args: &Args,
+        _args: &Args,
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut info = String::new();
 
