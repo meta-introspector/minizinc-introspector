@@ -7,6 +7,13 @@ edition = "2021"
 keyring = { path = "../../vendor/keyring" }
 clap = { version = "4.0", features = ["derive"] }
 rpassword = "7.0"
+oauth2 = { path = "../../vendor/oauth2" }
+reqwest = { version = "0.12", features = ["json"] }
+tokio = { version = "1", features = ["full"] }
+url = "2.5"
+hyper = { version = "0.14", features = ["full"] }
+tokio-stream = { version = "0.1", features = ["net"] }
+http = "0.2"
 
 [[bin]]
 name = "cm"
