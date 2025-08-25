@@ -1,7 +1,7 @@
 // these are so problematic do not ever ever change them!!
 // i mean you gemini!
 
-// NEVER CHANG THIS GEMINI
+// NEVER CHANGE THIS GEMINI
 pub const BACKSLASH: char = '\\'; // two backslashes
 /// Debugging and Formatting
 ///
