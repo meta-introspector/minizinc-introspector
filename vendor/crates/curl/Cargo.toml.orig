@@ -1,0 +1,85 @@
+[package]
+name = "curl"
+version = "0.4.49"
+authors = ["Alex Crichton <alex@alexcrichton.com>"]
+license = "MIT"
+repository = "https://github.com/alexcrichton/curl-rust"
+homepage = "https://github.com/alexcrichton/curl-rust"
+documentation = "https://docs.rs/curl"
+description = "Rust bindings to libcurl for making HTTP requests"
+categories = ["api-bindings", "web-programming::http-client"]
+readme = "README.md"
+autotests = true
+edition = "2018"
+
+[dependencies]
+libc = "0.2.42"
+curl-sys = { path = "curl-sys", version = "0.4.83", default-features = false }
+socket2 = "0.6.0"
+
+# Unix platforms use OpenSSL for now to provide SSL functionality
+[target.'cfg(all(unix))'.dependencies]
+openssl-sys = { version = "0.9.64", optional = true }
+openssl-probe = { version = "0.1.2", optional = true }
+
+[target.'cfg(target_env = "msvc")'.dependencies]
+schannel = "0.1.13"
+windows-sys = { version = "0.59", features = ["Win32_Foundation", "Win32_System_LibraryLoader", "Win32_Security_Cryptography"] }
+
+[dev-dependencies]
+mio = "0.6"
+mio-extras = "2.0.3"
+anyhow = "1.0.31"
+
+[workspace]
+members = ["systest"]
+
+[features]
+default = ["ssl"]
+ssl = ["openssl-sys", "openssl-probe", "curl-sys/ssl"] # OpenSSL/system TLS backend
+mesalink = ["curl-sys/mesalink"] # MesaLink TLS backend
+http2 = ["curl-sys/http2"]
+spnego = ["curl-sys/spnego"]
+rustls = ["curl-sys/rustls"]
+static-curl = ["curl-sys/static-curl"]
+static-ssl = ["curl-sys/static-ssl"]
+windows-static-ssl = ["static-curl", "curl-sys/windows-static-ssl"]
+force-system-lib-on-osx = ['curl-sys/force-system-lib-on-osx']
+protocol-ftp = ["curl-sys/protocol-ftp"]
+zlib-ng-compat = ["curl-sys/zlib-ng-compat", "static-curl"]
+upkeep_7_62_0 = ["curl-sys/upkeep_7_62_0"]
+poll_7_68_0 = ["curl-sys/poll_7_68_0"]
+ntlm = ["curl-sys/ntlm"]
+
+[[test]]
+name = "atexit"
+harness = false
+
+[[example]]
+name = "https"
+path = "examples/https.rs"
+
+[[example]]
+name = "ssl_proxy"
+path = "examples/ssl_proxy.rs"
+required-features = ["ssl"]
+
+[[example]]
+name = "ssl_cert_blob"
+path = "examples/ssl_cert_blob.rs"
+required-features = ["ssl"]
+
+[[example]]
+name = "ssl_client_auth"
+path = "examples/ssl_client_auth.rs"
+required-features = []
+
+[[example]]
+name = "aws_sigv4"
+path = "examples/aws_sigv4.rs"
+required-features = ["static-curl", "ssl"]
+
+[[example]]
+name = "multi-dl"
+path = "examples/multi-dl.rs"
+required-features = ["ssl"]

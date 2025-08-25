@@ -1,0 +1,71 @@
+## Changelog
+
+- 0.1.0 (yanked)
+  - First experimental version with only a public-facing load() function.
+- 0.1.1
+  - `configparser` module renamed to `ini`.
+- 0.2.1
+  - `Ini` struct is added along with file-loading, parsing and hashmap functions. Documentation is added.
+- 0.2.2
+  - Fixed docs.
+- 0.3.0
+  - Added `get()` for getting values from the map directly. Docs expanded as well.
+  - Mark `ini::load()` for deprecation.
+- 0.3.1
+  - Updated docs.
+  - All parameters now trimmed before insertion.
+  - Converted `ini::load()` into a wrapper around `Ini`.
+- 0.4.0
+  - Changed `Ini::load()` to return an `Ok(map)` with a clone of the stored `HashMap`.
+- 0.4.1
+  - Fixed and added docs.
+- 0.5.0 (**BETA**) (yanked)
+  - Changelog added.
+  - Support for value-less keys.
+  - `HashMap` values are now `Option<String>` instead of `String` to denote empty values vs. no values.
+  - Documentation greatly improved.
+  - Syntax docs provided.
+  - `new()` and `get()` methods are simplified.
+- 0.5.1
+  - Fixed erroneous docs
+- 0.6.0 (**BETA 2**)
+  - Tests added
+  - `get_map_ref()` and `get_mut_map()` are now added to allow direct `HashMap` index access making things greatly easier.
+- 0.6.1 (yanked)
+  - Fixed tests
+- 0.6.2
+  - Fixed accidental binary delivery increasing crate size by ~20x
+- 0.7.0 (**BETA 3**)
+  - Handy getter functions introduced such as `getint()`, `getuint()`, `getfloat()`, `getbool()`
+  - Fixed docs
+  - Fixed tests
+- 0.7.1
+  - Enable `Eq` and `PartialEq` traits
+  - Improve docs
+- 0.8.0 (**BETA 4**)
+  - Added feature to set default headers.
+  - Added feature to parse from a `String`.
+- 0.8.1
+  - Added support for comments
+  - Improved docs
+  - 0.9.0 (**BETA 5**)
+  - Comment customization is here! (**note:** defaults are now changed to `#` and `;`)
+  - Fixed some docs
+  - Make more docs pass tests
+- 0.9.1
+  - Hotfix to change getters to return `Ok(None)` instead of failing parsing for `None` values
+- 0.9.2
+  - Added `getboolcoerce()` function to parse more `bool`-like values.
+  - Convert some snippets to doctests.
+- 0.10.0 (**BETA 6**)
+  - Added `set()` and `setstr()` methods to add section, key, values to the configuration.
+  - Added more test, minor doc fixes.
+- 0.11.0 (**BETA 7**)
+  - Writing to file is here! (`write()`).
+  - More doctests and docs fixed, next release is planned to be stable.
+- 0.11.1
+  - Hotfix to remove hardcoded default section and use set default section.
+  - Enabled auto-trait implementation of `Default` for empty inits.
+  - Added the `sections()` method to get a vector of sections.
+
+Older changelogs are preserved here, current changelog is present in [README.md](README.md).

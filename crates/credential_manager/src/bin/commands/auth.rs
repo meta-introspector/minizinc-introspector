@@ -1,5 +1,4 @@
 use clap::Subcommand;
-use crate::{store_credential};
 // The following imports are for the OAuth2 logic, which is currently commented out.
 // They will be re-enabled when the OAuth2 functionality is properly integrated.
 // use rpassword::read_password;
@@ -40,7 +39,7 @@ pub enum AuthService {
     Github,
 }
 
-pub async fn handle_auth_command(service: &AuthService) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn handle_auth_command(service: &AuthService) -> Result<(), Box<dyn std::error::Error + Send + Sync + 'static>> {
     match service {
         AuthService::Github => {
             // The following code was commented out by the user.
@@ -107,7 +106,7 @@ pub async fn handle_auth_command(service: &AuthService) -> Result<(), Box<dyn st
             // // Await both the server and the receiver. The server will stop once tx is sent.
             // let (code, state) = tokio::select! {
             //     _ = server_future => {
-            //         // Server stopped, but we didn't get the code/state
+            //         // Server stopped, but we't get the code/state
             //         return Err("Server stopped without receiving authorization code.".into());
             //     },
             //     result = rx => {
