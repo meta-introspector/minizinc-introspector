@@ -43,3 +43,6 @@
 [submodule "vendor/rust-emojicons"]
 	path = vendor/rust-emojicons
 	url = https://github.com/jiri/rust-emojicons
+[submodule "vendor/octocrab"]
+	path = vendor/octocrab
+	url = https://github.com/XAMPPRocky/octocrab.git

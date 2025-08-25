@@ -1,7 +1,7 @@
 use clap::{Parser, Subcommand};
 use tokio;
 use octocrab::{Octocrab, models::workflows::{Run, Job}, models::Artifact, models::RunId, Result};
-use reqwest::Response;
+
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]

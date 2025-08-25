@@ -48,6 +48,7 @@ members = [
 [patch.crates-io]
 hf-dataset-validator = { path = "vendor/hugging-face-dataset-validator-rust" }
 arrow-arith = { path = "vendor/arrow-arith-patched" }
+octocrab = { path = "vendor/octocrab" }
 
 [workspace.dependencies]
 arrow = "56.0.0"

@@ -12,7 +12,10 @@ use ratatui::{
 };
 use std::io;
 use std::time::Duration;
-use tmux_interface::{TmuxInterface, HasSession, ListPanes, CapturePane};
+use tmux_interface::{
+    TmuxInterface,
+    HasSession, ListPanes, CapturePane
+};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
