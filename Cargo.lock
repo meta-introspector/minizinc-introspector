@@ -2264,8 +2264,10 @@ name = "mini-act"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "git2",
  "serde",
  "serde_yaml",
+ "tempfile",
 ]
 
 [[package]]

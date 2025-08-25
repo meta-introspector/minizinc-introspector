@@ -1,0 +1,8 @@
+name: Test Git Checkout
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Perform Git Checkout
+        run: __MINI_ACT_GIT_CHECKOUT__ https://github.com/meta-introspector/libminizinc.git cloned_repo
