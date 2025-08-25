@@ -52,3 +52,6 @@
 [submodule "vendor/keyring"]
 	path = vendor/keyring
 	url = https://github.com/hwchen/keyring-rs
+[submodule "vendor/oauth2"]
+	path = vendor/oauth2
+	url = https://github.com/ramosbugs/oauth2-rs
