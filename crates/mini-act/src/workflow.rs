@@ -1,6 +1,7 @@
 use serde::Deserialize;
 use std::collections::HashMap;
 
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub struct Workflow {
     pub name: String,
@@ -9,6 +10,7 @@ pub struct Workflow {
     pub jobs: HashMap<String, Job>,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 #[serde(untagged)] // Allows for multiple possible structures for 'on'
 pub enum On {
@@ -21,16 +23,19 @@ pub enum On {
     List(Vec<String>),
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub struct Push {
     pub branches: Option<Vec<String>>,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub struct PullRequest {
     pub branches: Option<Vec<String>>,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub struct Job {
     #[serde(rename = "runs-on")]
@@ -38,6 +43,7 @@ pub struct Job {
     pub steps: Vec<Step>,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub struct Step {
     pub name: Option<String>,

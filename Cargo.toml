@@ -38,6 +38,7 @@ members = [
     "regex_extractor", "crates/asciicast_processor", 
     "crates/gemini_utils", "crates/gemini_utils_test", "crates/kantspel_macros", #    "git_diff_analyzer",
     "crates/regex_file_analyzer",
+    "crates/mini-act",
 ]
 
 [patch.crates-io]
