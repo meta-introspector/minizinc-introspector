@@ -39,6 +39,9 @@ members = [
     "crates/gemini_utils", "crates/gemini_utils_test", "crates/kantspel_macros", #    "git_diff_analyzer",
     "crates/regex_file_analyzer",
     "crates/mini-act",
+    "crates/launchpad",
+    "crates/zos-stage-session-manager",
+    "crates/zos-stage-process-monitor",
 ]
 
 [patch.crates-io]
