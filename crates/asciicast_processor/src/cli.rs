@@ -22,6 +22,16 @@ pub enum Commands {
     /// Counts raw matches in the input file
     #[command(name = "count-raw")]
     CountRaw(CountRawArgs),
+    /// Extracts all output lines from an asciicast file to a text file
+    #[command(name = "extract-lines")]
+    ExtractLines(ExtractLinesArgs),
+}
+
+#[derive(Parser, Debug)]
+pub struct ExtractLinesArgs {
+    /// Output file to save the extracted lines
+    #[arg(long)]
+    pub output_file: PathBuf,
 }
 
 #[derive(Parser, Debug)]

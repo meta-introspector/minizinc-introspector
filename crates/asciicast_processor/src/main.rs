@@ -16,6 +16,7 @@ use commands::generate::handle_generate_command;
 use commands::analyze::handle_analyze_command;
 use commands::filter::handle_filter_command;
 use commands::count_raw::handle_count_raw_command;
+use commands::extract_lines::handle_extract_lines_command;
 
 fn main() -> Result<()> {
     let args = Args::parse();
@@ -54,7 +55,11 @@ fn main() -> Result<()> {
             count_raw_args.input_file = args.input_file;
             handle_count_raw_command(&count_raw_args)?;
         },
+        Commands::ExtractLines(extract_lines_args) => {
+            handle_extract_lines_command(&extract_lines_args, &asciicast_data.events)?;
+        },
     }
 
     Ok(())
 }
+
