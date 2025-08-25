@@ -1462,6 +1462,8 @@ dependencies = [
  "oauth2",
  "reqwest",
  "rpassword",
+ "serde",
+ "serde_yaml",
  "tokio",
  "tokio-stream",
  "url",
