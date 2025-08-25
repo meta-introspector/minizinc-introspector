@@ -1,6 +1,7 @@
 use clap::{Parser, Subcommand};
 use credential_manager::{store_credential, retrieve_credential};
 use rpassword::read_password;
+use std::sync::{Arc, Mutex};
 use oauth2::{
     AuthUrl,
     AuthorizationCode,
@@ -122,13 +123,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                     // Start a local server to receive the redirect
                     let (tx, rx) = oneshot::channel();
+                    let tx_arc = Arc::new(Mutex::new(Some(tx))); // Wrap tx in Arc<Mutex<Option<>>>
                     let addr = SocketAddr::from(([127, 0, 0, 1], 8080));
 
                     let server_future = Server::bind(&addr).serve(make_service_fn(move |_conn| {
-                        let tx = tx; // Move tx into this closure
+                        let tx_arc = tx_arc.clone(); // Clone the Arc for each connection
                         async move {
                             Ok::<_, Infallible>(service_fn(move |req: Request<Body>| {
-                                let tx = tx; // Move tx into this closure
+                                let tx_arc = tx_arc.clone(); // Clone the Arc for each request
                                 async move {
                                     let query = req.uri().query().unwrap_or("");
                                     let query_params: Vec<(_, _)> = url::form_urlencoded::parse(query.as_bytes()).into_owned().collect();
@@ -138,7 +140,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
                                     if let (Some(code), Some(state)) = (code, state) {
                                         // Send the code and state back to the main thread
-                                        let _ = tx.send((code, state));
+                                        if let Some(sender) = tx_arc.lock().unwrap().take() {
+                                            let _ = sender.send((code, state));
+                                        }
                                         Ok::<_, Infallible>(Response::new(Body::from("Authorization successful! You can close this window.")))
                                     } else {
                                         Ok::<_, Infallible>(Response::builder()
