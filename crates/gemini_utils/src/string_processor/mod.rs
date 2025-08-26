@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub enum PlaceholderType {
     Named(String), // For :key: placeholders
     Positional(bool), // For {} or {:?} (bool indicates if it's debug format)
@@ -110,4 +111,3 @@ pub fn clean_string_for_regex(input: &str) -> String {
     // Add more cleaning rules as needed
     cleaned
 }
-

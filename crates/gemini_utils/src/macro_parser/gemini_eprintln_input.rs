@@ -1,5 +1,5 @@
-use syn::{parse::{Parse, ParseStream}, LitStr, Token, Ident, Expr};
-//use syn::punctuated::Punctuated;
+use syn::{parse::{Parse, ParseStream}, LitStr, Token, Ident, Expr, Path, PathSegment};
+use syn::punctuated::Punctuated;
 
 pub struct GeminiEprintlnInput {
     pub format_string: LitStr,
@@ -18,21 +18,32 @@ impl Parse for GeminiEprintlnInput {
             input.parse::<Token![,]>()?; // Consume the comma
 
             while !input.is_empty() {
-                // Attempt to parse as a named argument (ident: expr)
-                if input.peek(Ident) && input.peek2(Token![:]) {
-                    let ident: Ident = input.parse()?;
-                    input.parse::<Token![:]>()?; // Consume the colon
-                    let expr: Expr = input.parse()?;
-                    named_args.push((ident, expr));
-                } else if input.peek(Ident) && input.peek2(Token![=]) {
-                    // Keep support for ident = expr for backward compatibility if needed, or remove
-                    let ident: Ident = input.parse()?;
-                    input.parse::<Token![=]>()?; // Consume the equals
-                    let expr: Expr = input.parse()?;
-                    named_args.push((ident, expr));
-                }
-                else {
-                    // It's a positional argument
+                if input.peek(Ident) {
+                    let first_token: Ident = input.parse()?;
+                    if input.peek(Token![:]) {
+                        input.parse::<Token![:]>()?; // Consume the colon
+                        let expr: Expr = input.parse()?;
+                        named_args.push((first_token, expr));
+                    } else if input.peek(Token![=]) {
+                        input.parse::<Token![=]>()?; // Consume the equals
+                        let expr: Expr = input.parse()?;
+                        named_args.push((first_token, expr));
+                    } else {
+                        // It's a positional argument that started with an Ident
+                        let mut segments = Punctuated::new();
+                        segments.push(PathSegment::from(first_token));
+                        let path = Path {
+                            leading_colon: None,
+                            segments,
+                        };
+                        positional_args.push(Expr::Path(syn::ExprPath {
+                            attrs: Vec::new(),
+                            qself: None,
+                            path,
+                        }));
+                    }
+                } else {
+                    // It's a positional argument that doesn't start with an Ident (e.g., a literal, a function call)
                     let expr: Expr = input.parse()?;
                     positional_args.push(expr);
                 }
@@ -40,7 +51,6 @@ impl Parse for GeminiEprintlnInput {
                 if input.peek(Token![,]) {
                     input.parse::<Token![,]>()?; // Consume the comma
                 } else if !input.is_empty() {
-                    // If there are more tokens but no comma, it's a syntax error
                     return Err(input.error("Expected comma or end of input"));
                 }
             }
