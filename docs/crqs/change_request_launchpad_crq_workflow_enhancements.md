@@ -25,22 +25,38 @@ This CRQ documents the ongoing enhancements to the `launchpad` tool, focusing on
 *   **CI/CD Workflow Update:**
     *   `.github/workflows/launch_gemini_broadcast_crq.yml`: Updated to reflect the new `launchpad` invocation with `run-gemini` and `--via doh`.
 
+*   **Debugging and Fixes:**
+    *   Resolved `E0277` (`()` is not a future) error in `crates/launchpad/src/launchpad_main.rs` by ensuring `gemini_cli_runner::run_gemini_cli` returns a `Result` and is correctly `await`ed.
+    *   Fixed `E0063` (missing fields in initializer) error in `crates/launchpad/src/launchpad_main.rs` by correctly initializing `crq_path`, `target_repo_url`, and `workflow_file_in_repo` in the `LaunchpadArgs` constructor.
+    *   Addressed `E0382` (borrow of partially moved value) error in `crates/launchpad/src/launchpad_main.rs` by cloning `args.stage_args` before it is moved.
+    *   Removed unused imports and unnecessary `mut` keywords in `crates/launchpad/src/gemini_cli_options.rs`.
+    *   Removed unused functions (`run_cargo_command`, `run_tmux_command`, `run_sandboxed_command`) from `crates/launchpad/src/orchestrator.rs` by moving them to `crates/launchpad/src/orchestrator_utils.rs`.
+    *   Removed unused import (`Job`) from `crates/mini-act/src/runner/mod.rs`.
+    *   Removed unused import (`std::env`) from `crates/zos-stage-doh/src/main.rs`.
+    *   Removed unused function (`print_error`) from `crates/tmux_controller/src/commands/output_formatter.rs`.
+
 **Next Steps (Future Work):**
 
-1.  **Implement `simulate-gha-workflow` Stage in `launchpad`:**
-    *   Add a new stage to `crates/launchpad/src/launchpad_main.rs` (e.g., `simulate-gha-workflow`).
+The project should now build successfully. The immediate next steps are:
+
+1.  **Verify `launchpad` Build and `run-gemini` Stage:**
+    *   Run `cargo build` to confirm successful compilation.
+    *   Test the `run-gemini` stage to ensure Gemini launches correctly in a `tmux` session.
+        *   **Command:** `cargo run --package launchpad -- run-gemini --model gemini-2.5-pro --mode tmux --via dum`
+        *   **Verification:** Attach to the `tmux` session (`tmux attach -t gemini-session`) to confirm Gemini is running.
+2.  **Implement `simulate-gha-workflow` Stage in `launchpad`:**
     *   This stage will be responsible for:
         *   Reading a specified CRQ file (e.g., `docs/crqs/miniact_local_gha_simulation.md`).
         *   Extracting the GitHub Action workflow file path and any `inputs` from the CRQ.
         *   Cloning or fetching the target repository into a temporary sandbox directory.
         *   Invoking `zos-stage-session-manager` with arguments to launch `MiniAct` within `tmux`, passing the workflow file and inputs.
-2.  **Implement `tmux` Integration in `zos-stage-session-manager`:**
+3.  **Implement `tmux` Integration in `zos-stage-session-manager`:**
     *   `zos-stage-session-manager` will be enhanced to handle:
         *   Creation and management of `tmux` sessions.
         *   Launching `MiniAct` within the `tmux` session.
         *   Passing the GitHub Action workflow file and inputs to `MiniAct`.
         *   Implementing session recording capabilities (e.g., `tmux pipe-pane`).
-3.  **`MiniAct` Integration and Execution:**
+4.  **`MiniAct` Integration and Execution:**
     *   `MiniAct` will then parse and execute the GitHub Action workflow within the sandbox, as outlined in `docs/crqs/miniact_local_gha_simulation.md`.
 
 **Dependencies/Prerequisites:**
