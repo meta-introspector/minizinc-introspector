@@ -27,8 +27,7 @@ enum Commands {
         session_name: String,
     },
     /// Manages Gemini CLI interactions within tmux sessions
-    #[command(subcommand)]
-    Gemini(gemini_commands::Commands),
+    Gemini(gemini_commands::SendGeminiCommandArgs),
 }
 
 #[tokio::main]

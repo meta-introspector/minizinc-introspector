@@ -1,6 +1,6 @@
 use clap::Subcommand;
 use crate::store_credential;
-use rpassword::read_password;
+// use rpassword::read_password;
 use std::sync::{Arc, Mutex};
 use oauth2::{
     AuthUrl,
@@ -8,14 +8,13 @@ use oauth2::{
     ClientId,
     ClientSecret,
     CsrfToken,
-    PkceCodeChallenge,
+    // PkceCodeChallenge,
     RedirectUrl,
     Scope,
     TokenResponse,
     TokenUrl,
 };
 use oauth2::basic::BasicClient;
-use url::Url;
 
 use hyper::{
     Body,
@@ -28,7 +27,7 @@ use hyper::service::{make_service_fn, service_fn};
 use std::convert::Infallible;
 use std::net::SocketAddr;
 use tokio::sync::oneshot;
-use tokio_stream::wrappers::TcpListenerStream;
+
 use reqwest::Client as ReqwestClient; // Import ReqwestClient
 use oauth2::http::Version; // Import http::Version
 
@@ -127,6 +126,7 @@ pub async fn handle_auth_command(service: &AuthService) -> Result<(), Box<dyn st
 
                     let status = reqwest_response.status();
                     let headers = reqwest_response.headers().clone();
+                    dbg!(&headers);
                     let chunks = reqwest_response.bytes().await.map_err(|e| oauth2::RequestTokenError::Other(e.to_string()))?;
                     let body = chunks.to_vec();
 
