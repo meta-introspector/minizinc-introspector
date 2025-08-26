@@ -31,7 +31,7 @@ mod app_logic {
 
         match cli.command {
             Some(Commands::GeminiContext { args }) => {
-                gemini_eprintln!("GeminiContext subcommand called with args: 🔍", args);
+                eprintln!("GeminiContext subcommand called with args: {:?}", args);
             },
             None => {
                 // Original workflow execution logic

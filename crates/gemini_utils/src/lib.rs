@@ -61,12 +61,12 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
     let named_args = parsed_input.named_args;
     let positional_args = parsed_input.positional_args;
 
-    eprintln!("DEBUG: Parsed named_args: {}",
+    eprintln!("DEBUG: Parsed named_args: {:?}",
 	      named_args.iter().map(|(i, e)|
 				    format!("{}: {:?}",
 					    i,
 					    e.to_token_stream())).collect::<Vec<_>>());
-    eprintln!("DEBUG: Parsed positional_args: {}", positional_args.iter().map(|e| e.to_token_stream().to_string()).collect::<Vec<_>>());
+    eprintln!("DEBUG: Parsed positional_args: {:?}", positional_args.iter().map(|e| e.to_token_stream().to_string()).collect::<Vec<_>>());
 
     let mut current_segment = String::new();
     let format_string_value = format_string_literal.value();
@@ -187,7 +187,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
 
     for (i, placeholder_type) in context.placeholders.iter().enumerate() {
         eprintln!("DEBUG: Loop iteration {} - Placeholder type: {}", i, format!("{:?}", placeholder_type));
-        eprintln!("DEBUG: Loop iteration {} - final_args[{}]: {}", i, i, final_args[i].as_ref().map(|e| e.to_token_stream().to_string()));
+        eprintln!("DEBUG: Loop iteration {} - final_args[{}]: {:?}", i, i, final_args[i].as_ref().map(|e| e.to_token_stream().to_string()));
 
         if final_args[i].is_none() {
             match placeholder_type {
