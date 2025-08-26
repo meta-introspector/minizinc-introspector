@@ -73,11 +73,11 @@ fn run_job(job: &Job, env: &Option<HashMap<String, String>>) {
                 let output = command.output().expect("Failed to execute command");
 
                 println!("Status: {}
-", output.status); // Added newline
+", output.status);
                 println!("Stdout: {}
-", String::from_utf8_lossy(&output.stdout)); // Added newline
+", String::from_utf8_lossy(&output.stdout));
                 println!("Stderr: {}
-", String::from_utf8_lossy(&output.stderr)); // Added newline
+", String::from_utf8_lossy(&output.stderr));
             }
         }
     }

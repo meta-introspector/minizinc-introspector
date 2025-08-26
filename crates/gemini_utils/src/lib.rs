@@ -40,11 +40,13 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
     let mut named_args = parsed_input.named_args; // Make mutable
     let positional_args = parsed_input.positional_args;
 
+    #[cfg(feature = "debug")]
     eprintln!("DEBUG: Parsed named_args: {:?}",
               named_args.iter().map(|(i, e)|
                                     format!("{}: {:?}",
                                             i,
                                             e.to_token_stream())).collect::<Vec<_>>());
+    #[cfg(feature = "debug")]
     eprintln!("DEBUG: Parsed positional_args: {:?}", positional_args.iter().map(|e| e.to_token_stream().to_string()).collect::<Vec<_>>());
 
     let mut current_segment = String::new();
@@ -193,24 +195,32 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
     let mut positional_arg_iter = positional_args.into_iter();
     let mut unclaimed_named_arg_iter = unclaimed_named_args.into_iter();
 
+    #[cfg(feature = "debug")]
     eprintln!("DEBUG: Before loop - positional_arg_iter has next: {}", positional_arg_iter.clone().next().is_some());
+    #[cfg(feature = "debug")]
     eprintln!("DEBUG: Before loop - unclaimed_named_arg_iter has next: {}", unclaimed_named_arg_iter.clone().next().is_some());
 
     for (i, placeholder_type) in context.placeholders.iter().enumerate() {
+	#[cfg(feature = "debug")]
         eprintln!("DEBUG: Loop iteration {} - Placeholder type: {}", i, format!("{:?}", placeholder_type));
+	#[cfg(feature = "debug")]
         eprintln!("DEBUG: Loop iteration {} - final_args[{}]: {:?}", i, i, final_args[i].as_ref().map(|e| e.to_token_stream().to_string()));
 
         if final_args[i].is_none() {
             match placeholder_type {
                 crate::string_processor::PlaceholderType::Positional(_is_debug) => {
+		    #[cfg(feature = "debug")]
                     eprintln!("DEBUG: Loop iteration {} - Positional placeholder. positional_arg_iter has next: {}", i, positional_arg_iter.clone().next().is_some());
+		    #[cfg(feature = "debug")]
                     eprintln!("DEBUG: Loop iteration {} - Positional placeholder. unclaimed_named_arg_iter has next: {}", i, unclaimed_named_arg_iter.clone().next().is_some());
 
                     if let Some((ident, expr)) = unclaimed_named_arg_iter.next() {
+			#[cfg(feature = "debug")]
                         eprintln!("DEBUG: Loop iteration {} - Filling with unclaimed named arg: {}", i, ident);
                         final_args[i] = Some(expr);
                         used_named_args.insert(ident.to_string(), true);
                     } else if let Some(expr) = positional_arg_iter.next() {
+			#[cfg(feature = "debug")]
                         eprintln!("DEBUG: Loop iteration {} - Filling with positional arg: {}", i, expr.to_token_stream().to_string());
                         final_args[i] = Some(expr);
                     } else {
@@ -219,6 +229,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
                     }
                 },
                 crate::string_processor::PlaceholderType::Named(name) => {
+		    #[cfg(feature = "debug")]
                     eprintln!("DEBUG: Loop iteration {} - Named placeholder: {}", i, name);
                     // If a named placeholder is not filled by an explicit argument, auto-generate an empty string
                     final_args[i] = Some(syn::parse_quote!{""});
@@ -227,7 +238,9 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
         }
     }
 
+    #[cfg(feature = "debug")]
     eprintln!("DEBUG: After loop - positional_arg_iter has next: {}", positional_arg_iter.clone().next().is_some());
+    #[cfg(feature = "debug")]
     eprintln!("DEBUG: After loop - unclaimed_named_arg_iter has next: {}", unclaimed_named_arg_iter.clone().next().is_some());
 
     // Check for unassigned placeholders (should be caught by previous loops, but as a safeguard)

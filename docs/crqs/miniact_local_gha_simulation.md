@@ -25,19 +25,25 @@ Develop a new capability within MiniAct and the `launchpad` tool to simulate the
     *   Support for all GitHub Actions features (focus on `run` steps).
 
 **High-Level Plan/Approach:**
-1.  **MiniAct Command Parsing:** Enhance MiniAct's command-line argument parser to recognize `--miniact` and `--task <workflow_file.yml>`.
-2.  **Workflow File Parsing:** Implement a YAML parser within MiniAct to read and understand the structure of GitHub Action workflow files.
+1.  **MiniAct Command Parsing:**
+    *   Extend `crates/mini-act/src/main.rs` to add a new subcommand or argument to `clap` for `launchpad --miniact --task <workflow_file.yml>`.
+    *   Leverage `crates/mini-act/src/gemini_context_args.rs` as a reference for defining new command-line arguments.
+2.  **Workflow File Parsing:**
+    *   Utilize the existing `serde_yaml` dependency (already in `crates/mini-act/Cargo.toml`) to parse the `.yml` workflow file.
+    *   Adapt the `crates/mini-act/src/workflow.rs` structs (`Workflow`, `Job`, `Step`) to fully capture the necessary GitHub Actions workflow syntax, especially `on:workflow_dispatch:inputs`.
 3.  **Step Extraction and Execution:**
-    *   Identify the `jobs` and `steps` within the workflow.
-    *   For each `run` step, extract the command.
-    *   Execute the extracted command using MiniAct's existing shell command execution capabilities.
-4.  **Input Handling:** Develop a mechanism to map `workflow_dispatch` inputs to environment variables or command-line arguments for the executed `run` steps.
-5.  **Environment Simulation (Basic):** Set up a minimal environment that mimics common GitHub Actions runner variables (e.g., `GITHUB_WORKSPACE`).
+    *   Enhance `crates/mini-act/src/runner.rs` to iterate through the parsed workflow's jobs and steps.
+    *   For each `run` step, execute the command using `std::process::Command`, similar to how `runner.rs` currently handles `run` commands.
+4.  **Input Handling:**
+    *   Develop a mechanism to read `inputs` from the `workflow_dispatch` section of the parsed workflow.
+    *   Map these inputs to environment variables or command-line arguments that will be available to the executed `run` steps.
+5.  **Environment Simulation (Basic):**
+    *   Set up a minimal environment for the executed commands, including basic GitHub Actions runner variables (e.g., `GITHUB_WORKSPACE`).
 
 **Dependencies/Prerequisites:**
-*   Existing MiniAct framework.
-*   A YAML parsing library for Rust (e.g., `serde_yaml`).
-*   Understanding of GitHub Actions workflow syntax.
+*   Existing MiniAct framework (`crates/mini-act`).
+*   Rust `serde_yaml` crate (already a dependency).
+*   Familiarity with GitHub Actions workflow syntax and execution model.
 
 **Success Criteria:**
 *   MiniAct successfully parses and executes a simple GitHub Action workflow file locally.

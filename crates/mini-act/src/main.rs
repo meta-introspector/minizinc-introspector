@@ -20,6 +20,11 @@ struct Cli {
 enum Commands {
     /// Generates Gemini CLI calls with MiniZinc-sized contexts
     GeminiContext { #[clap(flatten)] args: gemini_context_args::GeminiContextArgs },
+    /// Simulate a GitHub Actions workflow locally
+    LocalGhaSimulation {
+        #[arg(long)]
+        workflow_file: String,
+    },
 }
 
 #[kantspel_transform]
@@ -32,6 +37,33 @@ mod app_logic {
         match cli.command {
             Some(Commands::GeminiContext { args }) => {
                 eprintln!("GeminiContext subcommand called with args: {:?}", args);
+            },
+            Some(Commands::LocalGhaSimulation { workflow_file }) => {
+                gemini_eprintln!("Simulating GitHub Actions workflow locally: :workflow_file:", workflow_file = workflow_file);
+
+                let workflow_content = match fs::read_to_string(&workflow_file) {
+                    Ok(content) => content,
+                    Err(e) => {
+                        gemini_eprintln!("Error reading workflow file :workflow_file: :brick:: :error_message:",
+                            workflow_file = workflow_file,
+                            error_message = format!("{:?}", e)
+                        );
+                        return;
+                    }
+                };
+
+                let workflow: workflow::Workflow = match serde_yaml::from_str(&workflow_content) {
+                    Ok(wf) => wf,
+                    Err(e) => {
+                        gemini_eprintln!("Error parsing workflow file :workflow_file: :brick:: :error_message:",
+                            workflow_file = workflow_file,
+                            error_message = format!("{:?}", e)
+                        );
+                        return;
+                    }
+                };
+
+                runner::run_workflow(&workflow);
             },
             None => {
                 // Original workflow execution logic

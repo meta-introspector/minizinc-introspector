@@ -18,8 +18,10 @@ pub enum On {
     Push(Option<Push>),
     #[serde(rename = "pull_request")]
     PullRequest(Option<PullRequest>),
+    #[serde(rename = "workflow_dispatch")]
+    WorkflowDispatch(Option<WorkflowDispatch>),
     // Add other trigger types as needed
-    String(String), // For simple 'on: push' or 'on: [push, pull_request]'
+    String(String),
     List(Vec<String>),
 }
 
@@ -37,6 +39,23 @@ pub struct PullRequest {
 
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
+pub struct WorkflowDispatch {
+    pub inputs: Option<HashMap<String, WorkflowDispatchInput>>,
+}
+
+#[allow(dead_code)]
+#[derive(Debug, Deserialize)]
+pub struct WorkflowDispatchInput {
+    pub description: Option<String>,
+    pub required: Option<bool>,
+    pub default: Option<String>,
+    #[serde(rename = "type")]
+    pub input_type: Option<String>,
+}
+
+
+#[allow(dead_code)]
+#[derive(Debug, Deserialize)]
 pub struct Job {
     #[serde(rename = "runs-on")]
     pub runs_on: String,
@@ -49,4 +68,5 @@ pub struct Step {
     pub name: Option<String>,
     pub uses: Option<String>,
     pub run: Option<String>,
+    pub env: Option<HashMap<String, String>>,
 }

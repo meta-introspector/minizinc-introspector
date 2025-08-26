@@ -11,6 +11,7 @@ impl Parse for Input {
     fn parse(input: ParseStream) -> syn::Result<Self> {
         let format_string: LitStr = input.parse()?;
         // Debug print for format_string
+	#[cfg(feature = "debug")]
         eprintln!("DEBUG: Parsed format_string: {:?}", format_string.value());
 
         let named_args = if input.peek(Token![,]) {
@@ -20,6 +21,7 @@ impl Parse for Input {
             Some(args)
         } else {
             // Debug print when no named_args
+	    #[cfg(feature = "debug")]
             eprintln!("DEBUG: No named_args found.");
             None
         };

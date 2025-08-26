@@ -1,0 +1,29 @@
+name: Test Local GHA Simulation
+
+on:
+  workflow_dispatch:
+    inputs:
+      my_input:
+        description: 'A test input'
+        required: true
+        default: 'default_value'
+      another_input:
+        description: 'Another test input'
+        required: false
+        default: 'another_default'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Print inputs
+      run: |
+        echo "My Input: ${{ github.event.inputs.my_input }}"
+        echo "Another Input: ${{ github.event.inputs.another_input }}"
+        echo "GITHUB_WORKSPACE: ${{ github.workspace }}"
+    - name: Run a simple command
+      run: echo "Hello from MiniAct GHA simulation!"
+    - name: Check environment variable
+      run: echo "My Env Var: $MY_ENV_VAR"
+      env:
+        MY_ENV_VAR: "This is a custom env var"
