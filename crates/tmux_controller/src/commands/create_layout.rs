@@ -15,27 +15,27 @@ pub async fn handle_create_layout_command() -> Result<(), Box<dyn std::error::Er
     let _ = Tmux::with_command(kill_others_command).output();
 
 
-    // 2. Split horizontally to create two panes
+    // 2. Split vertically to create two panes
     let mut split_command = TmuxCommand::new();
     split_command.name("split-window");
-    split_command.push_flag("-h"); // Horizontal split
+    split_command.push_flag("-v"); // Vertical split
     Tmux::with_command(split_command).output()?;
-    output_formatter::print_success("Window split horizontally.");
+    output_formatter::print_success("Window split vertically.");
 
     // 3. Resize panes to create one large and one small pane
-    // Assuming the active pane is the left one after the split.
-    // Make the left pane 70% width, right pane 30%.
+    // Assuming the active pane is the upper one after the split.
+    // Make the upper pane 70% height, lower pane 30%.
     let mut resize_command = TmuxCommand::new();
     resize_command.name("resize-pane");
-    resize_command.push_flag("-x"); // Resize horizontally
-    resize_command.push_param("70%"); // Set width to 70%
+    resize_command.push_flag("-y"); // Resize vertically
+    resize_command.push_param("70%"); // Set height to 70%
     Tmux::with_command(resize_command).output()?;
     output_formatter::print_success("Panes resized to 70/30 split.");
 
-    // 4. Select the large pane (left one)
+    // 4. Select the large pane (upper one)
     let mut select_pane_command = TmuxCommand::new();
     select_pane_command.name("select-pane");
-    select_pane_command.push_flag("-L"); // Select left pane
+    select_pane_command.push_flag("-U"); // Select upper pane
     Tmux::with_command(select_pane_command).output()?;
     output_formatter::print_success("Selected large pane.");
 
