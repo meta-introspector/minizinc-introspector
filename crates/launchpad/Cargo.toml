@@ -3,5 +3,8 @@ name = "launchpad"
 version = "0.1.0"
 edition = "2021"
 
+[dependencies]
+dum = { path = "../../vendor/dum" }
+
 # This crate is intended to be a minimal loader, so it should have minimal dependencies.
 # It will primarily use functionality from the Rust standard library.

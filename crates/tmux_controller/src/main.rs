@@ -1,9 +1,7 @@
 use clap::{Parser, Subcommand};
-use tmux_interface::Tmux;
 
 mod gemini_commands;
 mod commands;
-use commands::output_formatter;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]

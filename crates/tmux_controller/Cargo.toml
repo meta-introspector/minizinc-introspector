@@ -9,3 +9,4 @@ tokio = { version = "1", features = ["full"] }
 tmux_interface = { path = "../../vendor/tmux_interface" }
 gemini_cli_manager = { path = "../gemini_cli_manager" }
 uuid = { version = "0.8", features = ["v4"] }
+chrono = "0.4"

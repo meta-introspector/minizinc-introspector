@@ -7,6 +7,6 @@ pub async fn handle_kill_command(session_name: &str) -> Result<(), Box<dyn std::
     output_formatter::print_header("Current tmux sessions (after killing)");
     let output = Tmux::with_command(ListSessions::new()).output()?;
     output_formatter::print_info(&String::from_utf8_lossy(&output.stdout()));
-    output_formatter::print_footer("");
+    output_formatter::print_footer();
     Ok(())
 }

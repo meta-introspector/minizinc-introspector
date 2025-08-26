@@ -1,12 +1,10 @@
 use std::env;
 use std::process::{Command, Stdio};
-use dum::run;
-use dum::install;
-use dum::args::{AppArgs, parse_args};
 use crate::orchestrator;
 use crate::narrator;
+use crate::dum_wrappers::run_main as dum_run_main;
 
-fn main() -> Result<(), String> {
+pub async fn run_launchpad() -> Result<(), String> {
     // Determine the project root dynamically
     let current_exe_path = env::current_exe()
         .map_err(|e| format!("Failed to get current executable path: {e}"))?;
@@ -58,7 +56,7 @@ fn main() -> Result<(), String> {
                 .join(&stage_binary_name);
 
             if !stage_binary_path.exists() {
-                return Err(format!("Stage binary not found: {:?}", stage_binary_path));
+                return Err(format!("Stage binary not found: {:?}\n", stage_binary_path));
             }
 
             // Execute the stage binary
@@ -67,15 +65,15 @@ fn main() -> Result<(), String> {
             command.stdout(Stdio::inherit());
             command.stderr(Stdio::inherit());
 
-            narrator::livestream_output(&format!("Launching stage: {:?} with args: {:?}", stage_binary_path, stage_args));
+            narrator::livestream_output(&format!("Launching stage: {:?} with args: {:?}\n", stage_binary_path, stage_args));
 
             let status = command.status()
-                .map_err(|e| format!("Failed to execute stage binary: {e}"))?;
+                .map_err(|e| format!("Failed to execute stage binary: {}\n", e))?;
 
             if status.success() {
                 Ok(())
             } else {
-                Err(format!("Stage binary exited with non-zero status: {:?}", status.code()))
+                Err(format!("Stage binary exited with non-zero status: {:?}\n", status.code()))
             }
         }
     }

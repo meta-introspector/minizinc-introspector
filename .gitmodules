@@ -55,3 +55,6 @@
 [submodule "vendor/oauth2"]
 	path = vendor/oauth2
 	url = https://github.com/ramosbugs/oauth2-rs
+[submodule "vendor/dum"]
+	path = vendor/dum
+	url = https://github.com/egoist/dum
