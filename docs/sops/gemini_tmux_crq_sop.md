@@ -1,7 +1,7 @@
 # Standard Operating Procedure: Launching Gemini in Tmux and Assigning CRQs
 
 ## 1. Overview
-This SOP outlines the process for launching a dedicated Gemini CLI instance within a new tmux session and assigning tasks to it via Change Request (CRQ) files. This enables parallel execution of tasks and leverages specialized Gemini instances for specific roles.
+This SOP outlines the process for launching a dedicated Gemini CLI instance within a new tmux session and assigning tasks to it via Change Request (CRQ) files. It also covers advanced tmux control directly from the `tmux_controller`. This enables parallel execution of tasks, leverages specialized Gemini instances for specific roles, and provides fine-grained control over your tmux environment.
 
 ## 2. Prerequisites
 - Rust toolchain installed.
@@ -12,7 +12,7 @@ This SOP outlines the process for launching a dedicated Gemini CLI instance with
 ## 3. Procedure
 
 ### 3.1. Build `tmux_controller` (if not already built or updated)
-Ensure the `tmux_controller` crate is built to incorporate the latest features, including CRQ handling.
+Ensure the `tmux_controller` crate is built to incorporate the latest features, including CRQ handling and modularized tmux commands.
 
 ```bash
 cargo build --release -p tmux_controller
@@ -52,6 +52,44 @@ Assign a task to the Gemini instance by providing the name of a CRQ Markdown fil
 **Example:**
 ```bash
 ./target/release/tmux_controller gemini --session-name gemini-pro-helper --crq change_request_oauth_rust_module.md
+```
+
+### 3.5. Split Current Tmux Window Vertically
+Splits the current tmux window into two vertical panes.
+
+```bash
+./target/release/tmux_controller split-vertical
+```
+
+### 3.6. Split Current Tmux Window Horizontally
+Splits the current tmux window into two horizontal panes.
+
+```bash
+./target/release/tmux_controller split-horizontal
+```
+
+### 3.7. Select and Display a Tmux Session
+Switches your current tmux client to the specified session, effectively bringing it to the foreground.
+
+```bash
+./target/release/tmux_controller select-session --session-name <session_name>
+```
+
+**Example:**
+```bash
+./target/release/tmux_controller select-session --session-name gemini-pro-helper
+```
+
+### 3.8. Split Window and Show Session
+This command combines splitting the current window (horizontally by default) and then attaching to the specified session in the newly created pane. This is useful for quickly setting up a view to monitor your helper.
+
+```bash
+./target/release/tmux_controller show-session --session-name <session_name>
+```
+
+**Example:**
+```bash
+./target/release/tmux_controller show-session --session-name gemini-session-helper
 ```
 
 ## 4. Verification

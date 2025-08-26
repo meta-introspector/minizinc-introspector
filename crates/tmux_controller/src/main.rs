@@ -1,7 +1,8 @@
 use clap::{Parser, Subcommand};
-use tmux_interface::{Tmux, NewSession, ListSessions, KillSession, TmuxCommand};
+use tmux_interface::Tmux;
 
 mod gemini_commands;
+mod commands;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -39,6 +40,22 @@ enum Commands {
     },
     /// Splits the current tmux window vertically
     SplitVertical,
+    /// Splits the current tmux window horizontally
+    SplitHorizontal,
+    /// Selects and displays a specific tmux session
+    SelectSession {
+        /// Name of the tmux session to select
+        #[arg(short, long)]
+        session_name: String,
+    },
+    /// Splits the current window and shows the specified session in the new pane
+    ShowSession {
+        /// Name of the session to show
+        #[arg(short, long)]
+        session_name: String,
+    },
+    /// Captures and reports the textual output from all panes in all active tmux sessions.
+    CaptureSessionOutput,
 }
 
 #[tokio::main]
@@ -47,65 +64,34 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     match &cli.command {
         Commands::Create { session_name } => {
-            println!("--- Current tmux sessions (before creating new session) ---");
-            let output_before = Tmux::with_command(ListSessions::new()).output()?;
-            println!("{}", String::from_utf8_lossy(&output_before.stdout()));
-            println!("----------------------------------------------------------");
-
-            // Kill any existing session with the same name to ensure a clean start
-            let _ = Tmux::with_command(KillSession::new().target_session(session_name)).output();
-
-            // Create a new detached tmux session
-            Tmux::with_command(
-                NewSession::new()
-                    .detached()
-                    .session_name(session_name),
-            )
-            .output()?;
-
-            println!("--- Current tmux sessions (after creating new session) ---");
-            let output_after = Tmux::with_command(ListSessions::new()).output()?;
-            println!("{}", String::from_utf8_lossy(&output_after.stdout()));
-            println!("---------------------------------------------------------");
+            commands::create::handle_create_command(session_name).await?;
         },
         Commands::List => {
-            println!("--- Current tmux sessions ---");
-            let output = Tmux::with_command(ListSessions::new()).output()?;
-            println!("{}", String::from_utf8_lossy(&output.stdout()));
-            println!("-----------------------------");
+            commands::list::handle_list_command().await?;
         },
         Commands::Kill { session_name } => {
-            println!("--- Killing tmux session: {} ---", session_name);
-            let _ = Tmux::with_command(KillSession::new().target_session(session_name)).output();
-            println!("--- Current tmux sessions (after killing) ---");
-            let output = Tmux::with_command(ListSessions::new()).output()?;
-            println!("{}", String::from_utf8_lossy(&output.stdout()));
-            println!("---------------------------------------------\
-");
+            commands::kill::handle_kill_command(session_name).await?;
         },
         Commands::Gemini(gemini_command) => {
             gemini_commands::handle_gemini_command(gemini_command).await?;
         },
         Commands::SendCommand { session_name, command } => {
-            println!("--- Sending tmux command: '{}' ---", command);
-            let mut tmux_command = TmuxCommand::new();
-            tmux_command.name("send-keys");
-            tmux_command.push_param(command);
-
-            if let Some(s_name) = session_name {
-                tmux_command.push_option("-t", s_name);
-            }
-
-            Tmux::with_command(tmux_command).output()?;
-            println!("--- Tmux command sent successfully ---");
+            commands::send_command::handle_send_command(session_name.as_deref(), command).await?;
         },
         Commands::SplitVertical => {
-            println!("--- Splitting window vertically ---");
-            let mut tmux_command = TmuxCommand::new();
-            tmux_command.name("split-window");
-            tmux_command.push_flag("-v");
-            Tmux::with_command(tmux_command).output()?;
-            println!("--- Window split successfully ---");
+            commands::split_vertical::handle_split_vertical_command().await?;
+        },
+        Commands::SplitHorizontal => {
+            commands::split_horizontal::handle_split_horizontal_command().await?;
+        },
+        Commands::SelectSession { session_name } => {
+            commands::select_session::handle_select_session_command(session_name).await?;
+        },
+        Commands::ShowSession { session_name } => {
+            commands::show_session::handle_show_session_command(session_name).await?;
+        },
+        Commands::CaptureSessionOutput => {
+            commands::capture_session_output::handle_capture_session_output_command().await?;
         },
     }
 
