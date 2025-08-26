@@ -109,3 +109,4 @@ minizinc_data/chunk*_output/*
 /unmatched.txt
 *.cast
 /docs/asciicast21_extracted_lines.txt
+/sessions/

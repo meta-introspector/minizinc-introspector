@@ -1,9 +1,10 @@
-use tmux_interface::{Tmux, TmuxCommand, ListSessions, ListPanes};
+use tmux_interface::{Tmux, TmuxCommand, ListSessions, ListPanes, CapturePane};
 use tokio::fs;
 use uuid::Uuid;
 use std::path::PathBuf;
+use chrono::Local;
 
-pub async fn handle_capture_session_output_command() -> Result<(), Box<dyn std::error::Error>> {
+pub async fn handle_capture_session_output_command(crq_number: Option<&str>) -> Result<(), Box<dyn std::error::Error>> {
     println!("--- Capturing output from all tmux sessions ---");
 
     let sessions_output = Tmux::with_command(ListSessions::new()).output()?;
@@ -28,42 +29,33 @@ pub async fn handle_capture_session_output_command() -> Result<(), Box<dyn std::
         for pane_line in pane_lines {
             if pane_line.is_empty() { continue; }
 
-            // Example pane_line: "0: [80x24] [history 0/1000, 1 active] (active)"
-            // We need the pane ID, which is usually the first part before ':'
             let pane_id = pane_line.split(':').next().unwrap_or("").trim();
             if pane_id.is_empty() { continue; }
 
             println!("--- Capturing pane: {} in session: {} ---", pane_id, session_name);
 
-            let unique_id = Uuid::new_v4().to_string();
+            // Execute tmux capture-pane directly from the host
+            let capture_pane_command = CapturePane::new().target_pane(pane_id).stdout(); // -p flag
+            let captured_output = Tmux::with_command(capture_pane_command).output()?;
+            let captured_content = String::from_utf8_lossy(&captured_output.stdout()).to_string();
+
+            // Store the captured content in the structured session store
+            let now = Local::now();
+            let timestamp = now.format("%Y%m%d_%H%M%S").to_string();
+            let crq_prefix = if let Some(crq) = crq_number { format!("crq-{}-", crq) } else { String::new() };
+            let filename = format!("{}{}_{}_capture.txt", crq_prefix, session_name, timestamp);
+
             let session_pane_dir = session_store_base.join(session_name).join(pane_id);
             fs::create_dir_all(&session_pane_dir).await?;
-            let temp_file_path = session_pane_dir.join(format!("capture_{}.txt", unique_id));
-            let temp_file_path_str = temp_file_path.to_string_lossy().to_string();
+            let output_file_path = session_pane_dir.join(filename);
 
-            // Send command to tmux pane to capture its content to a file
-            let capture_command_in_pane = format!("tmux capture-pane -p -t {} > {}", pane_id, temp_file_path_str);
-            let mut send_keys_command = TmuxCommand::new();
-            send_keys_command.name("send-keys");
-            send_keys_command.push_param(&capture_command_in_pane);
-            send_keys_command.push_param("Enter"); // Simulate pressing Enter
-            send_keys_command.push_option("-t", pane_id); // Target the specific pane
-            Tmux::with_command(send_keys_command).output()?;
-
-            // Wait a moment for the file to be written (this is a heuristic and might need refinement)
-            tokio::time::sleep(tokio::time::Duration::from_millis(500)).await;
-
-            // Read the content of the temporary file from the host
-            let captured_content = fs::read_to_string(&temp_file_path).await?;
-            println!("--- Captured content from pane {}:{} ---
-{}", session_name, pane_id, captured_content);
-
-            // Delete the temporary file
-            fs::remove_file(&temp_file_path).await?;
+            fs::write(&output_file_path, captured_content).await?;
+            println!("--- Captured content from pane {}:{} saved to {} ---", session_name, pane_id, output_file_path.display());
         }
     }
 
     println!("--- Finished capturing output from all tmux sessions ---");
     Ok(())
 }
+
 

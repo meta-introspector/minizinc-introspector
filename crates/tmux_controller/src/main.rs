@@ -3,6 +3,7 @@ use tmux_interface::Tmux;
 
 mod gemini_commands;
 mod commands;
+use commands::output_formatter;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -55,7 +56,11 @@ enum Commands {
         session_name: String,
     },
     /// Captures and reports the textual output from all panes in all active tmux sessions.
-    CaptureSessionOutput,
+    CaptureSessionOutput {
+        /// Optional CRQ number to include in the capture filename.
+        #[arg(short, long)]
+        crq_number: Option<String>,
+    },
 }
 
 #[tokio::main]
@@ -90,8 +95,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Commands::ShowSession { session_name } => {
             commands::show_session::handle_show_session_command(session_name).await?;
         },
-        Commands::CaptureSessionOutput => {
-            commands::capture_session_output::handle_capture_session_output_command().await?;
+        Commands::CaptureSessionOutput { crq_number } => {
+            commands::capture_session_output::handle_capture_session_output_command(crq_number.as_deref()).await?;
         },
     }
 

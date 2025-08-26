@@ -1,11 +1,12 @@
 use tmux_interface::{Tmux, TmuxCommand};
+use crate::commands::output_formatter;
 
 pub async fn handle_split_horizontal_command() -> Result<(), Box<dyn std::error::Error>> {
-    println!("--- Splitting window horizontally ---");
+    output_formatter::print_header("Splitting window horizontally");
     let mut tmux_command = TmuxCommand::new();
     tmux_command.name("split-window");
     tmux_command.push_flag("-h");
     Tmux::with_command(tmux_command).output()?;
-    println!("--- Window split successfully ---\n");
+    output_formatter::print_success("Window split successfully");
     Ok(())
 }

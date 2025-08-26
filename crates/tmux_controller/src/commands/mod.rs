@@ -7,3 +7,4 @@ pub mod split_horizontal;
 pub mod select_session;
 pub mod show_session;
 pub mod capture_session_output;
+pub mod output_formatter;

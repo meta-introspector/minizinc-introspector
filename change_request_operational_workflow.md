@@ -19,10 +19,21 @@
     - **Quasi-chroot:** A near-isolated filesystem environment will be established to minimize external dependencies and interference.
     - **Full Sandbox:** The entire execution will occur within a secure and reproducible sandbox, preventing unintended system modifications and ensuring consistent results across runs.
 
+#### Phase 3: Capture Session Output for Analysis
+- **Goal:** Programmatically capture the textual content of all panes within active tmux sessions for analysis and reporting.
+- **Mechanism:** Extend `tmux_controller` with a `capture-session-output` command.
+- **Approach:**
+    - List all active tmux sessions and their panes.
+    - For each pane, execute `tmux capture-pane -p` directly from the host system (via `tmux_controller`).
+    - Store the captured content in a uniquely named file within a structured session store (`sessions/<session_name>/<pane_id>/<crq_prefix><session_name>_<timestamp>_capture.txt`) inside the project root.
+    - The filename will incorporate an optional CRQ number, the session name, and a timestamp for traceability.
+- **Challenges:** Ensuring `tmux` commands execute correctly and robustly handling file creation/deletion across the host/tmux boundary.
+
 **Expected Outcome:** A fully recorded, reproducible, and sandboxed development session, enabling detailed analysis and debugging of Gemini's behavior and interactions.
 
 **Deliverables:**
 - Launchpad script/tool.
 - Integration with `asciinema`.
 - `act run` configuration for sandboxed environments.
+- `tmux_controller` `capture-session-output` command implementation.
 - Documentation for the new operational workflow.
