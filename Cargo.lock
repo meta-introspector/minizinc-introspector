@@ -3305,6 +3305,8 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "dum",
+ "futures",
+ "git2",
  "serde",
  "serde_json",
  "tokio",

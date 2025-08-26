@@ -11,6 +11,7 @@ use std::collections::HashMap;
 use git2::Repository;
 use crate::stages::Stage;
 use crate::stages::tmux_stage::TmuxStage;
+use crate::stages::tmux_controller_cmd_stage::TmuxControllerCmdStage; // Add this import
 
 /// Command-line arguments for the launchpad application.
 #[derive(Parser, Debug, serde::Serialize, serde::Deserialize)]
@@ -154,8 +155,9 @@ pub async fn run_launchpad() -> Result<(), String> {
     let repo = Repository::open(&project_root).map_err(|e| format!("Failed to open Git repository: {}", e))?;
 
     // Create a stage registry
-    let mut stage_registry: HashMap<String, Box<dyn Stage>> = HashMap::new();
+    let mut stage_registry: HashMap<String, Box<dyn Stage + Send>> = HashMap::new();
     stage_registry.insert("tmux".to_string(), Box::new(TmuxStage));
+    stage_registry.insert("tmux-controller-cmd".to_string(), Box::new(TmuxControllerCmdStage)); // Add this stage
 
     if let Some(stage) = stage_registry.get(&stage_identifier) {
         stage.run(&repo, &stage_args.iter().map(|s| s.as_str()).collect::<Vec<&str>>()).await

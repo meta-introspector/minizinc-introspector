@@ -2,7 +2,7 @@ use clap::{Parser, Subcommand};
 
 mod gemini_commands;
 mod commands;
-use commands::{split_vertical, split_horizontal};
+use commands::{split_vertical, split_horizontal, create_layout};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -60,6 +60,8 @@ enum Commands {
         #[arg(short, long)]
         crq_number: Option<String>,
     },
+    /// Creates a predefined tmux layout (e.g., one large pane, one small pane)
+    CreateLayout,
 }
 
 #[tokio::main]
@@ -97,9 +99,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Commands::CaptureSessionOutput { crq_number } => {
             commands::capture_session_output::handle_capture_session_output_command(crq_number.as_deref()).await?;
         },
+        Commands::CreateLayout => {
+            commands::create_layout::handle_create_layout_command().await?;
+        },
     }
 
     Ok(())
 }
-
-

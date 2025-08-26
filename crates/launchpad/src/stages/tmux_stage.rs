@@ -1,6 +1,8 @@
 use crate::orchestrator;
 use crate::stages::Stage;
-use git2::Repository; // Not directly used by tmux_stage, but required by Stage trait
+use git2::Repository;
+use std::pin::Pin;
+use std::future::Future;
 
 pub struct TmuxStage;
 
@@ -9,7 +11,10 @@ impl Stage for TmuxStage {
         "tmux"
     }
 
-    async fn run(&self, _repo: &Repository, args: &[&str]) -> Result<(), String> {
-        orchestrator::run_tmux_command(args).await
+    fn run(&self, _repo: &Repository, args: &[&str]) -> Pin<Box<dyn Future<Output = Result<(), String>> + Send>> {
+        let args_vec: Vec<String> = args.iter().map(|&s| s.to_string()).collect();
+        Box::pin(async move {
+            orchestrator::run_tmux_command(&args_vec.iter().map(|s| s.as_str()).collect::<Vec<&str>>()).await
+        })
     }
 }

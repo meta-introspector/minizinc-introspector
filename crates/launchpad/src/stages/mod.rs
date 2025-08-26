@@ -1,5 +1,6 @@
 pub mod stage;
 pub mod tmux_stage;
+pub mod tmux_controller_cmd_stage;
 
 pub use stage::Stage;
 
