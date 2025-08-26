@@ -1,5 +1,5 @@
 use clap::{Parser, Subcommand};
-use tmux_interface::{Tmux, NewSession, ListSessions, KillSession};
+use tmux_interface::{Tmux, NewSession, ListSessions, KillSession, TmuxCommand};
 
 mod gemini_commands;
 
@@ -28,6 +28,17 @@ enum Commands {
     },
     /// Manages Gemini CLI interactions within tmux sessions
     Gemini(gemini_commands::SendGeminiCommandArgs),
+    /// Sends a raw tmux command to a session
+    SendCommand {
+        /// Name of the tmux session to send the command to (defaults to current)
+        #[arg(short, long)]
+        session_name: Option<String>,
+        /// The tmux command to send (e.g., 'split-window -h')
+        #[arg(short, long)]
+        command: String,
+    },
+    /// Splits the current tmux window vertically
+    SplitVertical,
 }
 
 #[tokio::main]
@@ -69,12 +80,36 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             println!("--- Current tmux sessions (after killing) ---");
             let output = Tmux::with_command(ListSessions::new()).output()?;
             println!("{}", String::from_utf8_lossy(&output.stdout()));
-            println!("---------------------------------------------");
+            println!("---------------------------------------------\
+");
         },
         Commands::Gemini(gemini_command) => {
             gemini_commands::handle_gemini_command(gemini_command).await?;
+        },
+        Commands::SendCommand { session_name, command } => {
+            println!("--- Sending tmux command: '{}' ---", command);
+            let mut tmux_command = TmuxCommand::new();
+            tmux_command.name("send-keys");
+            tmux_command.push_param(command);
+
+            if let Some(s_name) = session_name {
+                tmux_command.push_option("-t", s_name);
+            }
+
+            Tmux::with_command(tmux_command).output()?;
+            println!("--- Tmux command sent successfully ---");
+        },
+        Commands::SplitVertical => {
+            println!("--- Splitting window vertically ---");
+            let mut tmux_command = TmuxCommand::new();
+            tmux_command.name("split-window");
+            tmux_command.push_flag("-v");
+            Tmux::with_command(tmux_command).output()?;
+            println!("--- Window split successfully ---");
         },
     }
 
     Ok(())
 }
+
+
