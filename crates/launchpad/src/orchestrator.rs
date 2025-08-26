@@ -5,6 +5,7 @@
 
 use std::process::{Command, Stdio};
 use std::path::Path;
+use serde_json; // Will use serde_json for serialization
 
 /// Executes a general shell command.
 ///
@@ -50,30 +51,31 @@ pub async fn run_command(cmd: &str, args: &[&str], cwd: Option<&Path>) -> Result
 ///
 /// # Returns
 ///
-/// A `Result` indicating success (`Ok(())`) or an error (`Err(String)`).
+/// A `Result` indicating success (`Ok(())`) or an `Err(String)`.
 pub async fn install_gemini_cli() -> Result<(), String> {
     eprintln!("Installing Gemini CLI...");
     run_command("npm", &["install", "-g", "@google/gemini-cli"], None).await
 }
 
-/// Runs a Gemini CLI command.
+/// Runs a Gemini CLI command by passing serialized arguments to the session manager.
 ///
-/// This function executes the `gemini` command with the provided arguments.
+/// This function serializes the `LaunchpadArgs` into a JSON string and passes it
+/// as a single argument to `zos-stage-session-manager`.
 ///
 /// # Arguments
 ///
-/// * `args` - A slice of string slices representing arguments to pass to the `gemini` command.
+/// * `args` - A reference to `LaunchpadArgs` containing all command-line arguments.
 ///
 /// # Returns
 ///
-/// A `Result` indicating success (`Ok(())`) or an error (`Err(String)`).
+/// A `Result` indicating success (`Ok(())`) or an `Err(String)`.
 use crate::launchpad_main::LaunchpadArgs; // Import LaunchpadArgs
 
 pub async fn run_gemini_cli(args: &LaunchpadArgs) -> Result<(), String> {
     eprintln!("Running Gemini CLI via session manager...");
 
     let current_exe_path = std::env::current_exe()
-        .map_err(|e| format!("Failed to get current executable path: {e}"))?;
+        .map_err(|e| format!("Failed to get current executable path: {e}\n"))?;
     let project_root = current_exe_path.parent()
         .and_then(|p| p.parent()) // target/debug/
         .and_then(|p| p.parent()) // libminizinc/
@@ -84,116 +86,14 @@ pub async fn run_gemini_cli(args: &LaunchpadArgs) -> Result<(), String> {
         .join("debug")
         .join("zos-stage-session-manager");
 
-    let mut session_manager_args = vec!["Launch".to_string()];
+    // Serialize LaunchpadArgs into a JSON string
+    let serialized_args = serde_json::to_string(args)
+        .map_err(|e| format!("Failed to serialize LaunchpadArgs: {e}"))?;
 
-    // Pass other relevant Gemini CLI options to the session manager if it supports them
-    if let Some(model) = &args.model {
-        session_manager_args.push("--model".to_string());
-        session_manager_args.push(model.clone());
-    }
-    if let Some(prompt) = &args.prompt {
-        session_manager_args.push("--prompt".to_string());
-        session_manager_args.push(prompt.clone());
-    }
-    if let Some(prompt_interactive) = &args.prompt_interactive {
-        session_manager_args.push("--prompt-interactive".to_string());
-        session_manager_args.push(prompt_interactive.clone());
-    }
-    if args.sandbox.unwrap_or(false) {
-        session_manager_args.push("--sandbox".to_string());
-    }
-    if let Some(sandbox_image) = &args.sandbox_image {
-        session_manager_args.push("--sandbox-image".to_string());
-        session_manager_args.push(sandbox_image.clone());
-    }
-    if args.debug {
-        session_manager_args.push("--debug".to_string());
-    }
-    if args.all_files {
-        session_manager_args.push("--all-files".to_string());
-    }
-    if args.show_memory_usage {
-        session_manager_args.push("--show-memory-usage".to_string());
-    }
-    if args.yolo {
-        session_manager_args.push("--yolo".to_string());
-    }
-    if let Some(approval_mode) = &args.approval_mode {
-        session_manager_args.push("--approval-mode".to_string());
-        let approval_mode_str = approval_mode.to_string();
-        session_manager_args.push(approval_mode_str);
-    }
-    if args.telemetry.unwrap_or(false) {
-        session_manager_args.push("--telemetry".to_string());
-    }
-    if let Some(telemetry_target) = &args.telemetry_target {
-        session_manager_args.push("--telemetry-target".to_string());
-        let telemetry_target_str = telemetry_target.to_string();
-        session_manager_args.push(telemetry_target_str);
-    }
-    if let Some(telemetry_otlp_endpoint) = &args.telemetry_otlp_endpoint {
-        session_manager_args.push("--telemetry-otlp-endpoint".to_string());
-        session_manager_args.push(telemetry_otlp_endpoint.clone());
-    }
-    if args.telemetry_log_prompts.unwrap_or(false) {
-        session_manager_args.push("--telemetry-log-prompts".to_string());
-    }
-    if let Some(telemetry_outfile) = &args.telemetry_outfile {
-        session_manager_args.push("--telemetry-outfile".to_string());
-        session_manager_args.push(telemetry_outfile.clone());
-    }
-    if args.checkpointing {
-        session_manager_args.push("--checkpointing".to_string());
-    }
-    if args.experimental_acp.unwrap_or(false) {
-        session_manager_args.push("--experimental-acp".to_string());
-    }
-    for name in &args.allowed_mcp_server_names {
-        session_manager_args.push("--allowed-mcp-server-names".to_string());
-        session_manager_args.push(name.clone());
-    }
-    for extension in &args.extensions {
-        session_manager_args.push("--extensions".to_string());
-        session_manager_args.push(extension.clone());
-    }
-    if args.list_extensions.unwrap_or(false) {
-        session_manager_args.push("--list-extensions".to_string());
-    }
-    if let Some(proxy) = &args.proxy {
-        session_manager_args.push("--proxy".to_string());
-        session_manager_args.push(proxy.clone());
-    }
-    for dir in &args.include_directories {
-        session_manager_args.push("--include-directories".to_string());
-        session_manager_args.push(dir.clone());
-    }
-    if args.version.unwrap_or(false) {
-        session_manager_args.push("--version".to_string());
-    }
-    if args.help.unwrap_or(false) {
-        session_manager_args.push("--help".to_string());
-    }
+    // Pass the serialized arguments as a single string argument to the session manager
+    let session_manager_args = vec!["launch", &serialized_args];
 
-    // Add custom arguments for the CRQ workflow
-    if let Some(crq) = &args.crq {
-        session_manager_args.push("--crq".to_string());
-        session_manager_args.push(crq.clone());
-    }
-    if let Some(mode) = &args.mode {
-        session_manager_args.push("--mode".to_string());
-        session_manager_args.push(mode.clone());
-    }
-    if let Some(inside) = &args.inside {
-        session_manager_args.push("--inside".to_string());
-        session_manager_args.push(inside.clone());
-    }
-    if let Some(via) = &args.via {
-        session_manager_args.push("--via".to_string());
-        session_manager_args.push(via.clone());
-    }
-
-    let session_manager_args_str: Vec<&str> = session_manager_args.iter().map(|s| s.as_str()).collect();
-    run_command(session_manager_binary_path.to_str().unwrap(), &session_manager_args_str, None).await
+    run_command(session_manager_binary_path.to_str().unwrap(), &session_manager_args, None).await
 }
 
 /// Runs a `dum` task.
@@ -209,84 +109,7 @@ pub async fn run_gemini_cli(args: &LaunchpadArgs) -> Result<(), String> {
 ///
 /// # Returns
 ///
-/// A `Result` indicating success (`Ok(())`) or an error (`Err(String)`).
-pub async fn run_dum_task(task_name: &str, args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
-    eprintln!("Running dum task: {}", task_name);
-    let mut dum_args = vec![task_name];
-    dum_args.extend_from_slice(args);
-
-    let current_exe_path = std::env::current_exe()
-        .map_err(|e| format!("Failed to get current executable path: {e}"))?;
-    let project_root = current_exe_path.parent()
-        .and_then(|p| p.parent()) // target/debug/
-        .and_then(|p| p.parent()) // libminizinc/
-        .ok_or("Could not determine project root")?;
-
-    let dum_binary_path = project_root
-        .join("vendor")
-        .join("dum")
-        .join("target")
-        .join("debug")
-        .join("dum");
-
-    run_command(dum_binary_path.to_str().unwrap(), &dum_args, cwd).await
-}
-
-/// Runs a `cargo` command.
-///
-/// This function is a placeholder for executing `cargo` commands.
-/// It runs the `cargo` command with the provided arguments.
-///
-/// # Arguments
-///
-/// * `args` - A slice of string slices representing arguments to pass to the `cargo` command.
-/// * `cwd` - An optional `Path` to set as the current working directory for the command.
-///
-/// # Returns
-///
-/// A `Result` indicating success (`Ok(())`) or an error (`Err(String)`).
-pub async fn run_cargo_command(args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
-    eprintln!("Running cargo command: {:?}", args);
-    run_command("cargo", args, cwd).await
-}
-
-/// Runs a `tmux` command.
-///
-/// This function is a placeholder for executing `tmux` commands.
-/// It runs the `tmux` command with the provided arguments.
-///
-/// # Arguments
-///
-/// * `args` - A slice of string slices representing arguments to pass to the `tmux` command.
-///
-/// # Returns
-///
-/// A `Result` indicating success (`Ok(())`) or an error (`Err(String)`).
-pub async fn run_tmux_command(args: &[&str]) -> Result<(), String> {
-    eprintln!("Running tmux command: {:?}", args);
-    run_command("tmux", args, None).await
-}
-
-/// Runs a command within a sandboxed environment.
-///
-/// This function is a placeholder for integrating with sandboxing tools
-/// like `pchroot` or `act-run`. It executes the specified command and arguments.
-///
-/// # Arguments
-///
-/// * `cmd` - The command to execute within the sandbox.
-/// * `args` - A slice of string slices representing arguments to pass to the command.
-/// * `cwd` - An optional `Path` to set as the current working directory for the command.
-///
-/// # Returns
-///
-/// A `Result` indicating success (`Ok(())`) or an error (`Err(String)`).
-pub async fn run_sandboxed_command(cmd: &str, args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
-    eprintln!("Running sandboxed command: {} {:?}", cmd, args);
-    // This would involve setting up pchroot/act-run environment
-    run_command(cmd, args, cwd).await
-}
-
+/// A `Result` indicating success (`Ok(())`) or an `Err(String)`.
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -299,7 +122,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_run_command_compiles() {
-        // This test only ensures compilation. Actual execution is not performed.
+        // This test only ensures compilation.
         // let result = run_command("echo", &["hello"], None).await;
         // assert!(result.is_ok());
         assert!(true);
@@ -340,7 +163,7 @@ mod tests {
     #[tokio::test]
     async fn test_run_tmux_command_compiles() {
         // This test only ensures compilation.
-        // let result = run_tmux_command(&["version"]).await;
+        // let result = run_tmux_command(&["version"])
         // assert!(result.is_ok());
         assert!(true);
     }
@@ -352,4 +175,60 @@ mod tests {
         // assert!(result.is_ok());
         assert!(true);
     }
+}
+
+
+/// Runs a `cargo` command.
+///
+/// This function is a placeholder for executing `cargo` commands.
+/// It runs the `cargo` command with the provided arguments.
+///
+/// # Arguments
+///
+/// * `args` - A slice of string slices representing arguments to pass to the `cargo` command.
+/// * `cwd` - An optional `Path` to set as the current working directory for the command.
+///
+/// # Returns
+///
+/// A `Result` indicating success (`Ok(())`) or an `Err(String)`.
+pub async fn run_cargo_command(args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
+    eprintln!("Running cargo command: {:?}\n", args);
+    run_command("cargo", args, cwd).await
+}
+
+/// Runs a `tmux` command.
+///
+/// This function is a placeholder for executing `tmux` commands.
+/// It runs the `tmux` command with the provided arguments.
+///
+/// # Arguments
+///
+/// * `args` - A slice of string slices representing arguments to pass to the `tmux` command.
+///
+/// # Returns
+///
+/// A `Result` indicating success (`Ok(())`) or an `Err(String)`.
+pub async fn run_tmux_command(args: &[&str]) -> Result<(), String> {
+    eprintln!("Running tmux command: {:?}\n", args);
+    run_command("tmux", args, None).await
+}
+
+/// Runs a command within a sandboxed environment.
+///
+/// This function is a placeholder for integrating with sandboxing tools
+/// like `pchroot` or `act-run`. It executes the specified command and arguments.
+///
+/// # Arguments
+///
+/// * `cmd` - The command to execute within the sandbox.
+/// * `args` - A slice of string slices representing arguments to pass to the command.
+/// * `cwd` - An optional `Path` to set as the current working directory for the command.
+///
+/// # Returns
+///
+/// A `Result` indicating success (`Ok(())`) or an `Err(String)`.
+pub async fn run_sandboxed_command(cmd: &str, args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
+    eprintln!("Running sandboxed command: {} {:?}\n", cmd, args);
+    // This would involve setting up pchroot/act-run environment
+    run_command(cmd, args, cwd).await
 }

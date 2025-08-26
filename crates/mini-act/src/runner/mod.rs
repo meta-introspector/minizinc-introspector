@@ -2,7 +2,7 @@ pub mod job_runner;
 pub mod step_executor;
 pub mod env_processor;
 
-use crate::workflow::{Workflow, Job, On};
+use crate::workflow::{Workflow, On};
 use std::collections::HashMap;
 
 pub fn run_workflow(workflow: &Workflow) {

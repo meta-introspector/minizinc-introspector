@@ -6,7 +6,7 @@
 use clap::ValueEnum;
 
 /// Represents the possible values for the `--approval-mode` option.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, ValueEnum)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, ValueEnum, serde::Serialize, serde::Deserialize)]
 pub enum ApprovalMode {
     Default,
     AutoEdit,
@@ -31,7 +31,7 @@ impl std::fmt::Display for ApprovalMode {
 }
 
 /// Represents the possible values for the `--telemetry-target` option.
-#[derive(Debug, PartialEq, Eq, Clone, Copy, ValueEnum)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, ValueEnum, serde::Serialize, serde::Deserialize)]
 pub enum TelemetryTarget {
     Local,
     Gcp,
@@ -53,7 +53,7 @@ impl std::fmt::Display for TelemetryTarget {
     }
 }
 
-use clap::{Args, Command};
+use clap::Args;
 
 /// Represents the command-line options for the Gemini CLI.
 ///
@@ -120,7 +120,7 @@ impl Default for GeminiCliOptions {
 
 impl GeminiCliOptions {
     pub fn from_args(args: Vec<String>) -> Self {
-        let mut cmd = clap::Command::new("gemini-cli")
+        let cmd = clap::Command::new("gemini-cli").disable_help_flag(true)
             .arg(clap::Arg::new("model").long("model").action(clap::ArgAction::Set))
             .arg(clap::Arg::new("prompt").long("prompt").action(clap::ArgAction::Set))
             .arg(clap::Arg::new("prompt-interactive").long("prompt-interactive").action(clap::ArgAction::Set))

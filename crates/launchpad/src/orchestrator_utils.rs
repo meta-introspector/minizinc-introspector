@@ -1,0 +1,116 @@
+use std::process::{Command, Stdio};
+use std::path::Path;
+
+/// Runs a `dum` task.
+///
+/// This function is a placeholder for integrating with `dum` (a task runner).
+/// It executes the `dum` command with the specified task name and additional arguments.
+///
+/// # Arguments
+///
+/// * `task_name` - The name of the `dum` task to run.
+/// * `args` - A slice of string slices representing additional arguments for the `dum` task.
+/// * `cwd` - An optional `Path` to set as the current working directory for the command.
+///
+/// # Returns
+///
+/// A `Result` indicating success (`Ok(())`) or an error (`Err(String)`).
+pub async fn run_dum_task(task_name: &str, args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
+    eprintln!("Running dum task: {}", task_name);
+    let mut dum_args = vec![task_name];
+    dum_args.extend_from_slice(args);
+
+    let current_exe_path = std::env::current_exe()
+        .map_err(|e| format!("Failed to get current executable path: {e}"))?;
+    let project_root = current_exe_path.parent()
+        .and_then(|p| p.parent()) // target/debug/
+        .and_then(|p| p.parent()) // libminizinc/
+        .ok_or("Could not determine project root")?;
+
+    let dum_binary_path = project_root
+        .join("vendor")
+        .join("dum")
+        .join("target")
+        .join("debug")
+        .join("dum");
+
+    run_command(dum_binary_path.to_str().unwrap(), &dum_args, cwd).await
+}
+
+/// Runs a `cargo` command.
+///
+/// This function is a placeholder for executing `cargo` commands.
+/// It runs the `cargo` command with the provided arguments.
+///
+/// # Arguments
+///
+/// * `args` - A slice of string slices representing arguments to pass to the `cargo` command.
+/// * `cwd` - An optional `Path` to set as the current working directory for the command.
+///
+/// # Returns
+///
+/// A `Result` indicating success (`Ok(())`) or an error (`Err(String)`).
+pub async fn run_cargo_command(args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
+    eprintln!("Running cargo command: {:?}", args);
+    run_command("cargo", args, cwd).await
+}
+
+/// Runs a `tmux` command.
+///
+/// This function is a placeholder for executing `tmux` commands.
+/// It runs the `tmux` command with the provided arguments.
+///
+/// # Arguments
+///
+/// * `args` - A slice of string slices representing arguments to pass to the `tmux` command.
+///
+/// # Returns
+///
+/// A `Result` indicating success (`Ok(())`) or an error (`Err(String)`).
+pub async fn run_tmux_command(args: &[&str]) -> Result<(), String> {
+    eprintln!("Running tmux command: {:?}", args);
+    run_command("tmux", args, None).await
+}
+
+/// Runs a command within a sandboxed environment.
+///
+/// This function is a placeholder for integrating with sandboxing tools
+/// like `pchroot` or `act-run`. It executes the specified command and arguments.
+///
+/// # Arguments
+///
+/// * `cmd` - The command to execute within the sandbox.
+/// * `args` - A slice of string slices representing arguments to pass to the command.
+/// * `cwd` - An optional `Path` to set as the current working directory for the command.
+///
+/// # Returns
+///
+/// A `Result` indicating success (`Ok(())`) or an error (`Err(String)`).
+pub async fn run_sandboxed_command(cmd: &str, args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
+    eprintln!("Running sandboxed command: {} {:?}", cmd, args);
+    // This would involve setting up pchroot/act-run environment
+    run_command(cmd, args, cwd).await
+}
+
+// Helper function (assuming it's also in orchestrator.rs and needed here)
+pub async fn run_command(cmd: &str, args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
+    let mut command = Command::new(cmd);
+    command.args(args);
+    command.stdout(Stdio::inherit());
+    command.stderr(Stdio::inherit());
+
+    if let Some(dir) = cwd {
+        command.current_dir(dir);
+    }
+
+    eprintln!("Executing: {} {:?}", cmd, args);
+
+    let status = command.status()
+        .map_err(|e| format!("Failed to execute command {}: {}", cmd, e))?;
+
+    if status.success() {
+        Ok(())
+    } else {
+        Err(format!("Command {} exited with non-zero status: {:?}", cmd, status.code()))
+    }
+}

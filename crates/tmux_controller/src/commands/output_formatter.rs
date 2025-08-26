@@ -15,8 +15,5 @@ pub fn print_success(message: &str) {
 ", message);
 }
 
-pub fn print_error(message: &str) {
-    eprintln!("Error: {}\
-", message);
-}
+
 

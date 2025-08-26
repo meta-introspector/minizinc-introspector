@@ -26,7 +26,7 @@ use crate::gemini_cli_options::{GeminiCliOptions, ApprovalMode, TelemetryTarget}
 /// // let options = GeminiCliOptions { model: Some("gemini-pro".to_string()), ..Default::default() };
 /// // run_gemini_cli(&options);
 /// ```
-pub fn run_gemini_cli(options: &GeminiCliOptions, mode: Option<String>, inside: Option<String>, via: Option<String>) {
+pub async fn run_gemini_cli(options: &GeminiCliOptions, mode: Option<String>, inside: Option<String>, via: Option<String>) -> Result<(), String> {
     let gemini_cli_project_path = PathBuf::from("/data/data/com.termux/files/home/storage/github/gemini-cli");
 
     let mut dum_args_vec: Vec<String> = Vec::new();
@@ -161,6 +161,7 @@ pub fn run_gemini_cli(options: &GeminiCliOptions, mode: Option<String>, inside: 
     app_args_modified.change_dir = gemini_cli_project_path;
 
     run::run(app_args_modified);
+    Ok(()) // Add this line
 }
 
 #[cfg(test)]
