@@ -66,6 +66,14 @@ This project's documentation is organized into the following categories:
 
 ### Generated Documentation from Gemini CLI Session
 
+#### Tmux Integration and Session Management
+
+This project provides robust capabilities for managing `tmux` sessions, including launching Gemini CLI instances within them, splitting panes, and capturing session output. For a detailed review of the Git history and code locations related to `tmux` integration, please refer to:
+
+*   [Git History Review: Tmux Integration and Session Management](docs/git_history_tmux_review.md)
+
+### Generated Documentation from Gemini CLI Session
+
 This section lists the detailed documentation and MiniZinc models generated during a collaborative session with the Gemini CLI agent, exploring foundational concepts, self-modeling, optimization, and deep bootstrapping.
 
 #### Standard Operating Procedures (SOPs)
