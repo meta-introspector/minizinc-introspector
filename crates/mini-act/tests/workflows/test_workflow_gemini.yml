@@ -1,0 +1,28 @@
+name: Test Local GHA Simulation
+
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout gemini-cli
+      run: |
+        # Assuming gemini-cli is a separate repository
+        git clone https://github.com/google-gemini/gemini-cli.git # Placeholder URL
+        cd gemini-cli
+
+    - name: Build gemini-cli
+      run: |
+        # Navigate into the cloned repo
+        cargo build --release # Build the gemini-cli executable
+
+    - name: Run gemini-cli with parameters
+      run: |
+        # Navigate into the cloned repo
+        ./target/release/gemini-cli launchpad \
+          --model ${{ github.event.inputs.gemini_cli_model }} \
+          --crq ${{ github.event.inputs.gemini_cli_crq }} \
+          --mode tmux \
+          --inside miniact \
+          --via dum

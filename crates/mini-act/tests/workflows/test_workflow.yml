@@ -11,6 +11,14 @@ on:
         description: 'Another test input'
         required: false
         default: 'another_default'
+      gemini_cli_model:
+        description: 'Gemini CLI model to use'
+        required: true
+        default: 'gemini-2.5-pro'
+      gemini_cli_crq:
+        description: 'CRQ ID for Gemini CLI'
+        required: true
+        default: '1234'
 
 jobs:
   build:
@@ -20,10 +28,31 @@ jobs:
       run: |
         echo "My Input: ${{ github.event.inputs.my_input }}"
         echo "Another Input: ${{ github.event.inputs.another_input }}"
+        echo "Gemini CLI Model: ${{ github.event.inputs.gemini_cli_model }}"
+        echo "Gemini CLI CRQ: ${{ github.event.inputs.gemini_cli_crq }}"
         echo "GITHUB_WORKSPACE: ${{ github.workspace }}"
+
+    - name: Checkout gemini-cli
+      run: |
+        # Assuming gemini-cli is a separate repository
+        git clone https://github.com/google-gemini/gemini-cli.git # Placeholder URL
+        cd gemini-cli
+
+    - name: Build gemini-cli
+      run: |
+        # Navigate into the cloned repo
+        cargo build --release # Build the gemini-cli executable
+
+    - name: Run gemini-cli with parameters
+      run: |
+        # Navigate into the cloned repo
+        ./target/release/gemini-cli launchpad \
+          --model ${{ github.event.inputs.gemini_cli_model }} \
+          --crq ${{ github.event.inputs.gemini_cli_crq }} \
+          --mode tmux \
+          --inside miniact \
+          --via dum
     - name: Run a simple command
       run: echo "Hello from MiniAct GHA simulation!"
     - name: Check environment variable
       run: echo "My Env Var: $MY_ENV_VAR"
-      env:
-        MY_ENV_VAR: "This is a custom env var"

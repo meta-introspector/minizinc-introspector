@@ -1,5 +1,21 @@
-use serde::Deserialize;
+use serde::{Deserialize, Deserializer};
 use std::collections::HashMap;
+use serde_yaml::Value; // Keep this import for now, might be needed elsewhere
+
+// Custom deserializer function
+fn deserialize_literal_string<'de, D>(deserializer: D) -> Result<Option<String>, D::Error>
+where
+    D: Deserializer<'de>,
+{
+    let value = Value::deserialize(deserializer)?;
+    if value.is_string() {
+        Ok(Some(value.as_str().unwrap().to_string()))
+    } else {
+        // If it's not a string, convert the whole value to a YAML string representation
+        // This handles cases where 'run' might be a multi-line string or other YAML types
+        Ok(Some(serde_yaml::to_string(&value).map_err(serde::de::Error::custom)?))
+    }
+}
 
 #[allow(dead_code)]
 #[derive(Debug, Deserialize)]
@@ -67,6 +83,7 @@ pub struct Job {
 pub struct Step {
     pub name: Option<String>,
     pub uses: Option<String>,
-    pub run: Option<String>,
+    #[serde(default, deserialize_with = "deserialize_literal_string")]
+    pub run: Option<String>, // Changed back to String
     pub env: Option<HashMap<String, String>>,
 }
