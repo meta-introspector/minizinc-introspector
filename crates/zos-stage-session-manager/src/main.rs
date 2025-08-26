@@ -93,6 +93,12 @@ struct LaunchArgs {
     inside: Option<String>,
     #[arg(long)]
     via: Option<String>,
+    #[arg(long)]
+    crq_path: Option<String>, // New: Path to the CRQ file
+    #[arg(long)]
+    target_repo_url: Option<String>, // New: URL of the target repository
+    #[arg(long)]
+    workflow_file_in_repo: Option<String>, // New: Path to the workflow file within the target repository
 }
 
 #[derive(Parser, Debug, Serialize, Deserialize)]
@@ -180,14 +186,109 @@ fn main() -> Result<(), String> {
                 }
             }
 
-            // Launch additional Gemini instances in the background if more than 1 are requested
-            // and either no recording was requested or the first instance was already launched with asciinema.
+            // Handle MiniAct GHA workflow simulation via tmux
+            if args.mode == Some("tmux".to_string()) && args.inside == Some("miniact".to_string()) && args.via == Some("doh".to_string()) {
+                let workflow_file_in_repo = args.workflow_file_in_repo.clone().ok_or("Workflow file path in repository not provided for MiniAct simulation.")?;
+                let target_repo_url = args.target_repo_url.clone().ok_or("Target repository URL not provided for MiniAct simulation.")?;
+
+                eprintln!("Simulating GHA workflow with MiniAct in tmux...");
+
+                // TODO: Implement cloning/fetching of target_repo_url into a sandbox
+                // For now, assume the target repo is already available locally at a known path
+                let miniact_project_path = project_root.join("crates").join("mini-act"); // Assuming mini-act is in the same workspace
+
+                let mut miniact_command_parts: Vec<String> = Vec::new();
+                miniact_command_parts.push(format!("cd {} && ./target/debug/mini-act", miniact_project_path.to_string_lossy()));
+                miniact_command_parts.push(format!("--task {}", workflow_file_in_repo));
+                miniact_command_parts.push(format!("--target-repo-url {}", target_repo_url)); // Pass target repo URL to MiniAct
+
+                let full_miniact_command = miniact_command_parts.join(" ");
+
+                let session_name = "miniact-gha-sim"; // Dedicated tmux session for MiniAct simulation
+                eprintln!("Launching MiniAct in tmux session: {}", session_name);
+
+                // Create a new detached tmux session
+                Command::new("tmux")
+                    .arg("new-session")
+                    .arg("-d")
+                    .arg("-s")
+                    .arg(&session_name)
+                    .status()
+                    .map_err(|e| format!("Failed to create tmux session: {e}"))?;
+
+                // Send the MiniAct command to the tmux session
+                Command::new("tmux")
+                    .arg("send-keys")
+                    .arg("-t")
+                    .arg(&session_name)
+                    .arg(&full_miniact_command)
+                    .arg("Enter")
+                    .status()
+                    .map_err(|e| format!("Failed to send command to tmux session: {e}"))?;
+
+                // Optionally, attach to the session for viewing
+                // Command::new("tmux").arg("attach-session").arg("-t").arg(&session_name).status()?;
+
+                eprintln!("MiniAct GHA simulation launched in tmux session: {}", session_name);
+                return Ok(());
+            }
+
+            // Handle background_detached launch (existing logic)
+            if args.background_detached {
+                if args.gemini_instances != 1 || args.record_session {
+                    return Err("Cannot use --background-detached with multiple instances or session recording.".to_string());
+                }
+                eprintln!("Launching single Gemini instance in background, detached...");
+                let shell_command = "nohup gemini --model gemini-2.5-flash --checkpointing=true > /dev/null 2>&1 &";
+                eprintln!("Executing: {}", shell_command);
+
+                let status = Command::new("bash")
+                    .arg("-c")
+                    .arg(shell_command)
+                    .status()
+                    .map_err(|e| format!("Failed to launch detached Gemini instance: {e}"))?;
+
+                if !status.success() {
+                    return Err(format!("Detached Gemini instance launch failed with status: {:?}", status.code()));
+                }
+                eprintln!("Detached Gemini instance launched successfully.");
+                return Ok(());
+            }
+
+            // If recording is enabled, launch asciinema with the first gemini instance (existing logic)
+            if args.record_session {
+                eprintln!("Recording session to: {:?}", asciicast_path);
+                let shell_command = format!(
+                    "asciinema rec {} --command 'gemini --model gemini-2.5-flash --checkpointing=true'",
+                    asciicast_path.to_string_lossy()
+                );
+                eprintln!("Executing: {}", shell_command);
+
+                let status = Command::new("bash")
+                    .arg("-c")
+                    .arg(&shell_command)
+                    .stdout(Stdio::inherit())
+                    .stderr(Stdio::inherit())
+                    .status()
+                    .map_err(|e| format!("Failed to execute asciinema with gemini: {e}"))?;
+
+                if !status.success() {
+                    return Err(format!("Asciinema/Gemini exited with non-zero status: {:?}", status.code()));
+                }
+                // If only one instance is requested and recorded, we are done.
+                if args.gemini_instances == 1 {
+                    eprintln!("Session manager stage completed successfully.");
+                    return Ok(());
+                }
+            }
+
+            // Launch additional Gemini instances in the background if more than 1 are requested (existing logic)
             for i in 0..args.gemini_instances {
                 if args.record_session && i == 0 {
                     // Skip the first instance if it was already launched with asciinema
                     continue;
                 }
-                eprintln!("Launching Gemini instance {}/{} in background...", i + 1, args.gemini_instances);
+                eprintln!("Launching Gemini instance {}/{}", i + 1, args.gemini_instances);
                 let mut command = Command::new("gemini");
                 command.arg("--model").arg("gemini-2.5-flash");
                 command.arg("--checkpointing=true");

@@ -75,6 +75,12 @@ pub struct LaunchpadArgs {
     pub inside: Option<String>,
     #[arg(long)]
     pub via: Option<String>,
+    #[arg(long)]
+    pub crq_path: Option<String>, // New: Path to the CRQ file
+    #[arg(long)]
+    pub target_repo_url: Option<String>, // New: URL of the target repository
+    #[arg(long)]
+    pub workflow_file_in_repo: Option<String>, // New: Path to the workflow file within the target repository
 
     // Catch-all for arguments passed to the stage binary
     #[arg(allow_hyphen_values = true, trailing_var_arg = true)]
@@ -163,6 +169,64 @@ pub async fn run_launchpad() -> Result<(), String> {
             let current_dir = std::env::current_dir().map_err(|e| format!("Failed to get current directory: {}", e))?;
             run_main::run(command_path, &command_args.iter().map(|s| s.as_str()).collect::<Vec<&str>>(), current_dir);
             Ok(()) // run_main::run calls exit, so this is fine.
+        },
+        "simulate-gha-workflow" => {
+            narrator::narrate_step("Simulating GitHub Action Workflow");
+
+            let crq_path = args.crq_path.ok_or("CRQ path not provided for simulate-gha-workflow stage.")?;
+            let target_repo_url = args.target_repo_url.ok_or("Target repository URL not provided for simulate-gha-workflow stage.")?;
+            let workflow_file_in_repo = args.workflow_file_in_repo.ok_or("Workflow file path in repository not provided for simulate-gha-workflow stage.")?;
+
+            // TODO: Implement CRQ parsing to extract workflow details and inputs
+            // For now, we'll just pass the raw arguments to zos-stage-session-manager
+
+            // TODO: Implement cloning/fetching of target_repo_url into a sandbox
+            // For now, assume the target repo is already available locally
+
+            // Call zos-stage-session-manager to launch MiniAct in tmux
+            // This will require zos-stage-session-manager to handle MiniAct launching
+            // and tmux integration.
+            orchestrator::run_gemini_cli(
+                &LaunchpadArgs {
+                    stage_identifier: "run-gemini".to_string(), // Delegate to run-gemini stage
+                    model: args.model, // Pass through existing model arg
+                    prompt: args.prompt,
+                    prompt_interactive: args.prompt_interactive,
+                    sandbox: args.sandbox,
+                    sandbox_image: args.sandbox_image,
+                    debug: args.debug,
+                    all_files: args.all_files,
+                    show_memory_usage: args.show_memory_usage,
+                    yolo: args.yolo,
+                    approval_mode: args.approval_mode,
+                    telemetry: args.telemetry,
+                    telemetry_target: args.telemetry_target,
+                    telemetry_otlp_endpoint: args.telemetry_otlp_endpoint,
+                    telemetry_log_prompts: args.telemetry_log_prompts,
+                    telemetry_outfile: args.telemetry_outfile,
+                    checkpointing: args.checkpointing,
+                    experimental_acp: args.experimental_acp,
+                    allowed_mcp_server_names: args.allowed_mcp_server_names,
+                    extensions: args.extensions,
+                    list_extensions: args.list_extensions,
+                    proxy: args.proxy,
+                    include_directories: args.include_directories,
+                    version: args.version,
+                    help: args.help,
+                    crq: Some(crq_path.clone()), // Pass CRQ path to session manager
+                    mode: Some("tmux".to_string()), // Force tmux mode
+                    inside: Some("miniact".to_string()), // Specify miniact
+                    via: Some("doh".to_string()), // Specify doh
+                    stage_args: vec![
+                        "--workflow-file".to_string(),
+                        workflow_file_in_repo.clone(),
+                        "--target-repo-url".to_string(),
+                        target_repo_url.clone(),
+                    ], // Pass workflow file and repo to session manager
+                }
+            ).await?;
+
+            Ok(())
         },
         _ => {
             // Original stage launching logic
