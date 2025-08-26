@@ -4,7 +4,7 @@ use uuid::Uuid;
 use std::path::PathBuf;
 
 pub async fn handle_capture_session_output_command() -> Result<(), Box<dyn std::error::Error>> {
-    println!("---" Capturing output from all tmux sessions ---");
+    println!("--- Capturing output from all tmux sessions ---");
 
     let sessions_output = Tmux::with_command(ListSessions::new()).output()?;
     let sessions_str = String::from_utf8_lossy(&sessions_output.stdout()).to_string();
@@ -19,7 +19,7 @@ pub async fn handle_capture_session_output_command() -> Result<(), Box<dyn std::
         let session_name = session_line.split(':').next().unwrap_or("").trim();
         if session_name.is_empty() { continue; }
 
-        println!("---" Processing session: {} ---", session_name);
+        println!("--- Processing session: {} ---", session_name);
 
         let panes_output = Tmux::with_command(ListPanes::new().target(session_name)).output()?;
         let panes_str = String::from_utf8_lossy(&panes_output.stdout()).to_string();
@@ -33,7 +33,7 @@ pub async fn handle_capture_session_output_command() -> Result<(), Box<dyn std::
             let pane_id = pane_line.split(':').next().unwrap_or("").trim();
             if pane_id.is_empty() { continue; }
 
-            println!("---" Capturing pane: {} in session: {} ---", pane_id, session_name);
+            println!("--- Capturing pane: {} in session: {} ---", pane_id, session_name);
 
             let unique_id = Uuid::new_v4().to_string();
             let session_pane_dir = session_store_base.join(session_name).join(pane_id);
@@ -55,7 +55,7 @@ pub async fn handle_capture_session_output_command() -> Result<(), Box<dyn std::
 
             // Read the content of the temporary file from the host
             let captured_content = fs::read_to_string(&temp_file_path).await?;
-            println!("---" Captured content from pane {}:{} ---
+            println!("--- Captured content from pane {}:{} ---
 {}", session_name, pane_id, captured_content);
 
             // Delete the temporary file
@@ -63,7 +63,7 @@ pub async fn handle_capture_session_output_command() -> Result<(), Box<dyn std::
         }
     }
 
-    println!("---" Finished capturing output from all tmux sessions ---");
+    println!("--- Finished capturing output from all tmux sessions ---");
     Ok(())
 }
 
