@@ -1,7 +1,5 @@
 use proc_macro::TokenStream;
-use syn::{parse_macro_input, Expr,
-	  //ExprLit,
-	  LitStr};
+use syn::{parse_macro_input, Expr, Lit, LitStr}; // Added Lit
 use quote::ToTokens; // Add ToTokens for debugging
 //use proc_macro2::TokenStream as ProcMacro2TokenStream; // Alias for proc_macro2::TokenStream
 use lazy_static::lazy_static; // Add this import
@@ -14,7 +12,7 @@ mod string_processor;
 mod token_generator; // Add this module
 
 use macro_parser::gemini_eprintln_input::GeminiEprintlnInput; // New import
-use crate::string_processor::EMOJIS;
+use crate::string_processor::{EMOJIS, EMOJI_NAMES}; // Added EMOJI_NAMES
 use token_generator::generate_eprintln_tokens::generate_eprintln_tokens; // Add this use statement
 
 // Dummy usage to make lazy_static and HashMap used
@@ -37,35 +35,16 @@ lazy_static! {
 /// In such cases, `kantspel_lib::DEBUG_FORMAT_SPECIFIER` should be utilized for debug formatting.
 #[proc_macro]
 pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
-    // IMPORTANT: Using `eprintln!` directly here because `gemini_eprintln!` cannot be used
-    // within its own definition (it's a procedural macro). These prints will appear
-    // during the compilation of crates that use `gemini_utils`.
-
-    // Debug print for the input TokenStream using proc_macro2::TokenStream
-    //    eprintln!("DEBUG: Input TokenStream (proc_macro2): {{:?}}", ProcMacro2TokenStream::from(input.clone()));
-
-    // Debug print for kantspel_lib usage
-//    eprintln!("DEBUG: Kantspel backslash constant: {{:?}}", kantspel_lib::BACKSLASH);
-
-    // Old parsing logic (commented out for refactoring)
-    // let input_args = parse_macro_input!(input as CommaSeparatedExprs).exprs;
-    // if input_args.is_empty() {
-    //     return quote! { eprintln!(); }.into();
-    // }
-    // let format_expr = &input_args[0];
-    // let other_args = input_args.iter().skip(1).collect::<Vec<_>>();
-
-    // New parsing logic for GeminiEprintlnInput
     let parsed_input = parse_macro_input!(input as GeminiEprintlnInput);
     let format_string_literal = parsed_input.format_string;
-    let named_args = parsed_input.named_args;
+    let mut named_args = parsed_input.named_args; // Make mutable
     let positional_args = parsed_input.positional_args;
 
     eprintln!("DEBUG: Parsed named_args: {:?}",
-	      named_args.iter().map(|(i, e)|
-				    format!("{}: {:?}",
-					    i,
-					    e.to_token_stream())).collect::<Vec<_>>());
+              named_args.iter().map(|(i, e)|
+                                    format!("{}: {:?}",
+                                            i,
+                                            e.to_token_stream())).collect::<Vec<_>>());
     eprintln!("DEBUG: Parsed positional_args: {:?}", positional_args.iter().map(|e| e.to_token_stream().to_string()).collect::<Vec<_>>());
 
     let mut current_segment = String::new();
@@ -76,8 +55,10 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
         chars: &mut chars,
         current_segment: &mut current_segment,
         emojis: &EMOJIS,
-        placeholders: Vec::new(), // Initialize with new PlaceholderType
+        placeholders: Vec::new(),
     };
+
+    let mut auto_generated_named_args: HashMap<String, Expr> = HashMap::new();
 
     while let Some(c) = context.chars.next() {
         // Check for ::keyword:: patterns
@@ -93,16 +74,39 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
             }
             if context.chars.peek() == Some(&':') {
                 context.chars.next(); // Consume the final ':'
-                if let Some(replacement) = context.emojis.get(keyword_name.as_str()) {
+
+                // --- Dynamic Emoji Naming ---
+                let mut resolved_emoji_char: Option<&str> = None;
+                if let Some((_ident, expr)) = named_args.iter().find(|(ident, _)| ident.to_string() == keyword_name) {
+                    if let Expr::Lit(expr_lit) = expr {
+                        if let Lit::Str(lit_str) = &expr_lit.lit {
+                            let lit_str_value = lit_str.value();
+                            // Check if the string literal value is an emoji string (e.g., ":rocket:")
+                            if lit_str_value.starts_with(':') && lit_str_value.ends_with(':') && lit_str_value.len() > 2 {
+                                let inner_name = &lit_str_value[1..lit_str_value.len() - 1];
+                                if let Some(emoji_char) = EMOJIS.get(&format!("::{:?}::", inner_name).replace("\"", "").as_str()) {
+                                    resolved_emoji_char = Some(emoji_char);
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if let Some(emoji_char) = resolved_emoji_char {
+                    context.current_segment.push_str(emoji_char);
+                    // Add placeholder for the dynamically resolved emoji
+                    if let Some(emoji_name) = EMOJI_NAMES.get(emoji_char) {
+                        context.placeholders.push(crate::string_processor::PlaceholderType::Named(emoji_name.to_string()));
+                    } else {
+                        // Fallback for emojis without a known name, treat as positional
+                        context.placeholders.push(crate::string_processor::PlaceholderType::Positional(false));
+                    }
+                } else if let Some(replacement) = context.emojis.get(keyword_name.as_str()) {
                     context.current_segment.push_str(replacement);
                     // Handle placeholders for ::brick::, ::crane::, etc.
-                    if replacement == &"{{}}" { // For brick
+                    if replacement == &"{}" {
                         context.placeholders.push(crate::string_processor::PlaceholderType::Positional(false));
-                    } else if replacement == &"{?:}" { // For 🔍/inspect
-                        context.placeholders.push(crate::string_processor::PlaceholderType::Positional(true));
-                    } else if replacement == &"🔍" { // For /inspect
-                        context.placeholders.push(crate::string_processor::PlaceholderType::Positional(true));
-                    } else if replacement == &":inspect:" { // inspect
+                    } else if replacement == &"{{:?}}" {
                         context.placeholders.push(crate::string_processor::PlaceholderType::Positional(true));
                     }
                 } else {
@@ -132,21 +136,28 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
             }
 
             if temp_chars.peek() == Some(&':') {
-                context.chars.nth(peeked_chars_count); 
-                context.chars.next(); 
-                context.current_segment.push_str("{}"); 
-                context.placeholders.push(crate::string_processor::PlaceholderType::Named(placeholder_name)); 
+                context.chars.nth(peeked_chars_count);
+                context.chars.next();
+                context.current_segment.push_str("{}");
+                context.placeholders.push(crate::string_processor::PlaceholderType::Named(placeholder_name));
             } else {
                 context.current_segment.push(':');
                 context.current_segment.push_str(&placeholder_name);
             }
+        } else {
+            // --- Automatic Emoji Variable Population ---
+            if let Some(emoji_name) = EMOJI_NAMES.get(c.to_string().as_str()) {
+                context.current_segment.push_str("{}"); // Replace emoji with {} placeholder
+                context.placeholders.push(crate::string_processor::PlaceholderType::Named(emoji_name.to_string()));
+            } else {
+                context.current_segment.push(c);
+            }
         }
     }
 
-    let final_segment = std::mem::take(&mut *context.current_segment); // Take ownership of the string
+    let final_segment = std::mem::take(&mut *context.current_segment);
     let processed_format_string = LitStr::new(&final_segment, format_string_literal.span());
 
-    // --- NEW ARGUMENT MAPPING LOGIC ---
     let mut final_args: Vec<Option<Expr>> = vec![None; context.placeholders.len()];
     let mut used_named_args: HashMap<String, bool> = HashMap::new();
 
@@ -161,7 +172,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
             if let crate::string_processor::PlaceholderType::Named(name) = placeholder_type {
                 if name == &ident_str {
                     if final_args[i].is_none() {
-                        final_args[i] = Some(expr.clone()); // Clone expr as it might be used multiple times
+                        final_args[i] = Some(expr.clone());
                         assigned = true;
                         break;
                     } else {
@@ -174,7 +185,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
         if assigned {
             used_named_args.insert(ident_str, true);
         } else {
-            unclaimed_named_args.push((ident, expr)); // Push back to be processed as unclaimed
+            unclaimed_named_args.push((ident, expr));
         }
     }
 
@@ -202,14 +213,15 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
                     } else if let Some(expr) = positional_arg_iter.next() {
                         eprintln!("DEBUG: Loop iteration {} - Filling with positional arg: {}", i, expr.to_token_stream().to_string());
                         final_args[i] = Some(expr);
+                    } else {
+                        // If positional placeholder is not filled, provide a default empty string
+                        final_args[i] = Some(syn::parse_quote!{""});
                     }
-                    // No else branch here, let the final checks handle unfilled placeholders
                 },
                 crate::string_processor::PlaceholderType::Named(name) => {
                     eprintln!("DEBUG: Loop iteration {} - Named placeholder: {}", i, name);
-                    // This case means an explicit named placeholder was not filled in the first pass.
-                    // This should be an error.
-                    return syn::Error::new_spanned(format_string_literal.clone(), format!("Named placeholder '{}' at index {} is not filled by any argument.", name, i)).to_compile_error().into();
+                    // If a named placeholder is not filled by an explicit argument, auto-generate an empty string
+                    final_args[i] = Some(syn::parse_quote!{""});
                 }
             }
         }
@@ -222,9 +234,9 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
     for (i, arg_opt) in final_args.iter().enumerate() {
         if arg_opt.is_none() {
             return syn::Error::new_spanned(
-		format_string_literal.clone(),
-		format!("Placeholder at index {} is not filled by any argument (safeguard).",i), 
-	    ).to_compile_error().into();
+                format_string_literal.clone(),
+                format!("Placeholder at index {} is not filled by any argument (safeguard).",i),
+            ).to_compile_error().into();
         }
     }
 

@@ -22,20 +22,31 @@ pub mod processing_context;
 lazy_static! {
     pub(crate) static ref EMOJIS: HashMap<&'static str, &'static str> = {
         let mut map = HashMap::new();
-        // Map emojis and keywords to their corresponding characters for LLM readability
+        // Map keywords to their corresponding characters or format specifiers
         map.insert("::variable::", "{}");
-	map.insert(":::brick:::", "{}"); // New: the read brick emoji maps to {}	
-	map.insert("::quoted-variable::", "{{}}"); 
-	map.insert(":::crane:::", "{{}}");	
-        map.insert("::newline::", "\n"); // New: ::newline:: for newline
-        map.insert("::sparkles::", "✨"); // New: ::sparkles:: for literal ✨ emoji
+        map.insert(":::brick:::", "{}");
+        map.insert("::quoted-variable::", "{{}}");
+        map.insert(":::crane:::", "{{}}");
+        map.insert("::newline::", "\n");
+        map.insert("::sparkles::", "✨");
+        map.insert("::rocket::", "🚀");
+        map.insert("::hourglass_flowing_sand::", "⏳");
+        map.insert("::white_check_mark::", "✅");
         map.insert("🔍", "{:?}"); // magnifying glass emoji to debug format
-	//map.insert(":::inspect:::", "{:?}"); // the same as map.insert("🔍", "{:?}");
-        map.insert("::inspect::", "{:?}"); // inspect keyword to debug format
-	map.insert("quoted-inspect", "{{:?}}"); // inspect keyword to debug format
+        map.insert("::inspect::", "{:?}");
+        map.insert("quoted-inspect", "{{:?}}");
+        map
+    };
 
-	// return
-	map
+    pub(crate) static ref EMOJI_NAMES: HashMap<&'static str, &'static str> = {
+        let mut map = HashMap::new();
+        // Map actual emoji characters to their canonical names
+        map.insert("✨", "sparkles");
+        map.insert("🚀", "rocket");
+        map.insert("⏳", "hourglass_flowing_sand");
+        map.insert("✅", "white_check_mark");
+        map.insert("🔍", "magnifying_glass");
+        map
     };
 }
 

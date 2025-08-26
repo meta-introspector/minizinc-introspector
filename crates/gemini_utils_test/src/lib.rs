@@ -22,25 +22,5 @@ pub fn log_examples() {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
+mod tests;
 
-    #[test]
-    fn test_log_examples_compiles() {
-        // This test primarily checks if the code within log_examples compiles.
-        // Output to stderr from gemini_eprintln! is not captured or asserted here.
-        log_examples();
-    }
-
-    #[test]
-    fn test_named_argument_with_emoji() {
-        let my_value = 42;
-        gemini_eprintln!("The answer is: 🔍", value:my_value);
-    }
-
-    #[test]
-    fn test_positional_argument_with_emoji() {
-        let my_string = "hello world";
-        gemini_eprintln!("A message: 🔍", my_string);
-    }
-}
