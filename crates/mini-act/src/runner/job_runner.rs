@@ -23,9 +23,9 @@ pub fn run_job(job: &Job, inherited_env: &Option<HashMap<String, String>>) {
                 step_env.extend(env_map.clone());
             }
 
-            let substituted_run = env_processor::substitute_env_vars(run.as_str().unwrap_or_default(), &Some(step_env.clone()));
+            let substituted_run = env_processor::substitute_env_vars(run.as_str(), &Some(step_env.clone()));
 
-            step_executor::execute_step_command(&run, &step_env);
+            step_executor::execute_step_command(&substituted_run, &step_env);
         }
     }
 }
