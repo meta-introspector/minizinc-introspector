@@ -1,0 +1,65 @@
+name: Launch Gemini for Broadcast CRQ via MiniAct
+
+on:
+  workflow_dispatch:
+    inputs:
+      crq_id:
+        description: 'The ID of the Rust-Native Broadcast CRQ'
+        required: true
+        default: 'CRQ_BROADCAST_ID_PLACEHOLDER' # Replace with actual CRQ ID
+      gemini_model:
+        description: 'Gemini model to use'
+        required: true
+        default: 'gemini-2.5-pro'
+
+jobs:
+  launch-gemini-for-broadcast-crq:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
+
+    - name: Install tmux
+      run: sudo apt-get update && sudo apt-get install -y tmux
+
+    - name: Build MiniAct and Launchpad
+      run: cargo build --workspace --bin launchpad # Assuming launchpad is a binary in the workspace
+
+    - name: Launch Gemini via MiniAct in Tmux
+      run: |
+        # Construct the command for MiniAct to launch Gemini
+        # This command assumes MiniAct is a binary that can execute other commands
+        # and manage tmux sessions.
+        # The actual MiniAct command might vary based on its implementation.
+        # For demonstration, we'll use a placeholder for MiniAct's executable.
+        
+        # Assuming MiniAct executable is at target/debug/miniact or similar
+        # And launchpad is at target/debug/launchpad
+        MINIACT_EXEC="./target/debug/miniact" # Placeholder for MiniAct executable
+        LAUNCHPAD_EXEC="./target/debug/launchpad" # Placeholder for Launchpad executable
+
+        # The command to launch Gemini in a new tmux session via MiniAct
+        # This is a conceptual command based on the user's description.
+        # The actual implementation in MiniAct would handle the tmux session creation.
+        $MINIACT_EXEC run \
+          $LAUNCHPAD_EXEC \
+          --model ${{ github.event.inputs.gemini_model }} \
+          --crq ${{ github.event.inputs.crq_id }} \
+          --mode tmux \
+          --inside miniact \
+          --via dum
+      env:
+        # Potentially set environment variables needed by Gemini or DUM
+        # For example, API keys, configuration paths, etc.
+        # GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        # DUM_CONFIG_PATH: /path/to/dum/config
+        # Ensure these are handled securely using GitHub Secrets
+        DUMMY_ENV_VAR: "true" # Placeholder
