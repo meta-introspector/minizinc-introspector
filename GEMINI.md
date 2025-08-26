@@ -184,6 +184,7 @@ This section lists the detailed documentation and MiniZinc models generated duri
 *   [Code, Documentation, Index, and Gemini Memory Update Procedure](docs/sops/code_doc_update_sop.md)
 
 ### Conceptual Designs
+*   [C4 Model for Launchpad and Tmux Controller](docs/architecture/c4_model_launchpad_tmux.md)
 *   [Rust Link Verification Tool (`minizinc-doc-linker`)](docs/rust_link_verifier_design.md)
 *   [Git to MiniZinc Data Tool](docs/git_to_minizinc_data_tool_design.md)
 *   [Gemini Self-Model Integration Proposal](docs/gemini_self_model_integration_proposal.md)
@@ -235,6 +236,22 @@ This section summarizes key lessons learned during the recent debugging and refa
     *   Explicitly clarifying whether a rule applies to the *implementation* of a tool/macro or its *usage* is vital for efficient collaboration.
 
 ## 2. libminizinc Specific Memories & Context
+
+### Recent CLI Enhancements and Documentation
+
+This section summarizes the recent enhancements to the `launchpad` and `tmux_controller` CLI tools, along with the newly generated documentation.
+
+*   **`launchpad` CLI Enhancements:**
+    *   New arguments (`--gemini-instances`, `--record-session`, `--background-detached`) added for finer control over Gemini CLI execution and session management.
+    *   Detailed documentation available at `docs/cli_arguments/launchpad_cli_arguments.md`.
+    *   QA test cases outlined in `docs/qa/launchpad_cli_qa.md`.
+
+*   **`tmux_controller` CLI Enhancements:**
+    *   `split-horizontal` and `split-vertical` commands now support a `--session-name` argument for targeted tmux session control.
+    *   Detailed documentation available at `docs/cli_arguments/tmux_controller_cli_arguments.md`.
+    *   QA test cases outlined in `docs/qa/tmux_controller_cli_qa.md`.
+
+These enhancements contribute to a more robust and user-friendly environment for managing Gemini CLI and tmux-based workflows.
 
 ### Troubleshooting & Build Issues
 

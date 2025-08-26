@@ -34,3 +34,19 @@ This CRQ aims to extend the `launchpad` tool's capabilities to provide a robust 
 
 **Dependencies:**
 *   Completion of current `launchpad` work (documentation and initial `dum` integration).
+
+## Commit History
+
+**Commit:** `3290a8aa406d8d4352c2702bbafbcd10d2458b52`
+**Subject:** `wip`
+**Description:**
+This commit represents a work-in-progress state, notably including the initial creation of this `crq_launchpad_workflow_enhancements.md` file. It also introduces significant changes across various modules, such as updates to `gemini_utils` for `kantspel` principles and `gemini_eprintln!` macro enhancements, refactoring within `launchpad`'s `dum_wrappers` for Gemini CLI integration, and the introduction of `gemini_cli_options.rs` and `gemini_context_args.rs` for command-line argument parsing.
+
+**Commit:** `23104bac1cf99fa82e998471ac1f929724700122`
+**Subject:** `feat: launchpad and tmux_controller CLI enhancements, documentation, and QA file creation`
+**Description:**
+This commit introduces significant enhancements to the `launchpad` and `tmux_controller` CLIs, focusing on improved Gemini CLI management and integrated development workflows. Key changes include:
+-   **`launchpad` CLI Enhancements:** Added new CLI arguments (`--gemini-instances`, `--record-session`, `--background-detached`) to `launchpad_main.rs` for launching multiple Gemini instances, recording sessions with asciinema, and running Gemini in detached background processes.
+-   **`tmux_controller` Integration:** Implemented `tmux` integration within `launchpad` to manage `tmux` sessions for various operations.
+-   **Documentation:** Updated relevant documentation to reflect the new CLI arguments and functionalities.
+-   **QA File Creation:** Created new QA files to ensure the proper functioning and verification of the new features.

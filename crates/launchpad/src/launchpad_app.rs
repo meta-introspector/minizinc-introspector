@@ -7,6 +7,10 @@ use crate::narrator;
 use crate::dum_wrappers::run_main;
 use crate::gemini_cli_options::{ApprovalMode, TelemetryTarget};
 use clap::Parser;
+use std::collections::HashMap;
+use git2::Repository;
+use crate::stages::Stage;
+use crate::stages::tmux_stage::TmuxStage;
 
 /// Command-line arguments for the launchpad application.
 #[derive(Parser, Debug, serde::Serialize, serde::Deserialize)]
@@ -129,9 +133,9 @@ pub struct LaunchpadArgs {
 pub async fn run_launchpad() -> Result<(), String> {
     // Determine the project root dynamically
     let current_exe_path = std::env::current_exe()
-        .map_err(|e| format!("Failed to get current executable path: {e}"))?;
+        .map_err(|e| format!("Failed to get current executable path: {}", e.to_string()))?;
     let project_root = current_exe_path.parent()
-        .and_then(|p| p.parent()) // target/debug/
+        .and_then(|p| p.parent()) // target/debug/ 
         .and_then(|p| p.parent()) // libminizinc/
         .ok_or("Could not determine project root")?;
 
@@ -146,128 +150,46 @@ pub async fn run_launchpad() -> Result<(), String> {
     let stage_identifier = args.stage_identifier.clone();
     let stage_args = args.stage_args.clone(); // Clone stage_args
 
-    match stage_identifier.as_str() {
-        "install-gemini" => {
-            narrator::narrate_step("Installing Gemini CLI");
-            orchestrator::install_gemini_cli().await.map_err(|e| {
-                narrator::narrate_error(&format!("Failed to install Gemini CLI: {}", e));
-                e
-            })
-        },
-        "run-gemini" => {
-            narrator::narrate_step("Running Gemini CLI");
-            // The GeminiCliOptions are already part of LaunchpadArgs, so we can directly pass args
-            orchestrator::run_gemini_cli(&args).await?;
+    // Initialize Git repository (needed by some stages)
+    let repo = Repository::open(&project_root).map_err(|e| format!("Failed to open Git repository: {}", e))?;
+
+    // Create a stage registry
+    let mut stage_registry: HashMap<String, Box<dyn Stage>> = HashMap::new();
+    stage_registry.insert("tmux".to_string(), Box::new(TmuxStage));
+
+    if let Some(stage) = stage_registry.get(&stage_identifier) {
+        stage.run(&repo, &stage_args.iter().map(|s| s.as_str()).collect::<Vec<&str>>()).await
+    } else {
+        // Original stage launching logic for ZOS stage binaries
+        let stage_binary_name = if stage_identifier.starts_with("zos-stage-") {
+            stage_identifier.to_string()
+        } else {
+            format!("zos-stage-{}", stage_identifier)
+        };
+        let stage_binary_path = project_root
+            .join("target")
+            .join("debug")
+            .join(&stage_binary_name);
+
+        if !stage_binary_path.exists() {
+            return Err(format!("Stage binary not found: {:?}\n", stage_binary_path));
+        }
+
+        // Execute the stage binary
+        let mut command = std::process::Command::new(&stage_binary_path);
+        command.args(stage_args.clone());
+        command.stdout(std::process::Stdio::inherit());
+        command.stderr(std::process::Stdio::inherit());
+
+        narrator::livestream_output(&format!("Launching stage: {:?} with args: {:?}\n", stage_binary_path, stage_args));
+
+        let status = command.status()
+            .map_err(|e| format!("Failed to execute stage binary: {}\n", e))?;
+
+        if status.success() {
             Ok(())
-        },
-        "dum-test" => {
-            if stage_args.is_empty() {
-                return Err("Usage: launchpad dum-test <command_path> [command_args...]".to_string());
-            }
-            let command_path = stage_args[0].as_str();
-            let command_args = &stage_args[1..];
-            narrator::narrate_step(&format!("Running dum test for: {}", command_path));
-            let current_dir = std::env::current_dir().map_err(|e| format!("Failed to get current directory: {}", e))?;
-            run_main::run(command_path, &command_args.iter().map(|s| s.as_str()).collect::<Vec<&str>>(), current_dir);
-            Ok(()) // run_main::run calls exit, so this is fine.
-        },
-        "simulate-gha-workflow" => {
-            narrator::narrate_step("Simulating GitHub Action Workflow");
-
-            let crq_path = args.crq_path.as_ref().ok_or("CRQ path not provided for simulate-gha-workflow stage.")?.clone();
-            let target_repo_url = args.target_repo_url.as_ref().ok_or("Target repository URL not provided for simulate-gha-workflow stage.")?.clone();
-            let workflow_file_in_repo = args.workflow_file_in_repo.as_ref().ok_or("Workflow file path in repository not provided for simulate-gha-workflow stage.")?.clone();
-
-            // TODO: Implement CRQ parsing to extract workflow details and inputs
-            // For now, we'll just pass the raw arguments to zos-stage-session-manager
-
-            // TODO: Implement cloning/fetching of target_repo_url into a sandbox
-            // For now, assume the target repo is already available locally
-
-            // Call zos-stage-session-manager to launch MiniAct in tmux
-            // This will require zos-stage-session-manager to handle MiniAct launching
-            // and tmux integration.
-            orchestrator::run_gemini_cli(
-                &LaunchpadArgs {
-                    stage_identifier: "launch".to_string(), // Delegate to launch stage
-                    model: args.model, // Pass through existing model arg
-                    prompt: args.prompt,
-                    prompt_interactive: args.prompt_interactive,
-                    sandbox: args.sandbox,
-                    sandbox_image: args.sandbox_image,
-                    debug: args.debug,
-                    all_files: args.all_files,
-                    show_memory_usage: args.show_memory_usage,
-                    yolo: args.yolo,
-                    approval_mode: args.approval_mode,
-                    telemetry: args.telemetry,
-                    telemetry_target: args.telemetry_target,
-                    telemetry_otlp_endpoint: args.telemetry_otlp_endpoint,
-                    telemetry_log_prompts: args.telemetry_log_prompts,
-                    telemetry_outfile: args.telemetry_outfile,
-                    checkpointing: args.checkpointing,
-                    experimental_acp: args.experimental_acp,
-                    allowed_mcp_server_names: args.allowed_mcp_server_names,
-                    extensions: args.extensions,
-                    list_extensions: args.list_extensions,
-                    proxy: args.proxy,
-                    include_directories: args.include_directories,
-                    version: args.version,
-                    
-                    crq: Some(crq_path.clone()), // Pass CRQ path to session manager
-                    mode: Some("tmux".to_string()), // Force tmux mode
-                    inside: Some("miniact".to_string()), // Specify miniact
-                    via: Some("doh".to_string()), // Specify doh
-                    crq_path: args.crq_path.clone(), // Pass through
-                    target_repo_url: args.target_repo_url.clone(), // Pass through
-                    workflow_file_in_repo: args.workflow_file_in_repo.clone(), // Pass through
-                    gemini_cli_path: None, // Initialize gemini_cli_path
-                    gemini_instances: 1, // Default for miniact simulation
-                    record_session: false, // Default for miniact simulation
-                    background_detached: false, // Default for miniact simulation
-                    stage_args: vec![
-                        "--workflow-file".to_string(),
-                        workflow_file_in_repo.clone(),
-                        "--target-repo-url".to_string(),
-                        target_repo_url.clone(),
-                    ], // Pass workflow file and repo to session manager
-                }
-            ).await?;
-
-            Ok(())
-        },
-        _ => {
-            // Original stage launching logic
-            let stage_binary_name = if stage_identifier.starts_with("zos-stage-") {
-                stage_identifier.to_string()
-            } else {
-                format!("zos-stage-{}", stage_identifier)
-            };
-            let stage_binary_path = project_root
-                .join("target")
-                .join("debug")
-                .join(&stage_binary_name);
-
-            if !stage_binary_path.exists() {
-                return Err(format!("Stage binary not found: {:?}\n", stage_binary_path));
-            }
-
-            // Execute the stage binary
-            let mut command = std::process::Command::new(&stage_binary_path);
-            command.args(stage_args.clone());
-            command.stdout(std::process::Stdio::inherit());
-            command.stderr(std::process::Stdio::inherit());
-
-            narrator::livestream_output(&format!("Launching stage: {:?} with args: {:?}\n", stage_binary_path, stage_args));
-
-            let status = command.status()
-                .map_err(|e| format!("Failed to execute stage binary: {}\n", e))?;
-
-            if status.success() {
-                Ok(())
-            } else {
-                Err(format!("Stage binary exited with non-zero status: {:?}\n", status.code()))
-            }
+        } else {
+            Err(format!("Stage binary exited with non-zero status: {:?}\n", status.code()))
         }
     }
 }

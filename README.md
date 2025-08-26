@@ -98,6 +98,11 @@ This project's documentation is organized into the following categories:
     *   [Debugging and Error Resolution SOP](docs/technical/debugging_error_resolution_sop.md)
     *   [Dependency Management SOP](docs/technical/dependency_management_sop.md)
     *   [Feature Flag Management SOP](docs/technical/feature_flag_management_sop.md)
+*   **[CLI Arguments Documentation](docs/cli_arguments):** Detailed documentation for command-line arguments of various tools.
+    *   [Launchpad CLI Arguments](docs/cli_arguments/launchpad_cli_arguments.md)
+    *   [Tmux Controller CLI Arguments](docs/cli_arguments/tmux_controller_cli_arguments.md)
+*   **[Architecture Documentation](docs/architecture):** High-level architectural overviews.
+    *   [C4 Model for Launchpad and Tmux Controller](docs/architecture/c4_model_launchpad_tmux.md)
 *   **[Crate Documentation](docs/crates):** Documentation for individual crates.
 *   **[Poems and Creative Writing](docs/poems):** A collection of poems, sonnets, and other creative writing that captures the spirit of the project.
 *   **[Tutorials](docs/tutorial):** Step-by-step guides for getting started with the project.

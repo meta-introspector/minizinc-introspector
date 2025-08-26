@@ -6,6 +6,7 @@
 use std::process::{Command, Stdio};
 use std::path::Path;
 use serde_json; // Will use serde_json for serialization
+use crate::launchpad_app::LaunchpadArgs; // Import LaunchpadArgs
 
 /// Executes a general shell command.
 ///
@@ -21,8 +22,7 @@ use serde_json; // Will use serde_json for serialization
 ///
 /// # Returns
 ///
-/// A `Result` indicating success (`Ok(())`) or an error (`Err(String)`) if
-/// the command fails to execute or exits with a non-zero status.
+/// A `Result` indicating success (`Ok(())`) or an error (`Err(String)`).
 pub async fn run_command(cmd: &str, args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
     let mut command = Command::new(cmd);
     command.args(args);
@@ -69,8 +69,6 @@ pub async fn install_gemini_cli() -> Result<(), String> {
 /// # Returns
 ///
 /// A `Result` indicating success (`Ok(())`) or an `Err(String)`.
-use crate::launchpad_main::LaunchpadArgs; // Import LaunchpadArgs
-
 pub async fn run_gemini_cli(args: &LaunchpadArgs) -> Result<(), String> {
     eprintln!("Running Gemini CLI via session manager...");
 
@@ -110,6 +108,83 @@ pub async fn run_gemini_cli(args: &LaunchpadArgs) -> Result<(), String> {
 /// # Returns
 ///
 /// A `Result` indicating success (`Ok(())`) or an `Err(String)`.
+pub async fn run_dum_task(task_name: &str, args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
+    eprintln!("Running dum task: {}", task_name);
+    let mut dum_args = vec![task_name];
+    dum_args.extend_from_slice(args);
+
+    let current_exe_path = std::env::current_exe()
+        .map_err(|e| format!("Failed to get current executable path: {e}"))?;
+    let project_root = current_exe_path.parent()
+        .and_then(|p| p.parent()) // target/debug/
+        .and_then(|p| p.parent()) // libminizinc/
+        .ok_or("Could not determine project root")?;
+
+    let dum_binary_path = project_root
+        .join("vendor")
+        .join("dum")
+        .join("target")
+        .join("debug")
+        .join("dum");
+
+    run_command(dum_binary_path.to_str().unwrap(), &dum_args, cwd).await
+}
+
+/// Runs a `cargo` command.
+///
+/// This function is a placeholder for executing `cargo` commands.
+/// It runs the `cargo` command with the provided arguments.
+///
+/// # Arguments
+///
+/// * `args` - A slice of string slices representing arguments to pass to the `cargo` command.
+/// * `cwd` - An optional `Path` to set as the current working directory for the command.
+///
+/// # Returns
+///
+/// A `Result` indicating success (`Ok(())`) or an `Err(String)`.
+pub async fn run_cargo_command(args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
+    eprintln!("Running cargo command: {:?}\n", args);
+    run_command("cargo", args, cwd).await
+}
+
+/// Runs a `tmux` command.
+///
+/// This function is a placeholder for executing `tmux` commands.
+/// It runs the `tmux` command with the provided arguments.
+///
+/// # Arguments
+///
+/// * `args` - A slice of string slices representing arguments to pass to the `tmux` command.
+///
+/// # Returns
+///
+/// A `Result` indicating success (`Ok(())`) or an `Err(String)`.
+pub async fn run_tmux_command(args: &[&str]) -> Result<(), String> {
+    eprintln!("Running tmux command: {:?}\n", args);
+    run_command("tmux", args, None).await
+}
+
+/// Runs a command within a sandboxed environment.
+///
+/// This function is a placeholder for integrating with sandboxing tools
+/// like `pchroot` or `act-run`. It executes the specified command and arguments.
+///
+/// # Arguments
+///
+/// * `cmd` - The command to execute within the sandbox.
+/// * `args` - A slice of string slices representing arguments to pass to the command.
+/// * `cwd` - An optional `Path` to set as the current working directory for the command.
+///
+/// # Returns
+///
+/// A `Result` indicating success (`Ok(())`) or an `Err(String)`.
+pub async fn run_sandboxed_command(cmd: &str, args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
+    eprintln!("Running sandboxed command: {} {:?}\n", cmd, args);
+    // This would involve setting up pchroot/act-run environment
+    run_command(cmd, args, cwd).await
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -172,63 +247,7 @@ mod tests {
     async fn test_run_sandboxed_command_compiles() {
         // This test only ensures compilation.
         // let result = run_sandboxed_command("echo", &["sandbox"], None).await;
-        // assert!(result.is_ok());
+        // assert!(true);
         assert!(true);
     }
-}
-
-
-/// Runs a `cargo` command.
-///
-/// This function is a placeholder for executing `cargo` commands.
-/// It runs the `cargo` command with the provided arguments.
-///
-/// # Arguments
-///
-/// * `args` - A slice of string slices representing arguments to pass to the `cargo` command.
-/// * `cwd` - An optional `Path` to set as the current working directory for the command.
-///
-/// # Returns
-///
-/// A `Result` indicating success (`Ok(())`) or an `Err(String)`.
-pub async fn run_cargo_command(args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
-    eprintln!("Running cargo command: {:?}\n", args);
-    run_command("cargo", args, cwd).await
-}
-
-/// Runs a `tmux` command.
-///
-/// This function is a placeholder for executing `tmux` commands.
-/// It runs the `tmux` command with the provided arguments.
-///
-/// # Arguments
-///
-/// * `args` - A slice of string slices representing arguments to pass to the `tmux` command.
-///
-/// # Returns
-///
-/// A `Result` indicating success (`Ok(())`) or an `Err(String)`.
-pub async fn run_tmux_command(args: &[&str]) -> Result<(), String> {
-    eprintln!("Running tmux command: {:?}\n", args);
-    run_command("tmux", args, None).await
-}
-
-/// Runs a command within a sandboxed environment.
-///
-/// This function is a placeholder for integrating with sandboxing tools
-/// like `pchroot` or `act-run`. It executes the specified command and arguments.
-///
-/// # Arguments
-///
-/// * `cmd` - The command to execute within the sandbox.
-/// * `args` - A slice of string slices representing arguments to pass to the command.
-/// * `cwd` - An optional `Path` to set as the current working directory for the command.
-///
-/// # Returns
-///
-/// A `Result` indicating success (`Ok(())`) or an `Err(String)`.
-pub async fn run_sandboxed_command(cmd: &str, args: &[&str], cwd: Option<&Path>) -> Result<(), String> {
-    eprintln!("Running sandboxed command: {} {:?}\n", cmd, args);
-    // This would involve setting up pchroot/act-run environment
-    run_command(cmd, args, cwd).await
 }

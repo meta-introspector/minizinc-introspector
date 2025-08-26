@@ -45,7 +45,7 @@ members = [
     "crates/zos-stage-github-repo-inspector",
     "crates/zos-stage-doh",
     "crates/tmux_controller",
-    "crates/credential_manager", "crates/gemini_cli_manager",
+    "crates/credential_manager", "crates/gemini_cli_manager", "crates/crq_updater",
 ]
 
 [patch.crates-io]

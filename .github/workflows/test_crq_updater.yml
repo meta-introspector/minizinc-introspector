@@ -1,0 +1,38 @@
+name: Test CRQ Updater
+
+on: workflow_dispatch
+
+jobs:
+  test-crq-updater:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
+
+    - name: Build CRQ Updater
+      run: cargo build --package crq_updater
+
+    - name: Run CRQ Updater in Dry-Run Mode
+      run: cargo run --package crq_updater -- --dry-run
+
+    - name: Check for unexpected changes in Dry-Run (should be clean)
+      run: git diff --exit-code
+
+    - name: Run CRQ Updater in Actual Mode
+      run: cargo run --package crq_updater
+
+    - name: Show Git Diff after Actual Run
+      run: git diff
+
+    - name: Idempotency Check
+      run: |
+        cargo run --package crq_updater
+        git diff --exit-code # Should be clean after second run
