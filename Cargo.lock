@@ -3596,7 +3596,9 @@ name = "mini-act"
 version = "0.1.0"
 dependencies = [
  "clap",
+ "gemini_utils",
  "git2",
+ "kantspel_macros",
  "serde",
  "serde_yaml",
  "tempfile",

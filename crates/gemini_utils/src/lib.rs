@@ -29,7 +29,7 @@ lazy_static! {
 /// A procedural macro for enhanced logging and communication within the project.
 ///
 /// This macro adheres to strict `kantspel` principles, automatically translating
-/// specific keywords and emojis into standard Rust formatting characters (`\n`, `{}`).
+/// specific keywords and emojis into standard Rust formatting characters (`\n`, `{{}}`).
 /// It supports named arguments for clear and structured output.
 ///
 /// For internal debugging within the macro itself, where `gemini_eprintln!` cannot be
@@ -91,7 +91,11 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
                     // Handle placeholders for ::brick::, ::crane::, etc.
                     if replacement == &"{{}}" { // For brick
                         context.placeholders.push(crate::string_processor::PlaceholderType::Positional(false));
-                    } else if replacement == &"{{:?}}" { // For 🔍/inspect
+                    } else if replacement == &"{?:}" { // For 🔍/inspect
+                        context.placeholders.push(crate::string_processor::PlaceholderType::Positional(true));
+                    } else if replacement == &"🔍" { // For /inspect
+                        context.placeholders.push(crate::string_processor::PlaceholderType::Positional(true));
+                    } else if replacement == &":inspect:" { // inspect
                         context.placeholders.push(crate::string_processor::PlaceholderType::Positional(true));
                     }
                 } else {
@@ -213,4 +217,27 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
     let final_exprs: Vec<Expr> = final_args.into_iter().map(|opt_expr| opt_expr.unwrap()).collect();
 
     generate_eprintln_tokens(processed_format_string, true, final_exprs.iter().collect()).into()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::gemini_eprintln; // Import the macro
+
+    #[test]
+    fn test_named_argument_with_emoji() {
+        // This tests that the macro correctly processes a named argument
+        // when a placeholder emoji (🔍) is present.
+        let my_value = 42;
+        gemini_eprintln!("The answer is: 🔍", value:my_value);
+        // In a real test, you'd inspect the generated code or output,
+        // but for a proc macro, successful compilation is the primary check.
+    }
+
+    #[test]
+    fn test_positional_argument_with_emoji() {
+        // This tests that the macro correctly processes a positional argument
+        // when a placeholder emoji (🔍) is present.
+        let my_string = "hello world";
+        gemini_eprintln!("A message: 🔍", my_string);
+    }
 }

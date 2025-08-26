@@ -31,4 +31,16 @@ mod tests {
         // Output to stderr from gemini_eprintln! is not captured or asserted here.
         log_examples();
     }
+
+    #[test]
+    fn test_named_argument_with_emoji() {
+        let my_value = 42;
+        gemini_eprintln!("The answer is: 🔍", value:my_value);
+    }
+
+    #[test]
+    fn test_positional_argument_with_emoji() {
+        let my_string = "hello world";
+        gemini_eprintln!("A message: 🔍", my_string);
+    }
 }
