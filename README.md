@@ -51,6 +51,44 @@ The core MiniZinc embedding model can be executed using the `run_embedding_model
 ```
 For more details on running tests and understanding the new framework, refer to `docs/technical/performance_analysis_report.md`.
 
+## Troubleshooting Common Issues
+
+This section provides solutions to common issues encountered during development and execution.
+
+### `libminizinc_c_wrapper.so` Not Found Error
+
+**Problem:** When running Rust executables that depend on the `libminizinc_c_wrapper.so` (e.g., `zos-bootstrap`), you might encounter a "library not found" error.
+
+**Solution:** This shared library needs to be built and its location made known to the linker at runtime.
+
+1.  **Build the C++ Wrapper:** Ensure the `libminizinc` C++ wrapper is built by running the dedicated build script from the project root:
+    ```bash
+    ./scripts/build_libminizinc.sh
+    ```
+    This will compile `libminizinc_c_wrapper.so` and place it in the `build/` directory.
+
+2.  **Set `LD_LIBRARY_PATH`:** Before running your Rust executable, set the `LD_LIBRARY_PATH` environment variable to include the `build/` directory. For example, when running `zos-bootstrap`:
+    ```bash
+    LD_LIBRARY_PATH=/data/data/com.termux/files/home/storage/github/libminizinc/build cargo run -p zos-bootstrap -- <command>
+    ```
+    Replace `<command>` with the actual `zos-bootstrap` command you intend to run.
+
+### `zos-bootstrap` CLI Argument Issues: "Argument names must be unique, but 'help' is in use"
+
+**Problem:** You might encounter an error message like "Argument names must be unique, but 'help' is in use by more than one argument or group" when running `zos-bootstrap`. This indicates a conflict with `clap`'s automatically generated `--help` flag.
+
+**Solution:** The `zos-bootstrap` crate's CLI configuration has been updated to disable the auto-generated `--help` flag to resolve this conflict.
+
+1.  **Update `zos-bootstrap` Crate:** Ensure your `zos-bootstrap` crate is up-to-date. The fix involves adding `disable_help_flag = true` to the `#[command(...)]` attribute of the `Cli` struct in `crates/zos-bootstrap/src/cli.rs`.
+2.  **Use `help` Subcommand:** After this change, the `--help` flag will no longer work. Instead, use the `help` subcommand to display help information for `zos-bootstrap` or its subcommands:
+    ```bash
+    LD_LIBRARY_PATH=/data/data/com.termux/files/home/storage/github/libminizinc/build cargo run -p zos-bootstrap -- help
+    ```
+    Or for a specific subcommand:
+    ```bash
+    LD_LIBRARY_PATH=/data/data/com.termux/files/home/storage/github/libminizinc/build cargo run -p zos-bootstrap -- help <subcommand>
+    ```
+
 ## Documentation
 
 This project's documentation is organized into the following categories:

@@ -4,13 +4,12 @@
 
 use crate::orchestrator;
 use crate::narrator;
-use crate::dum_wrappers::gemini_cli_runner;
 use crate::dum_wrappers::run_main;
-use crate::gemini_cli_options::{GeminiCliOptions, ApprovalMode, TelemetryTarget};
+use crate::gemini_cli_options::{ApprovalMode, TelemetryTarget};
 use clap::Parser;
 
 /// Command-line arguments for the launchpad application.
-#[derive(Parser, Debug)]
+#[derive(Parser, Debug, serde::Serialize, serde::Deserialize)]
 #[command(author, version, about, long_about = None, disable_version_flag = true, disable_help_flag = true)]
 pub struct LaunchpadArgs {
     /// The identifier of the stage to launch (e.g., install-gemini, run-gemini, miniact).
@@ -63,8 +62,7 @@ pub struct LaunchpadArgs {
     pub include_directories: Vec<String>,
     #[arg(long)]
     pub version: Option<bool>,
-    #[arg(long)]
-    pub help: Option<bool>,
+    
 
     // Custom arguments for the CRQ workflow
     #[arg(long)]
@@ -81,6 +79,8 @@ pub struct LaunchpadArgs {
     pub target_repo_url: Option<String>, // New: URL of the target repository
     #[arg(long)]
     pub workflow_file_in_repo: Option<String>, // New: Path to the workflow file within the target repository
+    #[arg(long)]
+    pub gemini_cli_path: Option<String>, // New: Path to the Gemini CLI executable
 
     // Catch-all for arguments passed to the stage binary
     #[arg(allow_hyphen_values = true, trailing_var_arg = true)]
@@ -137,8 +137,8 @@ pub async fn run_launchpad() -> Result<(), String> {
 
     let args = LaunchpadArgs::parse();
 
-    let stage_identifier = args.stage_identifier;
-    let stage_args = args.stage_args;
+    let stage_identifier = args.stage_identifier.clone();
+    let stage_args = args.stage_args.clone(); // Clone stage_args
 
     match stage_identifier.as_str() {
         "install-gemini" => {
@@ -150,14 +150,9 @@ pub async fn run_launchpad() -> Result<(), String> {
         },
         "run-gemini" => {
             narrator::narrate_step("Running Gemini CLI");
-            let options = GeminiCliOptions::from_args(stage_args);
-            gemini_cli_runner::run_gemini_cli(
-                &options,
-                args.mode,
-                args.inside,
-                args.via,
-            ).await; // Add .await here
-            Ok(()) // gemini_cli_runner::run_gemini_cli exits, so this is fine.
+            // The GeminiCliOptions are already part of LaunchpadArgs, so we can directly pass args
+            orchestrator::run_gemini_cli(&args).await?;
+            Ok(())
         },
         "dum-test" => {
             if stage_args.is_empty() {
@@ -173,9 +168,9 @@ pub async fn run_launchpad() -> Result<(), String> {
         "simulate-gha-workflow" => {
             narrator::narrate_step("Simulating GitHub Action Workflow");
 
-            let crq_path = args.crq_path.ok_or("CRQ path not provided for simulate-gha-workflow stage.")?;
-            let target_repo_url = args.target_repo_url.ok_or("Target repository URL not provided for simulate-gha-workflow stage.")?;
-            let workflow_file_in_repo = args.workflow_file_in_repo.ok_or("Workflow file path in repository not provided for simulate-gha-workflow stage.")?;
+            let crq_path = args.crq_path.as_ref().ok_or("CRQ path not provided for simulate-gha-workflow stage.")?.clone();
+            let target_repo_url = args.target_repo_url.as_ref().ok_or("Target repository URL not provided for simulate-gha-workflow stage.")?.clone();
+            let workflow_file_in_repo = args.workflow_file_in_repo.as_ref().ok_or("Workflow file path in repository not provided for simulate-gha-workflow stage.")?.clone();
 
             // TODO: Implement CRQ parsing to extract workflow details and inputs
             // For now, we'll just pass the raw arguments to zos-stage-session-manager
@@ -188,7 +183,7 @@ pub async fn run_launchpad() -> Result<(), String> {
             // and tmux integration.
             orchestrator::run_gemini_cli(
                 &LaunchpadArgs {
-                    stage_identifier: "run-gemini".to_string(), // Delegate to run-gemini stage
+                    stage_identifier: "launch".to_string(), // Delegate to launch stage
                     model: args.model, // Pass through existing model arg
                     prompt: args.prompt,
                     prompt_interactive: args.prompt_interactive,
@@ -212,11 +207,15 @@ pub async fn run_launchpad() -> Result<(), String> {
                     proxy: args.proxy,
                     include_directories: args.include_directories,
                     version: args.version,
-                    help: args.help,
+                    
                     crq: Some(crq_path.clone()), // Pass CRQ path to session manager
                     mode: Some("tmux".to_string()), // Force tmux mode
                     inside: Some("miniact".to_string()), // Specify miniact
                     via: Some("doh".to_string()), // Specify doh
+                    crq_path: args.crq_path.clone(), // Pass through
+                    target_repo_url: args.target_repo_url.clone(), // Pass through
+                    workflow_file_in_repo: args.workflow_file_in_repo.clone(), // Pass through
+                    gemini_cli_path: None, // Initialize gemini_cli_path
                     stage_args: vec![
                         "--workflow-file".to_string(),
                         workflow_file_in_repo.clone(),

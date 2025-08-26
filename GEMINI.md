@@ -208,6 +208,9 @@ This section lists the detailed documentation and MiniZinc models generated duri
 *   [Deep Bootstrap Chain](deep_bootstrap_chain.mzn)
 *   [Deep Bootstrap Chain Data](deep_bootstrap_chain.dzn)
 
+### Troubleshooting Guides
+*   [Troubleshooting `zos-bootstrap` CLI Issues](docs/troubleshooting/zos_bootstrap_cli_issues.md)
+
 ## 3. Lessons Learned from `gemini_utils` Debugging
 
 This section summarizes key lessons learned during the recent debugging and refactoring of the `gemini_utils` crate, particularly concerning procedural macros and logging.
@@ -232,6 +235,19 @@ This section summarizes key lessons learned during the recent debugging and refa
     *   Explicitly clarifying whether a rule applies to the *implementation* of a tool/macro or its *usage* is vital for efficient collaboration.
 
 ## 2. libminizinc Specific Memories & Context
+
+### Troubleshooting & Build Issues
+
+*   **`libminizinc_c_wrapper.so` Not Found:**
+    *   **Problem:** Rust executables (e.g., `zos-bootstrap`) fail to run with a "library not found" error for `libminizinc_c_wrapper.so`.
+    *   **Solution:** This shared library needs to be built and its location made known to the linker at runtime.
+        1.  **Build C++ Wrapper:** Run `./scripts/build_libminizinc.sh` from the project root. This compiles `libminizinc_c_wrapper.so` into the `build/` directory.
+        2.  **Set `LD_LIBRARY_PATH`:** Before running the executable, set `LD_LIBRARY_PATH` to the `build/` directory. Example: `LD_LIBRARY_PATH=/data/data/com.termux/files/home/storage/github/libminizinc/build cargo run -p zos-bootstrap -- <command>`.
+
+*   **`zos-bootstrap` CLI Argument Conflict:**
+    *   **Problem:** Error: "Argument names must be unique, but 'help' is in use by more than one argument or group" when running `zos-bootstrap`.
+    *   **Solution:** This was resolved by disabling the auto-generated `--help` flag in `crates/zos-bootstrap/src/cli.rs` by adding `disable_help_flag = true` to the `#[command(...)]` attribute of the `Cli` struct.
+    *   **New Behavior:** The `--help` flag no longer works. Use the `help` subcommand instead (e.g., `cargo run -p zos-bootstrap -- help`).
 
 ### Kantspel Principles and Character Handling
 

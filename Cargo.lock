@@ -3295,6 +3295,8 @@ version = "0.1.0"
 dependencies = [
  "clap",
  "dum",
+ "serde",
+ "serde_json",
  "tokio",
 ]
 
@@ -7753,6 +7755,7 @@ dependencies = [
 name = "zos-stage-session-manager"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "clap",
  "serde",
  "serde_json",
