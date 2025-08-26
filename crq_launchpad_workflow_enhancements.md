@@ -8,6 +8,7 @@ This CRQ aims to extend the `launchpad` tool's capabilities to provide a robust 
 1.  **Complete Gemini CLI Management:**
     *   **Installation Verification:** Ensure the `install-gemini` stage reliably installs the Gemini CLI.
     *   **Option Parsing:** Implement robust parsing of command-line arguments into `GeminiCliOptions` within the `run-gemini` stage, allowing full control over Gemini CLI execution.
+    *   **Enhanced Gemini CLI Control:** Implemented new CLI arguments (`--gemini-instances`, `--record-session`, `--background-detached`) in `launchpad_main.rs` to enable launching multiple Gemini instances, recording sessions with asciinema, and running Gemini in detached background processes.
 
 2.  **Integrated Development Workflow Stages:**
     *   **`cargo` Integration:** Introduce a `cargo` stage in `launchpad_main.rs` to execute `cargo` commands (e.g., `cargo build`, `cargo test`) via `orchestrator::run_cargo_command`.
@@ -23,7 +24,7 @@ This CRQ aims to extend the `launchpad` tool's capabilities to provide a robust 
 **Branch Name:** `feature/launchpad-workflow-enhancements`
 
 **Affected Components:**
-*   `crates/launchpad/` (especially `src/launchpad_main.rs`, `src/orchestrator.rs`, `src/narrator.rs`, `src/gemini_cli_options.rs`, `src/dum_wrappers/gemini_cli_runner.rs`)
+*   `crates/launchpad/` (especially `src/launchpad_main.rs` - updated with new CLI arguments for Gemini control, `src/orchestrator.rs`, `src/narrator.rs`, `src/gemini_cli_options.rs`, `src/dum_wrappers/gemini_cli_runner.rs`)
 *   `zos-bootstrap-main/` (potential integration points for `launchpad` as a sub-tool)
 
 **Verification:**

@@ -2,6 +2,7 @@ use clap::{Parser, Subcommand};
 
 mod gemini_commands;
 mod commands;
+use commands::{split_vertical, split_horizontal};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -38,9 +39,9 @@ enum Commands {
         command: String,
     },
     /// Splits the current tmux window vertically
-    SplitVertical,
+    SplitVertical(split_vertical::SplitVerticalArgs),
     /// Splits the current tmux window horizontally
-    SplitHorizontal,
+    SplitHorizontal(split_horizontal::SplitHorizontalArgs),
     /// Selects and displays a specific tmux session
     SelectSession {
         /// Name of the tmux session to select
@@ -81,11 +82,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Commands::SendCommand { session_name, command } => {
             commands::send_command::handle_send_command(session_name.as_deref(), command).await?;
         },
-        Commands::SplitVertical => {
-            commands::split_vertical::handle_split_vertical_command().await?;
+        Commands::SplitVertical(args) => {
+            commands::split_vertical::handle_split_vertical_command(args).await?;
         },
-        Commands::SplitHorizontal => {
-            commands::split_horizontal::handle_split_horizontal_command().await?;
+        Commands::SplitHorizontal(args) => {
+            commands::split_horizontal::handle_split_horizontal_command(args).await?;
         },
         Commands::SelectSession { session_name } => {
             commands::select_session::handle_select_session_command(session_name).await?;

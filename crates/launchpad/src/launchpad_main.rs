@@ -81,6 +81,12 @@ pub struct LaunchpadArgs {
     pub workflow_file_in_repo: Option<String>, // New: Path to the workflow file within the target repository
     #[arg(long)]
     pub gemini_cli_path: Option<String>, // New: Path to the Gemini CLI executable
+    #[arg(long, default_value_t = 1)]
+    pub gemini_instances: usize, // Number of Gemini instances to launch
+    #[arg(long, default_value_t = false)]
+    pub record_session: bool, // Whether to record the session with asciinema
+    #[arg(long, default_value_t = false)]
+    pub background_detached: bool, // Whether to launch Gemini in a detached background process
 
     // Catch-all for arguments passed to the stage binary
     #[arg(allow_hyphen_values = true, trailing_var_arg = true)]
@@ -216,6 +222,9 @@ pub async fn run_launchpad() -> Result<(), String> {
                     target_repo_url: args.target_repo_url.clone(), // Pass through
                     workflow_file_in_repo: args.workflow_file_in_repo.clone(), // Pass through
                     gemini_cli_path: None, // Initialize gemini_cli_path
+                    gemini_instances: 1, // Default for miniact simulation
+                    record_session: false, // Default for miniact simulation
+                    background_detached: false, // Default for miniact simulation
                     stage_args: vec![
                         "--workflow-file".to_string(),
                         workflow_file_in_repo.clone(),

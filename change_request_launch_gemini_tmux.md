@@ -8,8 +8,10 @@
 
 This functionality is implemented within the `launchpad` and `zos-stage-session-manager` crates. The `launchpad` orchestrates the call to `zos-stage-session-manager`, which then handles the `tmux` session creation and Gemini CLI execution.
 
-- The `LaunchpadArgs` struct in `crates/launchpad/src/launchpad_main.rs` and `LaunchArgs` in `crates/zos-stage-session-manager/src/commands/launch.rs` have been extended to include `gemini_cli_path` and other Gemini CLI related arguments.
+- The `LaunchpadArgs` struct in `crates/launchpad/src/launchpad_main.rs` and `LaunchArgs` in `crates/zos-stage-session-manager/src/commands/launch.rs` have been extended to include `gemini_cli_path` and other Gemini CLI related arguments. Specifically, `--gemini-instances`, `--record-session`, and `--background-detached` have been added to `launchpad` to provide finer control over Gemini CLI instances within tmux sessions.
 - The `zos-stage-session-manager` now contains logic to create a `tmux` session and launch the Gemini CLI within it, dynamically constructing the Gemini command based on the provided arguments.
+- The `split-horizontal` command in `crates/tmux_controller/src/commands/split_horizontal.rs` has been enhanced with a `--session-name` argument, allowing users to specify the target tmux session for the split operation.
+- The `split-vertical` command in `crates/tmux_controller/src/commands/split_vertical.rs` has also been enhanced with a `--session-name` argument, providing similar control for vertical splits.
 
 **Usage:**
 
