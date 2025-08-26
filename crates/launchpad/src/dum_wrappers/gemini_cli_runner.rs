@@ -26,7 +26,7 @@ use crate::gemini_cli_options::{GeminiCliOptions, ApprovalMode, TelemetryTarget}
 /// // let options = GeminiCliOptions { model: Some("gemini-pro".to_string()), ..Default::default() };
 /// // run_gemini_cli(&options);
 /// ```
-pub fn run_gemini_cli(options: &GeminiCliOptions) {
+pub fn run_gemini_cli(options: &GeminiCliOptions, mode: Option<String>, inside: Option<String>, via: Option<String>) {
     let gemini_cli_project_path = PathBuf::from("/data/data/com.termux/files/home/storage/github/gemini-cli");
 
     let mut dum_args_vec: Vec<String> = Vec::new();
@@ -138,6 +138,20 @@ pub fn run_gemini_cli(options: &GeminiCliOptions) {
         if help {
             dum_args_vec.push("--help".to_string());
         }
+    }
+
+    // Add launchpad-specific arguments
+    if let Some(m) = mode {
+        dum_args_vec.push("--mode".to_string());
+        dum_args_vec.push(m);
+    }
+    if let Some(i) = inside {
+        dum_args_vec.push("--inside".to_string());
+        dum_args_vec.push(i);
+    }
+    if let Some(v) = via {
+        dum_args_vec.push("--via".to_string());
+        dum_args_vec.push(v);
     }
 
     let app_args = args::parse_args(dum_args_vec);

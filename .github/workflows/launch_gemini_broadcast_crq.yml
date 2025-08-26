@@ -38,12 +38,12 @@ jobs:
         LAUNCHPAD_EXEC="./target/debug/launchpad" # Placeholder for Launchpad executable
 
         # The command to launch Gemini using launchpad
-        $LAUNCHPAD_EXEC launchpad \
+        $LAUNCHPAD_EXEC run-gemini \
           --model ${GEMINI_MODEL} \
           --crq ${CRQ_ID} \
           --mode tmux \
           --inside miniact \
-          --via dum
+          --via doh
       env:
         # Potentially set environment variables needed by Gemini or DUM
         # For example, API keys, configuration paths, etc.

@@ -6,7 +6,80 @@ use crate::orchestrator;
 use crate::narrator;
 use crate::dum_wrappers::gemini_cli_runner;
 use crate::dum_wrappers::run_main;
-use crate::gemini_cli_options::GeminiCliOptions;
+use crate::gemini_cli_options::{GeminiCliOptions, ApprovalMode, TelemetryTarget};
+use clap::Parser;
+
+/// Command-line arguments for the launchpad application.
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None, disable_version_flag = true, disable_help_flag = true)]
+pub struct LaunchpadArgs {
+    /// The identifier of the stage to launch (e.g., install-gemini, run-gemini, miniact).
+    pub stage_identifier: String,
+
+    // Arguments for Gemini CLI
+    #[arg(long)]
+    pub model: Option<String>,
+    #[arg(long)]
+    pub prompt: Option<String>,
+    #[arg(long)]
+    pub prompt_interactive: Option<String>,
+    #[arg(long)]
+    pub sandbox: Option<bool>,
+    #[arg(long)]
+    pub sandbox_image: Option<String>,
+    #[arg(long)]
+    pub debug: bool,
+    #[arg(long)]
+    pub all_files: bool,
+    #[arg(long)]
+    pub show_memory_usage: bool,
+    #[arg(long)]
+    pub yolo: bool,
+    #[arg(long)]
+    pub approval_mode: Option<ApprovalMode>,
+    #[arg(long)]
+    pub telemetry: Option<bool>,
+    #[arg(long)]
+    pub telemetry_target: Option<TelemetryTarget>,
+    #[arg(long)]
+    pub telemetry_otlp_endpoint: Option<String>,
+    #[arg(long)]
+    pub telemetry_log_prompts: Option<bool>,
+    #[arg(long)]
+    pub telemetry_outfile: Option<String>,
+    #[arg(long)]
+    pub checkpointing: bool,
+    #[arg(long)]
+    pub experimental_acp: Option<bool>,
+    #[arg(long, value_delimiter = ',')]
+    pub allowed_mcp_server_names: Vec<String>,
+    #[arg(long, value_delimiter = ',')]
+    pub extensions: Vec<String>,
+    #[arg(long)]
+    pub list_extensions: Option<bool>,
+    #[arg(long)]
+    pub proxy: Option<String>,
+    #[arg(long, value_delimiter = ',')]
+    pub include_directories: Vec<String>,
+    #[arg(long)]
+    pub version: Option<bool>,
+    #[arg(long)]
+    pub help: Option<bool>,
+
+    // Custom arguments for the CRQ workflow
+    #[arg(long)]
+    pub crq: Option<String>,
+    #[arg(long)]
+    pub mode: Option<String>,
+    #[arg(long)]
+    pub inside: Option<String>,
+    #[arg(long)]
+    pub via: Option<String>,
+
+    // Catch-all for arguments passed to the stage binary
+    #[arg(allow_hyphen_values = true, trailing_var_arg = true)]
+    pub stage_args: Vec<String>,
+}
 
 /// The main asynchronous function that runs the `launchpad` application.
 ///
@@ -56,14 +129,10 @@ pub async fn run_launchpad() -> Result<(), String> {
     std::env::set_var("LD_LIBRARY_PATH", ld_library_path);
     narrator::livestream_output(&format!("Set LD_LIBRARY_PATH to: {}", std::env::var("LD_LIBRARY_PATH").unwrap_or_default()));
 
-    // The first argument after the binary name is expected to be the stage identifier
-    let mut args: Vec<String> = std::env::args().collect();
-    if args.len() < 2 {
-        return Err("Usage: launchpad <stage_identifier> [stage_args...]".to_string());
-    }
+    let args = LaunchpadArgs::parse();
 
-    let stage_identifier = args.remove(1);
-    let stage_args = args.split_off(1);
+    let stage_identifier = args.stage_identifier;
+    let stage_args = args.stage_args;
 
     match stage_identifier.as_str() {
         "install-gemini" => {
@@ -75,13 +144,13 @@ pub async fn run_launchpad() -> Result<(), String> {
         },
         "run-gemini" => {
             narrator::narrate_step("Running Gemini CLI");
-            // Convert stage_args into GeminiCliOptions
-            let mut options = GeminiCliOptions::default();
-            // This is a simplified conversion. A more robust solution would parse
-            // the stage_args into the options struct properly.
-            // For now, we'll just pass a default options struct.
-            // TODO: Implement proper parsing of stage_args into GeminiCliOptions
-            gemini_cli_runner::run_gemini_cli(&options);
+            let options = GeminiCliOptions::from_args(stage_args);
+            gemini_cli_runner::run_gemini_cli(
+                &options,
+                args.mode,
+                args.inside,
+                args.via,
+            ).await; // Add .await here
             Ok(()) // gemini_cli_runner::run_gemini_cli exits, so this is fine.
         },
         "dum-test" => {

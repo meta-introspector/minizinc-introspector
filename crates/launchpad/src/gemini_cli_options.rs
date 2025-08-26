@@ -3,8 +3,10 @@
 //! options of the Gemini CLI. These structures can be used to parse, validate,
 //! and construct Gemini CLI commands programmatically.
 
+use clap::ValueEnum;
+
 /// Represents the possible values for the `--approval-mode` option.
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, ValueEnum)]
 pub enum ApprovalMode {
     Default,
     AutoEdit,
@@ -22,8 +24,14 @@ impl From<&str> for ApprovalMode {
     }
 }
 
+impl std::fmt::Display for ApprovalMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
 /// Represents the possible values for the `--telemetry-target` option.
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, ValueEnum)]
 pub enum TelemetryTarget {
     Local,
     Gcp,
@@ -39,11 +47,19 @@ impl From<&str> for TelemetryTarget {
     }
 }
 
+impl std::fmt::Display for TelemetryTarget {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
+
+use clap::{Args, Command};
+
 /// Represents the command-line options for the Gemini CLI.
 ///
 /// This struct provides a structured way to define and manage the various
 /// options that can be passed to the `gemini` executable.
-#[derive(Debug)]
+#[derive(Debug, Args)]
 pub struct GeminiCliOptions {
     pub model: Option<String>,
     pub prompt: Option<String>,
@@ -99,6 +115,68 @@ impl Default for GeminiCliOptions {
             version: None,
             help: None,
         }
+    }
+}
+
+impl GeminiCliOptions {
+    pub fn from_args(args: Vec<String>) -> Self {
+        let mut cmd = clap::Command::new("gemini-cli")
+            .arg(clap::Arg::new("model").long("model").action(clap::ArgAction::Set))
+            .arg(clap::Arg::new("prompt").long("prompt").action(clap::ArgAction::Set))
+            .arg(clap::Arg::new("prompt-interactive").long("prompt-interactive").action(clap::ArgAction::Set))
+            .arg(clap::Arg::new("sandbox").long("sandbox").action(clap::ArgAction::SetTrue))
+            .arg(clap::Arg::new("sandbox-image").long("sandbox-image").action(clap::ArgAction::Set))
+            .arg(clap::Arg::new("debug").long("debug").action(clap::ArgAction::SetTrue))
+            .arg(clap::Arg::new("all-files").long("all-files").action(clap::ArgAction::SetTrue))
+            .arg(clap::Arg::new("show-memory-usage").long("show-memory-usage").action(clap::ArgAction::SetTrue))
+            .arg(clap::Arg::new("yolo").long("yolo").action(clap::ArgAction::SetTrue))
+            .arg(clap::Arg::new("approval-mode").long("approval-mode").value_parser(clap::value_parser!(ApprovalMode)))
+            .arg(clap::Arg::new("telemetry").long("telemetry").action(clap::ArgAction::SetTrue))
+            .arg(clap::Arg::new("telemetry-target").long("telemetry-target").value_parser(clap::value_parser!(TelemetryTarget)))
+            .arg(clap::Arg::new("telemetry-otlp-endpoint").long("telemetry-otlp-endpoint").action(clap::ArgAction::Set))
+            .arg(clap::Arg::new("telemetry-log-prompts").long("telemetry-log-prompts").action(clap::ArgAction::SetTrue))
+            .arg(clap::Arg::new("telemetry-outfile").long("telemetry-outfile").action(clap::ArgAction::Set))
+            .arg(clap::Arg::new("checkpointing").long("checkpointing").action(clap::ArgAction::SetTrue))
+            .arg(clap::Arg::new("experimental-acp").long("experimental-acp").action(clap::ArgAction::SetTrue))
+            .arg(clap::Arg::new("allowed-mcp-server-names").long("allowed-mcp-server-names").value_delimiter(',').action(clap::ArgAction::Append))
+            .arg(clap::Arg::new("extensions").long("extensions").value_delimiter(',').action(clap::ArgAction::Append))
+            .arg(clap::Arg::new("list-extensions").long("list-extensions").action(clap::ArgAction::SetTrue))
+            .arg(clap::Arg::new("proxy").long("proxy").action(clap::ArgAction::Set))
+            .arg(clap::Arg::new("include-directories").long("include-directories").value_delimiter(',').action(clap::ArgAction::Append))
+            .arg(clap::Arg::new("version").long("version").action(clap::ArgAction::SetTrue))
+            .arg(clap::Arg::new("help").long("help").action(clap::ArgAction::SetTrue));
+
+        let matches = cmd.try_get_matches_from(args).unwrap_or_else(|e| e.exit());
+
+        // Manually construct GeminiCliOptions from matches
+        let mut options = GeminiCliOptions::default();
+
+        options.model = matches.get_one::<String>("model").map(|s| s.to_string());
+        options.prompt = matches.get_one::<String>("prompt").map(|s| s.to_string());
+        options.prompt_interactive = matches.get_one::<String>("prompt-interactive").map(|s| s.to_string());
+        options.sandbox = matches.get_one::<bool>("sandbox").copied();
+        options.sandbox_image = matches.get_one::<String>("sandbox-image").map(|s| s.to_string());
+        options.debug = matches.get_flag("debug");
+        options.all_files = matches.get_flag("all-files");
+        options.show_memory_usage = matches.get_flag("show-memory-usage");
+        options.yolo = matches.get_flag("yolo");
+        options.approval_mode = matches.get_one::<ApprovalMode>("approval-mode").copied();
+        options.telemetry = matches.get_one::<bool>("telemetry").copied();
+        options.telemetry_target = matches.get_one::<TelemetryTarget>("telemetry-target").copied();
+        options.telemetry_otlp_endpoint = matches.get_one::<String>("telemetry-otlp-endpoint").map(|s| s.to_string());
+        options.telemetry_log_prompts = matches.get_one::<bool>("telemetry-log-prompts").copied();
+        options.telemetry_outfile = matches.get_one::<String>("telemetry-outfile").map(|s| s.to_string());
+        options.checkpointing = matches.get_flag("checkpointing");
+        options.experimental_acp = matches.get_one::<bool>("experimental-acp").copied();
+        options.allowed_mcp_server_names = matches.get_many::<String>("allowed-mcp-server-names").map(|v| v.map(|s| s.to_string()).collect()).unwrap_or_default();
+        options.extensions = matches.get_many::<String>("extensions").map(|v| v.map(|s| s.to_string()).collect()).unwrap_or_default();
+        options.list_extensions = matches.get_one::<bool>("list-extensions").copied();
+        options.proxy = matches.get_one::<String>("proxy").map(|s| s.to_string());
+        options.include_directories = matches.get_many::<String>("include-directories").map(|v| v.map(|s| s.to_string()).collect()).unwrap_or_default();
+        options.version = matches.get_one::<bool>("version").copied();
+        options.help = matches.get_one::<bool>("help").copied();
+
+        options
     }
 }
 

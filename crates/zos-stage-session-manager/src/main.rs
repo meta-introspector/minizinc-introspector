@@ -33,6 +33,66 @@ struct LaunchArgs {
     /// Launch a single Gemini instance in the background, detached from the current terminal
     #[arg(long, default_value_t = false)]
     background_detached: bool,
+
+    // Arguments for Gemini CLI (mirrored from LaunchpadArgs)
+    #[arg(long)]
+    model: Option<String>,
+    #[arg(long)]
+    prompt: Option<String>,
+    #[arg(long)]
+    prompt_interactive: Option<String>,
+    #[arg(long)]
+    sandbox: Option<bool>,
+    #[arg(long)]
+    sandbox_image: Option<String>,
+    #[arg(long)]
+    debug: bool,
+    #[arg(long)]
+    all_files: bool,
+    #[arg(long)]
+    show_memory_usage: bool,
+    #[arg(long)]
+    yolo: bool,
+    #[arg(long)]
+    approval_mode: Option<String>, // Changed to String for simplicity, will convert later
+    #[arg(long)]
+    telemetry: Option<bool>,
+    #[arg(long)]
+    telemetry_target: Option<String>, // Changed to String for simplicity, will convert later
+    #[arg(long)]
+    telemetry_otlp_endpoint: Option<String>,
+    #[arg(long)]
+    telemetry_log_prompts: Option<bool>,
+    #[arg(long)]
+    telemetry_outfile: Option<String>,
+    #[arg(long)]
+    checkpointing: bool,
+    #[arg(long)]
+    experimental_acp: Option<bool>,
+    #[arg(long, value_delimiter = ',')]
+    allowed_mcp_server_names: Vec<String>,
+    #[arg(long, value_delimiter = ',')]
+    extensions: Vec<String>,
+    #[arg(long)]
+    list_extensions: Option<bool>,
+    #[arg(long)]
+    proxy: Option<String>,
+    #[arg(long, value_delimiter = ',')]
+    include_directories: Vec<String>,
+    #[arg(long)]
+    version: Option<bool>,
+    #[arg(long)]
+    help: Option<bool>,
+
+    // Custom arguments for the CRQ workflow (mirrored from LaunchpadArgs)
+    #[arg(long)]
+    crq: Option<String>,
+    #[arg(long)]
+    mode: Option<String>,
+    #[arg(long)]
+    inside: Option<String>,
+    #[arg(long)]
+    via: Option<String>,
 }
 
 #[derive(Parser, Debug, Serialize, Deserialize)]

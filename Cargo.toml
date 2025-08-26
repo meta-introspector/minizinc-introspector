@@ -43,6 +43,7 @@ members = [
     "crates/zos-stage-session-manager",
     "crates/zos-stage-process-monitor",
     "crates/zos-stage-github-repo-inspector",
+    "crates/zos-stage-doh",
     "crates/tmux_controller",
     "crates/credential_manager", "crates/gemini_cli_manager",
 ]
