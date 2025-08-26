@@ -61,7 +61,7 @@ pub async fn run_launchpad() -> Result<(), String> {
 
             // Execute the stage binary
             let mut command = Command::new(&stage_binary_path);
-            command.args(stage_args);
+            command.args(stage_args.clone());
             command.stdout(Stdio::inherit());
             command.stderr(Stdio::inherit());
 
