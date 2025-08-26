@@ -2287,6 +2287,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "gemini_cli_manager"
+version = "0.1.0"
+dependencies = [
+ "tmux_interface 0.3.2",
+]
+
+[[package]]
 name = "gemini_utils"
 version = "0.1.0"
 dependencies = [
@@ -6124,6 +6131,8 @@ checksum = "1f3ccbac311fea05f86f61904b462b55fb3df8837a366dfc601a0161d0532f20"
 name = "tmux_controller"
 version = "0.1.0"
 dependencies = [
+ "clap",
+ "gemini_cli_manager",
  "tmux_interface 0.3.2",
  "tokio",
 ]

@@ -106,6 +106,11 @@ This section summarizes key lessons learned during the recent debugging and refa
     *   Ambiguity in instructions, especially regarding the context of code execution (e.g., internal macro implementation vs. external user calls), can lead to misunderstandings and iterative debugging.
     *   Explicitly clarifying whether a rule applies to the *implementation* of a tool/macro or its *usage* is vital for efficient collaboration.
 
+*   **FFI Linking and `LD_LIBRARY_PATH`:**
+    *   When running Rust FFI tests that link against C++ shared libraries (e.g., `libmzn.so`), it's crucial to ensure the linker can find these libraries at runtime.
+    *   If the shared library is not in a standard system path, the `LD_LIBRARY_PATH` environment variable must be set to the directory containing the library (e.g., `export LD_LIBRARY_PATH=/path/to/lib`).
+    *   For `minizinc_ffi` tests, `libmzn.so` is built into the `build_coverage/` directory, and setting `LD_LIBRARY_PATH=/data/data/com.termux/files/home/storage/github/libminizinc/build_coverage/` before running `cargo test --package minizinc_ffi` resolves the "library not found" error.
+
 ### Key Rust Crates
 
 This project leverages several custom Rust crates to implement its unique functionalities. Here's an overview of some core crates:

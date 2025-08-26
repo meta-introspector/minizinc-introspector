@@ -55,3 +55,6 @@ The "Miniact" could be integrated into GitHub Actions workflows. Instead of indi
 
 ### BusyBox as an Inspiration
 BusyBox serves as a strong inspiration for the "Miniact" concept. Its success in providing a compact, monolithic executable for embedded systems demonstrates the feasibility and benefits of packaging multiple utilities into one. The "Miniact" would apply this principle to the `libminizinc` development and testing ecosystem.
+
+### Gemini Task Orchestration
+One Gemini instance can create tasks for other Gemini instances, rewriting user ideas into perfect instructions for itself and recording those interactions. This enables a self-improving, multi-agent system where Gemini can refine its own understanding and execution of tasks through iterative self-instruction and observation.

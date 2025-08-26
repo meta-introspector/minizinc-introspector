@@ -4,5 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+clap = { version = "4.0", features = ["derive"] }
 tokio = { version = "1", features = ["full"] }
 tmux_interface = { path = "../../vendor/tmux_interface" }
+gemini_cli_manager = { path = "../gemini_cli_manager" }

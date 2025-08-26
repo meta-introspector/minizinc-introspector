@@ -16,5 +16,14 @@ jobs:
       run: |
         chmod +x scripts/build_gecode.sh
         ./scripts/build_gecode.sh
+    - name: Build MiniZinc
+      run: |
+        mkdir -p build_github_actions
+        cmake -S . -B build_github_actions
+        cmake --build build_github_actions -j$(nproc)
     - name: Run cargo check
       run: cargo check --all
+    - name: Run cargo test
+      env:
+        LD_LIBRARY_PATH: ${{ github.workspace }}/build_github_actions
+      run: cargo test --all

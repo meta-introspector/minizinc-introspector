@@ -1,0 +1,7 @@
+[package]
+name = "gemini_cli_manager"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+tmux_interface = { path = "../../vendor/tmux_interface" }
