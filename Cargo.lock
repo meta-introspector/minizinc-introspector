@@ -1894,6 +1894,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "dump_tmux_status"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "clap",
+ "tmux_interface 0.1.0",
+ "tokio",
+]
+
+[[package]]
 name = "ecolor"
 version = "0.28.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3310,6 +3320,7 @@ dependencies = [
  "git2",
  "serde",
  "serde_json",
+ "serde_yaml",
  "tokio",
 ]
 

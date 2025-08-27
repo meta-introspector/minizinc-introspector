@@ -82,12 +82,8 @@ pub async fn handle_create_layout_command() -> Result<(), Box<dyn std::error::Er
     Tmux::with_command(select_pane_1_for_gemini_command).output()?;
     output_formatter::print_success("Selected pane 1 for Gemini.");
 
-    let mut send_gemini_command = TmuxCommand::new();
-    send_gemini_command.name("send-keys");
-    send_gemini_command.push_param("gemini"); // Command to launch Gemini
-    send_gemini_command.push_param("C-m"); // Enter key
-    Tmux::with_command(send_gemini_command).output()?;
-    output_formatter::print_success("Running Gemini in pane 1.");
+    // Removed gemini launch as per user request for native worker pane
+    // output_formatter::print_success("Pane 1 left empty for native worker execution.");
 
     // Select pane 0 (work/data pane) again for final cursor position
     let mut select_pane_0_final_command = TmuxCommand::new();

@@ -11,7 +11,30 @@ use std::collections::HashMap;
 use git2::Repository;
 use crate::stages::Stage;
 use crate::stages::tmux_stage::TmuxStage;
-use crate::stages::tmux_controller_cmd_stage::TmuxControllerCmdStage; // Add this import
+use crate::stages::tmux_controller_cmd_stage::TmuxControllerCmdStage;
+use serde_yaml;
+use std::fs;
+use std::path::PathBuf;
+
+#[derive(Debug, serde::Deserialize)]
+struct DynamicStageDefinition {
+    stage_name: String,
+    command: String,
+    args: Vec<String>,
+    #[serde(default)]
+    working_directory: Option<PathBuf>,
+    #[serde(default)]
+    environment: Option<HashMap<String, String>>,
+    #[serde(default)]
+    log_file: Option<PathBuf>,
+    #[serde(default)]
+    tmux_pane_target: Option<String>,
+    #[serde(default)]
+    git_branch: Option<String>,
+    #[serde(default)]
+    security_context: Option<String>,
+    metadata: Option<serde_yaml::Value>,
+}
 
 /// Command-line arguments for the launchpad application.
 #[derive(Parser, Debug, serde::Serialize, serde::Deserialize)]
@@ -92,6 +115,8 @@ pub struct LaunchpadArgs {
     pub record_session: bool, // Whether to record the session with asciinema
     #[arg(long, default_value_t = false)]
     pub background_detached: bool, // Whether to launch Gemini in a detached background process
+    #[arg(long, default_value_t = false)]
+    pub watch: bool, // Whether to stream output to screen and log to file
 
     // Catch-all for arguments passed to the stage binary
     #[arg(allow_hyphen_values = true, trailing_var_arg = true)]
@@ -158,6 +183,52 @@ pub async fn run_launchpad() -> Result<(), String> {
     let mut stage_registry: HashMap<String, Box<dyn Stage + Send>> = HashMap::new();
     stage_registry.insert("tmux".to_string(), Box::new(TmuxStage));
     stage_registry.insert("tmux-controller-cmd".to_string(), Box::new(TmuxControllerCmdStage)); // Add this stage
+
+    // --- NEW LOGIC FOR DYNAMIC STAGE LOADING ---
+    let dynamic_stage_path = PathBuf::from(&stage_identifier);
+    if dynamic_stage_path.exists() && dynamic_stage_path.is_file() &&
+       (dynamic_stage_path.extension().map_or(false, |ext| ext == "yaml" || ext == "yml")) {
+        narrator::livestream_output(&format!("Attempting to load dynamic stage from file: {:?}", dynamic_stage_path));
+        let file_content = fs::read_to_string(&dynamic_stage_path)
+            .map_err(|e| format!("Failed to read dynamic stage file {:?}: {}", dynamic_stage_path, e))?;
+        let dynamic_stage_def: DynamicStageDefinition = serde_yaml::from_str(&file_content)
+            .map_err(|e| format!("Failed to parse dynamic stage YAML from {:?}: {}", dynamic_stage_path, e))?;
+
+        narrator::livestream_output(&format!("Executing dynamic stage: {} with command: {} {:?}", dynamic_stage_def.stage_name, dynamic_stage_def.command, dynamic_stage_def.args));
+
+        // Execute the command from the dynamic stage definition
+        let cmd_args_str: Vec<&str> = dynamic_stage_def.args.iter().map(|s| s.as_str()).collect();
+
+        let mut command_builder = std::process::Command::new(&dynamic_stage_def.command);
+        command_builder.args(&cmd_args_str);
+
+        if let Some(wd) = dynamic_stage_def.working_directory {
+            command_builder.current_dir(wd);
+        }
+        if let Some(env_vars) = dynamic_stage_def.environment {
+            command_builder.envs(env_vars);
+        }
+        if let Some(log_path) = dynamic_stage_def.log_file {
+            let log_file = fs::File::create(&log_path)
+                .map_err(|e| format!("Failed to create log file {:?}: {}", log_path, e))?;
+            command_builder.stdout(log_file.try_clone().map_err(|e| format!("Failed to clone log file handle: {}", e))?);
+            command_builder.stderr(log_file);
+        } else {
+            command_builder.stdout(std::process::Stdio::inherit());
+            command_builder.stderr(std::process::Stdio::inherit());
+        }
+
+        let status = command_builder.status()
+            .map_err(|e| format!("Failed to execute dynamic stage command: {}", e))?;
+
+        if status.success() {
+            return Ok(());
+        } else {
+            return Err(format!("Dynamic stage command exited with non-zero status: {:?}", status.code()));
+        }
+
+    }
+    // --- END NEW LOGIC ---
 
     if let Some(stage) = stage_registry.get(&stage_identifier) {
         stage.run(&repo, &stage_args.iter().map(|s| s.as_str()).collect::<Vec<&str>>()).await

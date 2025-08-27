@@ -46,6 +46,7 @@ members = [
     "crates/zos-stage-doh",
     "crates/tmux_controller",
     "crates/credential_manager", "crates/gemini_cli_manager", "crates/crq_updater", "crates/launchpad_status",
+    "crates/dump_tmux_status", # New crate for dumping tmux status
 ]
 
 [patch.crates-io]

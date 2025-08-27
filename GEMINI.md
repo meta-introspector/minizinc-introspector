@@ -182,6 +182,7 @@ This section lists the detailed documentation and MiniZinc models generated duri
 
 ### Standard Operating Procedures (SOPs)
 *   [Code, Documentation, Index, and Gemini Memory Update Procedure](docs/sops/code_doc_update_sop.md)
+*   [Tmux Workflow and Debugging Procedures](docs/sops/tmux_workflow_and_debugging_sop.md)
 
 ### Conceptual Designs
 *   [C4 Model for Launchpad and Tmux Controller](docs/architecture/c4_model_launchpad_tmux.md)

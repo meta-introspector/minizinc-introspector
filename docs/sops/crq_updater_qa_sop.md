@@ -61,9 +61,28 @@ This SOP applies to all development and testing cycles of the `crq_updater` prog
 
 ## 5. Reporting
 *   Any discrepancies or unexpected behavior observed during the QA process must be reported and addressed before the `crq_updater` is considered ready for use.
+
+
+
+
+
+
+
+
 ## Commit History
 
 **Commit:** `ca9fe7e6ded6c6458b1d61ffd990063bafedede8`
 **Subject:** `wip`
 **Description:**
 This commit created the CRQ file. The file's initial content serves as its primary description.
+
+**Commit:** `ea49de080e7e34d2e3171164a8b8acaceee84af0`
+**Subject:** `refactor(crq_updater): Split functions into files and update CRQs`
+**Description:**
+Refactored the `crq_updater` crate to adhere to the "one declaration per file" convention.
+- Moved functions (`find_crq_files`, `process_crq_file`, `extract_existing_history`, `get_commit_diff_summary`, `find_commit_from_oid`) into separate files within `src/functions/`.
+- Updated `src/main.rs` to use the new module structure.
+- Fixed compilation errors related to `git2` API changes (`parent_opt` to `parent`, `find_object` arguments, `diff.print` arguments).
+- Updated `walkdir` dependency to `2.5.0`.
+- Resolved `StripPrefixError` by canonicalizing `crq_path`.
+- Successfully ran `crq_updater` to update `crq_launchpad_workflow_enhancements.md` and `docs/sops/crq_updater_qa_sop.md` with relevant commit history.

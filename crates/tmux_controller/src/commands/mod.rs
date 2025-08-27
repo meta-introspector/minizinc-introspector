@@ -10,3 +10,4 @@ pub mod show_session;
 pub mod split_horizontal;
 pub mod split_vertical;
 pub mod create_layout;
+pub mod tmux_view;

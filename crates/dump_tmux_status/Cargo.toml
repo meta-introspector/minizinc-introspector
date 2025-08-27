@@ -1,0 +1,10 @@
+[package]
+name = "dump_tmux_status"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tmux_interface = "0.1.0"
+clap = { version = "4.0", features = ["derive"] }
+tokio = { version = "1.0", features = ["full"] }
+chrono = "0.4"

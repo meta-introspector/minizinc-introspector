@@ -105,19 +105,34 @@ pub fn process_crq_file(repo: &Repository, crq_path: &Path, dry_run: bool) -> Re
     }
 
     // Combine existing and new entries, sort them, and format for writing
-    existing_commit_entries.extend(new_entries_to_add);
+    existing_commit_entries.extend(new_entries_to_add); // No clone needed here, as it's moved later
     existing_commit_entries.sort_by(|a, b| a.author_date.cmp(&b.author_date));
 
-    let mut formatted_history = String::new();
-    formatted_history.push_str(CRQ_HISTORY_SECTION_START);
-    for entry in existing_commit_entries {
-        formatted_history.push_str(&format!(
-            "\n\n**Commit:** `{}`\n**Subject:** `{}`\n**Description:**\n{}",
-            entry.hash, entry.subject, entry.description
-        ));
+    let mut all_commit_entries = existing_commit_entries; // Define all_commit_entries here
+
+    let mut history_section_content = String::new();
+    if !all_commit_entries.is_empty() { // Only add history section if there are commits
+        history_section_content.push_str(CRQ_HISTORY_SECTION_START);
+        for entry in &all_commit_entries { // Iterate over a reference
+            history_section_content.push_str(&format!(
+                "\n\n**Commit:** `{}`\n**Subject:** `{}`\n**Description:**\n{}",
+                entry.hash,
+                entry.subject,
+                entry.description
+            ));
+        }
     }
 
-    let final_content = format!("{}{}", pre_history_content, formatted_history);
+    let final_content = if history_section_content.is_empty() {
+        // If no history was generated, keep the original content
+        pre_history_content
+    } else {
+        // If history section already existed, or needs to be added,
+        // append it to the pre_history_content.
+        // The pre_history_content from extract_existing_history already
+        // excludes the old history section if it existed.
+        format!("{}\n\n{}", pre_history_content, history_section_content)
+    };
 
     if dry_run {
         println!("\n--- DRY-RUN: Changes for {:?} ---", crq_path);
