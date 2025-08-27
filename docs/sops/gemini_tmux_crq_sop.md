@@ -104,4 +104,5 @@ This command combines splitting the current window (horizontally by default) and
 
 ## Commit History
 
+- [Commit d08222dc45dc2f3501a0c3d72651b6776c462f89: feat: Implement robust Gemini tmux control and CRQ assignment](docs/commits/d08222dc45dc2f3501a0c3d72651b6776c462f89_feat_Implement_robust_Gemini_tmux_control_and_CRQ_assignment.md)
 - [Commit 0cbb28d534ed2f7b056adaaeff81cbd0e82d87f6: feat: Enhance tmux_controller with comprehensive session management; introduce operational workflow CRQ](docs/commits/0cbb28d534ed2f7b056adaaeff81cbd0e82d87f6_feat_Enhance_tmux_controller_with_comprehensive_session_management_introduce_operational_workflow_CRQ.md)

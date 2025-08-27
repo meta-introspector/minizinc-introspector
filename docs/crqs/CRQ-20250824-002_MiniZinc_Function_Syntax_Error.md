@@ -70,3 +70,7 @@ function int: clamp01_int(x: int) = max(0, min(1, x));
 3.  **Version Information:** Provide the exact MiniZinc version you are using (`minizinc --version`).
 
 This information will be crucial in resolving this blocking issue and allowing us to proceed with the modularization of the MiniZinc codebase.
+
+## Commit History
+
+- [Commit b38d3101bad8de6c5acf56c65e52210c39fffc5f: docs: Create CRQ for MiniZinc Function Syntax Error](docs/commits/b38d3101bad8de6c5acf56c65e52210c39fffc5f_docs_Create_CRQ_for_MiniZinc_Function_Syntax_Error.md)

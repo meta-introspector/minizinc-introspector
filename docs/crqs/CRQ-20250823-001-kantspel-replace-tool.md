@@ -71,3 +71,7 @@ The implementation of the `kantspel_replace` tool is currently deferred due to o
 *   **Date:** 2025-08-23
 
 ---
+
+## Commit History
+
+- [Commit 971a74aff6a2f293baecebb2a4a52d3ba681b0ca: feat: Refactor gemini_utils and fix kantspel_macros](docs/commits/971a74aff6a2f293baecebb2a4a52d3ba681b0ca_feat_Refactor_gemini_utils_and_fix_kantspel_macros.md)

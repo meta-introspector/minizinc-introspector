@@ -33,6 +33,7 @@ cargo run -p launchpad -- run-gemini --mode tmux --inside gemini --model pro --g
 
 ## Commit History
 
+- [Commit d08222dc45dc2f3501a0c3d72651b6776c462f89: feat: Implement robust Gemini tmux control and CRQ assignment](docs/commits/d08222dc45dc2f3501a0c3d72651b6776c462f89_feat_Implement_robust_Gemini_tmux_control_and_CRQ_assignment.md)
 - [Commit 23104bac1cf99fa82e998471ac1f929724700122: feat: Enhance launchpad and tmux_controller CLI with new arguments and documentation](docs/commits/23104bac1cf99fa82e998471ac1f929724700122_feat_Enhance_launchpad_and_tmux_controller_CLI_with_new_arguments_and_documentation.md)
 - [Commit 19bbe4f5ee5368d5c239e894df678af8b5541c49: feat: Document troubleshooting for zos-bootstrap CLI and FFI linking](docs/commits/19bbe4f5ee5368d5c239e894df678af8b5541c49_feat_Document_troubleshooting_for_zos-bootstrap_CLI_and_FFI_linking.md)
 - [Commit 20b720532c6ce3b5d66355b54e696bea554974c7: feat(launchpad): Integrate Gemini CLI launch and argument parsing](docs/commits/20b720532c6ce3b5d66355b54e696bea554974c7_feat_launchpad_Integrate_Gemini_CLI_launch_and_argument_parsing.md)

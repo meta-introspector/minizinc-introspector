@@ -18,3 +18,7 @@
 - Any necessary Rust crates for cryptographic operations or secure credential handling.
 
 **Coordination:** This task will be assigned to the `gemini-pro-helper` instance for parallel execution and specialized focus.
+
+## Commit History
+
+- [Commit d08222dc45dc2f3501a0c3d72651b6776c462f89: feat: Implement robust Gemini tmux control and CRQ assignment](docs/commits/d08222dc45dc2f3501a0c3d72651b6776c462f89_feat_Implement_robust_Gemini_tmux_control_and_CRQ_assignment.md)

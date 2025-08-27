@@ -40,3 +40,7 @@ This change will:
 *   Improve the developer experience by making complex regexes more intuitive and less error-prone.
 *   Enforce consistency with the project's `kantspel` principles.
 *   Centralize the definition of regex patterns, making them easier to manage and update.
+
+## Commit History
+
+- [Commit 5111ba4971fc94b94c2778aaa708577114c7a47f: docs(crqs): Add CRQS for automated regex template generation](docs/commits/5111ba4971fc94b94c2778aaa708577114c7a47f_docs_crqs_Add_CRQS_for_automated_regex_template_generation.md)

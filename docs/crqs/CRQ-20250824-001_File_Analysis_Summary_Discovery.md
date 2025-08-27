@@ -64,5 +64,9 @@ During recent development, several files were modified, created, or deleted as p
 
 ### Previously Committed New Files (as part of `feature/community-docs` branch)
 
-*   **`docs/community_engagement_plan.md`**: This document outlines strategies and tasks for engaging the community, attracting new contributors, and inspiring participation in the libminizinc project.
+*   **`docs/community_engagement_plan.md`**: This document outlines strategies and tasks for engaging the community, including proposed sub-tasks for documents, a noob guide, social media content, and a conceptual starter package.
 *   **`docs/how_to_run_project_model.md`**: This document provides a step-by-step guide on how to run the project's file structure and regex analysis system, covering regex generation, MiniZinc data generation, and MiniZinc model execution.
+
+## Commit History
+
+- [Commit 4fa11dfc7a170a00dc707a143635c66e25190144: feat: Implement project file analysis and modeling infrastructure](docs/commits/4fa11dfc7a170a00dc707a143635c66e25190144_feat_Implement_project_file_analysis_and_modeling_infrastructure.md)

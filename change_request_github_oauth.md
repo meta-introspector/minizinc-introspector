@@ -59,6 +59,9 @@ This change request encompasses significant modifications to the `credential_man
 
 ## Commit History
 
+- [Commit b3bb2456e46ebf74b07006da2ff6eb8fafbd9d9d: docs(crq): Update GitHub Repo Integration Epic CRQ with Status](docs/commits/b3bb2456e46ebf74b07006da2ff6eb8fafbd9d9d_docs_crq_Update_GitHub_Repo_Integration_Epic_CRQ_with_Status.md)
+- [Commit 84d41e99dc14c290d2255323172bbc6d1cbcb816: docs(crq): Draft GitHub Repository Integration Epic CRQ](docs/commits/84d41e99dc14c290d2255323172bbc6d1cbcb816_docs_crq_Draft_GitHub_Repository_Integration_Epic_CRQ.md)
+- [Commit f59e4e46ba17bf2d240d7ffe57c9098428f3ff87: docs: Add CRQ for GitHub OAuth2 integration](docs/commits/f59e4e46ba17bf2d240d7ffe57c9098428f3ff87_docs_Add_CRQ_for_GitHub_OAuth2_integration.md)
 - [Commit 51a5cf242d2b1ad7684dc743a144736707a8543c: feat(credential_manager): Implement credential import and GitHub OAuth (disabled)](docs/commits/51a5cf242d2b1ad7684dc743a144736707a8543c_feat_credential_manager_Implement_credential_import_and_GitHub_OAuth_disabled.md)
 - [Commit 972541ed529c03f167280f48521c6288d1ed941c: feat(zos-stage-github-repo-inspector): Integrate credential_manager for PAT retrieval](docs/commits/972541ed529c03f167280f48521c6288d1ed941c_feat_zos-stage-github-repo-inspector_Integrate_credential_manager_for_PAT_retrieval.md)
 - [Commit 6a24bc3b4355b5c353a0bfce5dd097ba4cd431bb: feat: Integrate octocrab GitHub API client and document vendor strategy](docs/commits/6a24bc3b4355b5c353a0bfce5dd097ba4cd431bb_feat_Integrate_octocrab_GitHub_API_client_and_document_vendor_strategy.md)

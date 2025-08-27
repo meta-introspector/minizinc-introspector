@@ -38,3 +38,7 @@ The modifications directly impacting the `asciicast_processor` crate are:
 These changes collectively reflect ongoing internal development within the `libminizinc` project, particularly concerning the `asciicast_processor` and its integration with the broader system. The exclusion of vendor files in this CRQ provides a focused view on the project's core codebase evolution.
 
 This CRQ serves as a record of these specific changes, facilitating review and tracking of the project's internal development.
+
+## Commit History
+
+- [Commit 32825fd2161a29a9096324f2c80aa0cdf523edca: docs: Add CRQ for Asciicast Processor and Related Non-Vendor Changes](docs/commits/32825fd2161a29a9096324f2c80aa0cdf523edca_docs_Add_CRQ_for_Asciicast_Processor_and_Related_Non-Vendor_Changes.md)
