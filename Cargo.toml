@@ -57,6 +57,7 @@ members = [
     "crates/tmux_controller",
     "crates/credential_manager", "crates/gemini_cli_manager", "crates/crq_updater", "crates/launchpad_status",
     "crates/dump_tmux_status", # New crate for dumping tmux status
+    "vendor/solfunmeme-banner",
 ]
 
 [patch.crates-io]

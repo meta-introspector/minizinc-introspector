@@ -90,15 +90,6 @@ dependencies = [
 
 [[package]]
 name = "aho-corasick"
-version = "0.7.20"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cc936419f96fa211c1b9166887b38e5e40b19958e5b895be7c1f93adec7071ac"
-dependencies = [
- "memchr 2.7.5",
-]
-
-[[package]]
-name = "aho-corasick"
 version = "1.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8e60d3430d3a69478ad0993f19238d2df97c507009a52b3c10addcd7f6bcb916"
@@ -1360,6 +1351,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b05b61dc5112cbb17e4b6cd61790d9845d13888356391624cbe7e41efeac1e75"
 
 [[package]]
+name = "colored"
+version = "2.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2674ec482fbc38012cf31e6c42ba0177b431a0cb6f15fe40efa5aab1bda516f6"
+dependencies = [
+ "is-terminal",
+ "lazy_static",
+ "windows-sys 0.48.0",
+]
+
+[[package]]
 name = "compact_str"
 version = "0.7.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1418,6 +1420,25 @@ dependencies = [
  "getrandom 0.2.16",
  "once_cell",
  "tiny-keccak",
+]
+
+[[package]]
+name = "constant_analyzer"
+version = "0.1.0"
+dependencies = [
+ "minizinc_ffi",
+ "proc-macro2",
+ "quote",
+ "syn 2.0.106",
+ "walkdir",
+]
+
+[[package]]
+name = "constant_analyzer_macros"
+version = "0.1.0"
+dependencies = [
+ "quote",
+ "syn 2.0.106",
 ]
 
 [[package]]
@@ -2187,6 +2208,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "37909eebbb50d72f9059c3b6d82c0463f2ff062c9e95845c43a6c9c0355411be"
 
 [[package]]
+name = "figlet-rs"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4742a071cd9694fc86f9fa1a08fa3e53d40cc899d7ee532295da2d085639fbc5"
+
+[[package]]
 name = "file_content_analyzer"
 version = "0.1.0"
 dependencies = [
@@ -2209,6 +2236,12 @@ name = "fixedbitset"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0ce7134b9999ecaf8bcd65542e436736ef32ddca1b3e06094cb6ec5755203b80"
+
+[[package]]
+name = "fixedbitset"
+version = "0.5.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1d674e81391d1e1ab681a28d99df07927c6d4aa5b027d7da16ba32d1d21ecd99"
 
 [[package]]
 name = "flatbuffers"
@@ -2413,15 +2446,6 @@ dependencies = [
  "pin-project-lite",
  "pin-utils",
  "slab",
-]
-
-[[package]]
-name = "fxhash"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c31b6d751ae2c7f11320402d34e41349dd1016f8d5d45e48c4312bc8625af50c"
-dependencies = [
- "byteorder",
 ]
 
 [[package]]
@@ -2654,7 +2678,7 @@ dependencies = [
  "kantspel_macros",
  "lazy_static",
  "ndarray",
- "petgraph",
+ "petgraph 0.6.5",
  "predicates",
  "proptest",
  "pyo3",
@@ -3804,6 +3828,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "minizinc_introspector"
+version = "0.1.0"
+dependencies = [
+ "wait-timeout",
+ "walkdir",
+]
+
+[[package]]
 name = "minizinc_macro"
 version = "0.1.0"
 dependencies = [
@@ -3969,13 +4001,13 @@ checksum = "51d515d32fb182ee37cda2ccdcb92950d6a3c2893aa280e540671c2cd0f3b1d9"
 
 [[package]]
 name = "num-derive"
-version = "0.3.3"
+version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "876a53fff98e03a936a674b29568b0e605f06b29372c2489ff4de23f1949743d"
+checksum = "ed3955f1a9c7c0c15e092f9c887db08b1fc683305fdf6eb6684f22555355e202"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 1.0.109",
+ "syn 2.0.106",
 ]
 
 [[package]]
@@ -4430,8 +4462,20 @@ version = "0.6.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b4c5cc86750666a3ed20bdaf5ca2a0344f9c67674cae0515bec2da16fbaa47db"
 dependencies = [
- "fixedbitset",
+ "fixedbitset 0.4.2",
  "indexmap",
+]
+
+[[package]]
+name = "petgraph"
+version = "0.8.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "54acf3a685220b533e437e264e4d932cfbdc4cc7ec0cd232ed73c08d03b8a7ca"
+dependencies = [
+ "fixedbitset 0.5.7",
+ "hashbrown",
+ "indexmap",
+ "serde",
 ]
 
 [[package]]
@@ -5362,6 +5406,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "regex_file_analyzer"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "regex 1.11.1",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "regex_generator_tool"
 version = "0.1.0"
 dependencies = [
@@ -5523,27 +5577,23 @@ dependencies = [
 [[package]]
 name = "rust-code-analysis"
 version = "0.0.25"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8aef20e35eb94fc114e15eedf547c54f39c51b5a1078ee1ea41d64e660025136"
 dependencies = [
- "aho-corasick 0.7.20",
+ "aho-corasick 1.1.3",
  "crossbeam",
- "fxhash",
  "globset",
- "lazy_static",
  "num",
  "num-derive",
  "num-format",
  "num-traits",
- "once_cell",
- "petgraph",
+ "petgraph 0.8.2",
  "regex 1.11.1",
  "serde",
  "termcolor",
- "tree-sitter 0.20.9",
+ "tree-sitter",
  "tree-sitter-ccomment",
  "tree-sitter-java",
  "tree-sitter-javascript",
+ "tree-sitter-kotlin-ng",
  "tree-sitter-mozcpp",
  "tree-sitter-mozjs",
  "tree-sitter-preproc",
@@ -5840,6 +5890,7 @@ version = "1.0.143"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d401abef1d108fbd9cbaebc3e46611f4b1021f714a0597a71f41ee463f5f4a5a"
 dependencies = [
+ "indexmap",
  "itoa",
  "memchr 2.7.5",
  "ryu",
@@ -6097,6 +6148,16 @@ checksum = "233504af464074f9d066d7b5416c5f9b894a5862a6506e306f7b816cdd6f1807"
 dependencies = [
  "libc",
  "windows-sys 0.59.0",
+]
+
+[[package]]
+name = "solfunmeme-banner"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "colored",
+ "figlet-rs",
+ "rand 0.8.5",
 ]
 
 [[package]]
@@ -6780,65 +6841,64 @@ dependencies = [
 
 [[package]]
 name = "tree-sitter"
-version = "0.20.9"
+version = "0.25.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d4423c784fe11398ca91e505cdc71356b07b1a924fc8735cfab5333afe3e18bc"
-dependencies = [
- "cc",
- "regex 1.11.1",
-]
-
-[[package]]
-name = "tree-sitter"
-version = "0.24.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a5387dffa7ffc7d2dae12b50c6f7aab8ff79d6210147c6613561fc3d474c6f75"
+checksum = "b9ac5ea5e7f2f1700842ec071401010b9c59bf735295f6e9fa079c3dc035b167"
 dependencies = [
  "cc",
  "regex 1.11.1",
  "regex-syntax 0.8.5",
+ "serde_json",
  "streaming-iterator",
  "tree-sitter-language",
 ]
 
 [[package]]
 name = "tree-sitter-ccomment"
-version = "0.20.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9e346e85d350ae07c4a42ec9438f20100927215d7c97313f41ee6be6239c8bb9"
+version = "0.20.3"
 dependencies = [
  "cc",
- "tree-sitter 0.20.9",
+ "tree-sitter-language",
 ]
 
 [[package]]
 name = "tree-sitter-cpp"
-version = "0.20.1"
+version = "0.23.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0dbedbf4066bfab725b3f9e2a21530507419a7d2f98621d3c13213502b734ec0"
+checksum = "df2196ea9d47b4ab4a31b9297eaa5a5d19a0b121dceb9f118f6790ad0ab94743"
 dependencies = [
  "cc",
- "tree-sitter 0.20.9",
+ "tree-sitter-language",
 ]
 
 [[package]]
 name = "tree-sitter-java"
-version = "0.20.0"
+version = "0.23.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0bf5d3f508cbffcbfe1805834101c0d24297a8b6c2184ad9c595556c46d2420"
+checksum = "0aa6cbcdc8c679b214e616fd3300da67da0e492e066df01bcf5a5921a71e90d6"
 dependencies = [
  "cc",
- "tree-sitter 0.20.9",
+ "tree-sitter-language",
 ]
 
 [[package]]
 name = "tree-sitter-javascript"
-version = "0.20.0"
+version = "0.23.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2490fab08630b2c8943c320f7b63473cbf65511c8d83aec551beb9b4375906ed"
+checksum = "bf40bf599e0416c16c125c3cec10ee5ddc7d1bb8b0c60fa5c4de249ad34dc1b1"
 dependencies = [
  "cc",
- "tree-sitter 0.20.9",
+ "tree-sitter-language",
+]
+
+[[package]]
+name = "tree-sitter-kotlin-ng"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e800ebbda938acfbf224f4d2c34947a31994b1295ee6e819b65226c7b51b4450"
+dependencies = [
+ "cc",
+ "tree-sitter-language",
 ]
 
 [[package]]
@@ -6849,64 +6909,58 @@ checksum = "c199356c799a8945965bb5f2c55b2ad9d9aa7c4b4f6e587fe9dea0bc715e5f9c"
 
 [[package]]
 name = "tree-sitter-mozcpp"
-version = "0.20.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e9514ebbde0a575c43027fffa2702788ae7fb967be5e1a43daae92667400d13e"
+version = "0.20.4"
 dependencies = [
  "cc",
- "tree-sitter 0.20.9",
  "tree-sitter-cpp",
+ "tree-sitter-language",
 ]
 
 [[package]]
 name = "tree-sitter-mozjs"
-version = "0.20.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "836d32956e968db7fe66e15ad5cf6a46a3fc05c9710fffb9612487584da34b40"
+version = "0.20.3"
 dependencies = [
  "cc",
- "tree-sitter 0.20.9",
  "tree-sitter-javascript",
+ "tree-sitter-language",
 ]
 
 [[package]]
 name = "tree-sitter-preproc"
-version = "0.20.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d8a31d01067bbe7a827115ce36366af0738780b62cd5343b3378a5cce20d1f85"
+version = "0.20.3"
 dependencies = [
  "cc",
- "tree-sitter 0.20.9",
+ "tree-sitter-language",
 ]
 
 [[package]]
 name = "tree-sitter-python"
-version = "0.20.2"
+version = "0.23.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dda114f58048f5059dcf158aff691dffb8e113e6d2b50d94263fd68711975287"
+checksum = "3d065aaa27f3aaceaf60c1f0e0ac09e1cb9eb8ed28e7bcdaa52129cffc7f4b04"
 dependencies = [
  "cc",
- "tree-sitter 0.20.9",
+ "tree-sitter-language",
 ]
 
 [[package]]
 name = "tree-sitter-rust"
-version = "0.20.3"
+version = "0.23.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "797842733e252dc11ae5d403a18060bf337b822fc2ae5ddfaa6ff4d9cc20bda6"
+checksum = "a4d64d449ca63e683c562c7743946a646671ca23947b9c925c0cfbe65051a4af"
 dependencies = [
  "cc",
- "tree-sitter 0.24.7",
+ "tree-sitter-language",
 ]
 
 [[package]]
 name = "tree-sitter-typescript"
-version = "0.20.1"
+version = "0.23.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4e8ed0ecb931cdff13c6a13f45ccd615156e2779d9ffb0395864e05505e6e86d"
+checksum = "6c5f76ed8d947a75cc446d5fccd8b602ebf0cde64ccf2ffa434d873d7a575eff"
 dependencies = [
  "cc",
- "tree-sitter 0.20.9",
+ "tree-sitter-language",
 ]
 
 [[package]]
@@ -8186,3 +8240,7 @@ dependencies = [
  "quote",
  "syn 2.0.106",
 ]
+
+[[patch.unused]]
+name = "tree-sitter"
+version = "0.1.0"

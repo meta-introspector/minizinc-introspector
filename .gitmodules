@@ -64,3 +64,9 @@
 [submodule "vendor/tree-sitter"]
 	path = vendor/tree-sitter
 	url = https://github.com/tree-sitter/tree-sitter.git
+[submodule "vendor/solfunmeme-banner"]
+	path = vendor/solfunmeme-banner
+	url = https://github.com/meta-introspector/solfunmeme-banner.git
+[submodule "vendor/rust-code-analysis"]
+	path = vendor/rust-code-analysis
+	url = https://github.com/mozilla/rust-code-analysis.git
