@@ -61,3 +61,6 @@
 [submodule "vendor/solfunmeme-dioxus"]
 	path = vendor/solfunmeme-dioxus
 	url = https://github.com/meta-introspector/solfunmeme-dioxus.git
+[submodule "vendor/tree-sitter"]
+	path = vendor/tree-sitter
+	url = https://github.com/tree-sitter/tree-sitter.git

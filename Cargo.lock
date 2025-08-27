@@ -1421,25 +1421,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "constant_analyzer"
-version = "0.1.0"
-dependencies = [
- "minizinc_ffi",
- "proc-macro2",
- "quote",
- "syn 2.0.106",
- "walkdir",
-]
-
-[[package]]
-name = "constant_analyzer_macros"
-version = "0.1.0"
-dependencies = [
- "quote",
- "syn 2.0.106",
-]
-
-[[package]]
 name = "core-foundation"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3823,14 +3804,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "minizinc_introspector"
-version = "0.1.0"
-dependencies = [
- "wait-timeout",
- "walkdir",
-]
-
-[[package]]
 name = "minizinc_macro"
 version = "0.1.0"
 dependencies = [
@@ -5386,16 +5359,6 @@ dependencies = [
  "anyhow",
  "regex 1.11.1",
  "walkdir",
-]
-
-[[package]]
-name = "regex_file_analyzer"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "regex 1.11.1",
- "serde",
- "serde_json",
 ]
 
 [[package]]

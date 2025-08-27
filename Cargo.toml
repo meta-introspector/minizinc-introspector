@@ -13,7 +13,7 @@ members = [
     "tools/minizinc_ffi",
     "tools/coverage_extractor",
     "crates/zos-bootstrap",
-    "crates/constant_analyzer",
+        "crates/constant_analyzer",
     "crates/constant_analyzer_macros",
     "crates/minizinc_introspector", # needs clang
     "crates/minizinc_macro",
@@ -47,7 +47,7 @@ members = [
     #"crates/poem_fixer_orchestrator",
     "regex_extractor", "crates/asciicast_processor", 
     "crates/gemini_utils", "crates/gemini_utils_test", "crates/kantspel_macros", #    "git_diff_analyzer",
-    "crates/regex_file_analyzer",
+        "crates/regex_file_analyzer",
     "crates/mini-act",
     "crates/launchpad",
     "crates/zos-stage-session-manager",
@@ -64,6 +64,9 @@ hf-dataset-validator = { path = "vendor/hugging-face-dataset-validator-rust" }
 arrow-arith = { path = "vendor/arrow-arith-patched" }
 octocrab = { path = "vendor/octocrab" }
 #tree-sitter = { path = "vendor/tree-sitter/lib" }
+rust-code-analysis = { path = "vendor/rust-code-analysis" }
+tree-sitter = { path = "vendor/tree-sitter/lib" }
+
 
 
 [workspace.lints.clippy]
