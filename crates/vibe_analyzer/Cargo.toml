@@ -1,0 +1,8 @@
+[package]
+name = "vibe_analyzer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+grep = "0.2.0" # For ripgrep-based local code search
+rust-code-analysis = "0.0.25" # For structural code analysis

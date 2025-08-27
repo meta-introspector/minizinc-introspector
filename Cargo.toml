@@ -1,3 +1,12 @@
+[workspace.package]
+edition = "2021"
+version = "0.1.0"
+authors = ["Your Name <your.email@example.com>"] # Placeholder, adjust as needed
+homepage = "https://example.com/your-project" # Placeholder, adjust as needed
+keywords = ["rust", "minizinc", "llm"] # Placeholder, adjust as needed
+license = "MIT"
+repository = "https://github.com/meta-introspector/minizinc-introspector"
+
 [workspace]
 resolver = "3"
 members = [
@@ -16,6 +25,7 @@ members = [
     "crates/minizinc_output_parser",
     "rust_lattice_project",
     "crates/rust_file_finder",
+    "crates/vibe_analyzer",
     #    "crates/zos-fast-query",
     "crates/ragit-string-utils",
     # "crates/vocabulary_dfa_generator",
@@ -53,11 +63,70 @@ members = [
 hf-dataset-validator = { path = "vendor/hugging-face-dataset-validator-rust" }
 arrow-arith = { path = "vendor/arrow-arith-patched" }
 octocrab = { path = "vendor/octocrab" }
+#tree-sitter = { path = "vendor/tree-sitter/lib" }
+
+
+[workspace.lints.clippy]
+dbg_macro = "deny"
+todo = "deny"
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+cargo = { level = "warn", priority = -1 }
+
+# The lints below are a specific subset of the pedantic+nursery lints
+# that we explicitly allow in the tree-sitter codebase because they either:
+#
+# 1. Contain false positives,
+# 2. Are unnecessary, or
+# 3. Worsen the code
+#
+branches_sharing_code = "allow"
+cast_lossless = "allow"
+cast_possible_truncation = "allow"
+cast_possible_wrap = "allow"
+cast_precision_loss = "allow"
+cast_sign_loss = "allow"
+checked_conversions = "allow"
+cognitive_complexity = "allow"
+collection_is_never_read = "allow"
+fallible_impl_from = "allow"
+fn_params_excessive_bools = "allow"
+inline_always = "allow"
+if_not_else = "allow"
+items_after_statements = "allow"
+match_wildcard_for_single_variants = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+module_name_repetitions = "allow"
+multiple_crate_versions = "allow"
+needless_for_each = "allow"
+obfuscated_if_else = "allow"
+option_if_let_else = "allow"
+or_fun_call = "allow"
+range_plus_one = "allow"
+redundant_clone = "allow"
+redundant_closure_for_method_calls = "allow"
+ref_option = "allow"
+similar_names = "allow"
+string_lit_as_bytes = "allow"
+struct_excessive_bools = "allow"
+struct_field_names = "allow"
+transmute_undefined_repr = "allow"
+too_many_lines = "allow"
+unnecessary_wraps = "allow"
+unused_self = "allow"
+used_underscore_items = "allow"
+
+[workspace.lints.rust]
+mismatched_lifetime_syntaxes = "allow"
 
 [workspace.dependencies]
 arrow = "56.0.0"
 parquet = "56.0.0"
 git2 = "0.19"
+#tree-sitter-language = { version = "0.26.0", path = "vendor/tree-sitter/crates/language" }
+cc = "1.0.34"
+serde_json = { version = "1.0.143", features = ["preserve_order"] }
 
 # --- Generated Documentation References ---
 # This section provides links to key documentation generated during

@@ -93,6 +93,7 @@ pub async fn handle_create_layout_command(args: &CreateLayoutArgs) -> Result<(),
     if let Some(task_name) = &args.task {
         let command_to_run = match task_name.as_str() {
             "crq-updater" => "cargo run --package crq_updater",
+            "gemini-solfunmeme-dioxus" => "cd vendor/solfunmeme-dioxus && gemini",
             _ => {
                 output_formatter::print_info(&format!("Unknown task: {}. Pane 1 will remain empty.", task_name));
                 ""

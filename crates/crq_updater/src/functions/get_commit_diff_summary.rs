@@ -20,7 +20,7 @@ pub fn get_commit_diff_summary(repo: &Repository, commit: &Commit, file_path: &P
 
         if path_matches {
             diff_summary.push(line.origin());
-            diff_summary.push_str(std::str::from_utf8(line.content()).unwrap_or(""));
+            diff_summary.push_str(&String::from_utf8_lossy(line.content()));
         }
         true
     })?;
