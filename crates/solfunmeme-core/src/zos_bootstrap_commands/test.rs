@@ -10,19 +10,19 @@ pub mod test_dzn_gen_rust;
 pub mod test_coverage;
 
 // Import functions and enums from the new modules
-use self::test_rust_ffi::test_rust_ffi;
-use self::test_minizinc_models::test_minizinc_models;
-use self::test_dzn_generation::test_dzn_generation;
-use self::test_dzn_gen_rust::test_dzn_gen_rust;
-use self::test_coverage::test_coverage;
+use super::test_rust_ffi::test_rust_ffi;
+use super::test_minizinc_models::test_minizinc_models;
+use super::test_dzn_generation::test_dzn_generation;
+use super::test_dzn_gen_rust::test_dzn_gen_rust;
+use super::test_coverage::test_coverage;
 
-#[derive(Args, Clone)]
+#[derive(Args, Clone, Debug)]
 pub struct TestArgs {
     #[command(subcommand)]
     pub command: Option<TestCommands>,
 }
 
-#[derive(Subcommand, Clone)]
+#[derive(Subcommand, Clone, Debug)]
 pub enum TestCommands {
     /// Runs all tests (C ABI, Rust FFI, MiniZinc models)
     All {},

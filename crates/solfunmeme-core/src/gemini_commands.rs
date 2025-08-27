@@ -30,7 +30,7 @@ pub async fn handle_gemini_command(args: &SendGeminiCommandArgs) -> Result<(), B
     let full_command = gemini_cli_command;
 
     output_formatter::print_header(&format!("Sending command to Gemini CLI in session: {}", args.session_name));
-    gemini_eprintln!("Full command: {}", full_command = full_command);
+    gemini_eprintln!("Full command: {{full_command}}", full_command = full_command);
     send_gemini_command(&args.session_name, &full_command).await?;
 
     if let Some(crq_name) = &args.crq {

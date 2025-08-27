@@ -21,6 +21,12 @@ serde_yaml = "0.9"
 thiserror = "1.0"
 dirs = "5.0.1"
 doc_to_minizinc_data = { path = "../../doc_to_minizinc_data" }
+minizinc_ffi = { path = "../../tools/minizinc_ffi" }
+walkdir = "2.5.0"
+regex = "1.10.4"
+syn = { version = "2.0.58", features = ["full", "extra-traits"] }
+glob = "0.3.1"
+anyhow = "1.0.81"
 
 # Core utility for logging
 gemini_utils = { path = "../../crates/gemini_utils" }

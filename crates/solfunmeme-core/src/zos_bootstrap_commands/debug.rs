@@ -3,13 +3,13 @@ use super::utils::error::Result;
 use super::utils::subprocess;
 use super::utils::paths;
 
-#[derive(Args, Clone)]
+#[derive(Args, Clone, Debug)]
 pub struct DebugArgs {
     #[command(subcommand)]
     pub command: Option<DebugCommands>,
 }
 
-#[derive(Subcommand, Clone)]
+#[derive(Subcommand, Clone, Debug)]
 pub enum DebugCommands {
     /// Attempts to reproduce a known FFI crash
     ReproduceCrash {},

@@ -3,13 +3,13 @@ use super::utils::error::Result;
 use super::utils::paths;
 use std::fs;
 
-#[derive(Args, Clone)]
+#[derive(Args, Clone, Debug)]
 pub struct CleanArgs {
     #[command(subcommand)]
     pub command: Option<CleanCommands>,
 }
 
-#[derive(Subcommand, Clone)]
+#[derive(Subcommand, Clone, Debug)]
 pub enum CleanCommands {
     /// Cleans all build artifacts
     All {},

@@ -4,7 +4,7 @@ use super::ast_to_minizinc::AstToMiniZincArgs;
 use super::ast_to_minizinc::handle_ast_to_minizinc_command;
 use crate::zos_bootstrap_commands::utils::error::Result;
 
-#[derive(Args, Clone)]
+#[derive(Args, Clone, Debug)]
 pub struct TestAstToMiniZincArgs {
     /// Path to the Rust file to process.
     #[arg(long)]

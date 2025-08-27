@@ -9,18 +9,18 @@ pub mod run_minimal_mzn;
 pub mod run_test_driver;
 
 // Import functions and enums from the new modules
-use self::run_embedding_model::run_embedding_model;
-use self::vector_params_source::VectorParamsSource;
-use self::run_minimal_mzn::run_minimal_mzn;
-use self::run_test_driver::run_test_driver;
+use super::run_embedding_model::run_embedding_model;
+use super::vector_params_source::VectorParamsSource;
+use super::run_minimal_mzn::run_minimal_mzn;
+use super::run_test_driver::run_test_driver;
 
-#[derive(Args, Clone)]
+#[derive(Args, Clone, Debug)]
 pub struct RunArgs {
     #[command(subcommand)]
     pub command: Option<RunCommands>,
 }
 
-#[derive(Subcommand, Clone)]
+#[derive(Subcommand, Clone, Debug)]
 pub enum RunCommands {
     /// Runs the embedding model with proof tape
     Embedding {

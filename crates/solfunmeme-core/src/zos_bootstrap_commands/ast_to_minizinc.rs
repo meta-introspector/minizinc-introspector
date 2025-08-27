@@ -11,7 +11,7 @@ use super::code_analysis::numerical_vector_to_llm_instructions::interpret_numeri
 use super::code_analysis::numerical_vector_to_llm_instructions::generate_llm_instructions;
 use walkdir::WalkDir;
 
-#[derive(Args, Clone)]
+#[derive(Args, Clone, Debug)]
 pub struct AstToMiniZincArgs {
     /// Path to the Rust project root directory to analyze.
     #[arg(long)]
@@ -96,7 +96,7 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::zos_boo
         // Temporarily skip problematic files for syn parsing
         if path.ends_with("crates/constant_analyzer/src/main.rs") {
             eprintln!("Skipping problematic file for AST parsing: {}", path.display());
-            continue;
+            continue; // Skip this file
         }
         processed_files_count += 1;
         println!("  Processing file ({}): {}", processed_files_count, path.display());

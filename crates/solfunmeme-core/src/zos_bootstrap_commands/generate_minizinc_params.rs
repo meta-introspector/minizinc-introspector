@@ -106,7 +106,7 @@ pub fn handle_generate_params_command(args: GenerateParamsArgs) -> Result<()> {
 
     // Parse MiniZinc output to get the selected string
     let output_str = str::from_utf8(&output.stdout)?;
-    let selected_string_prefix = "selected_string = \"";
+    let selected_string_prefix = "selected_string = ""
     if let Some(start_index) = output_str.find(selected_string_prefix) {
         let remaining = &output_str[start_index + selected_string_prefix.len()..];
         if let Some(end_index) = remaining.find("\";") {

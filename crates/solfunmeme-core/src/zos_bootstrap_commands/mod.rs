@@ -26,7 +26,7 @@ pub struct Cli {
     pub command: Option<Commands>,
 }
 
-#[derive(Subcommand, Clone, Debug)]
+#[derive(Subcommand, Debug)]
 pub enum Commands {
     /// Builds project components
     Build(build::BuildArgs),

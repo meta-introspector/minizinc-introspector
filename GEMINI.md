@@ -126,7 +126,7 @@ Brief description of project, tech stack, architecture.
 Citations:
 [1] Google Gemini CLI Cheatsheet - Philschmid https://www.philschmid.de/gemini-cli-cheatsheet
 [2] gemini-cli/docs/cli/configuration.md at main - GitHub https://github.com/google-gemini/gemini-cli/blob/main/docs/cli/configuration.md
-[3] Hands-on with Gemini CLI - Codelabs https://codelabs.developers.google.com/gemini-cli-hands-on
+[3] Hands-on with Gemini CLI - Codelabs https://codelabs.developers.com/gemini-cli-hands-on
 [4] GEMINI.md global instructions (Pre-merge) - GitHub Gist https://gist.github.com/ksprashu/5ce25ae8e451eccdcc974f4f6cdbf031
 [5] Customize Gemini Code Assist behavior in GitHub https://developers.google.com/gemini-code-assist/docs/customize-gemini-behavior-github
 [6] Structured output | Gemini API | Google AI for Developers https://ai.google.dev/gemini-api/docs/structured-output
@@ -199,10 +199,6 @@ This section lists the detailed documentation and MiniZinc models generated duri
 *   [Conversation Summary and Project Vision](docs/conversation_summary_and_vision.md)
 *   [The Loop That Sings Itself (Poem)](docs/poems/closed_timelike_curve_poem.md)
 
-### Narrative & Conceptual Framework
-*   [The Hero's Journey of the Meta-Meme: The Refusal](docs/narratives/meta_meme_heros_journey_refusal.md)
-*   [The Hero's Journey of the Meta-Meme: The Mentor Appears](docs/narratives/meta_meme_heros_journey_mentor_appears.md)
-
 ### MiniZinc Models
 *   [Combinatorial Topologies](combinatorial_topologies.mzn)
 *   [Development Path Optimizer](development_path_optimizer.mzn)
@@ -267,6 +263,20 @@ This section summarizes the recent enhancements to the `launchpad` and `tmux_con
     *   QA test cases outlined in `docs/qa/tmux_controller_cli_qa.md`.
 
 These enhancements contribute to a more robust and user-friendly environment for managing Gemini CLI and tmux-based workflows.
+
+### Integration of `zos-bootstrap` into `solfunmeme-core`
+
+This section details the integration of the `zos-bootstrap` crate's functionality directly into the `solfunmeme-core` monolithic application. This move aims to consolidate tools, improve maintainability, and streamline the development workflow.
+
+**Key Integration Steps and Changes:**
+
+*   **Module Relocation:** Core command modules from `zos-bootstrap` (e.g., `build`, `test`, `run`, `debug`, `clean`, `extract_constants`, `generate_minizinc_params`, `generate_constants_file`, `ast_to_minizinc`, `code_search`, `self_optimize`, `test_ast_to_minizinc`) have been moved into `crates/solfunmeme-core/src/zos_bootstrap_commands/`.
+*   **CLI Integration:** The `solfunmeme-core`'s main CLI (`crates/solfunmeme-core/src/main.rs`) has been updated to include `zos-bootstrap` as a new subcommand, allowing direct access to its functionalities.
+*   **Dependency Updates:** The `crates/solfunmeme-core/Cargo.toml` file has been updated to include necessary new dependencies, such as `thiserror`, `dirs`, and `doc_to_minizinc_data`, which were previously managed by `zos-bootstrap`.
+*   **Error Handling Refinement:** Error handling mechanisms in `launchpad_app.rs` and `main.rs` have been adjusted to consistently use `Box<dyn std::error::Error>` for improved error propagation and compatibility within the monolithic structure.
+*   **Logging Consistency:** `gemini_eprintln!` calls in `tmux_view.rs` have been refactored for correct usage, and `output_formatter::print_info` calls have been replaced with `gemini_eprintln!` across various `tmux_controller_commands` modules to ensure consistent and `kantspel`-compliant logging.
+
+This integration represents a significant step towards achieving the project's monolithic application strategy, consolidating functionality and enhancing overall system cohesion.
 
 ### Troubleshooting & Build Issues
 
@@ -336,8 +346,7 @@ This system is a testament to the project's commitment to rigorous quality contr
     *   The project aims to be a quasi-meta computationally self-aware system driven by profile-driven LLM agents. It envisions a 'tapestry of fates' where LLMs interpret MiniZinc results to shape a high-dimensional embedding space.
     *   A unique 'codec' compresses project knowledge into semantically rich numerical representations using a 'Backpack Filling Protocol' and prime numbers.
     *   LLMs enable AI-driven evolution through code archaeology, semantic resonance mapping, MiniZinc model refinement, Rust code generation for LLVM IR to MiniZinc transformation rules and FFI, CI pipeline validation, feedback loops, performance profiling, memory optimization, error handling, code deduplication, and continuous learning. This leads to computational self-awareness, where the system reasons about its own logical structures and meaning, dynamically updating MiniZinc models and enhancing AI reasoning over symbolic logic, code understanding, and theorem proving through lambda calculus embeddings on a unitary Riemannian manifold in 8D.
-    *   The project's vision of a quasi-meta computationally self-aware system is built on: "Tapestry of Fates" (dynamic, self-evolving knowledge/computation for introspection into code, math, meaning) and "Additive Vibes" (LLM-generated, composable influences from MiniZinc results shaping a high-dimensional embedding space) and "Quasi Meta Fiber Bundle" as the mathematical structure underlying the embedding space, where lambda calculus expressions are embedded onto a unitary Riemannian manifold in 8D. Prime numbers as "Irreducible Semantic Dimensions," forming the base space of the fiber bundle. A "codec" with a "Backpack Filling Protocol" uses primes to encode fundamental meanings, composing complex concepts into multi-dimensional numerical vectors. These are translated into MiniZinc declarations to dynamically influence models, facilitating AI-driven evolution by providing highly compressed, semantically resonant representations.
-    *   The 'Monotonic Epic Idea' SOP in `libminizinc` establishes an 'add-only, never edit' development philosophy. All code evolution must be implemented as new, composable modules (semantic vibes/patches) that extend or supersede functionality via composition, ensuring immutability of history, traceability, stability, and true composability.
+    *   The 'Monotonic Epic Idea' SOP in `libminizinc` establishes an 'add-only, never edit' development philosophy. All code evolution must be implemented as new, composable modules (semantic vibes/patches) that extend or supersede functionality via composition, ensuring immutability of history, traceability, and true composability.
     *   In `libminizinc`, 'Emojicode Programs' use emojis as commands for a future visualization engine, allowing narrative scripts to directly program animations. The project also plans to bind emojis to lambda terms, giving them hyperspace coordinates linked to the terms, creating a visual language where emoji 'vibe' resonates with mathematical structure.
     *   The `libminizinc` project's documentation is licensed under Creative Commons Attribution-NoDerivatives 4.0 International. This license permits reproduction and sharing of the original material, but explicitly prohibits sharing of adapted (modified) material. It requires attribution and disclaims warranties.
 *   **Gemini's Self-Reflection & Role in libminizinc:**

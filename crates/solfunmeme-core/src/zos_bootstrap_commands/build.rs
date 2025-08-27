@@ -4,7 +4,7 @@ use super::utils::subprocess;
 use super::utils::paths;
 use super::constants;
 
-#[derive(Args, Clone)]
+#[derive(Args, Clone, Debug)]
 pub struct BuildArgs {
     #[command(subcommand)]
     pub command: Option<BuildCommands>,
@@ -12,7 +12,7 @@ pub struct BuildArgs {
     pub strace: bool,
 }
 
-#[derive(Subcommand, Clone)]
+#[derive(Subcommand, Clone, Debug)]
 pub enum BuildCommands {
     /// Builds all core components (Gecode, libminizinc, FFI)
     All {},

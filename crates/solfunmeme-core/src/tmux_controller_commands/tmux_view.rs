@@ -10,10 +10,10 @@ pub struct TmuxViewArgs {
     #[arg(short, long)]
     pub crq_number: Option<String>,
     /// Optional session name to target. If not provided, all sessions are processed.
-    #[arg(short, long)]
+    #[arg(long)]
     pub session_name: Option<String>,
     /// Path to store the captured session output. Defaults to sessions/
-    #[arg(short, long, default_value = "sessions/")]
+    #[arg(long, default_value = "sessions/")]
     pub output_path: PathBuf,
 }
 

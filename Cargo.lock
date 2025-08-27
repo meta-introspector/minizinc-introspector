@@ -6164,20 +6164,27 @@ dependencies = [
 name = "solfunmeme-core"
 version = "0.1.0"
 dependencies = [
+ "anyhow",
  "chrono",
  "clap",
  "dirs",
+ "doc_to_minizinc_data",
  "dum",
  "futures",
  "gemini_cli_manager",
  "gemini_utils",
  "git2",
+ "glob",
+ "minizinc_ffi",
+ "regex 1.11.1",
  "serde",
  "serde_json",
  "serde_yaml",
+ "syn 2.0.106",
  "thiserror 1.0.69",
  "tmux_interface 0.3.2",
  "tokio",
+ "walkdir",
 ]
 
 [[package]]

@@ -96,7 +96,7 @@ pub async fn handle_create_layout_command(args: &CreateLayoutArgs) -> Result<(),
             "crq-updater" => "cargo run --package crq_updater",
             "gemini-solfunmeme-dioxus" => "cd vendor/solfunmeme-dioxus && gemini",
             _ => {
-                gemini_eprintln!("Unknown task: {}. Pane 1 will remain empty.", task_name = task_name);
+                gemini_eprintln!("Unknown task: {task_name}. Pane 1 will remain empty.", task_name = task_name);
                 ""
             }
         };
