@@ -183,6 +183,8 @@ This section lists the detailed documentation and MiniZinc models generated duri
 ### Standard Operating Procedures (SOPs)
 *   [Code, Documentation, Index, and Gemini Memory Update Procedure](docs/sops/code_doc_update_sop.md)
 *   [Tmux Workflow and Debugging Procedures](docs/sops/tmux_workflow_and_debugging_sop.md)
+*   [Commit ac86ef2eda7bd9de1a4ed252273b284b8d682d16: docs: Add Tmux Workflow and Debugging SOP; Refactor tmux_controller and dump_tmux_status](docs/commits/ac86ef2eda7bd9de1a4ed252273b284b8d682d16_docs_Add_Tmux_Workflow_and_Debugging_SOP_Refactor_tmux_controller_and_dump_tmux_status.md)
+*   [Gemini Git History Documentation and Meta-Process](docs/sops/gemini_git_history_documentation_sop.md)
 
 ### Conceptual Designs
 *   [C4 Model for Launchpad and Tmux Controller](docs/architecture/c4_model_launchpad_tmux.md)
@@ -266,6 +268,11 @@ These enhancements contribute to a more robust and user-friendly environment for
     *   **Problem:** Error: "Argument names must be unique, but 'help' is in use by more than one argument or group" when running `zos-bootstrap`.
     *   **Solution:** This was resolved by disabling the auto-generated `--help` flag in `crates/zos-bootstrap/src/cli.rs` by adding `disable_help_flag = true` to the `#[command(...)]` attribute of the `Cli` struct.
     *   **New Behavior:** The `--help` flag no longer works. Use the `help` subcommand instead (e.g., `cargo run -p zos-bootstrap -- help`).
+
+#### Commit History
+
+- [Commit 19bbe4f5ee5368d5c239e894df678af8b5541c49: feat: Document troubleshooting for zos-bootstrap CLI and FFI linking](docs/commits/19bbe4f5ee5368d5c239e894df678af8b5541c49_feat_Document_troubleshooting_for_zos-bootstrap_CLI_and_FFI_linking.md)
+- [Commit eb340ee4905937cc3d3a0e99c8658a40265e3267: docs: Update GEMINI.md and README.md with tmux integration info](docs/commits/eb340ee4905937cc3d3a0e99c8658a40265e3267_docs_Update_GEMINI.md_and_README.md_with_tmux_integration_info.md)
 
 ### Kantspel Principles and Character Handling
 
