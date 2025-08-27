@@ -119,6 +119,22 @@ This project provides robust capabilities for managing `tmux` sessions, includin
 
 This section lists the detailed documentation and MiniZinc models generated during a collaborative session with the Gemini CLI agent, exploring foundational concepts, self-modeling, optimization, and deep bootstrapping.
 
+#### Recent CLI Enhancements and Documentation
+
+This section summarizes the recent enhancements to the `launchpad` and `tmux_controller` CLI tools, along with the newly generated documentation.
+
+*   **`launchpad` CLI Enhancements:**
+    *   New arguments (`--gemini-instances`, `--record-session`, `--background-detached`) added for finer control over Gemini CLI execution and session management.
+    *   Detailed documentation available at `docs/cli_arguments/launchpad_cli_arguments.md`.
+    *   QA test cases outlined in `docs/qa/launchpad_cli_qa.md`.
+
+*   **`tmux_controller` CLI Enhancements:**
+    *   `split-horizontal` and `split-vertical` commands now support a `--session-name` argument for targeted tmux session control.
+    *   Detailed documentation available at `docs/cli_arguments/tmux_controller_cli_arguments.md`.
+    *   QA test cases outlined in `docs/qa/tmux_controller_cli_qa.md`.
+
+These enhancements contribute to a more robust and user-friendly environment for managing Gemini CLI and tmux-based workflows.
+
 #### Standard Operating Procedures (SOPs)
 *   [Code, Documentation, Index, and Gemini Memory Update Procedure](docs/sops/code_doc_update_sop.md)
 

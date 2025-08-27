@@ -84,7 +84,7 @@ fn process_crq_file(repo: &Repository, crq_path: &Path, dry_run: bool) -> Result
         let tree = commit.tree()?;
 
         let mut modified = false;
-        if let Some(parent) = commit.parent_opt(0)? {
+        if let Some(parent) = commit.parent(0)? {
             let parent_tree = parent.tree()?;
             let diff = repo.diff_tree_to_tree(Some(&parent_tree), Some(&tree), None)?;
             diff.deltas().for_each(|delta| {
@@ -127,8 +127,7 @@ fn process_crq_file(repo: &Repository, crq_path: &Path, dry_run: bool) -> Result
         if !existing_commit_entries.iter().any(|e| e.hash == commit_entry.hash) {
             let description = if commit_entry.description.is_empty() {
                 // If the commit body is empty, generate a summary from the diff
-                let commit_obj = repo.find_object(Oid::from_str(&commit_entry.hash)?)?;
-                let commit = commit_obj.as_commit().ok_or("Not a commit object")?;
+                let commit = find_commit_from_oid(repo, &commit_entry.hash)?;
 
                 // Check if this commit created the file
                 let is_creation_commit = commit.parent_count() == 0 || {
@@ -212,7 +211,7 @@ fn extract_existing_history(repo: &Repository, crq_content: &str) -> Result<(Str
 }
 
 fn get_commit_diff_summary(repo: &Repository, commit: &Commit, file_path: &Path) -> Result<String, Box<dyn std::error::Error>> {
-    let parent_tree = commit.parent_opt(0).and_then(|p| p.tree().ok());
+    let parent_tree = commit.parent(0).and_then(|p| p.tree().ok());
     let current_tree = commit.tree()?;
 
     let diff = repo.diff_tree_to_tree(parent_tree.as_ref(), Some(&current_tree), None)?;
@@ -233,11 +232,18 @@ fn get_commit_diff_summary(repo: &Repository, commit: &Commit, file_path: &Path)
             diff_summary.push_str(std::str::from_utf8(line.content()).unwrap_or(""));
         }
         true
-    }, None, None)?;
+    })?;
 
     if diff_summary.is_empty() {
         Ok("No specific diff content for this file in this commit (might be creation or deletion, or only metadata changes). If this is a creation, the file content is the description of the CRQ.".to_string())
     } else {
         Ok(format!("Changes to this file in this commit:\n```diff\n{}\n```", diff_summary))
     }
+}
+
+fn find_commit_from_oid<'a>(repo: &'a Repository, oid_str: &str) -> Result<Commit<'a>, Box<dyn std::error::Error>> {
+    let oid = Oid::from_str(oid_str)?;
+    let commit_obj = repo.find_object(oid, None)?;
+    let commit = commit_obj.as_commit().ok_or("Not a commit object")?;
+    Ok(commit)
 }
