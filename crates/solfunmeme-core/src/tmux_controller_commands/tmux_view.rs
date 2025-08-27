@@ -1,7 +1,7 @@
 use tmux_interface::{Tmux, TmuxCommand};
 use std::process::Command;
 use std::path::PathBuf;
-use chrono::{Local, Timelike}; // For timestamping log files
+use chrono::{Local, Timelike};
 use gemini_utils::gemini_eprintln;
 
 #[derive(Debug, clap::Args)]
@@ -22,7 +22,7 @@ pub async fn handle_tmux_view_command(args: &TmuxViewArgs) -> Result<(), Box<dyn
     let output_ls = Command::new("tmux")
         .arg("ls")
         .output()?;
-    gemini_eprintln!("Output from tmux ls");
+    gemini_eprintln!(::output::, output = String::from_utf8_lossy(&output_ls.stdout));
 
     gemini_eprintln!("\n--- All Tmux Panes (across all sessions) ---");
     let output_list_panes = Command::new("tmux")
@@ -31,7 +31,7 @@ pub async fn handle_tmux_view_command(args: &TmuxViewArgs) -> Result<(), Box<dyn
         .arg("-F") // Format output
         .arg("#{session_name}:#{window_index}.#{pane_index} #{pane_current_command} #{pane_current_path}") // Custom format
         .output()?;
-    gemini_eprintln!("Output from tmux list-panes");
+    gemini_eprintln!(::output::, output = String::from_utf8_lossy(&output_list_panes.stdout));
 
     gemini_eprintln!("\n--- Capturing all pane output via tmux_controller ---");
     let mut capture_cmd = Command::new("cargo");
@@ -49,8 +49,8 @@ pub async fn handle_tmux_view_command(args: &TmuxViewArgs) -> Result<(), Box<dyn
     }
 
     let output_capture = capture_cmd.output()?;
-    gemini_eprintln!("Output from capture_cmd stdout");
-    gemini_eprintln!("Output from capture_cmd stderr"); // Print stderr for debugging
+    gemini_eprintln!(::output::, output = String::from_utf8_lossy(&output_capture.stdout));
+    gemini_eprintln!(::output::, output = String::from_utf8_lossy(&output_capture.stderr)); // Print stderr for debugging
 
     // After capture, the files are in sessions/<session_id>/<pane_id>/...
     // We would then need to read those files and extract the last page.
@@ -60,7 +60,7 @@ pub async fn handle_tmux_view_command(args: &TmuxViewArgs) -> Result<(), Box<dyn
         .arg("-R")
         .arg(&args.output_path)
         .output()?;
-    gemini_eprintln!("Output from ls sessions");
+    gemini_eprintln!(::output::, output = String::from_utf8_lossy(&output_ls_sessions.stdout));
 
 
     Ok(())

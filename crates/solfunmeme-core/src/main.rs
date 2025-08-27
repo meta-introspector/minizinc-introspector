@@ -9,6 +9,7 @@ mod gemini_cli_options;
 mod stages;
 mod tmux_controller_commands; // New: Module for tmux_controller commands
 mod gemini_commands; // New: Module for gemini_commands
+mod zos_bootstrap_commands;
 
 // The actual logic for launchpad is now in this module
 mod launchpad_app;
@@ -31,6 +32,8 @@ enum Commands {
     Launchpad(launchpad_app::LaunchpadArgs),
     /// Provides commands for interacting with tmux sessions.
     Tmux(tmux_controller_commands::Cli), // New: Tmux subcommand
+    /// Provides commands for bootstrapping the ZOS system.
+    ZosBootstrap(zos_bootstrap_commands::Cli),
 }
 
 /// The asynchronous main function for the `solfunmeme-core` application.
@@ -65,13 +68,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             std::env::set_var("LD_LIBRARY_PATH", ld_library_path);
             narrator::livestream_output(&format!("Set LD_LIBRARY_PATH to: {}", std::env::var("LD_LIBRARY_PATH").unwrap_or_default()));
 
-            launchpad_app::run_launchpad().await.map_err(|e| Box::new(e) as Box<dyn std::error::Error>) // Map error
+            launchpad_app::run_launchpad().await
         },
         Commands::Tmux(tmux_cli) => {
             // Dispatch to the tmux_controller_commands's main logic
             // This will need to be adapted to call the handle_*_command functions directly
             // For now, we'll just call a placeholder or the actual main if it exists
             tmux_controller_commands::handle_cli_command(tmux_cli).await
+        },
+        Commands::ZosBootstrap(zos_bootstrap_cli) => {
+            // Dispatch to the zos_bootstrap_commands's main logic
+            zos_bootstrap_commands::command_handler::handle_zos_bootstrap_command(zos_bootstrap_cli).await
         },
     }
 }

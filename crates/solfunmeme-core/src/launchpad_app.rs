@@ -156,10 +156,9 @@ pub struct LaunchpadArgs {
 /// - The `install-gemini` stage fails.
 /// - A specified ZOS stage binary is not found.
 /// - Execution of a ZOS stage binary fails or exits with a non-zero status.
-pub async fn run_launchpad() -> Result<(), String> {
+pub async fn run_launchpad() -> Result<(), Box<dyn std::error::Error>> {
     // Determine the project root dynamically
-    let current_exe_path = std::env::current_exe()
-        .map_err(|e| format!("Failed to get current executable path: {}", e.to_string()))?;
+    let current_exe_path = std::env::current_exe()?;
     let project_root = current_exe_path.parent()
         .and_then(|p| p.parent()) // target/debug/ 
         .and_then(|p| p.parent()) // libminizinc/
@@ -177,7 +176,7 @@ pub async fn run_launchpad() -> Result<(), String> {
     let stage_args = args.stage_args.clone(); // Clone stage_args
 
     // Initialize Git repository (needed by some stages)
-    let repo = Repository::open(&project_root).map_err(|e| format!("Failed to open Git repository: {}", e))?;
+    let repo = Repository::open(&project_root)?;
 
     // Create a stage registry
     let mut stage_registry: HashMap<String, Box<dyn Stage + Send>> = HashMap::new();
@@ -189,10 +188,8 @@ pub async fn run_launchpad() -> Result<(), String> {
     if dynamic_stage_path.exists() && dynamic_stage_path.is_file() &&
        (dynamic_stage_path.extension().map_or(false, |ext| ext == "yaml" || ext == "yml")) {
         narrator::livestream_output(&format!("Attempting to load dynamic stage from file: {:?}", dynamic_stage_path));
-        let file_content = fs::read_to_string(&dynamic_stage_path)
-            .map_err(|e| format!("Failed to read dynamic stage file {:?}: {}", dynamic_stage_path, e))?;
-        let dynamic_stage_def: DynamicStageDefinition = serde_yaml::from_str(&file_content)
-            .map_err(|e| format!("Failed to parse dynamic stage YAML from {:?}: {}", dynamic_stage_path, e))?;
+        let file_content = fs::read_to_string(&dynamic_stage_path)?;
+        let dynamic_stage_def: DynamicStageDefinition = serde_yaml::from_str(&file_content)?;
 
         narrator::livestream_output(&format!("Executing dynamic stage: {} with command: {} {:?}", dynamic_stage_def.stage_name, dynamic_stage_def.command, dynamic_stage_def.args));
 
@@ -209,29 +206,27 @@ pub async fn run_launchpad() -> Result<(), String> {
             command_builder.envs(env_vars);
         }
         if let Some(log_path) = dynamic_stage_def.log_file {
-            let log_file = fs::File::create(&log_path)
-                .map_err(|e| format!("Failed to create log file {:?}: {}", log_path, e))?;
-            command_builder.stdout(log_file.try_clone().map_err(|e| format!("Failed to clone log file handle: {}", e))?);
+            let log_file = fs::File::create(&log_path)?;
+            command_builder.stdout(log_file.try_clone()?);
             command_builder.stderr(log_file);
         } else {
             command_builder.stdout(std::process::Stdio::inherit());
             command_builder.stderr(std::process::Stdio::inherit());
         }
 
-        let status = command_builder.status()
-            .map_err(|e| format!("Failed to execute dynamic stage command: {}", e))?;
+        let status = command_builder.status()?;
 
         if status.success() {
             return Ok(());
         } else {
-            return Err(format!("Dynamic stage command exited with non-zero status: {:?}", status.code()));
+            return Err(format!("Dynamic stage command exited with non-zero status: {:?}", status.code()).into());
         }
 
     }
     // --- END NEW LOGIC ---
 
     if let Some(stage) = stage_registry.get(&stage_identifier) {
-        stage.run(&repo, &stage_args.iter().map(|s| s.as_str()).collect::<Vec<&str>>()).await
+        stage.run(&repo, &stage_args.iter().map(|s| s.as_str()).collect::<Vec<&str>>()).await?
     } else {
         // Original stage launching logic for ZOS stage binaries
         let stage_binary_name = if stage_identifier.starts_with("zos-stage-") {
@@ -245,7 +240,7 @@ pub async fn run_launchpad() -> Result<(), String> {
             .join(&stage_binary_name);
 
         if !stage_binary_path.exists() {
-            return Err(format!("Stage binary not found: {:?}\n", stage_binary_path));
+            return Err(format!("Stage binary not found: {:?}", stage_binary_path).into());
         }
 
         // Execute the stage binary
@@ -254,17 +249,17 @@ pub async fn run_launchpad() -> Result<(), String> {
         command.stdout(std::process::Stdio::inherit());
         command.stderr(std::process::Stdio::inherit());
 
-        narrator::livestream_output(&format!("Launching stage: {:?} with args: {:?}\n", stage_binary_path, stage_args));
+        narrator::livestream_output(&format!("Launching stage: {:?} with args: {:?}", stage_binary_path, stage_args));
 
-        let status = command.status()
-            .map_err(|e| format!("Failed to execute stage binary: {}\n", e))?;
+        let status = command.status()?;
 
         if status.success() {
             Ok(())
         } else {
-            Err(format!("Stage binary exited with non-zero status: {:?}\n", status.code()))
+            Err(format!("Stage binary exited with non-zero status: {:?}", status.code()).into())
         }
     }
+    Ok(())
 }
 
 #[cfg(test)]

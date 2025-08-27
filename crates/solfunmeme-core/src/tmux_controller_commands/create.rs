@@ -1,10 +1,11 @@
 use tmux_interface::{Tmux, NewSession, ListSessions, KillSession};
 use super::output_formatter;
+use gemini_utils::gemini_eprintln;
 
 pub async fn handle_create_command(session_name: &str) -> Result<(), Box<dyn std::error::Error>> {
     output_formatter::print_header("Current tmux sessions (before creating new session)");
     let output_before = Tmux::with_command(ListSessions::new()).output()?;
-    output_formatter::print_info(&String::from_utf8_lossy(&output_before.stdout()));
+    gemini_eprintln!("::output::", output = String::from_utf8_lossy(&output_before.stdout()));
     output_formatter::print_footer();
 
     // Kill any existing session with the same name to ensure a clean start
@@ -20,7 +21,7 @@ pub async fn handle_create_command(session_name: &str) -> Result<(), Box<dyn std
 
     output_formatter::print_header("Current tmux sessions (after creating new session)");
     let output_after = Tmux::with_command(ListSessions::new()).output()?;
-    output_formatter::print_info(&String::from_utf8_lossy(&output_after.stdout()));
+    gemini_eprintln!("::output::", output = String::from_utf8_lossy(&output_after.stdout()));
     output_formatter::print_footer();
     Ok(())
 }
