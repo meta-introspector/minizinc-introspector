@@ -62,7 +62,7 @@ enum Commands {
         crq_number: Option<String>,
     },
     /// Creates a predefined tmux layout (e.g., one large pane, one small pane)
-    CreateLayout,
+    CreateLayout(commands::create_layout::CreateLayoutArgs),
     /// Provides an overview of the current tmux state, including pane content.
     TmuxView(tmux_view::TmuxViewArgs),
 }
@@ -102,8 +102,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Commands::CaptureSessionOutput { crq_number } => {
             commands::capture_session_output::handle_capture_session_output_command(crq_number.as_deref()).await?;
         },
-        Commands::CreateLayout => {
-            commands::create_layout::handle_create_layout_command().await?;
+        Commands::CreateLayout(args) => {
+            commands::create_layout::handle_create_layout_command(args).await?;
         },
         Commands::TmuxView(args) => {
             tmux_view::handle_tmux_view_command(args).await?;

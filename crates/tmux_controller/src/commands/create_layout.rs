@@ -1,7 +1,15 @@
 use tmux_interface::{Tmux, TmuxCommand};
+use clap::Args;
 use crate::commands::output_formatter;
 
-pub async fn handle_create_layout_command() -> Result<(), Box<dyn std::error::Error>> {
+#[derive(Args, Debug)]
+pub struct CreateLayoutArgs {
+    /// Optional: A task to run in the middle pane (pane 1) after layout creation.
+    #[arg(long)]
+    pub task: Option<String>,
+}
+
+pub async fn handle_create_layout_command(args: &CreateLayoutArgs) -> Result<(), Box<dyn std::error::Error>> {
     output_formatter::print_header("Creating predefined tmux layout");
 
     // 1. Kill all other panes in the current window to start clean
@@ -82,8 +90,28 @@ pub async fn handle_create_layout_command() -> Result<(), Box<dyn std::error::Er
     Tmux::with_command(select_pane_1_for_gemini_command).output()?;
     output_formatter::print_success("Selected pane 1 for Gemini.");
 
-    // Removed gemini launch as per user request for native worker pane
-    // output_formatter::print_success("Pane 1 left empty for native worker execution.");
+    if let Some(task_name) = &args.task {
+        let command_to_run = match task_name.as_str() {
+            "crq-updater" => "cargo run --package crq_updater",
+            _ => {
+                output_formatter::print_info(&format!("Unknown task: {}. Pane 1 will remain empty.", task_name));
+                ""
+            }
+        };
+
+        if !command_to_run.is_empty() {
+            let mut send_task_command = TmuxCommand::new();
+            send_task_command.name("send-keys");
+            send_task_command.push_param("-t");
+            send_task_command.push_param("1"); // Target pane 1
+            send_task_command.push_param(command_to_run);
+            send_task_command.push_param("C-m"); // Enter key
+            Tmux::with_command(send_task_command).output()?;
+            output_formatter::print_success(&format!("Launched task '{}' in pane 1.", task_name));
+        }
+    } else {
+        output_formatter::print_success("Pane 1 left empty for native worker execution.");
+    }
 
     // Select pane 0 (work/data pane) again for final cursor position
     let mut select_pane_0_final_command = TmuxCommand::new();
