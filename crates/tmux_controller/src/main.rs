@@ -2,7 +2,7 @@ use clap::{Parser, Subcommand};
 
 mod gemini_commands;
 mod commands;
-use commands::{split_vertical, split_horizontal, create_layout};
+use commands::{split_vertical, split_horizontal};
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]

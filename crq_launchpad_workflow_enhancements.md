@@ -42,14 +42,10 @@ This CRQ aims to extend the `launchpad` tool's capabilities to provide a robust 
 **Description:**
 This commit represents a work-in-progress state, notably including the initial creation of this `crq_launchpad_workflow_enhancements.md` file. It also introduces significant changes across various modules, such as updates to `gemini_utils` for `kantspel` principles and `gemini_eprintln!` macro enhancements, refactoring within `launchpad`'s `dum_wrappers` for Gemini CLI integration, and the introduction of `gemini_cli_options.rs` and `gemini_context_args.rs` for command-line argument parsing.
 
-**Commit:** `23104bac1cf99fa82e998471ac1f929724700122`
-**Subject:** `feat: launchpad and tmux_controller CLI enhancements, documentation, and QA file creation`
+**Commit:** `[PLACEHOLDER_HASH]`
+**Subject:** `refactor: launchpad stage system and tmux_controller layout creation`
 **Description:**
-This commit introduces significant enhancements to the `launchpad` and `tmux_controller` CLIs, focusing on improved Gemini CLI management and integrated development workflows. Key changes include:
--   **`launchpad` CLI Enhancements:** Added new CLI arguments (`--gemini-instances`, `--record-session`, `--background-detached`) to `launchpad_main.rs` for launching multiple Gemini instances, recording sessions with asciinema, and running Gemini in detached background processes.
--   **`tmux_controller` Integration:** Implemented `tmux` integration within `launchpad` to manage `tmux` sessions for various operations.
--   **Documentation:** Updated relevant documentation to reflect the new CLI arguments and functionalities.
--   **QA File Creation:** Created new QA files to ensure the proper functioning and verification of the new features.
+This commit refactors the `launchpad` application to utilize a modular `Stage` trait and a dynamic stage registry, replacing the previous hardcoded `match` statement for stage dispatch. It introduces `TmuxStage` for direct `tmux` command execution and `TmuxControllerCmdStage` for orchestrating `tmux_controller` subcommands via `launchpad`. Furthermore, a new `create-layout` command has been added to `tmux_controller`, enabling the automated creation of a predefined `tmux` pane layout. This layout consists of three panes: a top status pane (2 lines high), a middle Gemini pane (50% of remaining height), and a bottom work/data pane (3 lines high). This demonstrates enhanced `tmux` orchestration capabilities through `launchpad` and `tmux_controller`, including splitting, sending commands, and creating custom layouts.
 
 **Commit:** `[PLACEHOLDER_HASH]`
 **Subject:** `refactor: launchpad stage system and tmux_controller layout creation`

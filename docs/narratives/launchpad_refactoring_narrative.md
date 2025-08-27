@@ -49,10 +49,12 @@ Recognizing that `tmux_controller` provides a more structured way to interact wi
 As part of enhancing `tmux` orchestration, a new `CreateLayout` command was added to the `tmux_controller` crate. This command is designed to create a predefined `tmux` pane layout.
 *   **Functionality:**
     *   Aggressively kills all other panes in the current window to ensure a clean slate (`kill-pane -a`).
-    *   Splits the current window vertically (`split-window -v`).
-    *   Resizes the panes to a 70/30 proportion (70% height for the upper pane, 30% for the lower pane) (`resize-pane -y 70%`).
-    *   Selects the large (upper) pane (`select-pane -U`).
-*   **Initial Iteration:** The initial implementation used a horizontal split, but was later corrected to a vertical split based on user feedback.
+    *   Creates a three-pane vertical split layout:
+        *   **Top Pane (Status):** 2 lines high.
+        *   **Middle Pane (Gemini):** Occupies 50% of the remaining height.
+        *   **Bottom Pane (Work/Data):** 3 lines high.
+    *   Selects the top (status) pane.
+*   **Initial Iteration:** The initial implementation used a horizontal split, but was later corrected to a vertical split based on user feedback. The pane sizing has been iteratively refined based on user requirements.
 
 ## Lessons Learned
 *   **Importance of Modular Design:** The refactoring clearly demonstrated how a modular design (using traits and registries) significantly improves code organization, testability, and extensibility compared to monolithic `match` statements.
