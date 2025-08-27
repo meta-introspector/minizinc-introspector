@@ -58,3 +58,6 @@
 [submodule "vendor/dum"]
 	path = vendor/dum
 	url = https://github.com/egoist/dum
+[submodule "vendor/solfunmeme-dioxus"]
+	path = vendor/solfunmeme-dioxus
+	url = https://github.com/meta-introspector/solfunmeme-dioxus.git
