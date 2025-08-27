@@ -47,7 +47,14 @@ gemini_eprintln!("Value: ::my_variable::", my_variable = my_variable);
 
 This ensures compliance with `kantspel` and proper interpretation by the macro. This lesson is crucial for consistent logging and self-documentation across the monolithic application.
 
-**Expected Benefits:**
+#### Further Clarification: `output_formatter.rs` and `inspect` Keyword
+
+During the integration of `tmux_controller`'s `output_formatter.rs`, another nuance of `gemini_utils::gemini_eprintln!` was encountered. While `::variable-name::` is used for dynamic content, for simple string values that need to be displayed, the `inspect` keyword (which translates to `{:?}`) is often the most appropriate placeholder, especially when the macro's internal parsing expects a specific keyword.
+
+**Example from `output_formatter.rs`:**
+```rust
+// Incorrect (caused "unclosed delimiter" error due to ::message:: not being a recognized keyword for general string interpolation)
+// gemini_eprintln!(
 
 *   **Simplified Deployment:** A single binary for easier distribution and execution.
 *   **Improved Performance:** Reduced overhead from inter-process communication.
