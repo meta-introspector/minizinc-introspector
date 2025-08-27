@@ -1,0 +1,53 @@
+name: Launch Gemini for Broadcast CRQ via MiniAct
+
+on:
+  workflow_dispatch:
+    inputs:
+      crq_id:
+        description: 'The ID of the Rust-Native Broadcast CRQ'
+        required: true
+        default: 'CRQ_BROADCAST_ID_PLACEHOLDER' # Replace with actual CRQ ID
+      gemini_model:
+        description: 'Gemini model to use'
+        required: true
+        default: 'gemini-2.5-pro'
+
+jobs:
+  launch-gemini-for-broadcast-crq:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
+
+    
+
+    - name: Build MiniAct and Launchpad
+      run: cargo build --workspace --bin launchpad # Assuming launchpad is a binary in the workspace
+
+    - name: Launch Gemini via Launchpad
+      run: |
+        # Assuming launchpad executable is at target/debug/launchpad
+        LAUNCHPAD_EXEC="./target/debug/launchpad" # Placeholder for Launchpad executable
+
+        # The command to launch Gemini using launchpad
+        $LAUNCHPAD_EXEC run-gemini \
+          --model ${GEMINI_MODEL} \
+          --crq ${CRQ_ID} \
+          --mode tmux \
+          --inside miniact \
+          --via doh
+      env:
+        # Potentially set environment variables needed by Gemini or DUM
+        # For example, API keys, configuration paths, etc.
+        # GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        # DUM_CONFIG_PATH: /path/to/dum/config
+        # Ensure these are handled securely using GitHub Secrets
+        DUMMY_ENV_VAR: "true" # Placeholder

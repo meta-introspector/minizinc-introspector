@@ -75,6 +75,8 @@ merged.profdata
 /old_minizinc_parse_string_only_line_counts.txt
 /old_parser_cpp_line_counts.txt
 # Generated build files
+*.fzn
+*.ozn
 
 # Generated datasets and temporary inspector project
 datasets/
@@ -106,3 +108,5 @@ minizinc_data/chunk*_output/*
 /test.txt
 /unmatched.txt
 *.cast
+/docs/asciicast21_extracted_lines.txt
+/sessions/

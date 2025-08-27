@@ -1,0 +1,592 @@
+# Rebase Part 1: Commits 1-79
+#
+# Notes:
+# - Commit 2e0dd5539 (wip): feat: Implement lambda calculus embedding on 8D unit sphere with MiniZinc models
+# - Commit 44578fb2e (wow): refactor(minizinc): Modularize embedding models with granular parameters and new test cases
+# - Commit 9d8d07da9 (wip): docs: Document project vision and refine MiniZinc relation parameters
+# - Commit 560d269e7 (wip): feat: Implement versioned MiniZinc model execution with proof tape generation
+# - Commit e0db60db7 (wip): Unanalyzed generic commit
+#
+pick 498889b7e # feat: Successfully built and configured libminizinc with Gecode solver
+pick 8a1269334 # docs: Add Project Workflow SOP
+pick 2e47f7694 # feat: Add build and run scripts
+pick bec45ce5e # docs: Update Project Workflow SOP with Modular Development
+pick 7936670c8 # feat: Implement Fudge Factor for Univalent Sum to One
+pick 3a2f02423 # feat: Implement Partitioned Manifold Concept
+pick 2e0dd5539 # wip
+pick 9743370ea # refactor: Parameterize shell scripts with .env file
+pick ef107a9dc # docs: Add SOP for No Direct Edits and Composable Development
+pick d570ca9b8 # docs: Add SOP for Monotonic Epic Idea (Add-Only, Never Edit Development)
+pick 44578fb2e # wow
+pick 5733804ec # docs: Add SOP for The Muse Protocol (Code Artistry)
+pick 03c92c82d # docs: Add SOP for The Eigenvector of Athena (Code Evolution)
+pick 9d8d07da9 # wip
+pick 560d269e7 # wip
+pick 3ed6d62fe # docs: Add SOP for The Backpack Filling Protocol
+pick e0db60db7 # wip
+pick d795b0492 # docs: Update README.md, add knowledge compression codec doc, and review SOPs.
+pick c48313da0 # chore: Remove duplicate and older documentation files.
+pick bf372f312 # yolo
+pick b5ab0824e # feat: Remove duplicate and superseded MiniZinc model and data files.
+pick c03a522e4 # yolo
+pick 55a172b7a # feat: Implement Backpack Filling Protocol infrastructure
+pick fc8e70149 # docs: Update Codec for Knowledge Compression documentation
+pick 5a9c0fa52 # fix: Restore embedding_relations_v3.mzn and update include in embedding_sphere_final_v6.mzn
+pick 27dc26a4c # fix: Remove redundant includes in embedding_params_vector_composed_v3.mzn
+pick 339d9a9bb # fix: Remove redundant includes for scaled coefficients in embedding_params_vector_composed_v3.mzn
+pick aac3d7f12 # fix: Remove redundant declarations in embedding_coeffs_scaled.mzn
+pick b24c2435a # fix: Correct include order for relations parameters
+pick d921352ea # fix: Remove redundant declaration of num_vec in embedding_params_relations_v3.mzn
+pick 543884781 # fix: Include partitioned_manifold_params.mzn in main model
+pick 160ea5d91 # fix: Remove redundant declarations in partitioned_manifold_params.mzn
+pick 53fb851b8 # fix: Correct data assignments in example_vector_params_v1.dzn
+pick f58dfbb03 # feat: Debug and document v6 model unsatisfiability, add n00b guide
+pick c2fb4a760 # adding docs
+pick 50ebe178e # ideas
+pick 7ea5aba6b # wip
+pick 193e2835a # update
+pick 1e7cf9b8c # wip
+pick ae19a58d0 # wip
+pick 7ab0c98a1 # wip
+pick 63c6945fb # feat: Implement prime number embedding and expand test data
+pick 2f16541ae # feat: Improve embedding diversity and prime number handling
+pick c6495a597 # docs: Add v6 MiniZinc model reconstruction SOP and update README
+pick fa6cf5e6b # docs: Add MiniZinc models overview and update README
+pick 1287710b8 # feat: Implement comprehensive MiniZinc model testing framework
+pick 1dc888b76 # wip
+pick 08b65c932 # feat: Implement Makefile-based MiniZinc test runner with descriptions and emojis
+pick cd0a7d676 # feat: Get run_embedding_model_v6.sh working and set up performance testing
+pick 84b1b201c # update
+pick 94780f34e # wip
+pick 2f4a97767 # new params
+pick 3d0007ec9 # wip
+pick e2e5ef4b6 # feat: Refactor MiniZinc test runner to Rust and fix DZN generation
+pick e094ad12d # wip
+pick 1fb1a7445 # wip
+pick 48d88c6e7 # wip
+pick 4a71e64c4 # wip
+pick 6b54d2954 # wip
+pick 1e5b2056e # feat: Implement minizinc_env_new and minizinc_env_free in C wrapper
+pick 4c0034f83 # feat: Implement minizinc_parse_model_from_string and minizinc_parse_data_from_string in C wrapper
+pick a1ba38cd5 # feat: Implement MiniZincEnvironment and parse_model/parse_data wrappers in Rust FFI
+pick a4324308e # refactor: Overwrite minizinc_ffi/src/lib.rs with new implementation
+pick eee0f162b # feat: Add MiniZinc standard library path to C wrapper parsing functions
+pick 37db9554f # refactor: Overwrite minizinc_c_wrapper.cpp with updated implementation
+pick 961c860b6 # feat: Enable verbose output for MiniZinc parsing in C wrapper
+pick a60d477fc # refactor: Overwrite minizinc_c_wrapper.cpp with verbose output enabled
+pick e53b07554 # feat: Include globals.mzn in Rust FFI parsing tests
+pick 4a6a88d9a # refactor: Overwrite minizinc_ffi/src/lib.rs with globals.mzn include in tests
+pick 65adbe5b7 # feat: Use absolute paths for filenames in C wrapper parsing functions
+pick 202cbc836 # refactor: Overwrite minizinc_c_wrapper.cpp with absolute filename paths
+pick f9ffdcb66 # fix: Define x in MiniZinc model for parsing tests
+pick a7a3db7f5 # refactor: Overwrite minizinc_ffi/src/lib.rs with updated parsing tests
+pick c02240879 # refactor: Remove globals.mzn include from Rust FFI parsing tests
+pick 61993f6e3 # refactor: Overwrite minizinc_ffi/src/lib.rs with updated parsing tests (no globals.mzn include)
+pick 52bcbee59 # feat: Redirect MiniZinc parsing errors to stringstream for detailed capture
+pick 20a6adc12 # refactor: Overwrite minizinc_c_wrapper.cpp with error stream redirection
+pick 3e0fec600 # refactor: Update C wrapper header to use Flattener as opaque type
+pick 9f163f83b # refactor: Overwrite minizinc_c_wrapper.h with Flattener opaque type
+pick 19ff57be6 # refactor: Use Flattener for Env management and capture detailed errors in C wrapper
+pick f7da69cb3 # refactor: Overwrite minizinc_c_wrapper.cpp with Flattener-based Env management
+pick f0d319a03 # refactor: Dereference Flattener::getEnv() result in C wrapper
+pick 6e8004317 # refactor: Overwrite minizinc_c_wrapper.cpp with dereferenced Env access
+pick 259c3481c # debug: Add debug output to minizinc_env_new in C wrapper
+pick aa85b89ff # refactor: Overwrite minizinc_c_wrapper.cpp with debug output
+pick 80a3e9c75 # feat: Add SolverInitialiser to C wrapper env creation
+pick 24d52d83c # refactor: Overwrite minizinc_c_wrapper.cpp with SolverInitialiser
+pick ca8bbdc2f # refactor: Simplify C wrapper API, remove Env management
+pick e690b245f # refactor: Overwrite minizinc_c_wrapper.h with simplified API
+pick 46a9f814e # refactor: Implement minizinc_parse_model and update parse_data in C wrapper
+pick 1b93aac0a # refactor: Overwrite minizinc_c_wrapper.cpp with new parsing functions
+pick 3aeb06e3f # refactor: Revert C wrapper header API to include Flattener and env management
+pick e88446c97 # refactor: Overwrite minizinc_c_wrapper.h with reverted API
+pick dcb96ee96 # debug: Add debug output to minizinc_env_new in C wrapper
+pick 33b034deb # refactor: Overwrite minizinc_c_wrapper.cpp with debug output
+pick e1be7e8c5 # refactor: Update Rust FFI to use Flattener as Env and new function signatures
+pick 6994e0bfb # refactor: Overwrite minizinc_ffi/src/lib.rs with Flattener-based Env and new function signatures
+pick 638fb0c71 # refactor: Call Flattener::flatten before getEnv in C wrapper
+pick c217907a8 # refactor: Overwrite minizinc_c_wrapper.cpp with Flattener::flatten call
+pick f3bbca83b # debug: Remove problematic debug print from minizinc_env_new
+pick 921f48799 # refactor: Overwrite minizinc_c_wrapper.cpp with debug print removed
+pick 7d55e0b5d # ignore target
+pick 9525c02ab # cleanup: Remove temporary .new files from FFI and C wrapper
+pick d7dcc05ba # fix: Add null checks for Flattener->getEnv() in C wrapper
+pick 35dfb08e9 # wip
+pick eb6bfae8e # back from break
+pick 5f199f81b # wip
+pick 63cd868f6 # fixed the segfault
+pick b491a5bf9 # wip
+pick 07f8bd9f6 # wip
+pick d09b71ae1 # feat: Refactor C++ FFI wrapper and expose MiniZinc model inspection in Rust
+pick 622be16f6 # its happening!
+pick 0d2e38a93 # wip
+pick 3f09d2b19 # feat: Debugging infrastructure and FFI introspection
+pick c8e773722 # docs: Add SOP for no deletion policy
+pick 6389b6825 # docs: Add MiniZinc FFI Debugging Progress Log
+pick 6df80e9cd # feat: Add MiniZinc model index file
+pick 28f64a8fb # test: Add temporary MiniZinc test model
+pick f9d4e61d3 # feat: Add feature-based tests for MiniZinc FFI
+pick 26f34ed38 # fix: Update reproduce_minizinc_ffi_bug.sh for FFI testing
+pick 596b857b3 # refactor: Update MiniZinc C++ FFI to use MznSolver
+pick c1fc0c152 # refactor: Update MiniZinc Rust FFI for MznSolver and model inspection
+pick 7056e8ab6 # docs: Document proposed MiniZinc FFI enhancements
+pick 8069aa6e6 # feat: Expose MiniZinc model documentation comment to Rust FFI
+pick 232091417 # feat: Expose MiniZinc model parent to Rust FFI
+pick bf2836a26 # feat: Expose MiniZinc model solve item to Rust FFI
+pick 56f5582e1 # feat: Expose MiniZinc model output item to Rust FFI
+pick a374eef99 # feat: Expose MiniZinc assignment item to Rust FFI
+pick bc5a8f03f # feat: Expose MiniZinc constraint item to Rust FFI
+pick fc7d65a92 # feat: Expose MiniZinc include item to Rust FFI
+pick 0e94e0530 # feat: Expose MiniZinc function item to Rust FFI
+pick 6e7b4f846 # feat: Expose MiniZinc variable declaration toplevel status to Rust FFI
+pick 997967397 # feat: Expose MiniZinc variable declaration introduced status to Rust FFI
+pick d3c4fd345 # feat: Expose MiniZinc variable declaration evaluated status to Rust FFI
+pick 4a97b95cd # feat: Expose MiniZinc variable declaration payload to Rust FFI
+pick 8fba78ecb # feat: Expose MiniZinc variable declaration type alias status to Rust FFI
+pick 0fedc729c # feat: Expose MiniZinc type instance variable status to Rust FFI
+pick 6c843d6a9 # feat: Expose MiniZinc type instance parameter status to Rust FFI
+pick 7329a9d59 # feat: Expose MiniZinc type instance optional status to Rust FFI
+pick ce0db0819 # feat: Expose MiniZinc type instance present status to Rust FFI
+pick 654dfc7ff # feat: Expose MiniZinc type instance set status to Rust FFI
+pick 66474e51d # feat: Expose MiniZinc type instance integer status to Rust FFI
+pick 736640d76 # feat: Expose MiniZinc type instance boolean status to Rust FFI
+pick 3946827dc # feat: Expose MiniZinc type instance float status to Rust FFI
+pick b456d0ae0 # feat: Expose MiniZinc type instance string status to Rust FFI
+pick 3dd698ddd # feat: Expose MiniZinc type instance annotation status to Rust FFI
+pick eecdcb715 # feat: Expose MiniZinc type instance unknown status to Rust FFI
+pick 58afe3f62 # feat: Expose MiniZinc type instance plain status to Rust FFI
+pick c4f71920c # feat: Expose MiniZinc type instance bottom status to Rust FFI
+pick f97af168a # feat: Expose MiniZinc type instance top status to Rust FFI
+pick ec6d96b85 # feat: Expose MiniZinc type instance integer set status to Rust FFI
+pick b34be627e # feat: Expose MiniZinc type instance boolean set status to Rust FFI
+pick 7711e11e0 # feat: Expose MiniZinc type instance float set status to Rust FFI
+pick 44748b74f # feat: Expose MiniZinc type instance integer array status to Rust FFI
+pick cbab16dfb # feat: Expose MiniZinc type instance boolean array status to Rust FFI
+pick e188bfaf2 # feat: Expose MiniZinc type instance integer set array status to Rust FFI
+pick cefc3608c # feat: Expose MiniZinc float literal expression to Rust FFI
+pick fed5d36d8 # feat: Expose MiniZinc set literal expression to Rust FFI
+pick 03d6b509e # feat: Expose MiniZinc type instance integer set array status to Rust FFI
+pick 766d76e27 # feat: Expose MiniZinc type instance integer set array status to Rust FFI
+pick 82ef2b419 # feat: Expose MiniZinc boolean literal expression to Rust FFI
+pick c98578ede # feat: Expose MiniZinc string literal expression to Rust FFI
+pick 227effa8e # feat: Expose MiniZinc identifier expression to Rust FFI
+pick 6d696ea69 # feat: Expose MiniZinc identifier expression to Rust FFI
+pick 15c43b47c # feat: Expose MiniZinc anonymous variable expression to Rust FFI
+pick 1a198f330 # refactor: Extract expression FFI declarations and sources into separate files
+pick f8179751b # refactor: Extract expression FFI declarations and sources into separate files
+pick 5fe679f1b # feat: Add sed scripts for common replacements
+pick d426b5d8f # refactor: Extract expression FFI declarations and sources into separate files
+pick 27c51a80d # updating docs
+pick 60964b3e0 # docs: Add SOP for onboarding new interns
+pick a048c66a0 # wip
+pick 5578e4db2 # refactoring ffi
+pick 9c5fd6892 # gemini refused to listen about deleting the old data
+pick 69dc820e2 # docs: Add SOP for Rust FFI refactoring and update documentation index.
+pick 02dcdc1ff # docs: Add SOP for advanced testing and profiling in FFI projects and update documentation index.
+pick 0eed92948 # making progress
+pick 4e547e371 # wip
+pick 6690fbdad # fixing the escapes
+pick 6a0bcffa7 # feat: Refactor MiniZinc FFI for string-only parsing and debug SIGSEGV
+pick 4131773c5 # feat: Refactor Rust FFI environment and add C++ FFI test
+pick fd5e0d2ed # feat: Improve FFI string handling and modularize Rust environment
+pick 2acc40562 # docs: Add "Zinc Oxide" metaphor explanation to README.md
+pick 783cd72ee # feat: Implement FFI for MiniZinc solving and integer solution extraction
+pick e41bdd385 # wip
+pick 3c4a5fd3a # wip
+pick 34d57f6fb # feat: Implement FFI for MiniZinc solving and integer solution extraction
+pick 7b4a2a035 # wip
+pick 6f47290ee # wip
+pick c31d42cc7 # wip
+pick 779dc2d57 # wip
+pick 1eb919ec7 # feat: Add new poems and MiniZinc models, and attempt to fix FFI compilation errors
+pick a61347a03 # poetry
+pick dd68caeaf # poetry
+pick 5ef16217b # Fix: Correct MiniZinc FFI C++ wrapper issues
+pick aeb38f23f # Fix: Correct duplicated include lines after previous fix
+pick 2bda431c0 # fixing errors
+pick 18db39879 # Fix: Correct MiniZinc FFI C++ wrapper type mismatches and accessors
+pick 47bd5bf92 # Fix: Revert to direct MiniZinc::Env creation in C wrapper parsing functions
+pick fdce493ea # Fix: Resolve remaining C++ FFI build errors
+pick 41de99d01 # Fix: Resolve remaining C++ FFI header declaration errors
+pick af0c7c844 # Fix: Correct test_ffi_parser.cpp for consistent MiniZincEnvWrapper usage
+pick 871f1ab1f # Fix: Add #[repr(C)] to FFI-bound structs in Rust
+pick 69d1f7d43 # Fix: Add GCLock to C wrapper functions for thread safety
+pick 155c992f2 # Fix: Remove duplicate GCLock declaration in minizinc_parse_model_with_flags.cpp
+pick b209a4b38 # Feat: Expose MiniZinc GC lock/unlock via FFI
+pick dae2de670 # Feat: Implement global GC lock/unlock in Rust tests
+pick 68a3c7d49 # Feat: Add build.rs for robust C library linking in Rust tests
+pick 157f12355 # Fix: Use absolute path for C library linking in build.rs
+pick 1345d76c3 # Fix: Revert build.rs to standard C library linking approach
+pick a1d1ba3d0 # Docs: KitKat Break - Document current status and plan
+pick 492b06843 # Refactor: Rename RAGIT to zincoxide the rusty inteface to zinc
+pick f47290608 # Docs: Update KitKat Break SOP with LD_PRELOAD strategy
+pick c1ba5f5d4 # Feat: Implement global MiniZincEnvironment in Rust tests
+pick 28f2ca86e # Docs: Add temp_commit_message.txt and Emacs patterns to .gitignore
+pick e06bcfac1 # dirty
+pick 71ba1faaf # Fix: Wrap MiniZincEnvironment in Mutex for thread safety
+pick fe759156e # Fix: Implement Send and Sync for MiniZincEnvironment
+pick 0c32ad0ba # Fix: Apply cargo fix suggestions for unused imports
+pick d7c4ae4d9 # Feat: Use global MiniZincEnvironment in feature tests
+pick 073dce32a # Fix: Correct lazy_static! syntax for GLOBAL_MINIZINC_ENV
+pick fcf0093c7 # Debug: Force exception on minizinc_env_new() call
+pick 98e0494f5 # Fix: Align MiniZincEnvWrapper and test_ffi_parser.cpp
+pick 1e5969ab4 # Fix: Resolve MiniZinc GC and FFI linking issues
+pick b9caa70d8 # Docs: Add poem chronicling the zincoxide saga
+pick 43850c6d0 # Docs: Add poem on the Meta-Meme's Autopoietic Quest
+pick 19954f623 # Docs: Add *.profraw to .gitignore
+pick 37690a6ca # oxidiation in progress
+pick 4a6b0e95b # wip
+pick f15200587 # wip
+pick 86e49e14b # wip
+pick add87a00b # clean
+pick 60dbe9cbd # update docs
+pick 89af7ed45 # wup
+pick 13f78150b # prc
+pick 324ef2303 # wip
+pick c8a0657e3 # docs: Organize and consolidate project documentation
+pick 0320e2376 # docs: Add LLM FAQ and update documentation index
+pick 2d6036731 # docs: Refactor LLM FAQ - Codec explanation to dedicated file
+pick 4b5390445 # docs: Refactor LLM FAQ - Onboarding and Training explanation to dedicated file
+pick 1984cdb29 # docs: Refactor LLM FAQ - 'Tapestry of Fates' section to dedicated files
+pick 37de0ee4b # docs: Complete refactoring of LLM FAQ into dedicated files
+pick 4df223b13 # docs: Add SOP for Profile-Driven Semantic Test Generation
+pick def25f2f8 # feat: Create MiniZinc model for code coverage mapping
+pick 5fe87ae56 # feat: Automate coverage data extraction to MiniZinc model
+pick 26254642b # feat: Integrate Rust coverage and design Gemini batch interface
+pick a051a6d18 # feat: Create MiniZinc model for cybernetic control loop
+pick dcbc30e5b # feat: Create MiniZinc model for LLM layer stripping
+pick a5e27de31 # docs: Add new epic poem to enhance project vibe
+pick 466ecdd93 # docs: Create comprehensive N00b's Guide
+pick ba10135cd # docs: Add SOP for LLM-Driven Rust Interface Expansion
+pick e43f15d11 # deleting some old files
+pick da477259e # wow!
+pick 019e4cb07 # wip
+pick fc57f2582 # wip
+pick c9639cf21 # wip
+pick 346080d9d # feat: Refactor zos-bootstrap and fix compilation errors
+pick f8c9bcb06 # fix: Correct FFI wrapper build configuration
+pick 4fda8eadf # fix: Resolve remaining compilation warnings and linking issues
+pick 038c91ce9 # docs: Add FFI build documentation and communication materials
+pick 6f630dc3a # wip
+pick e86604ff9 # chore: KitKat Break - Pause and Assess
+pick 76b8d479d # feat: Fix zos-bootstrap compilation and Gecode build process
+pick 389aec6e3 # feat: Implement sed script generation for string constant refactoring
+pick 51ab3286e # feat: Implement constant usage proof and add poetry documentation
+pick 1d83bd831 # fixing compile issue
+pick f675dbf54 # wip
+pick b55d03266 # update
+pick a53adad41 # fix these bugs
+pick 5aebff8f6 # feat: Centralize project root determination and constant strings
+pick 5c396ac8e # wip
+pick 734c2454b # docs: Add poem on Rust macros and compiler strictness
+pick dede24fd8 # docs: Add SOP for Constant Deduplication
+pick 89f10cafa # feat: Implement literal constant value analysis
+pick e1b3f0bf5 # docs: Add file_as_vector_plan.md
+pick fa3583a52 # feat(constant_analyzer): Integrate MiniZinc FFI and constant file generation
+pick c484ecf15 # docs: Enhance file_as_vector_plan with MiniZinc solver for numerical-to-text transformation
+pick 2513eafd5 # docs: Add component_support_review.md
+pick e539c1954 # docs: Add LLM Instruction Generation from Solver Solutions to file_as_vector_plan
+pick 5b96b9ac5 # fix(docs): Remove duplicated sections in file_as_vector_plan.md
+pick bf8c6facf # feat(zos-bootstrap): Implement numerical_vector_generator and fix compilation issues
+pick a19147de7 # fix(deps): Update Cargo.lock after adding once_cell dependency
+pick d314e9bee # feat(zos-bootstrap): Implement ast_to_numerical_vector_converter and integrate into ast_to_minizinc command
+pick b9a923185 # wip
+pick 11477ff76 # feat(zos-bootstrap): Enhance ast_to_numerical_vector_converter to extract function arguments
+pick a26f30bb4 # fix(deps): Update Cargo.lock after adding quote dependency
+pick 371d8db23 # feat(zos-bootstrap): Refine ast_to_minizinc command with meaningful MiniZinc model
+pick 5d85b1597 # feat(zos-bootstrap): Implement MiniZinc output parsing in ast_to_minizinc command
+pick a445bc32d # fix(gitignore): Add temp_minizinc_output/ and test_code.rs to .gitignore
+pick bf9982508 # feat(zos-bootstrap): Refine MiniZinc model and fix syntax in ast_to_minizinc command
+pick 32239feb5 # feat(zos-bootstrap): Implement numerical_vector_to_llm_instructions and integrate into ast_to_minizinc command
+pick 783103493 # wow making progress
+pick 7d2a3c09a # docs: Add Project-Wide AST Analysis and Targeted Token/Node Synthesis to file_as_vector_plan
+pick 8280ca925 # feat(zos-bootstrap): Enhance ast-to-mini-zinc command with verbose progress output
+pick 622586f86 # feat(zos-bootstrap): Enhance ast-to-mini-zinc command with verbose progress output
+pick 91b8a00f5 # feat(zos-bootstrap): Enhance ast-to-mini-zinc command with verbose progress output
+pick d158b802e # fix(gitignore): Add run1.txt to .gitignore
+pick 51d93ac85 # docs: Add project_wide_ast_analysis.tex explaining advanced AST analysis
+pick dd477fcfc # fix(gitignore): Add *.patch.txt to .gitignore
+pick f240eb54d # fix(gitignore): Add patch.txt to .gitignore
+pick 13080b6ea # feat(zos-bootstrap): Update numerical_vector_generator tests and ast_to_minizinc model
+pick bc724ba10 # docs: Add poem.mzn - MiniZinc translation of the project's poetic aspects
+pick 67a80f5d8 # fix(zos-bootstrap): Fix raw string literal syntax in ast_to_minizinc command
+pick 71e79caa0 # docs: Add SOP for MiniZinc Token/AST Regeneration
+pick 26f1fc0cd # docs: Expand glossary with MiniZinc regeneration concepts
+pick e447c482e # wip
+pick be3cc1fb5 # feat: Symbolic MiniZinc Model for ZOS GPU Reflection and Oxidation
+pick 2cfc98f17 # feat: Establish Continuous Poetry SOP
+pick 6a8f51bc3 # feat: Setup minizinc_introspector and vendorize clang crates
+pick cb8038902 # chore: KitKat Break - Parsing Quest Paused
+pick a47292deb # feat: Update minizinc_introspector with comprehensive clang arguments
+pick 08e62723b # docs: The Odyssey of Introspection - A Poetic Retelling
+pick 09ab74ba3 # docs: Add SOP for Emoji-to-Logical-Constraints Mapping
+pick 658878a49 # docs: Add SOP for Systematic Code Search
+pick 412113ae3 # feat: Code Search Command - A New Star in Our Bootstrap Sky
+pick d8e0cf7da # poetry dump
+pick 49a60e53c # feat: Implement doc organizer tool and add new poetry/report files
+pick f47ace607 # feat: Reorganize documentation using doc_organizer tool
+pick 81e41534d # update code
+pick bf587fb0d # feat: Enhance doc_organizer for robust categorization and unique naming
+pick 84432e2d8 # feat: Implement word embedding extraction and MiniZinc inference
+pick 110d2f42f # feat: Implement word embedding chunking and update incremental solving plan
+pick d359ad01b # feat: Implement word embedding generation and MiniZinc inference
+pick 49df63db1 # docs: Add refactoring plan document
+pick ade0f39f0 # compiles
+pick 854f2d06e # compiles
+pick 138765011 # adding new files
+pick a84f75ecb # wip
+pick 2998e40da # wip
+pick 5e1b12f9f # update
+pick dd4af9ec1 # wip
+pick 4ae8bf0e0 # wip
+pick b8fc1070b # wip
+pick 15163def5 # feat: Update model-builder-quiz submodule and current task documentation
+pick 5c13a93ed # wip
+pick 127e24124 # feat: Refactor zos-bootstrap for self-modeling and add SelfOptimize command
+pick ba885fb9d # compiles wip
+pick f62fa4f2b # wip
+pick 7241ed025 # wip
+pick 6981cd4a8 # remove
+pick 7ca48ee9e # update
+pick 69d989a86 # wip
+pick d44e6cb86 # wip
+pick e701735ff # feat: Debug and resolve MiniZinc solver hang for AST models
+pick 90e8a451d # wip
+pick fc02877e1 # wip
+pick 543d6e687 # feat: Resolve minizinc_ffi compilation errors
+pick 1e021706b # feat: Implement incremental word embedding refinement
+pick e81f9029e # feat: Construct Rust program complexity lattice
+pick 821efa881 # feat: Android rpath for minizinc_ffi and Cargo.toml formatting
+pick b7aca10c6 # docs: Add temporary analysis and bootstrap scripts
+pick 5f114dd06 # docs: Add wrapper.md documentation
+pick fa9b94ff2 # feat: Add initial code_analysis module to zos-bootstrap
+pick e7e2693e0 # feat: Integrate AnalyzeDuplicates subcommand into zos-bootstrap CLI
+pick b59394f49 # wup
+pick 62d925a79 # fixed all compile issues
+pick cc25c9766 # docs: Add new poems to the collection
+pick 981a055a7 # docs: Document recent changes to Cargo.toml and Cargo.lock
+pick 9a7743532 # docs: Document new crate and poetry files
+pick 02d455fcc # docs: Update session log with new crate and poetry files
+pick 6c857a666 # wip
+pick 569f2ebb0 # feat: Implement basic code feature extraction and similarity scoring
+pick 3213f8028 # docs: Add code analysis and similarity tool development plan
+pick 975bd3975 # docs: Add overviews for `rust_file_finder` and `zos-bootstrap-main`
+pick c12c59bdb # feat: Enhance file_content_analyzer with multi-mode operation and similarity analysis
+pick e85926fa3 # fix: Restore .gitignore content and correctly append new entries
+pick 705dbe3d5 # wip
+pick d75373ce9 # working!
+pick 8c5229e3c # making tracks!
+pick f501a6141 # poetry
+pick 5db60c4f6 # adding stopwords
+pick 12c0e8c6b # work in progress
+pick 97e94f3f9 # preparing to recurse
+pick 7107da104 # # KitKat Break: Refactoring `rust_file_finder` and ZOS Vision Progress
+pick 7d43f04f6 # feat: Enhance file_content_analyzer with new mode and documentation
+pick c4d055551 # # KitKat Break: Shifting Focus to a New, Optimized Query Tool
+pick 626dcf03a # feat: Introduce zos-fast-query tool and update documentation
+pick 6c61d9f2a # feat: Add virtual poetry and project story
+pick 8cabfee54 # wip
+pick 5137c0152 # lets see if this breaks git
+pick ca9dedba5 # feat: Add virtual poetry and project story
+pick be54960f1 # removing junk files
+pick 5413e67a5 # wip
+pick 6a1704597 # wip
+pick 9e57668bc # feat: Document term recognition system and add subpattern analysis command
+pick 597897c4c # fix: Resolve vocabulary_dfa_generator dependencies and re-attempt build
+pick c06008adb # feat: KitKat Break - Blueprint for Tool Documentation and Dependency Analysis
+pick 698166ab9 # wip
+pick 1d4523c90 # update
+pick 3eb91dc76 # now all things build
+pick 4e63f0171 # feat: Resolve build warnings and add initial documentation
+pick e53446b01 # wip
+pick 82c06560a # refactor: Reorganize and prune documentation
+pick 308028ded # fixed syntax
+pick 396debcbe # wip
+pick 1b8cbe5cb # wip
+pick 29b9bcef3 # docs: Add new SOPs for dependency management, feature flags, and debugging
+pick 27f7def3c # docs: Document new indexing and profiling scripts
+pick 5415fcb19 # wip
+pick 52f864d2c # update
+pick d619ae251 # feat: Implement WordNet Lookup Tool CRQ and build fixes
+pick 919e8a489 # docs: Add CRQ for HF Dataset Validator integration
+pick 335e33955 # wip not building
+pick 12ec0b0f5 # wip
+pick 4a2aea406 # feat: Refactor doc_to_minizinc_data and activate inspect-parquet-schema command
+pick 1ecc1939f # feat: Poetic Interlude - Exploring ideas through verse & KitKat Break checkpoint
+pick 8c182009b # chore: Follow-up to KitKat Break - Finalizing setup for parquet inspection
+pick e5f6025a5 # feat: KitKat Break - Incremental Embedding & Poetic Interlude
+pick 209aa4237 # update git
+pick c55a8ce36 # feat: KitKat Break - Incremental Embedding & Poetic Interlude
+pick b8e8cc6f1 # gitinore
+pick 8660d7cbd # docs: Add YAML front matter to poem files
+pick 9e9fd9356 # feat: Move poem content to YAML front matter and update index.md
+pick 0f95d0eec # docs: Add poem_formatter to git and document its SOP
+pick 71b172b79 # almost fixed
+pick a7668dd94 # fixing the build
+pick fb01687ea # feat: Add new specification poems and meta-introspector chant
+pick 4301d8531 # feat: Add "The Kaizen Canticle" poem
+pick 080952af2 # feat: Add "The Collaborative Canticle" poem
+pick 601783282 # wip
+pick 5e6964c49 # fix submodule
+pick db1a2c270 # wip
+pick c4404178e # wip
+pick ded6003ab # docs: Update CRQ for Poem YAML Fixer with detailed report
+pick d046fe1bf # wip to fix, is deleting
+pick 21953e08c # before change
+pick 2b57b5039 # fixing compile issues
+pick 971bb764d # going to fix
+pick d5227c666 # almost compiles
+pick 5f1eac526 # wip
+pick 6e33a5489 # wip
+pick e68bc85f7 # links
+pick e8ed6e12a # working on it.
+pick 87a67b047 # tip toein
+pick ab26c8842 # wip compiles
+pick 45d1aa361 # Fix: poem_macro compilation errors and warnings
+pick d585cd89b # Fix: Correct poem_macro_impl static registration
+pick 48534d437 # Fix: Correct poem_macro_impl static registration
+pick 1742f27eb # Feat: Integrate `poem_macro` into `poem_formatter` and refine macro generation
+pick 6e64509f0 # update
+pick 9570f37d3 # feat: Refactor and fix build errors/warnings in poem crates
+pick 0f2296715 # wip
+pick 6b03ae86f # wip
+pick 0ef27951f # feat: Implement dry-run and regex config for poem_yaml_fixer; add new poems and README
+pick bd00037e2 # wip
+pick 0ab37b5ce # feat: Resolve compilation errors and improve macro usage
+pick 6ab5d9b32 # feat: Implement fast path for YAML parsing and fix tests
+pick 2a286d873 # almost builds
+pick 7dc45094e # feat: Integrate unused functions into main fast path and generate report; fix test imports
+pick ff4c36ef6 # feat: Integrate all unused functions into fast path and report generation
+pick 5407bfbe7 # feat: Enhance process_single_poem_file_for_report with all unused functions and robust error handling
+pick bb1a386b7 # fix: Suppress dead_code warnings for PoemFunctionEntry and dummy_callback
+pick ba24673f9 # wip
+pick 5b9861612 # Fix: Resolve build errors and warnings in poem_yaml_fixer and poem_formatter
+pick 1c40a216c # feat(poem_yaml_fixer): Enhance error handling and reporting
+pick c143903d4 # compiles
+pick 21cac1f2f # recovering lost poems!
+pick c05d93585 # feat: Initiate KitKat Break for strategic reboot
+pick 100417474 # wip
+pick 2c9ab24fe # docs: Add 'The Manager's Lament' poem
+pick d68a3a44e # new changes
+pick 1903c331b # feat: Implement poem_yaml_fixer enhancements from CRQs
+pick 459842f4d # wip
+pick 90c951498 # wip
+pick a45280fbd # wip
+pick b4b1816fe # wip
+pick d302f20f2 # wip
+pick 5c82aabb4 # disabled llvm for now
+pick 5e23f8c6f # wip
+pick 3d37b147b # wip
+pick 07e9b496d # wip
+pick 1d1f0ceb9 # wip
+pick 87c3fbef3 # wip
+pick 3f1fa3dff # build
+pick 369d08ef6 # wip
+pick 0b5bbc38a # removing junk
+pick e116f20e5 # feat(poem_yaml_fixer): Implement manual parser and refactor callback handling
+pick 797ddf8f5 # wip
+pick 4c02413ec # fix(poem_yaml_fixer): Improve manual parser and fix keyword handling
+pick da32cbc15 # wip
+pick 1edf4c0e3 # wip
+pick 3f5d13095 # feat(poem_yaml_fixer): Generate regex from unmatched lines and refactor main logic
+pick 5111ba497 # docs(crqs): Add CRQS for automated regex template generation
+pick d02ed4480 # wip
+pick 787bc31bb # fixing escape
+pick 565d4e153 # fixed
+pick 378579370 # wip
+pick 346fde678 # ip
+pick 8cf74985a # wip
+pick 65cffaa40 # wip
+pick 0834fffa7 # before more code gets deleted
+pick 199f9dd8c # fixing
+pick d1066ec2f # wip 2 build errors
+pick c202e3c55 # compiles
+pick 4870481f3 # feat: Enhance poem_yaml_fixer with improved logging and new regex patterns
+pick 413e740b6 # fix: Remove redundant regex_config.toml
+pick c95ffcacb # fixing warnings
+pick e95d2bf40 # compiles
+pick adbaaef5e # copiles
+pick 8c9a75564 # wip
+pick 09ee764d9 # wip
+pick 91f704e55 # fixing patterns
+pick 54b2547aa # update
+pick bbfe42a32 # wup
+pick 218791845 # feat: Document project vision, deep bootstrap, and self-modeling
+pick 26de9d41f # docs: Enhance documentation and indexing
+pick 50223a968 # wip
+pick b75f5001c # docs: Add CRQ for Asciicast Processor Enhancements
+pick 32825fd21 # docs: Add CRQ for Asciicast Processor and Related Non-Vendor Changes
+pick 7e602bb91 # wip
+pick 838c3d10f # kantspel ani moar
+pick a7c5e24f1 # wow
+pick 8c018f78a # adding
+pick cd989fb4f # wip
+pick 338c80459 # fixed build
+pick a360cc3e2 # wip
+pick 971a74aff # feat: Refactor gemini_utils and fix kantspel_macros
+pick 452096934 # wip
+pick bf97a888b # wip
+pick ea78fa62d # chore: KitKat Break - Refactoring checkpoint
+pick 9b4562c34 # wip
+pick cd18fb854 # wip
+pick e391c97bb # remove errors
+pick f8a0cd580 # wip
+pick 85ddbe24d # wip
+pick 8299acf60 # feat: Improve gemini_eprintln usage and add test crate
+pick ac0924d81 # wip
+pick a7185dce5 # feat: Fix build, run asciicast processor, and update documentation
+pick a51626f4e # docs: Consolidate project documentation into README.md
+pick 560bcc2c8 # docs: Add community engagement plan and project model run guide
+pick 4fa11dfc7 # feat: Implement project file analysis and modeling infrastructure
+pick a99d74a7d # docs: Narrative - Meta-Meme's Hero's Journey: The Refusal
+pick 50e248b6d # docs: Update GEMINI.md with narrative and philosophical context
+pick 46cc23821 # feat: Integrate SOLFUNMEME Vial Engine concepts and enhance self-modeling
+pick b38d3101b # docs: Create CRQ for MiniZinc Function Syntax Error
+pick ae40e086f # feat: Add MiniZinc syntax validation and debugging SOPs, fix models
+pick f62be6b8f # feat: Add MiniZinc syntax validation and debugging SOPs, fix models
+pick 7c019d30b # feat: Add minizinc_functions/ directory
+pick 0e0c51595 # docs: Add SOP for Git as a Database and Vibe Definition
+pick 7baccbf69 # feat: Add new change request for QA of MiniZinc models
+pick 556649240 # feat: Refactor and QA MiniZinc narrative models
+pick 9d005b884 # docs: Update CRQ with MiniZinc narrative models QA progress and next steps
+pick d6af3c7f2 # feat: Stage current changes and update CRQ
+pick 72b8e1670 # docs: Update CRQ to reflect committed code changes
+pick fca4acfd3 # feat: Add MiniZinc narrative model integration test. Integrates testing for the narrative_journey.mzn model into the cargo test suite. This test runs the top-level narrative model, ensuring its modular components are correctly included and executed. Includes a 60-second timeout for each test run.
+pick c05098c17 # wip
+pick c3540f674 # wip
+pick ab84af21d # fix: Remove vendor/clang-rs from index
+pick bfe792668 # fix: Remove vendor/clang-sys from index
+pick c16a397f7 # fix: Remove vendor/lexgen from index
+pick 102f4f677 # fix: Remove vendor/rust-emojicons from index
+pick 4728becb0 # feat: Add clang-rs, clang-sys, lexgen, and rust-emojicons as submodules
+
+# Rebase d1dc724a0..4728becb0 onto d1dc724a0 (552 commands)
+#
+# Commands:
+# p, pick <commit> = use commit
+# r, reword <commit> = use commit, but edit the commit message
+# e, edit <commit> = use commit, but stop for amending
+# s, squash <commit> = use commit, but meld into previous commit
+# f, fixup [-C | -c] <commit> = like "squash" but keep only the previous
+#                    commit's log message, unless -C is used, in which case
+#                    keep only this commit's message; -c is same as -C but
+#                    opens the editor
+# x, exec <command> = run command (the rest of the line) using shell
+# b, break = stop here (continue rebase later with 'git rebase --continue')
+# d, drop <commit> = remove commit
+# l, label <label> = label current HEAD with a name
+# t, reset <label> = reset HEAD to a label
+# m, merge [-C <commit> | -c <commit>] <label> [# <oneline>]
+#         create a merge commit using the original merge commit's
+#         message (or the oneline, if no original merge commit was
+#         specified); use -c <commit> to reword the commit message
+# u, update-ref <ref> = track a placeholder for the <ref> to be updated
+#                       to this position in the new commits. The <ref> is
+#                       updated at the end of the rebase
+#
+# These lines can be re-ordered; they are executed from top to bottom.
+#
+# If you remove a line here THAT COMMIT WILL BE LOST.
+#
+# However, if you remove everything, the rebase will be aborted.
+#

@@ -1,0 +1,29 @@
+name: Mini-Act Tmux TUI Test
+
+on:
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
+
+    - name: Build mini-act
+      run: cargo build --package mini-act
+
+    - name: Run mini-act workflow
+      run: |
+        # Execute mini-act with the specific workflow definition
+        # This assumes mini-act can find and execute a workflow file.
+        # We'll define the mini-act-workflow.yml in the next step.
+        target/debug/mini-act --workflow mini-act-workflow.yml

@@ -1,3 +1,4 @@
+#[derive(Debug)]
 pub enum PlaceholderType {
     Named(String), // For :key: placeholders
     Positional(bool), // For {} or {:?} (bool indicates if it's debug format)
@@ -21,17 +22,30 @@ pub mod processing_context;
 lazy_static! {
     pub(crate) static ref EMOJIS: HashMap<&'static str, &'static str> = {
         let mut map = HashMap::new();
-        // Map emojis and keywords to their corresponding characters for LLM readability
-        map.insert("✨", "\n"); // sparkles emoji to newline
-        map.insert("sparkles", "\n"); // sparkles keyword to newline
-        map.insert("🧱", "{}"); // brick emoji to curly braces
-        map.insert("brick", "{}"); // brick keyword to curly braces
-        map.insert("🏗️", "{{}}"); // building-construction emoji to double curly braces
-        map.insert("building-construction", "{{}}"); // building-construction keyword to double curly braces
-        map.insert("⏎", "return"); // return emoji to return keyword
-        // New entry for debug printing
-        map.insert("🔍", "{{:?}}"); // magnifying glass emoji to debug format
-        map.insert("inspect", "{{:?}}"); // inspect keyword to debug format
+        // Map keywords to their corresponding characters or format specifiers
+        map.insert("::variable::", "{}");
+        map.insert(":::brick:::", "{}");
+        map.insert("::quoted-variable::", "{{}}");
+        map.insert(":::crane:::", "{{}}");
+        map.insert("::newline::", "\n");
+        map.insert("::sparkles::", "✨");
+        map.insert("::rocket::", "🚀");
+        map.insert("::hourglass_flowing_sand::", "⏳");
+        map.insert("::white_check_mark::", "✅");
+        map.insert("🔍", "{:?}"); // magnifying glass emoji to debug format
+        map.insert("::inspect::", "{:?}");
+        map.insert("quoted-inspect", "{{:?}}");
+        map
+    };
+
+    pub(crate) static ref EMOJI_NAMES: HashMap<&'static str, &'static str> = {
+        let mut map = HashMap::new();
+        // Map actual emoji characters to their canonical names
+        map.insert("✨", "sparkles");
+        map.insert("🚀", "rocket");
+        map.insert("⏳", "hourglass_flowing_sand");
+        map.insert("✅", "white_check_mark");
+        map.insert("🔍", "magnifying_glass");
         map
     };
 }
@@ -39,6 +53,7 @@ lazy_static! {
 use crate::string_processor::processing_context::ProcessingContext; // Add this import
 
 // Main character processing logic
+#[allow(dead_code)]
 pub fn process_char_for_emojis(
     c: char,
     context: &mut ProcessingContext,
@@ -70,13 +85,17 @@ pub fn process_char_for_emojis(
                 }
                 context.current_segment.push_str(replacement);
 
-                // --- NEW LOGIC ---
+                // ---
+                // NEW LOGIC
+                // ---
                 if replacement == &"{}" { // For brick
                     context.placeholders.push(PlaceholderType::Positional(false));
                 } else if replacement == &"{{:?}}" { // For 🔍/inspect
                     context.placeholders.push(PlaceholderType::Positional(true));
                 }
-                // --- END NEW LOGIC ---
+                // ---
+                // END NEW LOGIC
+                // ---
 
                 return; // Keyword matched and processed, return
             }
@@ -93,4 +112,13 @@ pub fn process_char_for_emojis(
         },
         _ => char_handlers::handle_other_char::handle_other_char(c, context),
     }
+}
+
+#[allow(dead_code)]
+pub fn clean_string_for_regex(input: &str) -> String {
+    let mut cleaned = input.trim().to_string();
+    // Remove the black diamond character (U+25C6)
+    cleaned = cleaned.replace('◆', "");
+    // Add more cleaning rules as needed
+    cleaned
 }

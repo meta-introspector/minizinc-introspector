@@ -6,6 +6,9 @@ project(libminizinc
         VERSION 2.9.3
         LANGUAGES CXX C)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
+
 if(NOT BUILD_REF)
   set(BUILD_REF "")
 endif()
@@ -37,7 +40,9 @@ if(POLICY CMP0074)
   cmake_policy(SET CMP0074 NEW)
 endif(POLICY CMP0074)
 find_package(Geas)
-find_package(Gecode 6.2 COMPONENTS Driver Float Int Kernel Minimodel Search Set Support)
+find_package(Gecode 6.2 COMPONENTS Driver Float Int Kernel Minimodel Search Set Support
+  CMAKE_ARGS -DCMAKE_POSITION_INDEPENDENT_CODE=TRUE
+)
 find_package(atlantis)
 find_package(chuffed)
 if(NOT HIGHS_PLUGIN)

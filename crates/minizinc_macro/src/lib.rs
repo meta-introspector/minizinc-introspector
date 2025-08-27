@@ -109,9 +109,13 @@ pub fn minizinc_solve(attr: TokenStream, item: TokenStream) -> TokenStream {
 
             // Loop through solutions
             let mut solution_found = false;
-            while env.solver_instance_next(solver_instance) != 0 {
-                env.solver_instance_print_solution(solver_instance);
-                solution_found = true;
+            // Loop through solutions
+            let mut solution_found = false;
+            unsafe {
+                while env.solver_instance_next(solver_instance) != 0 {
+                    env.solver_instance_print_solution(solver_instance);
+                    solution_found = true;
+                }
             }
 
             if !solution_found {

@@ -1,270 +1,65 @@
-use asciicast::{Entry, EventType, Header};
-use std::fs::File;
-use std::io::{
-    //self,
-    BufReader, Write};
-use serde_json::Deserializer;
-use grex::RegExpBuilder;
-use anyhow::{Result, anyhow};
+use anyhow::Result;
 use clap::Parser;
-use strip_ansi_escapes::strip;
-use std::collections::HashMap;
-use unicode_segmentation::UnicodeSegmentation;
-use std::path::PathBuf;
-
-use quote::quote;
-use syn::{Ident, LitStr};
-use proc_macro2::TokenStream;
 
 use gemini_utils::gemini_eprintln;
 
-// Re-export the macro for use in generated code
-#[allow(unused_imports)]
-use poem_macros::poem_function;
+mod cli;
+mod pattern_generator;
+mod rust_parser;
+mod raw_parser;
+mod asciicast_reader; // New module
+mod commands; // New module
 
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
-struct Args {
-    /// Path to the asciicast input file
-    input_file: PathBuf, // Added input file argument
-    /// Limit the number of events to process from the beginning
-    #[arg(long, default_value_t = 10, conflicts_with = "tail")]
-    limit: usize,
-    /// Process only the last N events
-    #[arg(long, conflicts_with = "limit")]
-    tail: Option<usize>,
-    /// Steps for hierarchical grouping (e.g., --steps 5,3,1)
-    #[arg(long, value_delimiter = ',', default_values_t = [5, 3, 1])]
-    steps: Vec<usize>,
-    /// Output file to save the generated Rust code
-    #[arg(long)]
-    rust_output_file: PathBuf,
-    /// Enable ASCII naming for Unicode characters and ANSI sequences
-    #[arg(long)]
-    ascii_names: bool,
-}
-
-// This struct is no longer directly serialized/deserialized, but its structure is used to generate code
-#[derive(Debug)]
-struct RegexHierarchyNode {
-    prefix_regex: Option<String>,
-    children: Vec<RegexHierarchyNode>,
-    lines: Vec<String>,
-}
-
-fn map_to_ascii_names(input: &str) -> String {
-    input.replace("█", "BLOCK").replace("░", "LIGHT_SHADE")
-}
-
-fn build_hierarchy(lines: Vec<String>, steps: &[usize]) -> RegexHierarchyNode {
-    if lines.is_empty() {
-        return RegexHierarchyNode { prefix_regex: None, children: Vec::new(), lines: Vec::new() };
-    }
-
-    if steps.is_empty() || lines.len() == 1 {
-        let regex = RegExpBuilder::from(&lines.iter().map(|s| s.as_str()).collect::<Vec<&str>>()).build();
-        return RegexHierarchyNode { prefix_regex: Some(regex), children: Vec::new(), lines };
-    }
-
-    let current_prefix_len = steps[0];
-    let remaining_steps = &steps[1..];
-
-    let mut prefix_groups: HashMap<String, Vec<String>> = HashMap::new();
-    for line in lines {
-        let graphemes: Vec<&str> = line.graphemes(true).collect();
-        let prefix = graphemes.iter().take(current_prefix_len).map(|&s| s).collect::<String>();
-        
-        prefix_groups.entry(prefix).or_default().push(line);
-    }
-
-    let mut children = Vec::new();
-    for (prefix, group_lines) in prefix_groups {
-        let common_prefix_regex = RegExpBuilder::from(&[&prefix]).build();
-        let mut meaningful_remaining_lines: Vec<String> = Vec::new();
-
-        for line in group_lines {
-            let graphemes: Vec<&str> = line.graphemes(true).collect();
-            let remaining_part = if graphemes.len() > prefix.len() {
-                graphemes.iter().skip(prefix.len()).map(|&s| s).collect::<String>()
-            } else {
-                "".to_string()
-            };
-            let trimmed_remaining_part = remaining_part.trim().to_string();
-            if !trimmed_remaining_part.is_empty() {
-                meaningful_remaining_lines.push(trimmed_remaining_part);
-            }
-        }
-
-        if !meaningful_remaining_lines.is_empty() {
-            let child_node = build_hierarchy(meaningful_remaining_lines, remaining_steps);
-            children.push(RegexHierarchyNode {
-                prefix_regex: Some(common_prefix_regex),
-                children: child_node.children,
-                lines: child_node.lines,
-            });
-        } else { // If no meaningful remaining lines, this node is a leaf with its prefix regex
-            children.push(RegexHierarchyNode {
-                prefix_regex: Some(common_prefix_regex),
-                children: Vec::new(),
-                lines: Vec::new(), // No remaining lines to store here
-            });
-        }
-    }
-
-    RegexHierarchyNode { prefix_regex: None, children, lines: Vec::new() }
-}
-
-fn generate_poem_functions(node: &RegexHierarchyNode, parent_name: &str, level: usize) -> TokenStream {
-    let mut functions = TokenStream::new();
-
-    if let Some(ref regex_str) = node.prefix_regex {
-                let fn_name_str = format!("{}_level{}", parent_name, level);
-        let fn_name = Ident::new(&fn_name_str, proc_macro2::Span::call_site());
-        let pattern_lit = LitStr::new(regex_str, proc_macro2::Span::call_site());
-
-        let title_str = format!("Meme for pattern: {}", regex_str);
-        let title_lit = LitStr::new(&title_str, proc_macro2::Span::call_site());
-
-        let summary_str = format!("Generated from asciicast output at level {}", level);
-        let summary_lit = LitStr::new(&summary_str, proc_macro2::Span::call_site());
-
-        let keywords_str = format!("asciicast,regex,meme,level{}", level);
-        let keywords_lit = LitStr::new(&keywords_str, proc_macro2::Span::call_site());
-
-        let emojis_str = "🔍🌲🔄";
-        let emojis_lit = LitStr::new(emojis_str, proc_macro2::Span::call_site());
-
-        let art_generator_instructions_str = format!("Generate an image for: {}", regex_str);
-        let art_generator_instructions_lit = LitStr::new(&art_generator_instructions_str, proc_macro2::Span::call_site());
-
-        let pending_meme_description_str = format!("This meme represents the pattern: {}", regex_str);
-        let pending_meme_description_lit = LitStr::new(&pending_meme_description_str, proc_macro2::Span::call_site());
-
-        let function_code = quote! {
-            #[poem_function(
-                name = #fn_name_str,
-                pattern = #pattern_lit,
-                title = #title_lit,
-                summary = #summary_lit,
-                keywords = #keywords_lit,
-                emojis = #emojis_lit,
-                art_generator_instructions = #art_generator_instructions_lit,
-                pending_meme_description = #pending_meme_description_lit
-            )]
-            pub fn #fn_name(line: &str, captures: &regex::Captures, fixed_fm: &mut std::collections::HashMap<String, String>) -> anyhow::Result<()> {
-                eprintln!("Matched meme: {{}}", #fn_name_str);
-                // Add logic here to process the matched line
-                Ok(())
-            }
-        };
-        functions.extend(function_code);
-    }
-
-    for child in &node.children {
-        functions.extend(generate_poem_functions(child, parent_name, level + 1));
-    }
-
-    functions
-}
+use cli::{Args, Commands};
+use asciicast_reader::read_asciicast_file; // New use statement
+use commands::generate::handle_generate_command;
+use commands::analyze::handle_analyze_command;
+use commands::filter::handle_filter_command;
+use commands::count_raw::handle_count_raw_command;
+use commands::extract_lines::handle_extract_lines_command;
 
 fn main() -> Result<()> {
     let args = Args::parse();
 
-    let file = File::open(&args.input_file)?;
-    let reader = BufReader::new(file);
-
-    let mut de = Deserializer::from_reader(reader).into_iter::<serde_json::Value>();
-
-    // Read the header
-    let header_value = de.next().ok_or_else(|| anyhow!("Missing header"))?;
-    let header: Header = serde_json::from_value(header_value.map_err(|e| anyhow!(e))?)?;
+    // Read asciicast data
+    let asciicast_data = read_asciicast_file(&args.input_file.to_string_lossy())?;
 
     gemini_eprintln!("Asciicast Header:");
-    gemini_eprintln!("  Version: :version:", version = header.version);
-    gemini_eprintln!("  Width: :width:", width = header.width);
-    gemini_eprintln!("  Height: :height:", height = header.height);
-    if let Some(timestamp) = header.timestamp {
+    gemini_eprintln!("  Version: :version:", version = asciicast_data.header.version);
+    gemini_eprintln!("  Width: :width:", width = asciicast_data.header.width);
+    gemini_eprintln!("  Height: :height:", height = asciicast_data.header.height);
+    if let Some(timestamp) = asciicast_data.header.timestamp {
         gemini_eprintln!("  Timestamp: :timestamp:", timestamp = timestamp);
     }
-    if let Some(duration) = header.duration {
+    if let Some(duration) = asciicast_data.header.duration {
         gemini_eprintln!("  Duration: :duration:", duration = duration);
     }
-    if let Some(title) = header.title {
+    if let Some(title) = asciicast_data.header.title {
         gemini_eprintln!("  Title: :title:", title = title);
     }
 
-    let mut all_events: Vec<Entry> = Vec::new();
-    let mut event_count = 0;
-
-    // Collect all events if --tail is specified, otherwise process with --limit
-    if let Some(tail_count) = args.tail {
-        gemini_eprintln!("Collecting all events to process last :tail_count: events.", tail_count = tail_count);
-        for value in de {
-            gemini_eprintln!("DEBUG: Processing value: :value_str:", value_str = format!("{:?}", value));
-            let entry: Entry = serde_json::from_value(value.map_err(|e| anyhow!(e))?)?;
-            all_events.push(entry);
-        }
-        event_count = all_events.len();
-    } else {
-        // Existing limit logic
-        gemini_eprintln!("sparklesProcessing events and collecting cleaned output (limited to brickwall)...sparkles", limit = args.limit);
-        for value in de {
-            gemini_eprintln!("DEBUG: Processing value: :value_str:", value_str = format!("{:?}", value));
-            if event_count >= args.limit {
-                gemini_eprintln!("Reached event processing limit of :limit:. Stopping.", limit = args.limit);
-                break;
-            }
-            let entry: Entry = serde_json::from_value(value.map_err(|e| anyhow!(e))?)?;
-            all_events.push(entry); // Store events even with limit, to simplify later processing
-            event_count += 1;
-        }
+    match args.command {
+        Commands::Generate(generate_args) => {
+            handle_generate_command(&generate_args, &asciicast_data.events, asciicast_data.event_count)?;
+        },
+        Commands::Analyze(analyze_args) => {
+            handle_analyze_command(&analyze_args)?;
+        },
+        Commands::Filter(mut filter_args) => {
+            // Pass input_file to filter_args as it's needed by check_raw_matches
+            filter_args.input_file = args.input_file;
+            handle_filter_command(&filter_args, &asciicast_data.events)?;
+        },
+        Commands::CountRaw(mut count_raw_args) => {
+            // Pass input_file to count_raw_args as it's needed by the handler
+            count_raw_args.input_file = args.input_file;
+            handle_count_raw_command(&count_raw_args)?;
+        },
+        Commands::ExtractLines(extract_lines_args) => {
+            handle_extract_lines_command(&extract_lines_args, &asciicast_data.events)?;
+        },
     }
-
-    let mut cleaned_output_lines: Vec<String> = Vec::new();
-    let start_index = if let Some(tail_count) = args.tail {
-        if tail_count >= all_events.len() {
-            0 // Process all if tail_count is greater than or equal to total events
-        } else {
-            all_events.len() - tail_count
-        }
-    } else {
-        0 // Start from beginning for --limit
-    };
-
-    let end_index = if let Some(tail_count) = args.tail {
-        event_count // Process up to the end of collected events
-    } else {
-        args.limit.min(event_count) // Process up to limit or collected events
-    };
-
-    for i in start_index..end_index {
-        let entry = &all_events[i];
-        match entry.event_type {
-            EventType::Output => {
-                let cleaned_data = String::from_utf8_lossy(&strip(entry.event_data.as_bytes())?).to_string();
-                let processed_data = if args.ascii_names {
-                    map_to_ascii_names(&cleaned_data)
-                } else {
-                    cleaned_data
-                };
-                cleaned_output_lines.push(processed_data);
-            },
-            EventType::Input => {
-                // Ignore input events for now
-            },
-        }
-    }
-
-    gemini_eprintln!("Total number of events processed: :event_count:", event_count = event_count);
-
-    let hierarchy = build_hierarchy(cleaned_output_lines, &args.steps);
-    
-    let generated_code = generate_poem_functions(&hierarchy, "root", 0);
-
-    let mut output_file = File::create(&args.rust_output_file)?;
-    output_file.write_all(generated_code.to_string().as_bytes())?;
-
-    gemini_eprintln!("Generated Rust code written to: :file_path:", file_path = format!("{:?}", args.rust_output_file));
 
     Ok(())
 }
+

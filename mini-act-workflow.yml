@@ -1,0 +1,29 @@
+name: Mini-Act Tmux TUI Test
+
+on:
+  workflow_call: # This workflow will be called by the main GitHub Actions workflow
+
+jobs:
+  test:
+    runs-on: self-hosted # mini-act runs on the same runner as the caller
+
+    steps:
+    - name: Install Tmux
+      run: sudo apt-get update && sudo apt-get install -y tmux
+
+    - name: Build project
+      run: cargo build
+
+    - name: Run Tmux Controller and Capture Output
+      run: |
+        # Run tmux_controller and capture its stdout
+        target/debug/tmux_controller > tmux_tui_output.log 2>&1
+
+    - name: Upload Tmux TUI Output
+      # This step assumes mini-act has a way to upload artifacts.
+      # If not, this would need to be handled by mini-act itself or a custom script.
+      # For now, we'll keep it as a placeholder.
+      run: echo "Artifact upload would happen here via mini-act's capabilities"
+      # In a real scenario, mini-act would need to implement artifact upload
+      # or call a script that does it.
+      # For demonstration, we'll just echo a message.

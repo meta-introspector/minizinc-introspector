@@ -1,5 +1,6 @@
 use syn::{punctuated::Punctuated, token::Comma, Expr};
 
+#[allow(dead_code)]
 pub struct CommaSeparatedExprs {
     pub exprs: Punctuated<Expr, Comma>,
 }

@@ -1,0 +1,29 @@
+name: Rust Check
+
+on: [push, pull_request]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: meta-introspector/checkout@v3
+    - name: Install Rust
+      run: rustup update stable && rustup default stable
+    - name: Build Gecode
+      run: |
+        chmod +x scripts/build_gecode.sh
+        ./scripts/build_gecode.sh
+    - name: Build MiniZinc
+      run: |
+        mkdir -p build_github_actions
+        cmake -S . -B build_github_actions
+        cmake --build build_github_actions -j$(nproc)
+    - name: Run cargo check
+      run: cargo check --all
+    - name: Run cargo test
+      env:
+        LD_LIBRARY_PATH: ${{ github.workspace }}/build_github_actions
+      run: cargo test --all

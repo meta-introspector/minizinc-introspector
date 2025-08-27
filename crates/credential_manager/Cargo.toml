@@ -1,0 +1,23 @@
+[package]
+name = "credential_manager"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+keyring = { path = "../../vendor/keyring" }
+clap = { version = "4.0", features = ["derive"] }
+rpassword = "7.0"
+oauth2 = { path = "../../vendor/oauth2" }
+reqwest = { version = "0.12", features = ["json"] }
+tokio = { version = "1", features = ["full"] }
+url = "2.5"
+hyper = { version = "0.14", features = ["full"] }
+tokio-stream = { version = "0.1", features = ["net"] }
+http = "0.2"
+ini = { path = "../../vendor/crates/ini" }
+serde = { version = "1.0.219", features = ["derive"] }
+serde_yaml = "0.9.34"
+
+[[bin]]
+name = "cm"
+path = "src/bin/cm.rs"

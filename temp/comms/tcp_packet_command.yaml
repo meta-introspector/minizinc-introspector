@@ -1,0 +1,19 @@
+stage_name: "run-crq-updater-actual"
+command: "cargo"
+args:
+  - "run"
+  - "--package"
+  - "crq_updater"
+working_directory: "/data/data/com.termux/files/home/storage/github/libminizinc"
+environment:
+  RUST_BACKTRACE: "1"
+log_file: "/data/data/com.termux/files/home/storage/github/libminizinc/logs/crq_updater_actual_run_fixed.log"
+tmux_pane_target: "0"
+git_branch: "feature/crq_updater"
+security_context: "user"
+metadata:
+  source: "Gemini_Main"
+  destination: "Gemini_Pane1"
+  sequence_number: 4
+  flags: "DATA"
+  timestamp: "2025-08-27TXX:XX:XXZ" # Placeholder for dynamic timestamp

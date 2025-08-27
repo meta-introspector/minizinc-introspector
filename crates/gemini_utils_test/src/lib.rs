@@ -14,7 +14,7 @@ pub fn log_examples() {
 
     // Message with special characters (emojis/keywords)
     let limit = 100;
-    gemini_eprintln!("sparklesProcessing events (limited to brickwall)...sparkles", limit = limit);
+    gemini_eprintln!("sparklesProcessing events (limited to :limit:)...::newline::", limit = limit);
 
     // Message with debug formatting (using the workaround)
     let output_file = std::path::PathBuf::from("/tmp/output.txt");
@@ -22,13 +22,5 @@ pub fn log_examples() {
 }
 
 #[cfg(test)]
-mod tests {
-    use super::*;
+mod tests;
 
-    #[test]
-    fn test_log_examples_compiles() {
-        // This test primarily checks if the code within log_examples compiles.
-        // Output to stderr from gemini_eprintln! is not captured or asserted here.
-        log_examples();
-    }
-}

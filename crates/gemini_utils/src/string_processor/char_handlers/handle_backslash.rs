@@ -4,6 +4,7 @@
 
 use super::super::processing_context::ProcessingContext;
 
+#[allow(dead_code)]
 pub fn handle_backslash_n(
     context: &mut ProcessingContext,
 ) {
@@ -11,6 +12,7 @@ pub fn handle_backslash_n(
     context.current_segment.push_str(context.emojis.get("return").unwrap_or(&"⏎"));
 }
 
+#[allow(dead_code)]
 pub fn handle_backslash_char(
     c: char,
     context: &mut ProcessingContext,

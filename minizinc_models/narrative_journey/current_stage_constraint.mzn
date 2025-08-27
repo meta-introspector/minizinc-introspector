@@ -1,0 +1,1 @@
+constraint current_project_stage in hero_journey_sequence;

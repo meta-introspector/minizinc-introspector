@@ -1,0 +1,12 @@
+name: Test Local GHA Simulation
+
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run gemini-cli workflow
+      run: |
+        # Simulate gemini-cli execution
+        echo "Simulating gemini-cli launchpad --model ${GEMINI_CLI_MODEL} --crq ${GEMINI_CLI_CRQ} --mode tmux --inside miniact --via dum"

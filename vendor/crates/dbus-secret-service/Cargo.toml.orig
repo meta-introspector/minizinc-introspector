@@ -1,0 +1,37 @@
+[package]
+authors = ["Daniel Brotsky <dev@brotsky.com>"]
+description = "Library to interface with Secret Service API over DBUS"
+documentation = "https://docs.rs/dbus-secret-service"
+homepage = "https://github.com/brotskydotcom/dbus-secret-service"
+repository = "https://github.com/brotskydotcom/dbus-secret-service.git"
+keywords = ["secret-service", "password", "linux", "dbus"]
+license = "MIT OR Apache-2.0"
+name = "dbus-secret-service"
+version = "4.0.3"
+edition = "2021"
+rust-version = "1.70"
+exclude = [".github/"]
+
+[features]
+vendored = ["dbus/vendored", "openssl?/vendored"]
+crypto-rust = ["dep:aes", "dep:block-padding", "dep:cbc", "dep:sha2", "dep:hkdf"]
+crypto-openssl = ["dep:openssl"]
+
+[dependencies]
+aes = { version = "0.8", optional = true }
+block-padding = { version = "0.3", features = ["std"], optional = true }
+cbc = { version = "0.1", features = ["block-padding", "alloc"], optional = true }
+dbus = "0.9"
+futures-util = "0.3"
+hkdf = { version = "0.12", optional = true }
+num = "0.4"
+once_cell = "1"
+openssl = { version = "0.10.55", optional = true }
+rand = "0.8"
+sha2 = { version = "0.10", optional = true }
+
+[dev-dependencies]
+test-with = { version = "0.12", default-features = false }
+
+[package.metadata.docs.rs]
+features = ["crypto-rust"]

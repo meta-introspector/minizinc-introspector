@@ -1,0 +1,1 @@
+run_shell_command(command='cargo run --package crq_updater -- --dry-run')

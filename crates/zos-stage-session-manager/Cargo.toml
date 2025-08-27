@@ -1,0 +1,13 @@
+[package]
+name = "zos-stage-session-manager"
+version = "0.1.0"
+edition = "2021"
+
+# This crate is a stage binary responsible for managing session-related commands.
+
+[dependencies]
+clap = { version = "4.0", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+tmux_interface = "0.1.0"
+chrono = { version = "0.4.41"}

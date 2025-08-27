@@ -28,3 +28,33 @@
 [submodule "vendor/libjq"]
 	path = vendor/libjq
 	url = https://github.com/jqlang/jq.git
+[submodule "vendor/act"]
+	path = vendor/act
+	url = https://github.com/nektos/act
+[submodule "vendor/clang-rs"]
+	path = vendor/clang-rs
+	url = https://github.com/KyleMayes/clang-rs
+[submodule "vendor/clang-sys"]
+	path = vendor/clang-sys
+	url = https://github.com/KyleMayes/clang-sys
+[submodule "vendor/lexgen"]
+	path = vendor/lexgen
+	url = https://github.com/osa1/lexgen
+[submodule "vendor/rust-emojicons"]
+	path = vendor/rust-emojicons
+	url = https://github.com/jiri/rust-emojicons
+[submodule "vendor/octocrab"]
+	path = vendor/octocrab
+	url = https://github.com/XAMPPRocky/octocrab.git
+[submodule "vendor/tmux_interface"]
+	path = vendor/tmux_interface
+	url = https://github.com/AntonGepting/tmux-interface-rs
+[submodule "vendor/keyring"]
+	path = vendor/keyring
+	url = https://github.com/hwchen/keyring-rs
+[submodule "vendor/oauth2"]
+	path = vendor/oauth2
+	url = https://github.com/ramosbugs/oauth2-rs
+[submodule "vendor/dum"]
+	path = vendor/dum
+	url = https://github.com/egoist/dum

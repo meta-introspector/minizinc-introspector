@@ -5,6 +5,7 @@
 
 use super::super::processing_context::ProcessingContext; // Add this import
 
+#[allow(dead_code)]
 pub fn handle_other_char(
     c: char,
     context: &mut ProcessingContext, // Use context

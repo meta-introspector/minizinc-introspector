@@ -17,3 +17,15 @@ serde_json = "1.0"
 poem_macro_impl = { path = "../../crates/poem_macro_impl" }
 gemini_utils = { path = "../../crates/gemini_utils" }
 poem_macros = { path = "../poem_macros" }
+regex = "1.10"
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"
+kantspel_lib = { path = "../kantspel_lib" }
+
+[[bin]]
+name = "test_strip"
+path = "src/test_strip.rs"
+
+[[bin]]
+name = "test_cleaning"
+path = "src/test_cleaning.rs"
