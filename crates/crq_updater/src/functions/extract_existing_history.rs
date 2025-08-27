@@ -1,7 +1,7 @@
-use git2::{Repository, Oid};
+use git2::Repository;
 use regex::Regex;
 use lazy_static::lazy_static;
-use chrono::{DateTime, Utc, TimeZone};
+use chrono::{Utc, TimeZone};
 
 use super::process_crq_file::CommitEntry;
 use super::find_commit_from_oid::find_commit_from_oid;
@@ -10,8 +10,7 @@ const CRQ_HISTORY_SECTION_START: &str = "## Commit History";
 
 lazy_static! {
     static ref COMMIT_ENTRY_REGEX: Regex = Regex::new(
-        r"(?sU)\*\*Commit:\*\* `([0-9a-f]{40})`\n\*\*Subject:\*\* `(.*?)`\n\*\*Description:\*\*([\s\S]*?)(?=\n\*\*Commit:\*\*|\Z)"
-    ).unwrap();
+        r"(?sU)\*\*Commit:\*\* `([0-9a-f]{40})`\n\*\*Subject:\*\* `(.*?)`\n\*\*Description:\*\*([\s\S]*?)"    ).unwrap();
 }
 
 pub fn extract_existing_history(repo: &Repository, crq_content: &str) -> Result<(String, Vec<CommitEntry>), Box<dyn std::error::Error>> {

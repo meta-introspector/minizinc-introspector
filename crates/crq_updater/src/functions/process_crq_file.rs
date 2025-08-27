@@ -1,5 +1,5 @@
-use git2::{Repository, Oid, Commit, Tree};
-use std::path::{Path, PathBuf};
+use git2::Repository;
+use std::path::Path;
 use std::fs;
 use chrono::{DateTime, Utc, TimeZone};
 
@@ -19,10 +19,13 @@ pub struct CommitEntry {
 
 pub fn process_crq_file(repo: &Repository, crq_path: &Path, dry_run: bool) -> Result<(), Box<dyn std::error::Error>> {
     let repo_workdir = repo.workdir().ok_or("Repository workdir not found")?;
-    let relative_crq_path = crq_path.strip_prefix(repo_workdir)?;
+    let absolute_crq_path = crq_path.canonicalize()?;
+    eprintln!("repo_workdir: {:?}", repo_workdir);
+    eprintln!("absolute_crq_path: {:?}", absolute_crq_path);
+    let relative_crq_path = absolute_crq_path.strip_prefix(repo_workdir)?;
 
     let mut revwalk = repo.revwalk()?;
-    revwalk.set_sorting(git2::Sort::TIME | git2::Sort::REVERSE)??; // Sort by time, oldest first
+    revwalk.set_sorting(git2::Sort::TIME | git2::Sort::REVERSE)?;
     revwalk.push_head()?;
 
     let mut relevant_commits = Vec::new();
@@ -32,8 +35,8 @@ pub fn process_crq_file(repo: &Repository, crq_path: &Path, dry_run: bool) -> Re
         let tree = commit.tree()?;
 
         let mut modified = false;
-        if let Some(parent) = commit.parent(0)? {
-            let parent_tree = parent.parent(0)?.tree()?;
+        if let Some(parent) = commit.parent(0).ok() {
+            let parent_tree = parent.tree()?;
             let diff = repo.diff_tree_to_tree(Some(&parent_tree), Some(&tree), None)?;
             diff.deltas().for_each(|delta| {
                 if let Some(path) = delta.new_file().path() {
@@ -86,7 +89,7 @@ pub fn process_crq_file(repo: &Repository, crq_path: &Path, dry_run: bool) -> Re
                 if is_creation_commit {
                     "This commit created the CRQ file. The file's initial content serves as its primary description.".to_string()
                 } else {
-                    get_commit_diff_summary(repo, commit, relative_crq_path)?
+                    get_commit_diff_summary(repo, &commit, relative_crq_path)?
                 }
             } else {
                 commit_entry.description.clone()

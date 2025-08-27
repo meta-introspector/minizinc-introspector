@@ -1586,6 +1586,7 @@ dependencies = [
  "git2",
  "lazy_static",
  "regex 1.11.1",
+ "walkdir",
 ]
 
 [[package]]
