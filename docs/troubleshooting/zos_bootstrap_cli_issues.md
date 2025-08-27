@@ -82,3 +82,7 @@ The `zos-bootstrap` crate's command-line interface is defined using the `clap` c
     ```
 
 By following these steps, you should be able to successfully build and interact with the `zos-bootstrap` CLI.
+
+## Commit History
+
+- [Commit 19bbe4f5ee5368d5c239e894df678af8b5541c49: feat: Document troubleshooting for zos-bootstrap CLI and FFI linking](docs/commits/19bbe4f5ee5368d5c239e894df678af8b5541c49_feat_Document_troubleshooting_for_zos-bootstrap_CLI_and_FFI_linking.md)

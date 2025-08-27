@@ -101,3 +101,7 @@ This command combines splitting the current window (horizontally by default) and
 - If `tmux_controller` fails to build, check for syntax errors in the Rust code and ensure all dependencies are met.
 - If commands are not being sent to the tmux session, verify the session name and ensure the `gemini-cli` is running within it.
 - Ensure the CRQ file path is correct and the file is readable by the `tmux_controller`.
+
+## Commit History
+
+- [Commit 0cbb28d534ed2f7b056adaaeff81cbd0e82d87f6: feat: Enhance tmux_controller with comprehensive session management; introduce operational workflow CRQ](docs/commits/0cbb28d534ed2f7b056adaaeff81cbd0e82d87f6_feat_Enhance_tmux_controller_with_comprehensive_session_management_introduce_operational_workflow_CRQ.md)

@@ -1,0 +1,2 @@
+Fix: Submodule issues for tree-sitter and solfunmeme-dioxus
+Resolved issues with tree-sitter submodule by re-adding it. Fixed nested submodule issues within solfunmeme-dioxus by deinitializing and re-adding the submodule. Updated all submodules recursively.

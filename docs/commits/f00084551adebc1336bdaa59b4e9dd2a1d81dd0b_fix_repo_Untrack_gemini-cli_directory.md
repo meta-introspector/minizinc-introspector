@@ -1,0 +1,2 @@
+fix(repo): Untrack gemini-cli directory
+Removed the `gemini-cli` directory from Git tracking. This repository is intended to be managed and checked out by the `MiniAct` tool into a clean work directory, rather than being embedded directly in this repository.

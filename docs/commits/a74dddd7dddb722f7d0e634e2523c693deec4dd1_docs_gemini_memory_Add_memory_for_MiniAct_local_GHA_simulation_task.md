@@ -1,0 +1,2 @@
+docs(gemini_memory): Add memory for MiniAct local GHA simulation task
+Provide a specialized `GEMINI.md` memory to guide Gemini when implementing the MiniAct local GitHub Action workflow simulation capability.

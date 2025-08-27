@@ -1,0 +1,2 @@
+ci: Add GitHub Action to launch Gemini for Broadcast CRQ via MiniAct
+Implement a GitHub Actions workflow (`workflow_dispatch`) to trigger MiniAct, which in turn launches the Gemini agent in a tmux session to work on the Rust-native broadcast functions CRQ.

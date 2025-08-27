@@ -53,3 +53,7 @@ This change request introduces a new `Import` subcommand and its associated logi
 
 *   [Signature/Date of Approver 1]
 *   [Signature/Date of Approver 2]
+
+## Commit History
+
+- [Commit 51a5cf242d2b1ad7684dc743a144736707a8543c: feat(credential_manager): Implement credential import and GitHub OAuth (disabled)](docs/commits/51a5cf242d2b1ad7684dc743a144736707a8543c_feat_credential_manager_Implement_credential_import_and_GitHub_OAuth_disabled.md)

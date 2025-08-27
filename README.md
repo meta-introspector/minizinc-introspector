@@ -55,6 +55,8 @@ For more details on running tests and understanding the new framework, refer to 
 
 This section provides solutions to common issues encountered during development and execution.
 
+## Troubleshooting Common Issues
+
 ### `libminizinc_c_wrapper.so` Not Found Error
 
 **Problem:** When running Rust executables that depend on the `libminizinc_c_wrapper.so` (e.g., `zos-bootstrap`), you might encounter a "library not found" error.
@@ -88,6 +90,12 @@ This section provides solutions to common issues encountered during development 
     ```bash
     LD_LIBRARY_PATH=/data/data/com.termux/files/home/storage/github/libminizinc/build cargo run -p zos-bootstrap -- help <subcommand>
     ```
+
+### Commit History
+
+- [Commit 19bbe4f5ee5368d5c239e894df678af8b5541c49: feat: Document troubleshooting for zos-bootstrap CLI and FFI linking](docs/commits/19bbe4f5ee5368d5c239e894df678af8b5541c49_feat_Document_troubleshooting_for_zos-bootstrap_CLI_and_FFI_linking.md)
+- [Commit eb340ee4905937cc3d3a0e99c8658a40265e3267: docs: Update GEMINI.md and README.md with tmux integration info](docs/commits/eb340ee4905937cc3d3a0e99c8658a40265e3267_docs_Update_GEMINI.md_and_README.md_with_tmux_integration_info.md)
+- [Commit eb340ee4905937cc3d3a0e99c8658a40265e3267: docs: Update GEMINI.md and README.md with tmux integration info](docs/commits/eb340ee4905937cc3d3a0e99c8658a40265e3267_docs_Update_GEMINI.md_and_README.md_with_tmux_integration_info.md)
 
 ## Documentation
 

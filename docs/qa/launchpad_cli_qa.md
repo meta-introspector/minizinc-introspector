@@ -1,55 +1,30 @@
-# Launchpad CLI Arguments QA
+# Launchpad CLI QA
 
-This document outlines the Quality Assurance (QA) test cases for the command-line arguments implemented in `crates/launchpad/src/launchpad_main.rs`. These tests aim to verify the correct functionality of `--gemini-instances`, `--record-session`, and `--background-detached` arguments, as well as their default behaviors.
+This document outlines the Quality Assurance (QA) test cases for the `launchpad` CLI arguments.
 
 ## Test Cases
 
-### 1. `--gemini-instances` Argument Verification
+### 1. Test `--gemini-instances`
 
-**Objective:** To ensure that `launchpad` correctly launches the specified number of Gemini CLI instances.
+*   **Objective:** Verify that `launchpad` correctly launches the specified number of Gemini CLI instances.
+*   **Steps:**
+    1.  Run `cargo run -p launchpad -- --gemini-instances 2`
+    2.  Verify that two Gemini CLI instances are launched.
 
-*   **Test Case 1.1: Default Behavior**
-    *   **Action:** Run `launchpad` without specifying `--gemini-instances`.
-    *   **Expected Result:** Exactly one Gemini CLI instance is launched.
-*   **Test Case 1.2: Multiple Instances**
-    *   **Action:** Run `launchpad --gemini-instances 3`.
-    *   **Expected Result:** Exactly three Gemini CLI instances are launched.
-*   **Test Case 1.3: Large Number of Instances (Optional, for performance testing)**
-    *   **Action:** Run `launchpad --gemini-instances 10` (or a higher number, depending on system resources).
-    *   **Expected Result:** Ten Gemini CLI instances are launched, and the system remains stable.
+### 2. Test `--record-session`
 
-### 2. `--record-session` Argument Verification
+*   **Objective:** Verify that `launchpad` enables asciinema recording of sessions.
+*   **Steps:**
+    1.  Run `cargo run -p launchpad -- --record-session`
+    2.  Verify that asciinema recording is initiated.
 
-**Objective:** To verify that `launchpad` correctly initiates an `asciinema` recording when specified.
+### 3. Test `--background-detached`
 
-*   **Test Case 2.1: Session Recording Enabled**
-    *   **Action:** Run `launchpad --record-session`.
-    *   **Expected Result:** An `asciinema` recording process is initiated, and a recording file is created (e.g., in the current directory or a designated recording directory). The recording should capture the session's output.
-*   **Test Case 2.2: Session Recording Disabled (Default)**
-    *   **Action:** Run `launchpad` without specifying `--record-session`.
-    *   **Expected Result:** No `asciinema` recording process is initiated.
+*   **Objective:** Verify that `launchpad` runs Gemini instances in detached background processes.
+*   **Steps:**
+    1.  Run `cargo run -p launchpad -- --background-detached`
+    2.  Verify that Gemini instances are running in detached background processes.
 
-### 3. `--background-detached` Argument Verification
+## Commit History
 
-**Objective:** To confirm that `launchpad` can launch Gemini CLI instances in a detached background process.
-
-*   **Test Case 3.1: Detached Background Process**
-    *   **Action:** Run `launchpad --background-detached`.
-    *   **Expected Result:** The `launchpad` command exits immediately, but the Gemini CLI instance(s) continue to run in the background. Verify by checking running processes (e.g., `ps aux | grep gemini`).
-*   **Test Case 3.2: Foreground Process (Default)**
-    *   **Action:** Run `launchpad` without specifying `--background-detached`.
-    *   **Expected Result:** The `launchpad` command remains active until the launched Gemini CLI instance(s) complete or are terminated manually.
-
-### 4. Interaction with `miniact` Simulation
-
-**Objective:** To ensure that the default values for the new arguments are correctly applied during `miniact` simulation.
-
-*   **Test Case 4.1: `miniact` Default Behavior**
-    *   **Action:** Run `launchpad` in a `miniact` simulation mode (assuming such a mode exists and can be triggered).
-    *   **Expected Result:** The `miniact` simulation should behave as if `--gemini-instances 1`, `--record-session false`, and `--background-detached false` were implicitly set.
-
-## General Verification Steps
-
-*   **Error Handling:** Test with invalid argument values (e.g., `--gemini-instances 0`, non-boolean values for flags) to ensure appropriate error messages are displayed.
-*   **Resource Usage:** Monitor CPU and memory usage when launching multiple instances to identify potential performance bottlenecks.
-*   **Log Verification:** Check `launchpad`'s logs for any relevant messages or errors related to the new arguments.
+- [Commit 23104bac1cf99fa82e998471ac1f929724700122: feat: Enhance launchpad and tmux_controller CLI with new arguments and documentation](docs/commits/23104bac1cf99fa82e998471ac1f929724700122_feat_Enhance_launchpad_and_tmux_controller_CLI_with_new_arguments_and_documentation.md)

@@ -21,3 +21,7 @@
 1.  **Stay on the critical path:** Focus solely on implementing the fix for the `asciicast_processor` filtering logic.
 2.  **Review memories:** Re-read the relevant sections of `GEMINI.md` and `docs/recent_build_fixes_and_gemini_utils_refinement.md` to ensure adherence to project principles and to recall the context of `asciicast_processor` and `gemini_utils`.
 3.  **Check recent commits:** Use `git log --patch -3 --all` to review the changes made in this session, especially the enhanced panic output, to ensure I have the latest context.
+
+## Commit History
+
+- [Commit af27539a0970d44bd12b27c695d01bb5c3a0fee7: feat(asciicast_processor): Enhance data cleaning, regex, and testing; add documentation](docs/commits/af27539a0970d44bd12b27c695d01bb5c3a0fee7_feat_asciicast_processor_Enhance_data_cleaning_regex_and_testing_add_documentation.md)

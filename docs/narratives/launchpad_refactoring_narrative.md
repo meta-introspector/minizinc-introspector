@@ -66,3 +66,8 @@ As part of enhancing `tmux` orchestration, a new `CreateLayout` command was adde
 *   Implement other stages (e.g., `InstallGeminiStage`, `RunGeminiStage`, `DumTestStage`) as `Stage` trait implementations.
 *   Further refine `tmux_controller` with more layout options or advanced session management features.
 *   Integrate the `zos-stage-*` binary execution into a proper `Stage` implementation.
+
+## Commit History
+
+- [Commit 018333aec1ad92675a664ff64bd615ff301eb086: feat: Implement new three-pane tmux layout in tmux_controller](docs/commits/018333aec1ad92675a664ff64bd615ff301eb086_feat_Implement_new_three-pane_tmux_layout_in_tmux_controller.md)
+- [Commit 4c692c2827e9ca0bf9b54f56cc1d370002124060: refactor: launchpad stage system and tmux_controller layout creation](docs/commits/4c692c2827e9ca0bf9b54f56cc1d370002124060_refactor_launchpad_stage_system_and_tmux_controller_layout_creation.md)

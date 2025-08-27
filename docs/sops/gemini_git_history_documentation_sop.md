@@ -51,3 +51,8 @@ For each commit in the retrieved batch:
 
 ## 6. Iteration
 *   Repeat the process (from 4.1) for the next batch of commits until the entire history is documented or the user specifies a stopping point.
+
+## Commit History
+
+- [Commit 5d9153ffd: docs(sops): Add SOP for Gemini Git History Documentation Meta-Process (KitKat Break)](docs/commits/5d9153ffd_docs_sops_Add_SOP_for_Gemini_Git_History_Documentation_Meta-Process_KitKat_Break.md)
+- [Commit 41bf029258b981a736e63b5558aa1ad2ce94cfdb: feat(asciicast_processor): Enhance data cleaning and regex handling; add test utilities](docs/commits/41bf029258b981a736e63b5558aa1ad2ce94cfdb_feat_asciicast_processor_Enhance_data_cleaning_and_regex_handling_add_test_utilities.md)

@@ -63,3 +63,7 @@ These commands allow you to control tmux directly from your Rust project, provid
 Almost all commands start with `Ctrl-b`. Practice it often!
 
 Enjoy your newfound terminal superpowers with Tmux! 
+
+## Commit History
+
+- [Commit 0cbb28d534ed2f7b056adaaeff81cbd0e82d87f6: feat: Enhance tmux_controller with comprehensive session management; introduce operational workflow CRQ](docs/commits/0cbb28d534ed2f7b056adaaeff81cbd0e82d87f6_feat_Enhance_tmux_controller_with_comprehensive_session_management_introduce_operational_workflow_CRQ.md)

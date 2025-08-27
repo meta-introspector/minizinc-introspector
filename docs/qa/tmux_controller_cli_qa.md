@@ -1,52 +1,25 @@
-# Tmux Controller CLI Arguments QA
+# Tmux Controller CLI QA
 
-This document outlines the Quality Assurance (QA) test cases for the `tmux_controller` commands, specifically focusing on the `split-horizontal` command and its new `--session-name` argument.
+This document outlines the Quality Assurance (QA) test cases for the `tmux_controller` CLI enhancements.
 
 ## Test Cases
 
-### 1. `split-horizontal` Command Verification
+### 1. Test `split-horizontal` with `--session-name`
 
-**Objective:** To ensure that the `split-horizontal` command correctly splits `tmux` windows, both in the current session and in specified sessions.
+*   **Objective:** Verify that `split-horizontal` correctly splits the specified tmux session.
+*   **Steps:**
+    1.  Create a new tmux session (e.g., `tmux new -s test_session`).
+    2.  Run `cargo run -p tmux_controller -- split-horizontal --session-name test_session`
+    3.  Verify that `test_session` is split horizontally.
 
-*   **Test Case 1.1: Default Behavior (Split Current Window)**
-    *   **Action:**
-        1.  Ensure a `tmux` session is active.
-        2.  Run `tmux_controller split-horizontal`.
-    *   **Expected Result:** The current `tmux` window is split horizontally. A new pane is created below the original pane.
+### 2. Test `split-vertical` with `--session-name`
 
-*   **Test Case 1.2: Targeted Session Split (Existing Session)**
-    *   **Action:**
-        1.  Create a new `tmux` session (e.g., `tmux new -s test_session`).
-        2.  Switch to a different `tmux` session or detach from `test_session`.
-        3.  Run `tmux_controller split-horizontal --session-name test_session`.
-    *   **Expected Result:** A window within the `test_session` is split horizontally. Verify by attaching to `test_session` (`tmux attach -t test_session`).
+*   **Objective:** Verify that `split-vertical` correctly splits the specified tmux session.
+*   **Steps:**
+    1.  Create a new tmux session (e.g., `tmux new -s test_session`).
+    2.  Run `cargo run -p tmux_controller -- split-vertical --session-name test_session`
+    3.  Verify that `test_session` is split vertically.
 
-*   **Test Case 1.3: Non-Existent Session Name**
-    *   **Action:** Run `tmux_controller split-horizontal --session-name non_existent_session`.
-    *   **Expected Result:** The command should return an error indicating that the specified session does not exist. The `tmux` environment should remain unchanged.
+## Commit History
 
-### 2. `split-vertical` Command Verification
-
-**Objective:** To ensure that the `split-vertical` command correctly splits `tmux` windows, both in the current session and in specified sessions.
-
-*   **Test Case 2.1: Default Behavior (Split Current Window)**
-    *   **Action:**
-        1.  Ensure a `tmux` session is active.
-        2.  Run `tmux_controller split-vertical`.
-    *   **Expected Result:** The current `tmux` window is split vertically. A new pane is created to the right of the original pane.
-
-*   **Test Case 2.2: Targeted Session Split (Existing Session)**
-    *   **Action:**
-        1.  Create a new `tmux` session (e.g., `tmux new -s test_session`).
-        2.  Switch to a different `tmux` session or detach from `test_session`.
-        3.  Run `tmux_controller split-vertical --session-name test_session`.
-    *   **Expected Result:** A window within the `test_session` is split vertically. Verify by attaching to `test_session` (`tmux attach -t test_session`).
-
-*   **Test Case 2.3: Non-Existent Session Name**
-    *   **Action:** Run `tmux_controller split-vertical --session-name non_existent_session`.
-    *   **Expected Result:** The command should return an error indicating that the specified session does not exist. The `tmux` environment should remain unchanged.
-
-## General Verification Steps
-
-*   **Error Handling:** Test with invalid argument values (e.g., non-string values for session name if applicable) to ensure appropriate error messages are displayed.
-*   **Log Verification:** Check `tmux_controller`'s logs for any relevant messages or errors related to the `split-horizontal` and `split-vertical` commands.
+- [Commit 23104bac1cf99fa82e998471ac1f929724700122: feat: Enhance launchpad and tmux_controller CLI with new arguments and documentation](docs/commits/23104bac1cf99fa82e998471ac1f929724700122_feat_Enhance_launchpad_and_tmux_controller_CLI_with_new_arguments_and_documentation.md)

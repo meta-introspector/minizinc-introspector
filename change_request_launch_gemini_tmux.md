@@ -30,3 +30,10 @@ cargo run -p launchpad -- run-gemini --mode tmux --inside gemini --model pro --g
 *   `--gemini-cli-path /data/data/com.termux/files/home/storage/github/gemini-cli`: Specifies the absolute path to the Gemini CLI executable. **(Important: Adjust this path if your Gemini CLI installation is in a different location.)**
 
 **Purpose:** To enable parallel processing and enhanced assistance by leveraging multiple Gemini instances for complex tasks.
+
+## Commit History
+
+- [Commit 23104bac1cf99fa82e998471ac1f929724700122: feat: Enhance launchpad and tmux_controller CLI with new arguments and documentation](docs/commits/23104bac1cf99fa82e998471ac1f929724700122_feat_Enhance_launchpad_and_tmux_controller_CLI_with_new_arguments_and_documentation.md)
+- [Commit 19bbe4f5ee5368d5c239e894df678af8b5541c49: feat: Document troubleshooting for zos-bootstrap CLI and FFI linking](docs/commits/19bbe4f5ee5368d5c239e894df678af8b5541c49_feat_Document_troubleshooting_for_zos-bootstrap_CLI_and_FFI_linking.md)
+- [Commit 20b720532c6ce3b5d66355b54e696bea554974c7: feat(launchpad): Integrate Gemini CLI launch and argument parsing](docs/commits/20b720532c6ce3b5d66355b54e696bea554974c7_feat_launchpad_Integrate_Gemini_CLI_launch_and_argument_parsing.md)
+- [Commit 3243108068fc3f6864733613ea948c2acb353c30: refactor(ci): Refine GHA workflow for Gemini launch and submodule strategy](docs/commits/3243108068fc3f6864733613ea948c2acb353c30_refactor_ci_Refine_GHA_workflow_for_Gemini_launch_and_submodule_strategy.md)

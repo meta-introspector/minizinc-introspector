@@ -1,45 +1,19 @@
 # Tmux Controller CLI Arguments
 
-The `tmux_controller` crate provides a set of commands for programmatically interacting with `tmux` sessions and windows. This document details the command-line arguments available for each `tmux_controller` command.
+This document details the command-line arguments available for the `tmux_controller` executable.
 
-## `split-horizontal` Command
+## Commands
 
-This command splits the current `tmux` window horizontally. It can optionally target a specific session.
+### `split-horizontal`
+Splits the current tmux pane horizontally.
 
-### Arguments
+*   `--session-name <SESSION_NAME>`: Specifies the target tmux session for the split operation.
 
-### `--session-name <NAME>`
-*   **Type:** `Option<String>`
-*   **Default:** `None`
-*   **Purpose:** Specifies the name of the `tmux` session where the window should be split. If not provided, the current active session's window will be split.
+### `split-vertical`
+Splits the current tmux pane vertically.
 
-## Example Usage
+*   `--session-name <SESSION_NAME>`: Specifies the target tmux session for the split operation.
 
-```bash
-# Split the current window horizontally
-tmux_controller split-horizontal
+## Commit History
 
-# Split a window in a specific session named 'my_session'
-tmux_controller split-horizontal --session-name my_session
-```
-
-## `split-vertical` Command
-
-This command splits the current `tmux` window vertically. It can optionally target a specific session.
-
-### Arguments
-
-### `--session-name <NAME>`
-*   **Type:** `Option<String>`
-*   **Default:** `None`
-*   **Purpose:** Specifies the name of the `tmux` session where the window should be split. If not provided, the current active session's window will be split.
-
-## Example Usage
-
-```bash
-# Split the current window vertically
-tmux_controller split-vertical
-
-# Split a window in a specific session named 'my_session'
-tmux_controller split-vertical --session-name my_session
-```
+- [Commit 23104bac1cf99fa82e998471ac1f929724700122: feat: Enhance launchpad and tmux_controller CLI with new arguments and documentation](docs/commits/23104bac1cf99fa82e998471ac1f929724700122_feat_Enhance_launchpad_and_tmux_controller_CLI_with_new_arguments_and_documentation.md)

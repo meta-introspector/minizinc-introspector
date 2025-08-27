@@ -77,33 +77,7 @@ This SOP applies to all development and testing cycles of the `crq_updater` prog
 
 ## Commit History
 
-**Commit:** `ca9fe7e6ded6c6458b1d61ffd990063bafedede8`
-**Subject:** `wip`
-**Description:**
-This commit created the CRQ file. The file's initial content serves as its primary description.
-
-**Commit:** `ea49de080e7e34d2e3171164a8b8acaceee84af0`
-**Subject:** `refactor(crq_updater): Split functions into files and update CRQs`
-**Description:**
-Refactored the `crq_updater` crate to adhere to the "one declaration per file" convention.
-- Moved functions (`find_crq_files`, `process_crq_file`, `extract_existing_history`, `get_commit_diff_summary`, `find_commit_from_oid`) into separate files within `src/functions/`.
-- Updated `src/main.rs` to use the new module structure.
-- Fixed compilation errors related to `git2` API changes (`parent_opt` to `parent`, `find_object` arguments, `diff.print` arguments).
-- Updated `walkdir` dependency to `2.5.0`.
-- Resolved `StripPrefixError` by canonicalizing `crq_path`.
-- Successfully ran `crq_updater` to update `crq_launchpad_workflow_enhancements.md` and `docs/sops/crq_updater_qa_sop.md` with relevant commit history.
-
-**Commit:** `ac86ef2eda7bd9de1a4ed252273b284b8d682d16`
-**Subject:** `docs: Add Tmux Workflow and Debugging SOP; Refactor tmux_controller and dump_tmux_status`
-**Description:**
-This commit introduces a new Standard Operating Procedure (SOP) for Tmux Workflow and Debugging Procedures (`docs/sops/tmux_workflow_and_debugging_sop.md`). This SOP consolidates best practices for managing tmux sessions, executing commands within panes, and debugging related issues.
-
-Key changes and fixes include:
-- Refactored `crates/tmux_controller/src/commands/create_layout.rs` to prevent automatic Gemini launch in pane 1, enabling "native worker" execution.
-- Corrected module import paths in `crates/tmux_controller/src/main.rs` and `crates/tmux_controller/src/commands/mod.rs` for `tmux_view` functionality.
-- Created a new `dump_tmux_status` crate (`crates/dump_tmux_status/`) for comprehensive tmux state snapshots, including session and pane content.
-- Added `dump_tmux_status` to the workspace `Cargo.toml`.
-- Debugged and resolved compilation errors in `dump_tmux_status` related to `clap` derives and `tmux_interface` imports.
-- Updated `GEMINI.md` to reference the new Tmux Workflow and Debugging SOP.
-
-These changes enhance our ability to manage and debug tmux-based workflows, providing better visibility and control over development environments.
+- [Commit ca9fe7e6ded6c6458b1d61ffd990063bafedede8: wip](docs/commits/ca9fe7e6ded6c6458b1d61ffd990063bafedede8_wip.md)
+- [Commit ea49de080e7e34d2e3171164a8b8acaceee84af0: refactor(crq_updater): Split functions into files and update CRQs](docs/commits/ea49de080e7e34d2e3171164a8b8acaceee84af0_refactor_crq_updater_Split_functions_into_files_and_update_CRQs.md)
+- [Commit ac86ef2eda7bd9de1a4ed252273b284b8d682d16: docs: Add Tmux Workflow and Debugging SOP; Refactor tmux_controller and dump_tmux_status](docs/commits/ac86ef2eda7bd9de1a4ed252273b284b8d682d16_docs_Add_Tmux_Workflow_and_Debugging_SOP_Refactor_tmux_controller_and_dump_tmux_status.md)
+- [Commit 87a6430574d3b734b1f0c5d1ff7c66e3a8dd16ba: feat: Add vibe_analyzer crate and update CRQ commit histories](docs/commits/87a6430574d3b734b1f0c5d1ff7c66e3a8dd16ba_feat_Add_vibe_analyzer_crate_and_update_CRQ_commit_histories.md)

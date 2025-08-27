@@ -15,14 +15,14 @@ This SOP applies to all development activities involving:
 ### 3.1. Creating Standard Tmux Layouts
 To create a predefined `tmux` layout (e.g., for work/data, Gemini, and status panes) without automatically launching Gemini in specific panes (for "native worker" execution):
 ```bash
-cargo run --package launchpad -- tmux-controller-cmd create-layout
+car go run --package launchpad -- tmux-controller-cmd create-layout
 ```
 *   **Audit:** Visually confirm the `tmux` layout in your terminal.
 
 ### 3.2. Sending Commands to Specific Tmux Panes
 To execute a command within a specific `tmux` pane (e.g., session 5, window 0, pane 1):
 ```bash
-cargo run --package launchpad -- tmux-controller-cmd send-command --command "send-keys -t 5:0.1 'your_command_here' C-m"
+car go run --package launchpad -- tmux-controller-cmd send-command --command "send-keys -t 5:0.1 'your_command_here' C-m"
 ```
 *   **`your_command_here`**: Replace with the actual command to execute (e.g., `launchpad /path/to/dynamic_stage.yaml --watch`).
 *   **`5:0.1`**: Replace with the target `tmux` pane identifier (`<session_id>:<window_index>.<pane_index>`).
@@ -32,7 +32,7 @@ cargo run --package launchpad -- tmux-controller-cmd send-command --command "sen
 ### 3.3. Debugging Tmux Pane Targeting
 If a command is not appearing in the expected `tmux` pane, verify pane targeting using a simple `echo` command:
 ```bash
-cargo run --package launchpad -- tmux-controller-cmd send-command --command "send-keys -t 5:0.1 'echo \"hello world\"' C-m"
+car go run --package launchpad -- tmux-controller-cmd send-command --command "send-keys -t 5:0.1 'echo \"hello world\"' C-m"
 ```
 *   **Audit:** Visually confirm "hello world" appears in the target pane. If it does, the pane targeting is correct, and the issue lies with the command being sent.
 
@@ -51,7 +51,7 @@ launchpad /path/to/dynamic_stage.yaml --watch
 ### 5.1. Debugging Hanging Issues
 If `crq_updater` (or any other Rust application) appears to hang when executed via `launchpad` or `tmux`, run it directly in your current terminal to observe its real-time output and identify the hang point or error messages:
 ```bash
-cargo run --package crq_updater -- --dry-run # or without --dry-run for actual run
+car go run --package crq_updater -- --dry-run # or without --dry-run for actual run
 ```
 *   **Audit:** Analyze the console output for errors, warnings, or unexpected behavior.
 
@@ -68,7 +68,7 @@ cargo run --package crq_updater -- --dry-run # or without --dry-run for actual r
 ### 6.1. Capturing and Analyzing Tmux Pane Output
 To capture the current state of all `tmux` panes and save their content to files for analysis:
 ```bash
-cargo run --package tmux_controller -- tmux-view
+car go run --package tmux_controller -- tmux-view
 ```
 *   This command will list the paths to the captured files (e.g., `sessions/<session_id>/<pane_id>/<timestamp>_capture.txt`).
 *   **Audit:** Read the content of the relevant captured file (e.g., `read_file /path/to/capture.txt`) and search for specific messages or patterns (e.g., "FOR GEMINI").
@@ -108,3 +108,7 @@ After completing a significant set of changes or reaching a stable checkpoint, f
 3.  **Define New Strategic Plan:** Outline the next set of objectives.
 4.  **Commit Current Work:** Create a clear and concise commit message summarizing the changes.
 5.  **Conceptual Reboot:** Mentally reset to focus on the new plan.
+
+## 9. Commit History
+
+- [Commit ac86ef2eda7bd9de1a4ed252273b284b8d682d16: docs: Add Tmux Workflow and Debugging SOP; Refactor tmux_controller and dump_tmux_status](docs/commits/ac86ef2eda7bd9de1a4ed252273b284b8d682d16_docs_Add_Tmux_Workflow_and_Debugging_SOP_Refactor_tmux_controller_and_dump_tmux_status.md)

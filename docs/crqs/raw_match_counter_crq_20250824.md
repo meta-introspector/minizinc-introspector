@@ -47,7 +47,7 @@ The features have been verified through internal testing during development.
 *   **Implicit Panic in `Filter` subcommand:**
     To trigger the panic, use a regex that is present in the raw asciicast input (e.g., an ANSI escape code like `^\\e`) but is stripped during processing.
     ```bash
-    cargo run -p asciicast_processor --release docs/asciicast21.cast Filter --regex "^\\\e"
+    cargo run -p asciicast_processor --release docs/asciicast21.cast Filter --regex "^\\\\e"
     ```
     (Expected behavior: The application should panic with the message "String found in raw input but not in processed output!")
 
@@ -55,3 +55,7 @@ The features have been verified through internal testing during development.
 
 *   Further refinement of panic messages to provide more context.
 *   Potential for configurable panic behavior (e.g., warning instead of panic) if user feedback indicates a need for less strict enforcement.
+
+## Commit History
+
+- [Commit d32b58dc1f7447fb1244dfc49d8388eb5fcdd0ab: feat(asciicast_processor): Implement raw match counter and processing consistency check](docs/commits/d32b58dc1f7447fb1244dfc49d8388eb5fcdd0ab_feat_asciicast_processor_Implement_raw_match_counter_and_processing_consistency_check.md)

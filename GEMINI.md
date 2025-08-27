@@ -217,8 +217,6 @@ This section lists the detailed documentation and MiniZinc models generated duri
 
 ## 3. Lessons Learned from `gemini_utils` Debugging
 
-This section summarizes key lessons learned during the recent debugging and refactoring of the `gemini_utils` crate, particularly concerning procedural macros and logging.
-
 *   **Procedural Macro Internal Debugging:**
     *   A procedural macro cannot directly use itself (`gemini_eprintln!`) for internal debugging within its own definition. This is a fundamental limitation of how procedural macros are expanded at compile time.
     *   Therefore, `eprintln!` must be used for internal debugging within the `gemini_eprintln!` macro's implementation.
@@ -237,6 +235,20 @@ This section summarizes key lessons learned during the recent debugging and refa
 *   **Clarity in Communication and Context:**
     *   Ambiguity in instructions, especially regarding the context of code execution (e.g., internal macro implementation vs. external user calls), can lead to misunderstandings and iterative debugging.
     *   Explicitly clarifying whether a rule applies to the *implementation* of a tool/macro or its *usage* is vital for efficient collaboration.
+
+#### Commit History
+
+- [Commit 85ddbe24d345f6a8486f0ee16d042a6fbf45d4c2: feat(gemini_eprintln): Refactor argument parsing and enhance kantspel compliance; document learnings](docs/commits/85ddbe24d345f6a8486f0ee16d042a6fbf45d4c2_feat_gemini_eprintln_Refactor_argument_parsing_and_enhance_kantspel_compliance_document_learnings.md)
+- [Commit f8a0cd580fd59e935d9c089f799c3592fc74cb14: feat(gemini_eprintln): Implement robust argument parsing and kantspel-compliant logging; add documentation](docs/commits/f8a0cd580fd59e935d9c089f799c3592fc74cb14_feat_gemini_eprintln_Implement_robust_argument_parsing_and_kantspel-compliant_logging_add_documentation.md)
+
+#### Commit History
+
+- [Commit 85ddbe24d345f6a8486f0ee16d042a6fbf45d4c2: feat(gemini_eprintln): Refactor argument parsing and enhance kantspel compliance; document learnings](docs/commits/85ddbe24d345f6a8486f0ee16d042a6fbf45d4c2_feat_gemini_eprintln_Refactor_argument_parsing_and_enhance_kantspel_compliance_document_learnings.md)
+- [Commit f8a0cd580fd59e935d9c089f799c3592fc74cb14: feat(gemini_eprintln): Implement robust argument parsing and kantspel-compliant logging; add documentation](docs/commits/f8a0cd580fd59e935d9c089f799c3592fc74cb14_feat_gemini_eprintln_Implement_robust_argument_parsing_and_kantspel-compliant_logging_add_documentation.md)
+
+#### Commit History
+
+- [Commit 85ddbe24d345f6a8486f0ee16d042a6fbf45d4c2: feat(gemini_eprintln): Refactor argument parsing and enhance kantspel compliance; document learnings](docs/commits/85ddbe24d345f6a8486f0ee16d042a6fbf45d4c2_feat_gemini_eprintln_Refactor_argument_parsing_and_enhance_kantspel_compliance_document_learnings.md)
 
 ## 2. libminizinc Specific Memories & Context
 

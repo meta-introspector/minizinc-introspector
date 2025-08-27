@@ -79,5 +79,9 @@ This refactoring has yielded several significant benefits:
 While this refactoring has resolved critical compilation issues and improved code organization, ongoing efforts will focus on:
 
 *   **Full `prelude` adoption:** Systematically replacing all individual `use` statements with `use crate::prelude::*;` where appropriate across the entire `tmux_interface` crate.
-*   **Continued `#[cfg]` review:** Ensuring that all `#[cfg]` attributes throughout the crate are applied correctly at the usage level, maintaining strict version compatibility.
-*   **Documentation updates:** Further refining and expanding documentation to reflect the current architecture and best practices.
++*   **Continued `#[cfg]` review:** Ensuring that all `#[cfg]` attributes throughout the crate are applied correctly at the usage level, maintaining strict version compatibility.
++*   **Documentation updates:** Further refining and expanding documentation to reflect the current architecture and best practices.
+
+## Commit History
+
+- [Commit 9a63d56f6e1ff35eb9dd93cec914c12c8ac22dd5: refactor(tmux_interface): Document prelude and cfg refactoring; debug gemini_eprintln](docs/commits/9a63d56f6e1ff35eb9dd93cec914c12c8ac22dd5_refactor_tmux_interface_Document_prelude_and_cfg_refactoring_debug_gemini_eprintln.md)

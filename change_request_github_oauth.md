@@ -43,7 +43,7 @@ This change request encompasses significant modifications to the `credential_man
 ## Verification
 
 *   Successful `cargo build` and `cargo test` after changes.
-*   Manual testing of the `cm auth github` command to verify the OAuth2 flow, including browser redirection, local server capture, token exchange, and credential storage.
+*   Manual testing of `cm auth github` command to verify the OAuth2 flow, including browser redirection, local server capture, token exchange, and credential storage.
 *   Verification that `mini-act` can utilize the stored GitHub PAT for local workflow execution.
 
 ## Future Considerations
@@ -56,3 +56,9 @@ This change request encompasses significant modifications to the `credential_man
 
 *   [Signature/Date of Approver 1]
 *   [Signature/Date of Approver 2]
+
+## Commit History
+
+- [Commit 51a5cf242d2b1ad7684dc743a144736707a8543c: feat(credential_manager): Implement credential import and GitHub OAuth (disabled)](docs/commits/51a5cf242d2b1ad7684dc743a144736707a8543c_feat_credential_manager_Implement_credential_import_and_GitHub_OAuth_disabled.md)
+- [Commit 972541ed529c03f167280f48521c6288d1ed941c: feat(zos-stage-github-repo-inspector): Integrate credential_manager for PAT retrieval](docs/commits/972541ed529c03f167280f48521c6288d1ed941c_feat_zos-stage-github-repo-inspector_Integrate_credential_manager_for_PAT_retrieval.md)
+- [Commit 6a24bc3b4355b5c353a0bfce5dd097ba4cd431bb: feat: Integrate octocrab GitHub API client and document vendor strategy](docs/commits/6a24bc3b4355b5c353a0bfce5dd097ba4cd431bb_feat_Integrate_octocrab_GitHub_API_client_and_document_vendor_strategy.md)

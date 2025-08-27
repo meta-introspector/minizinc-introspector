@@ -27,3 +27,8 @@ The recent efforts have successfully resolved critical compilation errors across
 ### Next Steps
 
 Further investigation is needed to understand the context of "deleted code from cast 21". This will likely involve analyzing the content of `docs/asciicast21.cast` using the `asciicast_processor` tool to identify any filtered or excluded output.
+
+## Commit History
+
+- [Commit af27539a0970d44bd12b27c695d01bb5c3a0fee7: feat(asciicast_processor): Enhance data cleaning, regex, and testing; add documentation](docs/commits/af27539a0970d44bd12b27c695d01bb5c3a0fee7_feat_asciicast_processor_Enhance_data_cleaning_regex_and_testing_add_documentation.md)
+- [Commit fe476f86b14c498d1bdde4eb407f45e7ec5dda02: feat: Integrate gemini_eprintln into asciicast_processor; enhance kantspel emoji mapping](docs/commits/fe476f86b14c498d1bdde4eb407f45e7ec5dda02_feat_Integrate_gemini_eprintln_into_asciicast_processor_enhance_kantspel_emoji_mapping.md)

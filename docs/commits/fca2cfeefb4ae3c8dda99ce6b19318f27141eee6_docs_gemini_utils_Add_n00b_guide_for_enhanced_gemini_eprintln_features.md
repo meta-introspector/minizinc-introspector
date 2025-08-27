@@ -1,0 +1,2 @@
+docs(gemini_utils): Add n00b guide for enhanced gemini_eprintln features
+Provide a beginner-friendly guide for the new automatic emoji variable population and dynamic emoji naming features in `gemini_eprintln!`.
