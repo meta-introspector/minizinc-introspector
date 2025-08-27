@@ -6161,6 +6161,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "solfunmeme-core"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "dum",
+ "futures",
+ "gemini_utils",
+ "git2",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "tokio",
+]
+
+[[package]]
 name = "spin"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"

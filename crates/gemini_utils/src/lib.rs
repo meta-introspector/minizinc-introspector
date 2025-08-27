@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use syn::{parse_macro_input, Expr, Lit, LitStr}; // Added Lit
-use quote::ToTokens; // Add ToTokens for debugging
+//use quote::ToTokens; // Add ToTokens for debugging
 //use proc_macro2::TokenStream as ProcMacro2TokenStream; // Alias for proc_macro2::TokenStream
 use lazy_static::lazy_static; // Add this import
 use std::collections::HashMap; // Add this import
@@ -37,7 +37,7 @@ lazy_static! {
 pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
     let parsed_input = parse_macro_input!(input as GeminiEprintlnInput);
     let format_string_literal = parsed_input.format_string;
-    let mut named_args = parsed_input.named_args; // Make mutable
+    let named_args = parsed_input.named_args; // Make mutable
     let positional_args = parsed_input.positional_args;
 
     #[cfg(feature = "debug")]
@@ -60,7 +60,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
         placeholders: Vec::new(),
     };
 
-    let mut auto_generated_named_args: HashMap<String, Expr> = HashMap::new();
+    //let mut auto_generated_named_args: HashMap<String, Expr> = HashMap::new();
 
     while let Some(c) = context.chars.next() {
         // Check for ::keyword:: patterns
@@ -228,7 +228,7 @@ pub fn gemini_eprintln(input: TokenStream) -> TokenStream {
                         final_args[i] = Some(syn::parse_quote!{""});
                     }
                 },
-                crate::string_processor::PlaceholderType::Named(name) => {
+                crate::string_processor::PlaceholderType::Named(_name) => {
 		    #[cfg(feature = "debug")]
                     eprintln!("DEBUG: Loop iteration {} - Named placeholder: {}", i, name);
                     // If a named placeholder is not filled by an explicit argument, auto-generate an empty string
