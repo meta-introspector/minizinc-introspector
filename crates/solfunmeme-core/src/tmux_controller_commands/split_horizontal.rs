@@ -1,5 +1,5 @@
 use tmux_interface::{Tmux, TmuxCommand};
-use crate::commands::output_formatter;
+use super::output_formatter;
 use clap::Parser;
 
 #[derive(Parser, Debug)]

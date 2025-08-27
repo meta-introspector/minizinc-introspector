@@ -1,6 +1,6 @@
 use tmux_interface::{Tmux, TmuxCommand};
 use clap::Args;
-use crate::commands::output_formatter;
+use super::output_formatter;
 
 #[derive(Args, Debug)]
 pub struct CreateLayoutArgs {

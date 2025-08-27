@@ -41,10 +41,10 @@ enum Commands {
 ///
 /// # Returns
 ///
-/// A `Result` indicating success (`Ok(())`) or an error (`Err(String)`) if
+/// A `Result` indicating success (`Ok(())`) or an error (`Err(Box<dyn std::error::Error>)`) if
 /// the executed command encounters an issue.
 #[tokio::main]
-async fn main() -> Result<(), String> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     gemini_eprintln!("Starting solfunmeme-core...");
 
     let cli = Cli::parse();
@@ -54,18 +54,18 @@ async fn main() -> Result<(), String> {
             // Temporarily set environment variables for launchpad_app
             // This will be refactored later when zos-bootstrap is integrated
             let current_exe_path = std::env::current_exe()
-                .map_err(|e| format!("Failed to get current executable path: {}", e.to_string()))?;
+                .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?; // Map error
             let project_root = current_exe_path.parent()
                 .and_then(|p| p.parent()) // target/debug/
                 .and_then(|p| p.parent()) // libminizinc/
-                .ok_or("Could not determine project root")?;
+                .ok_or_else(|| Box::new(std::io::Error::new(std::io::ErrorKind::NotFound, "Could not determine project root")) as Box<dyn std::error::Error>)?; // Map error
 
             let build_dir = project_root.join("build");
             let ld_library_path = build_dir.to_string_lossy().to_string();
             std::env::set_var("LD_LIBRARY_PATH", ld_library_path);
             narrator::livestream_output(&format!("Set LD_LIBRARY_PATH to: {}", std::env::var("LD_LIBRARY_PATH").unwrap_or_default()));
 
-            launchpad_app::run_launchpad().await
+            launchpad_app::run_launchpad().await.map_err(|e| Box::new(e) as Box<dyn std::error::Error>) // Map error
         },
         Commands::Tmux(tmux_cli) => {
             // Dispatch to the tmux_controller_commands's main logic

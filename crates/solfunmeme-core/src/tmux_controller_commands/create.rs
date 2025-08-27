@@ -1,5 +1,5 @@
 use tmux_interface::{Tmux, NewSession, ListSessions, KillSession};
-use crate::commands::output_formatter;
+use super::output_formatter;
 
 pub async fn handle_create_command(session_name: &str) -> Result<(), Box<dyn std::error::Error>> {
     output_formatter::print_header("Current tmux sessions (before creating new session)");

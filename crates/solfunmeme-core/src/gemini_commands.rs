@@ -1,7 +1,7 @@
 use clap::Args;
 use gemini_cli_manager::send_gemini_command;
 use tokio::fs;
-use crate::commands::output_formatter;
+use super::tmux_controller_commands::output_formatter;
 
 #[derive(Args, Debug)]
 pub struct SendGeminiCommandArgs {

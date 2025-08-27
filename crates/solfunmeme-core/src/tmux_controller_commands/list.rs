@@ -1,5 +1,5 @@
 use tmux_interface::{Tmux, ListSessions};
-use crate::commands::output_formatter;
+use super::output_formatter;
 
 pub async fn handle_list_command() -> Result<(), Box<dyn std::error::Error>> {
     output_formatter::print_header("Current tmux sessions");

@@ -22,5 +22,10 @@ serde_yaml = "0.9"
 # Core utility for logging
 gemini_utils = { path = "../../crates/gemini_utils" }
 
+# Added for tmux_controller integration
+tmux_interface = { path = "../../vendor/tmux_interface" }
+chrono = "0.4"
+gemini_cli_manager = { path = "../../crates/gemini_cli_manager" }
+
 [lints]
 workspace = true

@@ -1,5 +1,5 @@
-use crate::commands::output_formatter;
-use crate::commands::capture_utils;
+use super::output_formatter;
+use super::capture_utils;
 
 pub async fn handle_capture_session_output_command(crq_number: Option<&str>) -> Result<(), Box<dyn std::error::Error>> {
     output_formatter::print_header("Capturing output from all tmux sessions");

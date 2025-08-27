@@ -1,5 +1,5 @@
 use tmux_interface::{Tmux, TmuxCommand};
-use crate::commands::output_formatter;
+use super::output_formatter;
 
 pub async fn handle_send_command(session_name: Option<&str>, command: &str) -> Result<(), Box<dyn std::error::Error>> {
     output_formatter::print_header(&format!("Sending tmux command: '{}'", command));

@@ -16,7 +16,7 @@ pub mod create_layout;
 pub mod tmux_view;
 
 // Re-export gemini_commands for use in the main Cli
-pub use crate::gemini_commands;
+use crate::gemini_commands;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]

@@ -6164,14 +6164,17 @@ dependencies = [
 name = "solfunmeme-core"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "clap",
  "dum",
  "futures",
+ "gemini_cli_manager",
  "gemini_utils",
  "git2",
  "serde",
  "serde_json",
  "serde_yaml",
+ "tmux_interface 0.3.2",
  "tokio",
 ]
 
