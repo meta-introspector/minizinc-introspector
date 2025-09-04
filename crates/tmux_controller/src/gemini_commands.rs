@@ -3,6 +3,8 @@ use gemini_cli_manager::send_gemini_command;
 use tokio::fs;
 use crate::commands::output_formatter;
 
+const LIBMINIZINC_ROOT_PATH: &str = "/data/data/com.termux/files/home/storage/github/libminizinc/";
+
 #[derive(Args, Debug)]
 pub struct SendGeminiCommandArgs {
     /// Name of the tmux session where Gemini CLI is running
@@ -33,7 +35,7 @@ pub async fn handle_gemini_command(args: &SendGeminiCommandArgs) -> Result<(), B
     send_gemini_command(&args.session_name, &full_command).await?;
 
     if let Some(crq_name) = &args.crq {
-        let crq_path = format!("/data/data/com.termux/files/home/storage/github/libminizinc/{}", crq_name);
+        let crq_path = format!("{}{}", LIBMINIZINC_ROOT_PATH, crq_name);
         let crq_content = fs::read_to_string(&crq_path).await?;
         let instruction = format!("Please review the task outlined in the CRQ file: {} with the following content:\n\n```\n{}\n```\n\nand begin working on it.", crq_path, crq_content);
         output_formatter::print_header("Sending CRQ instruction to Gemini CLI");
