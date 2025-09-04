@@ -1,1 +1,0 @@
-int item_get_id(MiniZincItem* item_ptr);

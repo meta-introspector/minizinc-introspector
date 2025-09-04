@@ -1,9 +1,0 @@
-include "embedding_params.mzn";
-include "embedding_coeffs_scaled.mzn";
-include "embedding_relations_simplified.mzn"; % Use simplified relations
-include "embedding_variables.mzn";
-include "embedding_helpers.mzn";
-include "embedding_constraints.mzn";
-include "embedding_objective_simplified.mzn"; % Use simplified objective
-
-include "embedding_output.mzn";

@@ -1,6 +1,0 @@
-{
-    "id": "org.minizinc.mzn-fzn",
-    "version": "0.1.0",
-    "name": "fznjson",
-    "inputType": "JSON"
-}

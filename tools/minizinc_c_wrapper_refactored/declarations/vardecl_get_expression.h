@@ -1,1 +1,0 @@
-MiniZinc::Expression* vardecl_get_expression(MiniZinc::VarDeclI* vardecl_ptr);

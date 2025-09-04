@@ -1,1 +1,0 @@
-bool vardecl_is_toplevel(MiniZinc::VarDeclI* vardecl_ptr);

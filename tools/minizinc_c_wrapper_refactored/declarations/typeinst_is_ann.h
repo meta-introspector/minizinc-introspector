@@ -1,1 +1,0 @@
-bool typeinst_is_ann(MiniZinc::TypeInst* typeinst_ptr);

@@ -1,1 +1,0 @@
-/data/data/com.termux/files/home/storage/github/libminizinc/tools/minizinc_model_generator_rs/minizinc_model_generator_rs/target/release/minizinc_model_generator_rs: /data/data/com.termux/files/home/storage/github/libminizinc/tools/minizinc_model_generator_rs/minizinc_model_generator_rs/src/main.rs

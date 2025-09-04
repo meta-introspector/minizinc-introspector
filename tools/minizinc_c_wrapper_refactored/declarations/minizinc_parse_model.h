@@ -1,1 +1,0 @@
-MiniZincModel* minizinc_parse_model(MiniZinc::MznSolver* env, const char* model_str, const char* filename);

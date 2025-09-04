@@ -1,1 +1,0 @@
-int minizinc_solver_get_solution_value_int(MiniZinc::MznSolver* solver_ptr, const char* var_name);

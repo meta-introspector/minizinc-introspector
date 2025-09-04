@@ -1,1 +1,0 @@
-output [show(num_words)];

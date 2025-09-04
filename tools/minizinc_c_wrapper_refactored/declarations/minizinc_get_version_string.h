@@ -1,1 +1,0 @@
-const char* minizinc_get_version_string();

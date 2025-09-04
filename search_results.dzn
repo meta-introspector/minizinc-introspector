@@ -1,4 +1,0 @@
-search_results = [
-  { file_path: "/data/data/com.termux/files/home/storage/github/libminizinc/test_code.rs", line_number: 1, line_content: "fn my_example_function(input_param: i32, another_param: &str) -> bool {" }
-];
-pattern_searched = "fn ";

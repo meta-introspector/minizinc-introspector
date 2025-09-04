@@ -1,1 +1,0 @@
-int: x :: add_to_output;

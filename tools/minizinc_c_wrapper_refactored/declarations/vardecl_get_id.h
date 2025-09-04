@@ -1,1 +1,0 @@
-const char* vardecl_get_id(MiniZinc::VarDeclI* vardecl_ptr);

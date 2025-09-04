@@ -1,1 +1,0 @@
-bool typeinst_is_string(MiniZinc::TypeInst* typeinst_ptr);

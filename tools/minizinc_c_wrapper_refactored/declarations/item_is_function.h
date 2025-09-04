@@ -1,1 +1,0 @@
-bool item_is_function(MiniZincItem* item_ptr);

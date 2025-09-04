@@ -1,9 +1,0 @@
-[package]
-name = "minizinc_output_parser"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-regex = "1"
-serde_json = "1.0"
-serde = { version = "1.0", features = ["derive"] }

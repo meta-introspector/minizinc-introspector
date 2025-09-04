@@ -1,1 +1,0 @@
-bool typeinst_is_bool(MiniZinc::TypeInst* typeinst_ptr);

@@ -1,1 +1,0 @@
-void minizinc_gc_unlock();

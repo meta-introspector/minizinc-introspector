@@ -1,1 +1,0 @@
-int vardecl_get_payload(MiniZinc::VarDeclI* vardecl_ptr);

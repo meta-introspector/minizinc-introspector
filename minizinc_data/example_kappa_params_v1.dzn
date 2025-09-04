@@ -1,9 +1,0 @@
-kappa_global = 0.01; % 🌍⚖️ -- The Global Influence, Shaping the Universal Landscape! -- 🌐✨
-kappa_bind = 0.2;    % 🔗⚖️ -- The Binding Force, Weaving Connections in the Semantic Web! -- 🕸️✨
-kappa_free = 1.5;    % 🕊️⚖️ -- The Free Spirit's Repulsion, Ensuring Independence in the Void! -- 🌌✨
-kappa_app = 0.15;    % 🤝⚖️ -- The Application's Embrace, Drawing Functions and Arguments Near! -- 🫂✨
-kappa_hier = 0.1;    % 🌳⚖️ -- The Hierarchical Pull, Structuring the Tree of Knowledge! -- 🌲✨
-kappa_alpha = 0.25;  % 🔄⚖️ -- The Alpha Equivalence's Embrace, Unifying Forms! -- 💫✨
-kappa_beta = 0.1;    % ⬇️⚖️ -- The Beta Reduction's Pull, Simplifying Complexity! -- 📉✨
-kappa_vec = 0.05;    % ➡️⚖️ -- The Vector Axiom's Guidance, Aligning Abstract Truths! -- 🧭✨
-kappa_unit_norm = 0.5; % 🌐⚖️ -- The Unit Norm's Guardian, Ensuring Spherical Harmony! -- ⚪✨

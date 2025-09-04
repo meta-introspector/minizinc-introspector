@@ -1,1 +1,0 @@
-void minizinc_env_free(MiniZincEnvWrapper* env_wrapper);

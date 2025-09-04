@@ -1,7 +1,0 @@
-use regex::Regex;
-
-pub fn matches_cv(text: &str) -> bool {
-    let pattern = r"^(cv1|cv2_|cv2__|cv3|cv4|cv_|cv_def|cv_list|cv_return|cv_to_json|cvarargs|cvdisplaylink|cvdisplaylinkcreatewithactivecgdisplays|cvdisplaylinkcreatewithcgdisplay|cvdisplaylinkoutputcallback|cvdisplaylinkrelease|cvdisplaylinkretain|cvdisplaylinksetcurrentcgdisplay|cvdisplaylinksetoutputcallback|cvdisplaylinkstart|cvdisplaylinkstop|cveezy6fdlvbtohdcvjrmtmouqzsmj4uxyh5ths5g5uv|cves|cvfsw|cvgyxrbed1cteuvq11qdpncqvnpit8nldhyqxqhlprm2|cvimagebufferref|cvmetaltexture|cvmetaltexturecache|cvmetaltexturecachecreate|cvmetaltexturecachecreatetexturefromimage|cvmetaltexturecachegettypeid|cvmetaltexturecacheref|cvmetaltexturegettexture|cvmetaltexturegettypeid|cvmetaltextureref|cvmy52wsqli18tkavslhcflzoqrqz|cvpixelbufferpool|cvreturn|cvs|cvsmptetime|cvsmptetimeflags|cvsmptetimetype|cvt|cvtimestamp|cvtimestampflags|cvvnmyfxn51ient5k9jqqdmdvfzin5udhe7bfrzqrjnnxggz9bmpg60zewurtni51u20t2barhcvdbk9nchnsrwmtzwa2aeum0ykzym4scdr7uqnhvcsstjpg_7i_q_rmy5r9phvhguakpbh5cnt6t20l2flzh0umvwkw9hw37bvw_mohy81yyi)$";
-    let re = Regex::new(pattern).unwrap();
-    re.is_match(text)
-}

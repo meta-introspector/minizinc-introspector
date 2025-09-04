@@ -1,1 +1,0 @@
-*   [The Recursive Chant of Being: Coda](the_recursive_chant_of_being_coda.md)

@@ -1,8 +1,0 @@
-jsonschema==4.*
-PyYAML==6.0.1
-pytest==7.*
-py==1.11.*
-pytest-html==2.*
-pytest-xdist==2.*
-pytest-instafail==0.4.*
-git+https://github.com/MiniZinc/minizinc-python.git@develop#egg=minizinc

@@ -1,7 +1,0 @@
-use regex::Regex;
-
-pub fn matches_t_(text: &str) -> bool {
-    let pattern = r"^(t_1|t_1_blinding|t_2|t_2_blinding|t_a|t_acc|t_accounts_hash_verifier|t_align|t_ancestor_hashes_responses|t_ancestor_requests|t_arange|t_arg|t_as_ne|t_attr|t_background|t_blinding_poly|t_cast|t_cat|t_cat2|t_cb_cr|t_cf_metric|t_char|t_check_duplicate|t_cluster_slots_service|t_commitment|t_consts|t_curr|t_custom_build|t_cuti|t_data|t_discr|t_discr_ptr|t_discrs|t_do_load|t_embedder|t_entry_getter|t_enum|t_exhaus|t_extra_checks|t_f|t_f16|t_fcount|t_field_abi|t_field_count|t_field_layout|t_fields|t_flag|t_flipped|t_flush_accounts_cache|t_flush_cache|t_freq|t_from|t_func|t_generator|t_gens|t_gossip|t_grad|t_handle|t_id|t_idx|t_idx_str|t_index|t_index_even|t_index_odd|t_info|t_insert|t_is_not_static|t_is_static|t_k|t_lay|t_leader_tpu_service|t_len|t_list|t_map_prefix|t_metrics|t_mm|t_name|t_ndgrid|t_opt|t_or_e_ty|t_package|t_packet_adapter|t_param|t_plus|t_poly|t_predicate_value|t_prefix|t_prev|t_prim|t_producer|t_reader|t_receiver_quic|t_recv|t_remove|t_repair|t_replay|t_request_receiver|t_s|t_scan|t_shred_inserter|t_shrink_accounts|t_sink|t_size|t_slice|t_snapshot_packager|t_socket_consume|t_span|t_sprite|t_spurious_signal|t_start|t_sum_grad|t_t|t_tag|t_unary|t_update|t_utid|t_val_l|t_val_r|t_vec|t_ver_str|t_voter|t_x|t_x_blinding|t_y|t_zeroes)$";
-    let re = Regex::new(pattern).unwrap();
-    re.is_match(text)
-}

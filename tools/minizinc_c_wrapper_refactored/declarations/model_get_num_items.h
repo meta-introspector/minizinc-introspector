@@ -1,1 +1,0 @@
-uint32_t model_get_num_items(MiniZincModel* model_ptr);

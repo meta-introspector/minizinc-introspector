@@ -1,7 +1,0 @@
-use regex::Regex;
-
-pub fn matches_ó(text: &str) -> bool {
-    let pattern = r"^(ó)$";
-    let re = Regex::new(pattern).unwrap();
-    re.is_match(text)
-}

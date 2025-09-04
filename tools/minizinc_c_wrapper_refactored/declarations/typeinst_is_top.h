@@ -1,1 +1,0 @@
-bool typeinst_is_top(MiniZinc::TypeInst* typeinst_ptr);

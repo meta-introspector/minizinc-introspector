@@ -1,1 +1,0 @@
-MiniZincItem* model_get_item_at_index(MiniZincModel* model_ptr, uint32_t index);

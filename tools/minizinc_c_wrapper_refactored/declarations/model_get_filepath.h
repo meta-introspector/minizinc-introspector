@@ -1,1 +1,0 @@
-char* model_get_filepath(MiniZincModel* model_ptr);

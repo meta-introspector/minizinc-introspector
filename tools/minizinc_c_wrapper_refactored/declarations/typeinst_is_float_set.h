@@ -1,1 +1,0 @@
-bool typeinst_is_float_set(MiniZinc::TypeInst* typeinst_ptr);

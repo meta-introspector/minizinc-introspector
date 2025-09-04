@@ -1,1 +1,0 @@
-bool typeinst_is_bot(MiniZinc::TypeInst* typeinst_ptr);

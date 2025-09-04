@@ -1,1 +1,0 @@
-const char* minizinc_model_get_doc_comment(MiniZincModel* model_ptr);
