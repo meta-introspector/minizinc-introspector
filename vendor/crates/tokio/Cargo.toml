@@ -85,7 +85,6 @@ full = [
     "rt-multi-thread",
     "signal",
     "sync",
-    "time",
 ]
 io-std = []
 io-util = ["bytes"]
@@ -128,9 +127,10 @@ sync = []
 test-util = [
     "rt",
     "sync",
-    "time",
 ]
-time = []
+
+[dependencies]
+time = "0.3.43"
 
 [lib]
 name = "tokio"

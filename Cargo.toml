@@ -127,10 +127,12 @@ mismatched_lifetime_syntaxes = "allow"
 [workspace.dependencies]
 arrow = "56.0.0"
 parquet = "56.0.0"
-git2 = "0.19"
+git2 = "0.20.2"
 #tree-sitter-language = { version = "0.26.0", path = "vendor/tree-sitter/crates/language" }
 cc = "1.0.34"
 serde_json = { version = "1.0.143", features = ["preserve_order"] }
+minizinc_ffi = { path = "tools/minizinc_ffi" }
+zos-bootstrap = { path = "crates/zos-bootstrap" }
 
 # --- Generated Documentation References ---
 # This section provides links to key documentation generated during
