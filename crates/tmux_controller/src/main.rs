@@ -70,7 +70,7 @@ enum Commands {
 }
 
 #[tokio::main]
-async fn main() -> Result<(), TmuxControllerError> {
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
 
     match &cli.command {

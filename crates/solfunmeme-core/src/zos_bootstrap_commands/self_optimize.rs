@@ -289,7 +289,7 @@ pub fn handle_self_optimize_command(args: SelfOptimizeArgs, config: &AppConfig) 
                 report.push_str(&format!("LLM: {}\n", llm_result));
 
                 if !sat_verify_instruction(instruction) {
-                    return Err(crate::utils::error::ZosError::CommandFailed {
+                    return Err(ZosError::CommandFailed {
                         command: format!("SAT verification failed for {:?}", instruction),
                         exit_code: None,
                         stdout: report.clone(),

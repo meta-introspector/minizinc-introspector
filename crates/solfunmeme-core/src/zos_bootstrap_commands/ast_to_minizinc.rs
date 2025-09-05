@@ -3,12 +3,12 @@ use crate::zos_bootstrap_commands::utils::subprocess;
 use std::path::PathBuf;
 use std::time::Instant;
 use clap::Args;
-use super::code_analysis::ast_to_numerical_vector_converter::convert_ast_to_numerical_vectors;
+//use super::code_analysis::ast_to_numerical_vector_converter::convert_ast_to_numerical_vectors;
 use minizinc_ffi::environment::MiniZincEnvironment;
-use super::code_analysis::dzn_data_generator;
-use super::code_analysis::minizinc_model_generator::generate_ast_minizinc_model_string;
-use super::code_analysis::numerical_vector_to_llm_instructions::interpret_numerical_vector;
-use super::code_analysis::numerical_vector_to_llm_instructions::generate_llm_instructions;
+//use super::code_analysis::dzn_data_generator;
+//use super::code_analysis::minizinc_model_generator::generate_ast_minizinc_model_string;
+//use super::code_analysis::numerical_vector_to_llm_instructions::interpret_numerical_vector;
+//use super::code_analysis::numerical_vector_to_llm_instructions::generate_llm_instructions;
 use walkdir::WalkDir;
 
 #[derive(Args, Clone, Debug)]

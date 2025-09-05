@@ -1,6 +1,6 @@
 use crate::zos_bootstrap_commands::utils::error::Result;
-use crate::zos_bootstrap_commands::code_analysis::string_extractor::{self, ExtractedString};
-use crate::zos_bootstrap_commands::code_analysis::minizinc_param_generator;
+//use crate::zos_bootstrap_commands::code_analysis::string_extractor::{self, ExtractedString};
+//use crate::zos_bootstrap_commands::code_analysis::minizinc_param_generator;
 use crate::zos_bootstrap_commands::utils::paths;
 use crate::zos_bootstrap_commands::utils::subprocess;
 use std::path::PathBuf;
@@ -106,10 +106,10 @@ pub fn handle_generate_params_command(args: GenerateParamsArgs) -> Result<()> {
 
     // Parse MiniZinc output to get the selected string
     let output_str = str::from_utf8(&output.stdout)?;
-    let selected_string_prefix = "selected_string = ""
+    let selected_string_prefix = "selected_string = ";
     if let Some(start_index) = output_str.find(selected_string_prefix) {
         let remaining = &output_str[start_index + selected_string_prefix.len()..];
-        if let Some(end_index) = remaining.find("\";") {
+        if let Some(end_index) = remaining.find(";") {
             let selected_string = &remaining[..end_index];
             println!("Selected constant: {}", selected_string);
         } else {
