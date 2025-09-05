@@ -1,7 +1,8 @@
 use tmux_interface::{Tmux, NewSession, ListSessions, KillSession};
 use crate::commands::output_formatter;
+use crate::error::TmuxControllerError;
 
-pub async fn handle_create_command(session_name: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn handle_create_command(session_name: &str) -> Result<(), TmuxControllerError> {
     list_tmux_sessions_and_print("Current tmux sessions (before creating new session)").await?;
 
     // Kill any existing session with the same name to ensure a clean start
@@ -19,11 +20,10 @@ pub async fn handle_create_command(session_name: &str) -> Result<(), Box<dyn std
     Ok(())
 }
 
-pub async fn list_tmux_sessions_and_print(header_message: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn list_tmux_sessions_and_print(header_message: &str) -> Result<(), TmuxControllerError> {
     output_formatter::print_header(header_message);
     let output = Tmux::with_command(ListSessions::new()).output()?;
     output_formatter::print_info(&String::from_utf8_lossy(&output.stdout()));
     output_formatter::print_footer();
     Ok(())
-}
 }

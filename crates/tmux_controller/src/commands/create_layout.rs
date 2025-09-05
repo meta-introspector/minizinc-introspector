@@ -1,6 +1,7 @@
 use tmux_interface::{Tmux, TmuxCommand};
 use clap::Args;
 use crate::commands::output_formatter;
+use crate::error::TmuxControllerError;
 
 #[derive(Args, Debug)]
 pub struct CreateLayoutArgs {
@@ -9,7 +10,7 @@ pub struct CreateLayoutArgs {
     pub task: Option<String>,
 }
 
-pub async fn handle_create_layout_command(args: &CreateLayoutArgs) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn handle_create_layout_command(args: &CreateLayoutArgs) -> Result<(), TmuxControllerError> {
     output_formatter::print_header("Creating predefined tmux layout");
 
     // 1. Kill all other panes in the current window to start clean

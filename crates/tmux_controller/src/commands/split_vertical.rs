@@ -1,6 +1,7 @@
 use tmux_interface::{Tmux, TmuxCommand};
 use crate::commands::output_formatter;
 use clap::Parser;
+use crate::error::TmuxControllerError;
 
 #[derive(Parser, Debug)]
 pub struct SplitVerticalArgs {
@@ -9,7 +10,7 @@ pub struct SplitVerticalArgs {
     pub session_name: Option<String>,
 }
 
-pub async fn handle_split_vertical_command(args: &SplitVerticalArgs) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn handle_split_vertical_command(args: &SplitVerticalArgs) -> Result<(), TmuxControllerError> {
     output_formatter::print_header("Splitting window vertically");
     let mut tmux_command = TmuxCommand::new();
     tmux_command.name("split-window");

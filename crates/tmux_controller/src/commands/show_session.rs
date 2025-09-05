@@ -1,7 +1,8 @@
 use tmux_interface::{Tmux, TmuxCommand};
 use crate::commands::output_formatter;
+use crate::error::TmuxControllerError;
 
-pub async fn handle_show_session_command(session_name: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn handle_show_session_command(session_name: &str) -> Result<(), TmuxControllerError> {
     output_formatter::print_header(&format!("Splitting window horizontally and showing session: {}", session_name));
 
     // Split the current window horizontally

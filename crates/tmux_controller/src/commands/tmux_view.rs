@@ -2,6 +2,7 @@ use tmux_interface::{Tmux, TmuxCommand};
 use std::process::Command;
 use std::path::PathBuf;
 use chrono::{Local, Timelike}; // For timestamping log files
+use crate::error::TmuxControllerError;
 
 #[derive(Debug, clap::Args)]
 pub struct TmuxViewArgs {
@@ -16,11 +17,11 @@ pub struct TmuxViewArgs {
     pub output_path: PathBuf,
 }
 
-pub async fn handle_tmux_view_command(args: &TmuxViewArgs) -> Result<(), Box<dyn std::error::Error>> {
+pub async fn handle_tmux_view_command(args: &TmuxViewArgs) -> Result<(), TmuxControllerError> {
     println!("-- Tmux Sessions --");
     let output_ls = Command::new("tmux")
         .arg("ls")
-        .output()?;
+        .output().map_err(TmuxControllerError::IoError)?;
     println!("{}", String::from_utf8_lossy(&output_ls.stdout));
 
     println!("\n--- All Tmux Panes (across all sessions) ---");
@@ -29,7 +30,7 @@ pub async fn handle_tmux_view_command(args: &TmuxViewArgs) -> Result<(), Box<dyn
         .arg("-a") // List all panes across all sessions
         .arg("-F") // Format output
         .arg("#{session_name}:#{window_index}.#{pane_index} #{pane_current_command} #{pane_current_path}") // Custom format
-        .output()?;
+        .output().map_err(TmuxControllerError::IoError)?;
     println!("{}", String::from_utf8_lossy(&output_list_panes.stdout));
 
     println!("\n--- Capturing all pane output via tmux_controller ---");
@@ -47,7 +48,7 @@ pub async fn handle_tmux_view_command(args: &TmuxViewArgs) -> Result<(), Box<dyn
         capture_cmd.arg("--session-name").arg(session);
     }
 
-    let output_capture = capture_cmd.output()?;
+    let output_capture = capture_cmd.output().map_err(|e| TmuxControllerError::GenericError(e.to_string()))?;
     println!("{}", String::from_utf8_lossy(&output_capture.stdout));
     eprintln!("{}", String::from_utf8_lossy(&output_capture.stderr)); // Print stderr for debugging
 
@@ -58,7 +59,7 @@ pub async fn handle_tmux_view_command(args: &TmuxViewArgs) -> Result<(), Box<dyn
     let output_ls_sessions = Command::new("ls")
         .arg("-R")
         .arg(&args.output_path)
-        .output()?;
+        .output().map_err(TmuxControllerError::IoError)?;
     println!("{}", String::from_utf8_lossy(&output_ls_sessions.stdout));
 
 

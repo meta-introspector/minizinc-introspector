@@ -2,8 +2,10 @@ use clap::{Parser, Subcommand};
 
 mod gemini_commands;
 mod commands;
+mod error;
 use commands::{split_vertical, split_horizontal};
 use commands::tmux_view;
+use crate::error::TmuxControllerError;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -68,7 +70,7 @@ enum Commands {
 }
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
+async fn main() -> Result<(), TmuxControllerError> {
     let cli = Cli::parse();
 
     match &cli.command {
