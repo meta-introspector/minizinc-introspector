@@ -1,5 +1,5 @@
 use crate::zos_bootstrap_commands::utils::error::Result;
-use crate::zos_bootstrap_commands::code_analysis::string_extractor::ExtractedString;
+use zos_bootstrap::code_analysis::string_extractor::ExtractedString;
 use std::path::PathBuf;
 use std::fs;
 

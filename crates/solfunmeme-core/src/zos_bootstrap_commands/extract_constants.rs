@@ -1,11 +1,11 @@
 use crate::zos_bootstrap_commands::utils::error::Result;
 use crate::zos_bootstrap_commands::utils::subprocess;
 use crate::zos_bootstrap_commands::utils::paths;
-use super::code_analysis::string_extractor::{self, ExtractedString};
+use zos_bootstrap::code_analysis::string_extractor::{self, ExtractedString};
 use super::code_analysis::constant_usage_proof;
 use clap::Args;
 
-#[derive(Args, Clone)]
+#[derive(Args, Clone, Debug)]
 pub struct ExtractConstantsArgs {
     #[arg(long)]
     pub rust_only: bool,
@@ -24,7 +24,7 @@ pub fn handle_extract_constants_command(args: ExtractConstantsArgs) -> Result<()
     if args.prove_constants_usage {
         println!("Proving constant usage...");
         let project_root = paths::resolve_project_root()?;
-        constant_usage_proof::prove_constants_usage_command(&project_root)?; // Corrected function call
+        zos_bootstrap::code_analysis::constant_usage_proof::prove_constants_usage_command(&project_root)?; // Corrected function call
         println!("Constant usage proof completed.");
     } else if args.rust_only {
         println!("Extracting constant strings using Rust's syn parser...");
@@ -45,7 +45,7 @@ pub fn handle_extract_constants_command(args: ExtractConstantsArgs) -> Result<()
                 .unwrap_or("unknown_crate")
                 .to_string();
 
-            match string_extractor::extract_strings_from_file(file_path, crate_name) { // Corrected function call
+            match zos_bootstrap::code_analysis::string_extractor::extract_strings_from_file(file_path, crate_name) { // Corrected function call
                 Ok(extracted) => {
                     all_extracted_strings.extend(extracted);
                 }
@@ -102,7 +102,7 @@ pub fn handle_extract_constants_command(args: ExtractConstantsArgs) -> Result<()
         println!("MiniZinc Errors:\n{}", String::from_utf8_lossy(&output.stderr));
 
         if !output.status.success() {
-            return Err(crate::utils::error::ZosError::CommandFailed {
+            return Err(zos_bootstrap::utils::error::ZosError::CommandFailed {
                 command: format!("minizinc {}", args_str.join(" ")),
                 exit_code: output.status.code(),
                 stdout: String::from_utf8_lossy(&output.stdout).to_string(),

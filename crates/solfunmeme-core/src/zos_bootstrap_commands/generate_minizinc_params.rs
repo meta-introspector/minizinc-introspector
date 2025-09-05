@@ -1,5 +1,5 @@
 use crate::zos_bootstrap_commands::utils::error::Result;
-use crate::zos_bootstrap_commands::code_analysis::string_extractor::{self, ExtractedString};
+use zos_bootstrap::code_analysis::string_extractor::{self, ExtractedString};
 use crate::zos_bootstrap_commands::code_analysis::minizinc_param_generator;
 use crate::zos_bootstrap_commands::utils::paths;
 use crate::zos_bootstrap_commands::utils::subprocess;
@@ -7,7 +7,7 @@ use std::path::PathBuf;
 use std::str;
 use clap::Args;
 
-#[derive(Args, Clone)]
+#[derive(Args, Clone, Debug)]
 pub struct GenerateParamsArgs {
     #[arg(long)]
     pub output_dir: String,
@@ -55,7 +55,7 @@ pub fn handle_generate_params_command(args: GenerateParamsArgs) -> Result<()> {
                 .unwrap_or("unknown_crate")
                 .to_string();
 
-            match string_extractor::extract_strings_from_file(file_path, crate_name) {
+            match zos_bootstrap::code_analysis::string_extractor::extract_strings_from_file(file_path, crate_name) {
                 Ok(extracted) => {
                     all_extracted_strings.extend(extracted);
                 }
@@ -96,7 +96,7 @@ pub fn handle_generate_params_command(args: GenerateParamsArgs) -> Result<()> {
     println!("MiniZinc Errors:\n{}", String::from_utf8_lossy(&output.stderr));
 
     if !output.status.success() {
-        return Err(crate::utils::error::ZosError::CommandFailed {
+        return Err(zos_bootstrap::utils::error::ZosError::CommandFailed {
             command: format!("minizinc {}", args_str.join(" ")),
             exit_code: output.status.code(),
             stdout: String::from_utf8_lossy(&output.stdout).to_string(),
@@ -106,10 +106,10 @@ pub fn handle_generate_params_command(args: GenerateParamsArgs) -> Result<()> {
 
     // Parse MiniZinc output to get the selected string
     let output_str = str::from_utf8(&output.stdout)?;
-    let selected_string_prefix = "selected_string = ""
+    let selected_string_prefix = "selected_string = \"";
     if let Some(start_index) = output_str.find(selected_string_prefix) {
         let remaining = &output_str[start_index + selected_string_prefix.len()..];
-        if let Some(end_index) = remaining.find("\";") {
+        if let Some(end_index) = remaining.find(";") {
             let selected_string = &remaining[..end_index];
             println!("Selected constant: {}", selected_string);
         } else {

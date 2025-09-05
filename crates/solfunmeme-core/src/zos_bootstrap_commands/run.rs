@@ -9,10 +9,10 @@ pub mod run_minimal_mzn;
 pub mod run_test_driver;
 
 // Import functions and enums from the new modules
-use super::run_embedding_model::run_embedding_model;
-use super::vector_params_source::VectorParamsSource;
-use super::run_minimal_mzn::run_minimal_mzn;
-use super::run_test_driver::run_test_driver;
+use zos_bootstrap::commands::run::run_embedding_model::run_embedding_model;
+use zos_bootstrap::commands::run::vector_params_source::VectorParamsSource;
+use zos_bootstrap::commands::run::run_minimal_mzn::run_minimal_mzn;
+use zos_bootstrap::commands::run::run_test_driver::run_test_driver;
 
 #[derive(Args, Clone, Debug)]
 pub struct RunArgs {

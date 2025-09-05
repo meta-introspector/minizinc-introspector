@@ -226,7 +226,7 @@ pub async fn run_launchpad() -> Result<(), Box<dyn std::error::Error>> {
     // --- END NEW LOGIC ---
 
     if let Some(stage) = stage_registry.get(&stage_identifier) {
-        return stage.run(&repo, &stage_args.iter().map(|s| s.as_str()).collect::<Vec<&str>>()).await;
+        return stage.run(&repo, &stage_args.iter().map(|s| s.as_str()).collect::<Vec<&str>>()).await.map_err(|e| e.into());
     } else {
         // Original stage launching logic for ZOS stage binaries
         let stage_binary_name = if stage_identifier.starts_with("zos-stage-") {

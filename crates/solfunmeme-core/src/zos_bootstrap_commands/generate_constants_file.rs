@@ -7,7 +7,7 @@ use std::path::PathBuf;
 use std::str;
 use clap::Args;
 
-#[derive(Args, Clone)]
+#[derive(Args, Clone, Debug)]
 pub struct GenerateConstantsFileArgs {
     #[arg(long)]
     pub output_file: String,
@@ -33,7 +33,7 @@ pub fn handle_generate_constants_file_command(args: GenerateConstantsFileArgs) -
             .unwrap_or("unknown_crate")
             .to_string();
 
-        match string_extractor::extract_strings_from_file(file_path, crate_name) {
+        match zos_bootstrap::code_analysis::string_extractor::extract_strings_from_file(file_path, crate_name) {
             Ok(extracted) => {
                 all_extracted_strings.extend(extracted);
             }
@@ -69,7 +69,7 @@ pub fn handle_generate_constants_file_command(args: GenerateConstantsFileArgs) -
     println!("MiniZinc Errors:\n{}", String::from_utf8_lossy(&output.stderr));
 
     if !output.status.success() {
-        return Err(crate::utils::error::ZosError::CommandFailed {
+        return Err(zos_bootstrap::utils::error::ZosError::CommandFailed {
             command: format!("minizinc {}", args_str.join(" ")),
             exit_code: output.status.code(),
             stdout: String::from_utf8_lossy(&output.stdout).to_string(),

@@ -8,7 +8,7 @@ use crate::zos_bootstrap_commands::utils::error::Result;
 use walkdir::WalkDir;
 use doc_to_minizinc_data::data_generation::AppConfig;
 
-#[derive(Args)]
+#[derive(Args, Clone, Debug)]
 pub struct SelfOptimizeArgs {
     #[arg(long, help = "Enable self-optimization mode")]
     pub self_optimize: bool,
@@ -289,7 +289,7 @@ pub fn handle_self_optimize_command(args: SelfOptimizeArgs, config: &AppConfig) 
                 report.push_str(&format!("LLM: {}\n", llm_result));
 
                 if !sat_verify_instruction(instruction) {
-                    return Err(crate::utils::error::ZosError::CommandFailed {
+                    return Err(zos_bootstrap::utils::error::ZosError::CommandFailed {
                         command: format!("SAT verification failed for {:?}", instruction),
                         exit_code: None,
                         stdout: report.clone(),

@@ -10,11 +10,11 @@ pub mod test_dzn_gen_rust;
 pub mod test_coverage;
 
 // Import functions and enums from the new modules
-use super::test_rust_ffi::test_rust_ffi;
-use super::test_minizinc_models::test_minizinc_models;
-use super::test_dzn_generation::test_dzn_generation;
-use super::test_dzn_gen_rust::test_dzn_gen_rust;
-use super::test_coverage::test_coverage;
+use zos_bootstrap::commands::test::test_rust_ffi::test_rust_ffi;
+use zos_bootstrap::commands::test::test_minizinc_models::test_minizinc_models;
+use zos_bootstrap::commands::test::test_dzn_generation::test_dzn_generation;
+use zos_bootstrap::commands::test::test_dzn_gen_rust::test_dzn_gen_rust;
+use zos_bootstrap::commands::test::test_coverage::test_coverage;
 
 #[derive(Args, Clone, Debug)]
 pub struct TestArgs {

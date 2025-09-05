@@ -1,5 +1,25 @@
-use clap::{Parser, Subcommand};
+use clap::{Args, Parser, Subcommand};
 use std::path::PathBuf; // Add this import
+
+#[derive(Args, Clone, Debug)]
+pub struct AnalyzeDuplicatesArgs {
+    /// The suggested code to analyze for duplicates (can be a string or a file path)
+    #[arg(long)]
+    pub suggested_code: String,
+    /// The root directory to search for duplicate code
+    #[arg(long)]
+    pub search_path: PathBuf,
+    /// If true, treat suggested_code as a file path, otherwise as a direct string
+    #[arg(long, default_value_t = false)]
+    pub is_file: bool,
+}
+
+#[derive(Args, Clone, Debug)]
+pub struct IndexUpdateArgs {
+    /// Perform an incremental update of the index
+    #[arg(long, default_value_t = true)]
+    pub incremental: bool,
+}
 
 pub mod build;
 pub mod test;
@@ -11,6 +31,7 @@ pub mod generate_minizinc_params;
 pub mod generate_constants_file;
 pub mod ast_to_minizinc;
 pub mod code_search;
+pub mod code_analysis;
 pub mod self_optimize;
 pub mod test_ast_to_minizinc;
 pub mod analyze_duplicates;
@@ -63,24 +84,4 @@ pub enum Commands {
     AnalyzeDuplicates(AnalyzeDuplicatesArgs),
     /// Updates the project index incrementally with status reports
     IndexUpdate(IndexUpdateArgs),
-}
-
-#[derive(Args, Clone, Debug)]
-pub struct AnalyzeDuplicatesArgs {
-    /// The suggested code to analyze for duplicates (can be a string or a file path)
-    #[arg(long)]
-    pub suggested_code: String,
-    /// The root directory to search for duplicate code
-    #[arg(long)]
-    pub search_path: PathBuf,
-    /// If true, treat suggested_code as a file path, otherwise as a direct string
-    #[arg(long, default_value_t = false)]
-    pub is_file: bool,
-}
-
-#[derive(Args, Clone, Debug)]
-pub struct IndexUpdateArgs {
-    /// Perform an incremental update of the index
-    #[arg(long, default_value_t = true)]
-    pub incremental: bool,
 }

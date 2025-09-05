@@ -3,12 +3,12 @@ use crate::zos_bootstrap_commands::utils::subprocess;
 use std::path::PathBuf;
 use std::time::Instant;
 use clap::Args;
-use super::code_analysis::ast_to_numerical_vector_converter::convert_ast_to_numerical_vectors;
+use zos_bootstrap::code_analysis::ast_to_numerical_vector_converter::convert_ast_to_numerical_vectors;
 use minizinc_ffi::environment::MiniZincEnvironment;
 use super::code_analysis::dzn_data_generator;
-use super::code_analysis::minizinc_model_generator::generate_ast_minizinc_model_string;
-use super::code_analysis::numerical_vector_to_llm_instructions::interpret_numerical_vector;
-use super::code_analysis::numerical_vector_to_llm_instructions::generate_llm_instructions;
+use zos_bootstrap::code_analysis::minizinc_model_generator::generate_ast_minizinc_model_string;
+use zos_bootstrap::code_analysis::numerical_vector_to_llm_instructions::interpret_numerical_vector;
+use zos_bootstrap::code_analysis::numerical_vector_to_llm_instructions::generate_llm_instructions;
 use walkdir::WalkDir;
 
 #[derive(Args, Clone, Debug)]
@@ -150,7 +150,7 @@ pub fn handle_ast_to_minizinc_command(args: AstToMiniZincArgs) -> crate::zos_boo
     let phase3_start_time = Instant::now();
     let data_file_path = output_dir.join("ast_data.dzn");
     // Use the new dzn_data_generator
-    let dzn_content = dzn_data_generator::generate_ast_dzn_data_string(
+    let dzn_content = zos_bootstrap::code_analysis::dzn_data_generator::generate_ast_dzn_data_string(
         &all_ast_numerical_vectors,
         target_index,
     );

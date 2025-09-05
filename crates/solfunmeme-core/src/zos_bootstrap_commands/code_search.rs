@@ -4,7 +4,7 @@ use walkdir::WalkDir;
 use regex::Regex;
 use crate::zos_bootstrap_commands::utils::error::Result;
 
-#[derive(Args, Clone)]
+#[derive(Args, Clone, Debug)]
 pub struct CodeSearchArgs {
     pub pattern: String,
     /// Optional: A glob pattern to filter which files are searched (e.g., '*.rs', '*.{cpp,h}').
