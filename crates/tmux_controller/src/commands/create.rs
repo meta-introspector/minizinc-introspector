@@ -26,4 +26,3 @@ pub async fn list_tmux_sessions_and_print(header_message: &str) -> Result<(), Bo
     output_formatter::print_footer();
     Ok(())
 }
-}
